@@ -137,9 +137,7 @@ void main() {
     await _settle(tester);
     expect(find.text('Modello di questa conversazione'), findsOneWidget);
     expect(find.text('Modello dell\'agente'), findsOneWidget);
-    await tester.tap(find.byKey(const Key('model-anthropic/claude-sonnet-5')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('way-claude-subscription/claude-sonnet-5')));
+    await tester.tap(find.byKey(const Key('model-claude-subscription/claude-sonnet-5')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('effort-low')));
     await tester.pumpAndSettle();

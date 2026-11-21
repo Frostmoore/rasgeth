@@ -67,6 +67,20 @@ describe("the list of conversations", () => {
     ).toEqual([]);
   });
 
+  it("dates each model from the models catalog, for the menus' newest first", async () => {
+    s = await startServer(
+      () => ({ text: "ok" }),
+      { id: "anthropic", models: ["claude-opus-5-5", "claude-fable-5-2", "x-unknown"] },
+      { defaultModel: { provider: "anthropic", model: "claude-opus-5-5" } },
+    );
+    const body = (await s.api<{ model: string; released?: string }[]>("GET", "/api/models")).body;
+    expect(body.map((m) => [m.model, m.released])).toEqual([
+      ["claude-opus-5-5", undefined],
+      ["claude-fable-5-2", "2026-11-09"],
+      ["x-unknown", undefined],
+    ]);
+  });
+
   it("lets a conversation pick its own model and effort, and go back to the agent's", async () => {
     s = await startServer(() => ({ text: "ok" }), { models: ["m1", "m2"] });
     expect((await s.api("GET", "/api/models")).body).toEqual([

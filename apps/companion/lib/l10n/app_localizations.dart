@@ -18974,6 +18974,11322 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Devices removed: {count}.'**
   String devForgetUnusedDone(int count);
+
+  /// No description provided for @chAxCat_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get chAxCat_other;
+
+  /// No description provided for @chAxCat_personal.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal'**
+  String get chAxCat_personal;
+
+  /// No description provided for @chAxCat_social.
+  ///
+  /// In en, this message translates to:
+  /// **'Social'**
+  String get chAxCat_social;
+
+  /// No description provided for @chAxCat_work.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get chAxCat_work;
+
+  /// No description provided for @chAxMailboxAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a mailbox'**
+  String get chAxMailboxAdd;
+
+  /// No description provided for @chAxMailboxAddText.
+  ///
+  /// In en, this message translates to:
+  /// **'As many as you like, each in its category.'**
+  String get chAxMailboxAddText;
+
+  /// No description provided for @chAxMailboxAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents may use it'**
+  String get chAxMailboxAgents;
+
+  /// No description provided for @chAxMailboxAgentsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'They search, read and write drafts here; every email they send asks you first and shows it whole.'**
+  String get chAxMailboxAgentsHelp;
+
+  /// No description provided for @chAxMailboxCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get chAxMailboxCategory;
+
+  /// No description provided for @chAxMailboxName.
+  ///
+  /// In en, this message translates to:
+  /// **'Its name'**
+  String get chAxMailboxName;
+
+  /// No description provided for @chAxMailboxNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For example Work or Gmail; empty: the address.'**
+  String get chAxMailboxNameHelp;
+
+  /// No description provided for @chAxMailboxNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New mailbox'**
+  String get chAxMailboxNew;
+
+  /// No description provided for @chAxMailboxNewCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Or a new category'**
+  String get chAxMailboxNewCategory;
+
+  /// No description provided for @chAxMailboxNewCategoryPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Family, Club, Shop…'**
+  String get chAxMailboxNewCategoryPlaceholder;
+
+  /// No description provided for @chAxMailboxPasswordKept.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave it empty to keep the one you gave.'**
+  String get chAxMailboxPasswordKept;
+
+  /// No description provided for @chAxMailboxPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'A mailbox for the automations: only new mail is read, nothing is marked or moved.'**
+  String get chAxMailboxPurpose;
+
+  /// No description provided for @chAxMailboxesWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} mailboxes connected: {names}.'**
+  String chAxMailboxesWatching(String n, String names);
+
+  /// No description provided for @chAxSmtpHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending server (SMTP)'**
+  String get chAxSmtpHost;
+
+  /// No description provided for @chAxSmtpHostHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Only to get messages by email; empty: the usual one.'**
+  String get chAxSmtpHostHelp;
+
+  /// No description provided for @chAxSmtpPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending port'**
+  String get chAxSmtpPort;
+
+  /// No description provided for @chChatChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the settings'**
+  String get chChatChange;
+
+  /// No description provided for @chChatDiscordHow.
+  ///
+  /// In en, this message translates to:
+  /// **'In the Discord Developer Portal create an application, add a bot, turn on Message Content Intent, copy its token, and invite the bot to a server of yours (or write to it directly).'**
+  String get chChatDiscordHow;
+
+  /// No description provided for @chChatDiscordToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Bot token'**
+  String get chChatDiscordToken;
+
+  /// No description provided for @chChatImHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple has no iMessage service for programs: it takes a Mac that stays on, signed in to Messages, with the free BlueBubbles server. The Mac answers with its Apple ID: use one made for Rasgeth, not your own.'**
+  String get chChatImHow;
+
+  /// No description provided for @chChatImLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'Without the Private API answers cannot be edited and nobody shows as typing; approvals and questions are answered with numbers. While the Mac sleeps or is off, messages wait and arrive when it wakes.'**
+  String get chChatImLimits;
+
+  /// No description provided for @chChatImPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'BlueBubbles server password'**
+  String get chChatImPassword;
+
+  /// No description provided for @chChatImPrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'BlueBubbles\' Private API is set up (edits and “typing...”)'**
+  String get chChatImPrivate;
+
+  /// No description provided for @chChatImStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'On the Mac make (or use) an Apple ID just for Rasgeth and sign in with it in Messages.'**
+  String get chChatImStep1;
+
+  /// No description provided for @chChatImStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Download BlueBubbles Server from bluebubbles.app, open it and choose a server password.'**
+  String get chChatImStep2;
+
+  /// No description provided for @chChatImStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'When it asks, allow Full Disk Access and Accessibility in System Settings, Privacy & Security: it needs them to read and send messages.'**
+  String get chChatImStep3;
+
+  /// No description provided for @chChatImStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'In BlueBubbles keep the Mac from sleeping and note its address: http://<the Mac\'s address>:1234 at home, or the address of its own tunnel from outside.'**
+  String get chChatImStep4;
+
+  /// No description provided for @chChatImStep5.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the address and the password here and press Connect. From your iPhone write to the Apple ID of step 1 and send the code.'**
+  String get chChatImStep5;
+
+  /// No description provided for @chChatImUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Address of the BlueBubbles server (http://...:1234)'**
+  String get chChatImUrl;
+
+  /// No description provided for @chChatLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked: {who}'**
+  String chChatLinked(String who);
+
+  /// No description provided for @chChatMatrixE2ee.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypted chats: direct chats in Element are encrypted and the bot cannot read them. To keep encryption, run Pantalaimon (Matrix\'s free encryption helper) next to Rasgeth and write its address instead of the server\'s.'**
+  String get chChatMatrixE2ee;
+
+  /// No description provided for @chChatMatrixHomeserver.
+  ///
+  /// In en, this message translates to:
+  /// **'Server address (for example https://matrix.org)'**
+  String get chChatMatrixHomeserver;
+
+  /// No description provided for @chChatMatrixHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth needs a Matrix account of its own, not yours: it is the one you will write to.'**
+  String get chChatMatrixHow;
+
+  /// No description provided for @chChatMatrixStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a new account for the bot, for example at app.element.io (or on your own server).'**
+  String get chChatMatrixStep1;
+
+  /// No description provided for @chChatMatrixStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in as the bot, open Settings, Help & About, Advanced, Access token, and copy it. Then close that tab without signing out: signing out cancels the token.'**
+  String get chChatMatrixStep2;
+
+  /// No description provided for @chChatMatrixStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the server address and paste the token here, then press Connect.'**
+  String get chChatMatrixStep3;
+
+  /// No description provided for @chChatMatrixStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'From your own account make a new room without encryption (switch off “Enable end-to-end encryption”), invite the bot (it joins by itself) and send the code that appears.'**
+  String get chChatMatrixStep4;
+
+  /// No description provided for @chChatMatrixToken.
+  ///
+  /// In en, this message translates to:
+  /// **'The bot account\'s access token'**
+  String get chChatMatrixToken;
+
+  /// No description provided for @chChatSendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Send this from the chat to link it:'**
+  String get chChatSendCode;
+
+  /// No description provided for @chChatSignalHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Signal needs signal-cli-rest-api running with a number of its own linked (a second SIM or a linked device); write its address and the number here.'**
+  String get chChatSignalHow;
+
+  /// No description provided for @chChatSignalNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'The bot\'s number (+39...)'**
+  String get chChatSignalNumber;
+
+  /// No description provided for @chChatSignalUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Address of signal-cli-rest-api'**
+  String get chChatSignalUrl;
+
+  /// No description provided for @chChatSlackApp.
+  ///
+  /// In en, this message translates to:
+  /// **'App-level token (xapp-..., connections:write)'**
+  String get chChatSlackApp;
+
+  /// No description provided for @chChatSlackBot.
+  ///
+  /// In en, this message translates to:
+  /// **'Bot token (xoxb-...)'**
+  String get chChatSlackBot;
+
+  /// No description provided for @chChatSlackHow.
+  ///
+  /// In en, this message translates to:
+  /// **'At api.slack.com/apps create an app, turn on Socket Mode (no public address needed), add the scopes chat:write, im:history, app_mentions:read, files:read, files:write, subscribe to message.im and app_mention, install it and copy the two tokens.'**
+  String get chChatSlackHow;
+
+  /// No description provided for @chChatSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Step by step'**
+  String get chChatSteps;
+
+  /// No description provided for @chChatTeamsAppId.
+  ///
+  /// In en, this message translates to:
+  /// **'Microsoft App ID'**
+  String get chChatTeamsAppId;
+
+  /// No description provided for @chChatTeamsDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the app for Teams'**
+  String get chChatTeamsDownload;
+
+  /// No description provided for @chChatTeamsEndpoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Messaging endpoint for Azure: {url}'**
+  String chChatTeamsEndpoint(String url);
+
+  /// No description provided for @chChatTeamsFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files from Rasgeth arrive as a card to accept: once accepted they are saved in your OneDrive. Voice messages cannot be sent to a bot in Teams.'**
+  String get chChatTeamsFiles;
+
+  /// No description provided for @chChatTeamsHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Teams talks to bots only through Microsoft Azure. You need a Microsoft 365 work or school account that may add custom apps (the free personal Teams does not allow bots), and Rasgeth reachable from outside (Settings, Remote access).'**
+  String get chChatTeamsHow;
+
+  /// No description provided for @chChatTeamsSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'Client secret (its Value)'**
+  String get chChatTeamsSecret;
+
+  /// No description provided for @chChatTeamsStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Open portal.azure.com (a free account is enough), choose Create a resource, search for Azure Bot and press Create.'**
+  String get chChatTeamsStep1;
+
+  /// No description provided for @chChatTeamsStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Give it a name, choose the Free plan (F0), Type of App: Single Tenant, Creation type: Create new Microsoft App ID. Press Create, then Go to resource.'**
+  String get chChatTeamsStep2;
+
+  /// No description provided for @chChatTeamsStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'In Configuration write this Messaging endpoint and Save: {url}. Copy the Microsoft App ID and the App Tenant ID.'**
+  String chChatTeamsStep3(String url);
+
+  /// No description provided for @chChatTeamsStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'Next to Microsoft App ID press Manage Password, then New client secret, Add, and copy its Value (it is shown only once).'**
+  String get chChatTeamsStep4;
+
+  /// No description provided for @chChatTeamsStep5.
+  ///
+  /// In en, this message translates to:
+  /// **'In Channels add Microsoft Teams, accept the terms and press Apply.'**
+  String get chChatTeamsStep5;
+
+  /// No description provided for @chChatTeamsStep6.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the three values here and press Connect. Then download the app for Teams with the button that appears.'**
+  String get chChatTeamsStep6;
+
+  /// No description provided for @chChatTeamsTenant.
+  ///
+  /// In en, this message translates to:
+  /// **'App Tenant ID'**
+  String get chChatTeamsTenant;
+
+  /// No description provided for @chChatTeamsUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'In Teams open Apps, Manage your apps, Upload an app, Upload a custom app, choose the file you downloaded and press Add. Then open the chat with Rasgeth and send the code.'**
+  String get chChatTeamsUpload;
+
+  /// No description provided for @chChatTurnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get chChatTurnOff;
+
+  /// No description provided for @chChatWaHow.
+  ///
+  /// In en, this message translates to:
+  /// **'In Meta for Developers create a WhatsApp app, copy the access token, the phone number ID and the app secret, and choose a verify token. WhatsApp sends messages to a public address: Rasgeth must be reachable from outside (Settings, Remote access).'**
+  String get chChatWaHow;
+
+  /// No description provided for @chChatWaPhoneId.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number ID'**
+  String get chChatWaPhoneId;
+
+  /// No description provided for @chChatWaSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'App secret'**
+  String get chChatWaSecret;
+
+  /// No description provided for @chChatWaToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Access token'**
+  String get chChatWaToken;
+
+  /// No description provided for @chChatWaVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify token (choose one)'**
+  String get chChatWaVerify;
+
+  /// No description provided for @chChatWaWebhook.
+  ///
+  /// In en, this message translates to:
+  /// **'Webhook for Meta: {url} with the verify token you chose; subscribe to messages.'**
+  String chChatWaWebhook(String url);
+
+  /// No description provided for @chChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Other chats'**
+  String get chChats;
+
+  /// No description provided for @chChatsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Talk to Demi-God from Discord, Slack, Signal, WhatsApp, Matrix, Teams or iMessage too. It is one conversation: begun on Telegram or here, it goes on wherever you write. Approvals and questions arrive with buttons (on Signal, Matrix and iMessage, with numbers to reply).'**
+  String get chChatsHint;
+
+  /// No description provided for @chEmailChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get chEmailChange;
+
+  /// No description provided for @chEmailConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect the mailbox'**
+  String get chEmailConnect;
+
+  /// No description provided for @chEmailConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading {user} on {host}.'**
+  String chEmailConnected(String host, String user);
+
+  /// No description provided for @chEmailHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Mail server (IMAP)'**
+  String get chEmailHost;
+
+  /// No description provided for @chEmailHostHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For example imap.gmail.com, outlook.office365.com, imap.mail.me.com.'**
+  String get chEmailHostHelp;
+
+  /// No description provided for @chEmailNeedFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect the mailbox first: until then this automation never starts.'**
+  String get chEmailNeedFirst;
+
+  /// No description provided for @chEmailNotConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected'**
+  String get chEmailNotConnected;
+
+  /// No description provided for @chEmailPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password for apps'**
+  String get chEmailPassword;
+
+  /// No description provided for @chEmailPasswordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Better an app password (Gmail, Outlook and iCloud make one in the account\'s security settings) than your own: you can revoke it at any time. It stays in a private file on your server.'**
+  String get chEmailPasswordHelp;
+
+  /// No description provided for @chEmailPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get chEmailPort;
+
+  /// No description provided for @chEmailPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'A routine can start when an email arrives (an invoice, an alert). Rasgeth looks only at new mail, every two minutes, and changes nothing in your mailbox; the email reaches the agent as information, never as instructions.'**
+  String get chEmailPurpose;
+
+  /// No description provided for @chEmailSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect the mailbox'**
+  String get chEmailSave;
+
+  /// No description provided for @chEmailSecure.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypted from the start (port 993)'**
+  String get chEmailSecure;
+
+  /// No description provided for @chEmailTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'Trying the mailbox…'**
+  String get chEmailTesting;
+
+  /// No description provided for @chEmailTileText.
+  ///
+  /// In en, this message translates to:
+  /// **'For the automations that start when an email arrives.'**
+  String get chEmailTileText;
+
+  /// No description provided for @chEmailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mailbox'**
+  String get chEmailTitle;
+
+  /// No description provided for @chEmailUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Address or username'**
+  String get chEmailUser;
+
+  /// No description provided for @chEmailWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Watching {user} on {host}.'**
+  String chEmailWatching(String host, String user);
+
+  /// No description provided for @chInput.
+  ///
+  /// In en, this message translates to:
+  /// **'in'**
+  String get chInput;
+
+  /// No description provided for @chRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get chRemove;
+
+  /// No description provided for @chSbChatAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked accounts'**
+  String get chSbChatAccounts;
+
+  /// No description provided for @chSbChatDiscordText.
+  ///
+  /// In en, this message translates to:
+  /// **'A bot in your Discord server, in private messages or in a channel.'**
+  String get chSbChatDiscordText;
+
+  /// No description provided for @chSbChatImText.
+  ///
+  /// In en, this message translates to:
+  /// **'Through a Mac that stays on, with BlueBubbles: the Mac\'s Messages app answers.'**
+  String get chSbChatImText;
+
+  /// No description provided for @chSbChatMatrixText.
+  ///
+  /// In en, this message translates to:
+  /// **'A bot account on any Matrix server (matrix.org or your own), in a chat or a room.'**
+  String get chSbChatMatrixText;
+
+  /// No description provided for @chSbChatNoAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'No account linked yet: send the code below from the chat.'**
+  String get chSbChatNoAccount;
+
+  /// No description provided for @chSbChatOnWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'On: send the code from the chat'**
+  String get chSbChatOnWaiting;
+
+  /// No description provided for @chSbChatSignalText.
+  ///
+  /// In en, this message translates to:
+  /// **'A Signal number of its own, through signal-cli-rest-api.'**
+  String get chSbChatSignalText;
+
+  /// No description provided for @chSbChatSlackText.
+  ///
+  /// In en, this message translates to:
+  /// **'An app in your Slack workspace, in Socket Mode: no public address needed.'**
+  String get chSbChatSlackText;
+
+  /// No description provided for @chSbChatTeamsText.
+  ///
+  /// In en, this message translates to:
+  /// **'A bot in Microsoft Teams, for work or school accounts, through a free Azure Bot.'**
+  String get chSbChatTeamsText;
+
+  /// No description provided for @chSbChatWaText.
+  ///
+  /// In en, this message translates to:
+  /// **'Your WhatsApp Business number, through Meta\'s Cloud API.'**
+  String get chSbChatWaText;
+
+  /// No description provided for @chSbChatWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the code… this window notices by itself.'**
+  String get chSbChatWaiting;
+
+  /// No description provided for @chSbChatsQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Talk to Demi-God from other apps too'**
+  String get chSbChatsQ;
+
+  /// No description provided for @chStTgAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked accounts'**
+  String get chStTgAccounts;
+
+  /// No description provided for @chTelegram.
+  ///
+  /// In en, this message translates to:
+  /// **'Telegram'**
+  String get chTelegram;
+
+  /// No description provided for @chTgChangeBot.
+  ///
+  /// In en, this message translates to:
+  /// **'Use another bot'**
+  String get chTgChangeBot;
+
+  /// No description provided for @chTgLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked to {who}'**
+  String chTgLinked(String who);
+
+  /// No description provided for @chTgLinkedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write to your bot whenever you like: Demi-God passes it on to God and brings back the answer.'**
+  String get chTgLinkedHint;
+
+  /// No description provided for @chTgOpenBot.
+  ///
+  /// In en, this message translates to:
+  /// **'Open @{bot}'**
+  String chTgOpenBot(String bot);
+
+  /// No description provided for @chTgQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan with your phone\'s camera'**
+  String get chTgQr;
+
+  /// No description provided for @chTgWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you to press Start… this page notices by itself.'**
+  String get chTgWaiting;
+
+  /// No description provided for @chUnlink.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink'**
+  String get chUnlink;
+
+  /// No description provided for @chWzConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get chWzConnect;
+
+  /// No description provided for @chWzDoneBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get chWzDoneBtn;
+
+  /// No description provided for @chWzLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'set by the environment'**
+  String get chWzLocked;
+
+  /// No description provided for @chWzTgAsks.
+  ///
+  /// In en, this message translates to:
+  /// **'Here I also tell you when a yes of yours is needed.'**
+  String get chWzTgAsks;
+
+  /// No description provided for @chWzTgBf1.
+  ///
+  /// In en, this message translates to:
+  /// **'Alright. What shall we call it?'**
+  String get chWzTgBf1;
+
+  /// No description provided for @chWzTgBf2.
+  ///
+  /// In en, this message translates to:
+  /// **'Now a username, ending in «bot».'**
+  String get chWzTgBf2;
+
+  /// No description provided for @chWzTgBf3.
+  ///
+  /// In en, this message translates to:
+  /// **'Done! Here is the token: 123456789:AAH…'**
+  String get chWzTgBf3;
+
+  /// No description provided for @chWzTgBfName.
+  ///
+  /// In en, this message translates to:
+  /// **'My Rasgeth'**
+  String get chWzTgBfName;
+
+  /// No description provided for @chWzTgCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check'**
+  String get chWzTgCheck;
+
+  /// No description provided for @chWzTgChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking…'**
+  String get chWzTgChecking;
+
+  /// No description provided for @chWzTgDone.
+  ///
+  /// In en, this message translates to:
+  /// **'done'**
+  String get chWzTgDone;
+
+  /// No description provided for @chWzTgExampleBot.
+  ///
+  /// In en, this message translates to:
+  /// **'my_rasgeth_bot'**
+  String get chWzTgExampleBot;
+
+  /// No description provided for @chWzTgHaveToken.
+  ///
+  /// In en, this message translates to:
+  /// **'I already have a token'**
+  String get chWzTgHaveToken;
+
+  /// No description provided for @chWzTgHello.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi, I\'m {demigod}. Write to me whenever you like: I pass everything to {god} and bring you the answer.'**
+  String chWzTgHello(String demigod, String god);
+
+  /// No description provided for @chWzTgLater.
+  ///
+  /// In en, this message translates to:
+  /// **'later'**
+  String get chWzTgLater;
+
+  /// No description provided for @chWzTgLead.
+  ///
+  /// In en, this message translates to:
+  /// **'With Telegram you write to {demigod} from wherever you are and get the notices there: approvals, questions, long jobs, budget. Three steps, a couple of minutes.'**
+  String chWzTgLead(String demigod);
+
+  /// No description provided for @chWzTgLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked to {who}. Write to {demigod} whenever you like.'**
+  String chWzTgLinked(String demigod, String who);
+
+  /// No description provided for @chWzTgLinkedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked. Write to your bot whenever you like.'**
+  String get chWzTgLinkedShort;
+
+  /// No description provided for @chWzTgMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get chWzTgMessage;
+
+  /// No description provided for @chWzTgNow.
+  ///
+  /// In en, this message translates to:
+  /// **'now'**
+  String get chWzTgNow;
+
+  /// No description provided for @chWzTgOfficial.
+  ///
+  /// In en, this message translates to:
+  /// **'Telegram\'s official bot'**
+  String get chWzTgOfficial;
+
+  /// No description provided for @chWzTgOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'bot · online'**
+  String get chWzTgOnline;
+
+  /// No description provided for @chWzTgOpenBf.
+  ///
+  /// In en, this message translates to:
+  /// **'Open BotFather'**
+  String get chWzTgOpenBf;
+
+  /// No description provided for @chWzTgPressStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Press Start to begin talking with this bot.'**
+  String get chWzTgPressStart;
+
+  /// No description provided for @chWzTgQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth on your phone'**
+  String get chWzTgQ;
+
+  /// No description provided for @chWzTgStart.
+  ///
+  /// In en, this message translates to:
+  /// **'START'**
+  String get chWzTgStart;
+
+  /// No description provided for @chWzTgStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Make the bot with @BotFather'**
+  String get chWzTgStep1;
+
+  /// No description provided for @chWzTgStep1Text.
+  ///
+  /// In en, this message translates to:
+  /// **'BotFather is Telegram\'s official bot that makes bots. Write /newbot to it, give it a name and a username that ends in «bot».'**
+  String get chWzTgStep1Text;
+
+  /// No description provided for @chWzTgStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the token'**
+  String get chWzTgStep2;
+
+  /// No description provided for @chWzTgStep2Text.
+  ///
+  /// In en, this message translates to:
+  /// **'BotFather answers with a long line, like 123456789:AAH… It is the bot\'s key: keep it to yourself.'**
+  String get chWzTgStep2Text;
+
+  /// No description provided for @chWzTgStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair the phone'**
+  String get chWzTgStep3;
+
+  /// No description provided for @chWzTgStep3Text.
+  ///
+  /// In en, this message translates to:
+  /// **'Open {bot} and press Start: Telegram sends it this code by itself, nothing to type.'**
+  String chWzTgStep3Text(String bot);
+
+  /// No description provided for @chWzTgToken.
+  ///
+  /// In en, this message translates to:
+  /// **'The bot\'s token'**
+  String get chWzTgToken;
+
+  /// No description provided for @chWzTgYouWillSee.
+  ///
+  /// In en, this message translates to:
+  /// **'What you will see in Telegram'**
+  String get chWzTgYouWillSee;
+
+  /// No description provided for @chWzTgYourBot.
+  ///
+  /// In en, this message translates to:
+  /// **'Your bot'**
+  String get chWzTgYourBot;
+
+  /// No description provided for @chWzTgYourBotName.
+  ///
+  /// In en, this message translates to:
+  /// **'your bot'**
+  String get chWzTgYourBotName;
+
+  /// No description provided for @chWzTrying.
+  ///
+  /// In en, this message translates to:
+  /// **'Trying the model…'**
+  String get chWzTrying;
+
+  /// No description provided for @moActive.
+  ///
+  /// In en, this message translates to:
+  /// **'active'**
+  String get moActive;
+
+  /// No description provided for @moAgentModelDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'The default model'**
+  String get moAgentModelDefault;
+
+  /// No description provided for @moAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get moAgents;
+
+  /// No description provided for @moAgentsModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent\'s model'**
+  String get moAgentsModel;
+
+  /// No description provided for @moBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get moBackup;
+
+  /// No description provided for @moBackupModelNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None: a task given up on stays so'**
+  String get moBackupModelNone;
+
+  /// No description provided for @moBackupModelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup model for tasks'**
+  String get moBackupModelTitle;
+
+  /// No description provided for @moBrainChatgpt.
+  ///
+  /// In en, this message translates to:
+  /// **'ChatGPT subscription'**
+  String get moBrainChatgpt;
+
+  /// No description provided for @moBrainChatgptDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'If OpenAI says sign-in with a device code is not allowed: on chatgpt.com open Settings, Security, and turn on device code authorization, then try again.'**
+  String get moBrainChatgptDevice;
+
+  /// No description provided for @moBrainChatgptHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth uses ChatGPT through OpenAI\'s official Codex program, signed in with your account. What you use counts against your plan\'s limits.'**
+  String get moBrainChatgptHint;
+
+  /// No description provided for @moBrainChatgptStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect ChatGPT'**
+  String get moBrainChatgptStart;
+
+  /// No description provided for @moBrainChatgptStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Open this page and sign in:'**
+  String get moBrainChatgptStep1;
+
+  /// No description provided for @moBrainChatgptStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Type this code there:'**
+  String get moBrainChatgptStep2;
+
+  /// No description provided for @moBrainClaude.
+  ///
+  /// In en, this message translates to:
+  /// **'Claude subscription'**
+  String get moBrainClaude;
+
+  /// No description provided for @moBrainClaudeCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the code here'**
+  String get moBrainClaudeCode;
+
+  /// No description provided for @moBrainClaudeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth uses Claude through Anthropic\'s official program, signed in with your account. What you use counts against your plan\'s limits, not money.'**
+  String get moBrainClaudeHint;
+
+  /// No description provided for @moBrainClaudeOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Anthropic\'s sign-in page'**
+  String get moBrainClaudeOpen;
+
+  /// No description provided for @moBrainClaudeStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with your Claude account. At the end Anthropic shows a code: copy it.'**
+  String get moBrainClaudeStep2;
+
+  /// No description provided for @moBrainConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get moBrainConnect;
+
+  /// No description provided for @moBrainDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'The model agents use'**
+  String get moBrainDefault;
+
+  /// No description provided for @moBrainDefaultHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents use this model unless you choose another one for them. It is tried with a real question before it is saved.'**
+  String get moBrainDefaultHint;
+
+  /// No description provided for @moBrainDefaultSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: agents will use it.'**
+  String get moBrainDefaultSaved;
+
+  /// No description provided for @moBrainDefaultTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try and use this one'**
+  String get moBrainDefaultTry;
+
+  /// No description provided for @moBrainDisconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get moBrainDisconnect;
+
+  /// No description provided for @moBrainEffortHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'How much it reasons before answering: low is quick and cheap, high is slower but more careful.'**
+  String get moBrainEffortHelp;
+
+  /// No description provided for @moBrainKeyExample.
+  ///
+  /// In en, this message translates to:
+  /// **'It looks like this: {example}'**
+  String moBrainKeyExample(String example);
+
+  /// No description provided for @moBrainKeyMake.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a key on {name}\'s page'**
+  String moBrainKeyMake(String name);
+
+  /// No description provided for @moBrainKeyTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try and save'**
+  String get moBrainKeyTry;
+
+  /// No description provided for @moBrainKeyWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'It works: {n} models available.'**
+  String moBrainKeyWorks(String n);
+
+  /// No description provided for @moBrainLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'A model on this computer'**
+  String get moBrainLocal;
+
+  /// No description provided for @moBrainNoModel.
+  ///
+  /// In en, this message translates to:
+  /// **'No model is connected yet, so agents cannot answer. Connect one above (a subscription, a key or a local model in the next step), or later in Settings, Models and subscriptions.'**
+  String get moBrainNoModel;
+
+  /// No description provided for @moBrainNotOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'Did nothing open?'**
+  String get moBrainNotOpened;
+
+  /// No description provided for @moBrainOpenHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Open it here'**
+  String get moBrainOpenHere;
+
+  /// No description provided for @moBrainServer.
+  ///
+  /// In en, this message translates to:
+  /// **'A server of yours'**
+  String get moBrainServer;
+
+  /// No description provided for @moBrainServerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If you already run models with Ollama, LM Studio or vLLM, give Rasgeth its address.'**
+  String get moBrainServerHint;
+
+  /// No description provided for @moBrainServerKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Its key'**
+  String get moBrainServerKey;
+
+  /// No description provided for @moBrainServerKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Only if the server asks for one; most do not.'**
+  String get moBrainServerKeyHelp;
+
+  /// No description provided for @moBrainServerUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Server address'**
+  String get moBrainServerUrl;
+
+  /// No description provided for @moBrainServerUrlHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'With /v1 at the end. Ollama: http://localhost:11434/v1, LM Studio: http://localhost:1234/v1.'**
+  String get moBrainServerUrlHelp;
+
+  /// No description provided for @moBrainWhyText.
+  ///
+  /// In en, this message translates to:
+  /// **'If you already pay for Claude or ChatGPT, start with that: nothing more to pay. With a key you pay for what you use, and you can pick among many providers. A model on this computer costs nothing and keeps everything private, but it is slower and less capable than the big online ones. You can combine them: for example a subscription for hard work and a local model for small jobs.'**
+  String get moBrainWhyText;
+
+  /// No description provided for @moCatalogBuiltin.
+  ///
+  /// In en, this message translates to:
+  /// **'the one built into Rasgeth'**
+  String get moCatalogBuiltin;
+
+  /// No description provided for @moCatalogChecked.
+  ///
+  /// In en, this message translates to:
+  /// **'checked {when}'**
+  String moCatalogChecked(String when);
+
+  /// No description provided for @moCatalogDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'downloaded and signed'**
+  String get moCatalogDownloaded;
+
+  /// No description provided for @moCatalogRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Update now'**
+  String get moCatalogRefresh;
+
+  /// No description provided for @moCatalogRefreshing.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating…'**
+  String get moCatalogRefreshing;
+
+  /// No description provided for @moCatalogRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Models catalog: updated on {date}'**
+  String moCatalogRow(String date);
+
+  /// No description provided for @moCatalogUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'GitHub did not answer: the catalog in use stays.'**
+  String get moCatalogUnreachable;
+
+  /// No description provided for @moCatalogUnsigned.
+  ///
+  /// In en, this message translates to:
+  /// **'The downloaded catalog has no valid signature: it was not used.'**
+  String get moCatalogUnsigned;
+
+  /// No description provided for @moCatalogVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'version {n}'**
+  String moCatalogVersion(String n);
+
+  /// No description provided for @moChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get moChat;
+
+  /// No description provided for @moDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'downloaded'**
+  String get moDownloaded;
+
+  /// No description provided for @moDownloads.
+  ///
+  /// In en, this message translates to:
+  /// **'downloads'**
+  String get moDownloads;
+
+  /// No description provided for @moEffort.
+  ///
+  /// In en, this message translates to:
+  /// **'Effort'**
+  String get moEffort;
+
+  /// No description provided for @moEffortHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Reasoning effort: higher thinks more, is slower and costs more. From the next message.'**
+  String get moEffortHint;
+
+  /// No description provided for @moEffort_high.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get moEffort_high;
+
+  /// No description provided for @moEffort_low.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get moEffort_low;
+
+  /// No description provided for @moEffort_max.
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get moEffort_max;
+
+  /// No description provided for @moEffort_medium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get moEffort_medium;
+
+  /// No description provided for @moError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get moError;
+
+  /// No description provided for @moFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'failed'**
+  String get moFailed;
+
+  /// No description provided for @moJob_step_model_download.
+  ///
+  /// In en, this message translates to:
+  /// **'The model'**
+  String get moJob_step_model_download;
+
+  /// No description provided for @moLmBeyondMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'bigger than RAM and card together: part of it is read from the SSD at each token, slower'**
+  String get moLmBeyondMemory;
+
+  /// No description provided for @moLmBigChunks.
+  ///
+  /// In en, this message translates to:
+  /// **'Big chunks'**
+  String get moLmBigChunks;
+
+  /// No description provided for @moLmBigChunksHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Reads long messages in passes of 8,192 or 16,384 tokens instead of 4,096, when the graphics card has room for them, and loads the model in RAM when it fits with a margin: the experts go through the card once a pass, so fewer passes read faster. The first start measures them on a long message (a few minutes more) and keeps the fastest. Only for mixture-of-experts models.'**
+  String get moLmBigChunksHelp;
+
+  /// No description provided for @moLmCardDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'downloading, {pct}%'**
+  String moLmCardDownloading(String pct);
+
+  /// No description provided for @moLmCardGet.
+  ///
+  /// In en, this message translates to:
+  /// **'to download, {size}'**
+  String moLmCardGet(String size);
+
+  /// No description provided for @moLmCardOff.
+  ///
+  /// In en, this message translates to:
+  /// **'chosen, turned off'**
+  String get moLmCardOff;
+
+  /// No description provided for @moLmCardPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'download paused'**
+  String get moLmCardPaused;
+
+  /// No description provided for @moLmCardReady.
+  ///
+  /// In en, this message translates to:
+  /// **'downloaded'**
+  String get moLmCardReady;
+
+  /// No description provided for @moLmCardTooBig.
+  ///
+  /// In en, this message translates to:
+  /// **'too big for this computer'**
+  String get moLmCardTooBig;
+
+  /// No description provided for @moLmContextTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'tokens of context'**
+  String get moLmContextTokens;
+
+  /// No description provided for @moLmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get moLmDelete;
+
+  /// No description provided for @moLmDeleteActiveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This model is in use: the engine stops and the file is deleted. Go on?'**
+  String get moLmDeleteActiveConfirm;
+
+  /// No description provided for @moLmDiscard.
+  ///
+  /// In en, this message translates to:
+  /// **'Throw away the download'**
+  String get moLmDiscard;
+
+  /// No description provided for @moLmDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download · {size}'**
+  String moLmDownload(String size);
+
+  /// No description provided for @moLmDownloadedBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'downloading'**
+  String get moLmDownloadedBusy;
+
+  /// No description provided for @moLmDownloadedConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}? It frees {size}.'**
+  String moLmDownloadedConfirm(String name, String size);
+
+  /// No description provided for @moLmDownloadedConfirmActive.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is the model in use: the engine stops and the file is deleted ({size}). Go on?'**
+  String moLmDownloadedConfirmActive(String name, String size);
+
+  /// No description provided for @moLmDownloadedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No model downloaded yet.'**
+  String get moLmDownloadedEmpty;
+
+  /// No description provided for @moLmDownloadedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Every model file in the folder ({size} in all), the biggest first. Deleting one frees its room at once; the suggested ones can be downloaded again.'**
+  String moLmDownloadedHelp(String size);
+
+  /// No description provided for @moLmDownloadedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} on the disk · {size}'**
+  String moLmDownloadedNote(String n, String size);
+
+  /// No description provided for @moLmDownloadedPartial.
+  ///
+  /// In en, this message translates to:
+  /// **'incomplete'**
+  String get moLmDownloadedPartial;
+
+  /// No description provided for @moLmDownloadedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded models'**
+  String get moLmDownloadedTitle;
+
+  /// No description provided for @moLmEngine.
+  ///
+  /// In en, this message translates to:
+  /// **'Engine'**
+  String get moLmEngine;
+
+  /// No description provided for @moLmEngineHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth picks the one that suits this computer. Change it only if starting fails.'**
+  String get moLmEngineHelp;
+
+  /// No description provided for @moLmEngine_cpu.
+  ///
+  /// In en, this message translates to:
+  /// **'Processor'**
+  String get moLmEngine_cpu;
+
+  /// No description provided for @moLmEngine_cuda.
+  ///
+  /// In en, this message translates to:
+  /// **'NVIDIA graphics card (CUDA)'**
+  String get moLmEngine_cuda;
+
+  /// No description provided for @moLmEngine_mac.
+  ///
+  /// In en, this message translates to:
+  /// **'The Mac\'s graphics chip (Metal), next to Rasgeth'**
+  String get moLmEngine_mac;
+
+  /// No description provided for @moLmEngine_vulkan.
+  ///
+  /// In en, this message translates to:
+  /// **'AMD, Intel or built-in graphics (Vulkan)'**
+  String get moLmEngine_vulkan;
+
+  /// No description provided for @moLmEngine_windows.
+  ///
+  /// In en, this message translates to:
+  /// **'Graphics card, with Windows\' own engine (Vulkan)'**
+  String get moLmEngine_windows;
+
+  /// No description provided for @moLmExperimental.
+  ///
+  /// In en, this message translates to:
+  /// **'experimental'**
+  String get moLmExperimental;
+
+  /// No description provided for @moLmFactCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Experts\' cache in the card'**
+  String get moLmFactCache;
+
+  /// No description provided for @moLmFactRam.
+  ///
+  /// In en, this message translates to:
+  /// **'Free RAM counted'**
+  String get moLmFactRam;
+
+  /// No description provided for @moLmFactSsd.
+  ///
+  /// In en, this message translates to:
+  /// **'From the SSD at each token'**
+  String get moLmFactSsd;
+
+  /// No description provided for @moLmFactSsdGb.
+  ///
+  /// In en, this message translates to:
+  /// **'about {gb} GB'**
+  String moLmFactSsdGb(String gb);
+
+  /// No description provided for @moLmFactSsdNone.
+  ///
+  /// In en, this message translates to:
+  /// **'nothing: it fits in RAM'**
+  String get moLmFactSsdNone;
+
+  /// No description provided for @moLmGbPerSec.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} GB/s'**
+  String moLmGbPerSec(String n);
+
+  /// No description provided for @moLmHwCpu.
+  ///
+  /// In en, this message translates to:
+  /// **'No graphics card to use: models run on the processor, slower; small ones, up to about {max} GB.'**
+  String moLmHwCpu(String max);
+
+  /// No description provided for @moLmHwGpu.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} with {vram} GB of video memory: models up to about {max} GB run on it, fast.'**
+  String moLmHwGpu(String max, String name, String vram);
+
+  /// No description provided for @moLmHwGpuUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'An NVIDIA graphics card is available, but its memory is unknown: start with a small model.'**
+  String get moLmHwGpuUnknown;
+
+  /// No description provided for @moLmHwIgpu.
+  ///
+  /// In en, this message translates to:
+  /// **'A graphics chip built into the processor: a little faster than the processor alone; models up to about {max} GB.'**
+  String moLmHwIgpu(String max);
+
+  /// No description provided for @moLmHwUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'The engine cannot reach the graphics card here: models run on the processor, slower; up to about {max} GB.'**
+  String moLmHwUnreachable(String max);
+
+  /// No description provided for @moLmInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'in use'**
+  String get moLmInUse;
+
+  /// No description provided for @moLmLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking up the models…'**
+  String get moLmLoading;
+
+  /// No description provided for @moLmMoePrefetch.
+  ///
+  /// In en, this message translates to:
+  /// **'Next layer ahead'**
+  String get moLmMoePrefetch;
+
+  /// No description provided for @moLmOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get moLmOff;
+
+  /// No description provided for @moLmOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get moLmOn;
+
+  /// No description provided for @moLmOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other models in the folder'**
+  String get moLmOther;
+
+  /// No description provided for @moLmOtherHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A model file in the folder, not among the suggested ones ({size}).'**
+  String moLmOtherHelp(String size);
+
+  /// No description provided for @moLmPartRamSub.
+  ///
+  /// In en, this message translates to:
+  /// **'{free} free now'**
+  String moLmPartRamSub(String free);
+
+  /// No description provided for @moLmPartSsd.
+  ///
+  /// In en, this message translates to:
+  /// **'Models\' SSD'**
+  String get moLmPartSsd;
+
+  /// No description provided for @moLmPartSsdSub.
+  ///
+  /// In en, this message translates to:
+  /// **'{free} free'**
+  String moLmPartSsdSub(String free);
+
+  /// No description provided for @moLmPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get moLmPause;
+
+  /// No description provided for @moLmPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused: {done} of {total}'**
+  String moLmPaused(String done, String total);
+
+  /// No description provided for @moLmPausedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused at {done}'**
+  String moLmPausedAt(String done);
+
+  /// No description provided for @moLmPreloadSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Model read from the disk'**
+  String get moLmPreloadSpeed;
+
+  /// No description provided for @moLmRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'recommended'**
+  String get moLmRecommended;
+
+  /// No description provided for @moLmResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Go on'**
+  String get moLmResume;
+
+  /// No description provided for @moLmRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Room'**
+  String get moLmRoom;
+
+  /// No description provided for @moLmScoresHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The bars compare these models with each other (five is the best of them). Speed is an estimate for this computer.'**
+  String get moLmScoresHint;
+
+  /// No description provided for @moLmSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Other models from Hugging Face'**
+  String get moLmSearch;
+
+  /// No description provided for @moLmSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, choose a repository and a file. Files that are not models are hidden.'**
+  String get moLmSearchHint;
+
+  /// No description provided for @moLmSearchPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. gemma, qwen, mistral'**
+  String get moLmSearchPlaceholder;
+
+  /// No description provided for @moLmShowActivation.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the activation'**
+  String get moLmShowActivation;
+
+  /// No description provided for @moLmSpecDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'With a small model of the family'**
+  String get moLmSpecDraft;
+
+  /// No description provided for @moLmSpecDraftGet.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the small model · {size}'**
+  String moLmSpecDraftGet(String size);
+
+  /// No description provided for @moLmSpecDraftHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} ({size}) proposes up to 8 tokens; it stays all in the card with its own context, so the big model gets a little less room there. It only works with a model of the same family (same vocabulary): Rasgeth picks it.'**
+  String moLmSpecDraftHelp(String name, String size);
+
+  /// No description provided for @moLmSpecDraftReady.
+  ///
+  /// In en, this message translates to:
+  /// **'small model ready'**
+  String get moLmSpecDraftReady;
+
+  /// No description provided for @moLmSpecHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Writes faster without changing the answers: something cheap proposes the next tokens and the model checks them all in one pass, reading its weights once for several tokens. It helps most where the text is predictable (code being rewritten, long dense models outside the card); on new prose it gains little. Measured on an RTX 4080 Super: Llama 3.3 70B (mostly in RAM) from 1.1 to 2.6 tokens/s on new prose and to 7.4 on code rewritten; Qwen3 14B (in the card) from 59 to 155 on code, about even on prose. The speed is shown under each answer.'**
+  String get moLmSpecHelp;
+
+  /// No description provided for @moLmSpecNgram.
+  ///
+  /// In en, this message translates to:
+  /// **'From the text already written'**
+  String get moLmSpecNgram;
+
+  /// No description provided for @moLmSpecNgramHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The proposals come from pieces of the conversation that repeat (code being edited, documents quoted back): no second model, no memory used. It helps only there: on new prose nothing, and on a large dense model little even on code (measured: Llama 3.3 70B 1.1 -> 1.3). Prefer the small model when the family has one.'**
+  String get moLmSpecNgramHelp;
+
+  /// No description provided for @moLmSpecNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get moLmSpecNone;
+
+  /// No description provided for @moLmSpecTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Speculative decoding (for experts)'**
+  String get moLmSpecTitle;
+
+  /// No description provided for @moLmSpeedEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'tokens/s, estimate'**
+  String get moLmSpeedEstimate;
+
+  /// No description provided for @moLmSpeedMeasured.
+  ///
+  /// In en, this message translates to:
+  /// **'tokens/s, measured'**
+  String get moLmSpeedMeasured;
+
+  /// No description provided for @moLmSpeedTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure the gain'**
+  String get moLmSpeedTest;
+
+  /// No description provided for @moLmSpeedTestCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code rewritten (tokens/s)'**
+  String get moLmSpeedTestCode;
+
+  /// No description provided for @moLmSpeedTestCost.
+  ///
+  /// In en, this message translates to:
+  /// **'It takes a good while and a lot of compute: the model is loaded several times, minutes for a large one. Meanwhile the local model does not answer the agents.'**
+  String get moLmSpeedTestCost;
+
+  /// No description provided for @moLmSpeedTestDone.
+  ///
+  /// In en, this message translates to:
+  /// **'The engine is back as it was. Choose the way above and start the model again to use it.'**
+  String get moLmSpeedTestDone;
+
+  /// No description provided for @moLmSpeedTestIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth starts this model once for each way of writing (alone, with the small model, with the n-grams), has it write a short new text and rewrite a piece of code, and shows the tokens a second of each. In the end the engine goes back to how it was.'**
+  String get moLmSpeedTestIntro;
+
+  /// No description provided for @moLmSpeedTestMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Way'**
+  String get moLmSpeedTestMode;
+
+  /// No description provided for @moLmSpeedTestProse.
+  ///
+  /// In en, this message translates to:
+  /// **'New text (tokens/s)'**
+  String get moLmSpeedTestProse;
+
+  /// No description provided for @moLmSpeedTestStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the test'**
+  String get moLmSpeedTestStart;
+
+  /// No description provided for @moLmSpeedTestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How much faster here'**
+  String get moLmSpeedTestTitle;
+
+  /// No description provided for @moLmStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get moLmStart;
+
+  /// No description provided for @moLmStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting…'**
+  String get moLmStarting;
+
+  /// No description provided for @moLmStream.
+  ///
+  /// In en, this message translates to:
+  /// **'SSD stream'**
+  String get moLmStream;
+
+  /// No description provided for @moLmStreamCache.
+  ///
+  /// In en, this message translates to:
+  /// **', {gb} of the card for the experts'**
+  String moLmStreamCache(String gb);
+
+  /// No description provided for @moLmStreamFromCard.
+  ///
+  /// In en, this message translates to:
+  /// **'the model fits in the card'**
+  String get moLmStreamFromCard;
+
+  /// No description provided for @moLmStreamFromRam.
+  ///
+  /// In en, this message translates to:
+  /// **'the model fits in RAM: the SSD is only read at the start'**
+  String get moLmStreamFromRam;
+
+  /// No description provided for @moLmStreamFromSsd.
+  ///
+  /// In en, this message translates to:
+  /// **'about {gb} GB read from the SSD at each token'**
+  String moLmStreamFromSsd(String gb);
+
+  /// No description provided for @moLmStreamHdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available: {disk} is a spinning disk, too slow to read a model from at each token.'**
+  String moLmStreamHdd(String disk);
+
+  /// No description provided for @moLmStreamMaybeSsd.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows does not say whether {disk} is an SSD: use it only if it is.'**
+  String moLmStreamMaybeSsd(String disk);
+
+  /// No description provided for @moLmStreamNoRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available: {disk} has only {free} free; it needs at least 20 GB.'**
+  String moLmStreamNoRoom(String disk, String free);
+
+  /// No description provided for @moLmStreamPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'In use: context up to {ctx} tokens{cache}, {source} (counting {ram} of free RAM).'**
+  String moLmStreamPlan(String cache, String ctx, String ram, String source);
+
+  /// No description provided for @moLmStreamThisDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'the models\' disk'**
+  String get moLmStreamThisDisk;
+
+  /// No description provided for @moLmStreamUnknownDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth does not know yet which disk holds the models (it learns at the next start of Rasgeth): use it only if it is an SSD.'**
+  String get moLmStreamUnknownDisk;
+
+  /// No description provided for @moLmSysmemClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get moLmSysmemClose;
+
+  /// No description provided for @moLmSysmemStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the NVIDIA Control Panel (right click on the desktop).'**
+  String get moLmSysmemStep1;
+
+  /// No description provided for @moLmSysmemStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage 3D settings, then Global Settings (or Program Settings with llama-server.exe, for the engine only).'**
+  String get moLmSysmemStep2;
+
+  /// No description provided for @moLmSysmemStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'CUDA - Sysmem Fallback Policy: choose «Prefer No Sysmem Fallback» and Apply.'**
+  String get moLmSysmemStep3;
+
+  /// No description provided for @moLmSysmemStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the model again: the engine reads the setting when it starts.'**
+  String get moLmSysmemStep4;
+
+  /// No description provided for @moLmSysmemText.
+  ///
+  /// In en, this message translates to:
+  /// **'When the card\'s memory runs out, NVIDIA\'s driver on Windows uses the computer\'s RAM instead of failing: reading messages becomes 2 to 3.5 times slower. Rasgeth cannot read this setting, so check it once:'**
+  String get moLmSysmemText;
+
+  /// No description provided for @moLmSysmemTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'NVIDIA card: turn off «CUDA Sysmem Fallback»'**
+  String get moLmSysmemTitle;
+
+  /// No description provided for @moLmThisPc.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer'**
+  String get moLmThisPc;
+
+  /// No description provided for @moLmTokensPerSec.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} tokens/s'**
+  String moLmTokensPerSec(String n);
+
+  /// No description provided for @moLmTokensUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'tokens/s'**
+  String get moLmTokensUnit;
+
+  /// No description provided for @moLmTooBig.
+  ///
+  /// In en, this message translates to:
+  /// **'It needs at least {need}: this computer has room for {max}.'**
+  String moLmTooBig(String max, String need);
+
+  /// No description provided for @moLmTuneBatch.
+  ///
+  /// In en, this message translates to:
+  /// **'passes of {n} tokens'**
+  String moLmTuneBatch(String n);
+
+  /// No description provided for @moLmTuneCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Card for the experts'**
+  String get moLmTuneCache;
+
+  /// No description provided for @moLmTuneChosen.
+  ///
+  /// In en, this message translates to:
+  /// **'kept'**
+  String get moLmTuneChosen;
+
+  /// No description provided for @moLmTuneCtx.
+  ///
+  /// In en, this message translates to:
+  /// **'Context'**
+  String get moLmTuneCtx;
+
+  /// No description provided for @moLmTuneFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'did not start'**
+  String get moLmTuneFailed;
+
+  /// No description provided for @moLmTuneHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Each row is a real try: the model reads a context of about 2,000 tokens and writes 64. A typical turn is an agent reading 1,500 tokens of tool results and writing 300: the fastest one is kept for this model, and you can pick another.'**
+  String get moLmTuneHelp;
+
+  /// No description provided for @moLmTuneLongRead.
+  ///
+  /// In en, this message translates to:
+  /// **'a message of {n} tokens'**
+  String moLmTuneLongRead(String n);
+
+  /// No description provided for @moLmTuneNoCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'experts computed on the processor when reading'**
+  String get moLmTuneNoCopy;
+
+  /// No description provided for @moLmTuneRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading (tok/s)'**
+  String get moLmTuneRead;
+
+  /// No description provided for @moLmTuneRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'measuring…'**
+  String get moLmTuneRunning;
+
+  /// No description provided for @moLmTuneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuning on this computer'**
+  String get moLmTuneTitle;
+
+  /// No description provided for @moLmTuneTurn.
+  ///
+  /// In en, this message translates to:
+  /// **'Typical turn (s)'**
+  String get moLmTuneTurn;
+
+  /// No description provided for @moLmTuneUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use'**
+  String get moLmTuneUse;
+
+  /// No description provided for @moLmTuneWrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Writing (tok/s)'**
+  String get moLmTuneWrite;
+
+  /// No description provided for @moLmUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Hugging Face does not answer: try again later.'**
+  String get moLmUnavailable;
+
+  /// No description provided for @moLmUseForAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Use it for the agents'**
+  String get moLmUseForAgents;
+
+  /// No description provided for @moLmUsedForAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents will use this model.'**
+  String get moLmUsedForAgents;
+
+  /// No description provided for @moLmVersionSuggested.
+  ///
+  /// In en, this message translates to:
+  /// **'suggested'**
+  String get moLmVersionSuggested;
+
+  /// No description provided for @moLmVersions.
+  ///
+  /// In en, this message translates to:
+  /// **'Version of the file'**
+  String get moLmVersions;
+
+  /// No description provided for @moLmWarmHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The model reads its first context and writes a few words. The first time on a new graphics card this takes minutes: the card prepares its programs once, and then it is fast.'**
+  String get moLmWarmHelp;
+
+  /// No description provided for @moLmWarmSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Context read (as a first message)'**
+  String get moLmWarmSpeed;
+
+  /// No description provided for @moLmWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the model goes'**
+  String get moLmWhere;
+
+  /// No description provided for @moLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get moLoading;
+
+  /// No description provided for @moModelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The model of this conversation (agents\' models: Settings, Agents)'**
+  String get moModelHint;
+
+  /// No description provided for @moModelNew.
+  ///
+  /// In en, this message translates to:
+  /// **'new'**
+  String get moModelNew;
+
+  /// No description provided for @moModelPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a model'**
+  String get moModelPick;
+
+  /// No description provided for @moModelSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search a model'**
+  String get moModelSearch;
+
+  /// No description provided for @moModelUnconfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'data to be confirmed'**
+  String get moModelUnconfirmed;
+
+  /// No description provided for @moModelWay.
+  ///
+  /// In en, this message translates to:
+  /// **'How it goes'**
+  String get moModelWay;
+
+  /// No description provided for @moMpChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get moMpChange;
+
+  /// No description provided for @moMpLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick one or more ways: combine them as you like. Each square opens its window; the lit ones are connected.'**
+  String get moMpLead;
+
+  /// No description provided for @moMpLocalLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Free, and nothing leaves here: the computer, where the models are, the models to download and the ones already on the disk.'**
+  String get moMpLocalLead;
+
+  /// No description provided for @moMpNoDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'No model chosen'**
+  String get moMpNoDefault;
+
+  /// No description provided for @moMpNoDefaultText.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect a way above, then choose the one agents use.'**
+  String get moMpNoDefaultText;
+
+  /// No description provided for @moMpSearchLead.
+  ///
+  /// In en, this message translates to:
+  /// **'How agents look things up on the internet. One provider at a time: the lit one is in use.'**
+  String get moMpSearchLead;
+
+  /// No description provided for @moMpSearchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Web search'**
+  String get moMpSearchTitle;
+
+  /// No description provided for @moSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get moSearch;
+
+  /// No description provided for @moSearchInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'in use'**
+  String get moSearchInUse;
+
+  /// No description provided for @moSubsDeviceWait.
+  ///
+  /// In en, this message translates to:
+  /// **'This page notices by itself when you are done.'**
+  String get moSubsDeviceWait;
+
+  /// No description provided for @moSubsLoggedAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in: {who} {plan}'**
+  String moSubsLoggedAs(String plan, String who);
+
+  /// No description provided for @moSubsProgramDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is downloaded when you switch this on (once, a few hundred MB, with its bar in the corner).'**
+  String moSubsProgramDownload(String name);
+
+  /// No description provided for @moSubsProgramSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is already installed on this computer: Rasgeth uses it.'**
+  String moSubsProgramSystem(String name);
+
+  /// No description provided for @moSubsSharedLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is already signed in on this computer: Rasgeth uses that sign-in as it is, no need to sign in again.'**
+  String moSubsSharedLogin(String name);
+
+  /// No description provided for @moSubsUseShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the sign-in already here'**
+  String get moSubsUseShared;
+
+  /// No description provided for @moSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Models and subscriptions'**
+  String get moSubscriptions;
+
+  /// No description provided for @moTermsOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\'s terms'**
+  String moTermsOf(String name);
+
+  /// No description provided for @moUiAboutHours.
+  ///
+  /// In en, this message translates to:
+  /// **'about {h} h {min} min left'**
+  String moUiAboutHours(String h, String min);
+
+  /// No description provided for @moUiAboutMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'about {min} min left'**
+  String moUiAboutMinutes(String min);
+
+  /// No description provided for @moUiDropNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches.'**
+  String get moUiDropNone;
+
+  /// No description provided for @moUiLessThanMinute.
+  ///
+  /// In en, this message translates to:
+  /// **'less than a minute left'**
+  String get moUiLessThanMinute;
+
+  /// No description provided for @moUiNotNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'not needed'**
+  String get moUiNotNeeded;
+
+  /// No description provided for @moUiOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total}'**
+  String moUiOf(String done, String total);
+
+  /// No description provided for @moViaLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'local'**
+  String get moViaLocal;
+
+  /// No description provided for @moViaSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'subscription'**
+  String get moViaSubscription;
+
+  /// No description provided for @moWzAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get moWzAgents;
+
+  /// No description provided for @moWzAgentsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'they do the work'**
+  String get moWzAgentsSub;
+
+  /// No description provided for @moWzAgentsText.
+  ///
+  /// In en, this message translates to:
+  /// **'They get their tasks from the orchestrators: they write code, test, search.'**
+  String get moWzAgentsText;
+
+  /// No description provided for @moWzAlreadySet.
+  ///
+  /// In en, this message translates to:
+  /// **'already set'**
+  String get moWzAlreadySet;
+
+  /// No description provided for @moWzAssign.
+  ///
+  /// In en, this message translates to:
+  /// **'Who uses which model'**
+  String get moWzAssign;
+
+  /// No description provided for @moWzAssignChat.
+  ///
+  /// In en, this message translates to:
+  /// **'The everyday chat, with web search: questions, texts, ideas.'**
+  String get moWzAssignChat;
+
+  /// No description provided for @moWzAssignConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect a model'**
+  String get moWzAssignConnect;
+
+  /// No description provided for @moWzAssignDemigod2.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers you on Telegram and in the chats, and passes the work on: a fast model is enough.'**
+  String get moWzAssignDemigod2;
+
+  /// No description provided for @moWzAssignEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not connected any model yet, so there is nothing to choose here. Connect one in «How should Rasgeth think?» or start a local model.'**
+  String get moWzAssignEmpty;
+
+  /// No description provided for @moWzAssignGod.
+  ///
+  /// In en, this message translates to:
+  /// **'The one who runs everything: plans, projects, other agents. The strongest model pays off here.'**
+  String get moWzAssignGod;
+
+  /// No description provided for @moWzAssignLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Each one works with its own model: the strongest for who decides, a fast one for who answers. Touch a model to change it.'**
+  String get moWzAssignLead;
+
+  /// No description provided for @moWzAssignLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a local model'**
+  String get moWzAssignLocal;
+
+  /// No description provided for @moWzAssignOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents you create later'**
+  String get moWzAssignOthers;
+
+  /// No description provided for @moWzAssignOthersHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'And the board\'s summaries, unless you choose one for them. It is tried with a real question before it is saved.'**
+  String get moWzAssignOthersHelp;
+
+  /// No description provided for @moWzAssistants.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal assistants'**
+  String get moWzAssistants;
+
+  /// No description provided for @moWzAssistantsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'they work for you'**
+  String get moWzAssistantsSub;
+
+  /// No description provided for @moWzBackupText.
+  ///
+  /// In en, this message translates to:
+  /// **'If an agent gives up on a task (an error, the budget, no check passed), this model tries it once more, knowing what the first one did. Best from another provider.'**
+  String get moWzBackupText;
+
+  /// No description provided for @moWzBackupWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tries the tasks given up on once more, in a new conversation.'**
+  String get moWzBackupWindow;
+
+  /// No description provided for @moWzBrain.
+  ///
+  /// In en, this message translates to:
+  /// **'How should Rasgeth think?'**
+  String get moWzBrain;
+
+  /// No description provided for @moWzBrainChatgpt.
+  ///
+  /// In en, this message translates to:
+  /// **'Your ChatGPT Plus or Pro plan. You type a short code on OpenAI\'s page.'**
+  String get moWzBrainChatgpt;
+
+  /// No description provided for @moWzBrainClaude.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Claude Pro or Max plan. You sign in on Anthropic\'s page.'**
+  String get moWzBrainClaude;
+
+  /// No description provided for @moWzBrainKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Anthropic, OpenAI, Gemini, Mistral, DeepSeek, Grok and more. You pay for what you use.'**
+  String get moWzBrainKeys;
+
+  /// No description provided for @moWzBrainKeysTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'An API key'**
+  String get moWzBrainKeysTitle;
+
+  /// No description provided for @moWzBrainLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Free and private: nothing leaves this computer. You choose it in the next step.'**
+  String get moWzBrainLocal;
+
+  /// No description provided for @moWzBrainQ.
+  ///
+  /// In en, this message translates to:
+  /// **'How should Rasgeth think?'**
+  String get moWzBrainQ;
+
+  /// No description provided for @moWzBrainServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Ollama, LM Studio, vLLM or another server that speaks OpenAI\'s language.'**
+  String get moWzBrainServer;
+
+  /// No description provided for @moWzChosen.
+  ///
+  /// In en, this message translates to:
+  /// **'chosen'**
+  String get moWzChosen;
+
+  /// No description provided for @moWzDefaultModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Default model'**
+  String get moWzDefaultModel;
+
+  /// No description provided for @moWzDemiRole.
+  ///
+  /// In en, this message translates to:
+  /// **'The spokesperson'**
+  String get moWzDemiRole;
+
+  /// No description provided for @moWzDense.
+  ///
+  /// In en, this message translates to:
+  /// **'{b} billion · dense'**
+  String moWzDense(String b);
+
+  /// No description provided for @moWzDiskHdd.
+  ///
+  /// In en, this message translates to:
+  /// **'A spinning disk: too slow for the models.'**
+  String get moWzDiskHdd;
+
+  /// No description provided for @moWzDisksLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A model takes from 3 to 80 GB. A fast SSD is best: SSD stream reads from there.'**
+  String get moWzDisksLead;
+
+  /// No description provided for @moWzDisksNoMove.
+  ///
+  /// In en, this message translates to:
+  /// **'The models can be moved to another disk only in Rasgeth\'s Windows installation.'**
+  String get moWzDisksNoMove;
+
+  /// No description provided for @moWzDisksOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Here the models stay in Rasgeth\'s data folder. In Rasgeth\'s Windows installation you can move them to another SSD.'**
+  String get moWzDisksOne;
+
+  /// No description provided for @moWzDisksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the models stay'**
+  String get moWzDisksTitle;
+
+  /// No description provided for @moWzDoneBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get moWzDoneBtn;
+
+  /// No description provided for @moWzEffortHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A little is fast and cheap, deeply is slower but more careful. It stays fixed for each conversation.'**
+  String get moWzEffortHelp;
+
+  /// No description provided for @moWzEffortTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How much it thinks before answering'**
+  String get moWzEffortTitle;
+
+  /// No description provided for @moWzEffort_high.
+  ///
+  /// In en, this message translates to:
+  /// **'Deeply'**
+  String get moWzEffort_high;
+
+  /// No description provided for @moWzEffort_low.
+  ///
+  /// In en, this message translates to:
+  /// **'A little'**
+  String get moWzEffort_low;
+
+  /// No description provided for @moWzEffort_max.
+  ///
+  /// In en, this message translates to:
+  /// **'The most'**
+  String get moWzEffort_max;
+
+  /// No description provided for @moWzEffort_medium.
+  ///
+  /// In en, this message translates to:
+  /// **'Just right'**
+  String get moWzEffort_medium;
+
+  /// No description provided for @moWzFitNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None runs fast enough here: the ones below work, slowly.'**
+  String get moWzFitNone;
+
+  /// No description provided for @moWzFitTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Suited'**
+  String get moWzFitTab;
+
+  /// No description provided for @moWzFitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Suited to this computer'**
+  String get moWzFitTitle;
+
+  /// No description provided for @moWzFitsUpTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Models up to about {max} run fast here; bigger ones use the RAM too.'**
+  String moWzFitsUpTo(String max);
+
+  /// No description provided for @moWzFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get moWzFolder;
+
+  /// No description provided for @moWzFolderHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A folder of this disk; it is created if it is not there.'**
+  String get moWzFolderHelp;
+
+  /// No description provided for @moWzFolderLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Where Rasgeth keeps the models\' files on this disk. The ones already downloaded are copied there.'**
+  String get moWzFolderLead;
+
+  /// No description provided for @moWzFolderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The models\' folder on {disk}'**
+  String moWzFolderTitle(String disk);
+
+  /// No description provided for @moWzFree.
+  ///
+  /// In en, this message translates to:
+  /// **'free'**
+  String get moWzFree;
+
+  /// No description provided for @moWzFreeOf.
+  ///
+  /// In en, this message translates to:
+  /// **'free of {total} GB'**
+  String moWzFreeOf(String total);
+
+  /// No description provided for @moWzGodRole.
+  ///
+  /// In en, this message translates to:
+  /// **'The boss'**
+  String get moWzGodRole;
+
+  /// No description provided for @moWzHereNow.
+  ///
+  /// In en, this message translates to:
+  /// **'here now'**
+  String get moWzHereNow;
+
+  /// No description provided for @moWzHowItWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'How it works'**
+  String get moWzHowItWorks;
+
+  /// No description provided for @moWzKeyOf.
+  ///
+  /// In en, this message translates to:
+  /// **'The key of {name}'**
+  String moWzKeyOf(String name);
+
+  /// No description provided for @moWzKeysLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A key is like a password that lets Rasgeth use the provider\'s models on your account. You pay the provider for what you use. Add as many as you like: each one is tried at once.'**
+  String get moWzKeysLead;
+
+  /// No description provided for @moWzLegend.
+  ///
+  /// In en, this message translates to:
+  /// **'Green outline: it runs on this computer between the graphics card and the RAM, at least {n} tokens a second. The others work, but slowly.'**
+  String moWzLegend(String n);
+
+  /// No description provided for @moWzLikeAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'The same as {who}'**
+  String moWzLikeAbove(String who);
+
+  /// No description provided for @moWzLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Local model'**
+  String get moWzLocal;
+
+  /// No description provided for @moWzLocalQ.
+  ///
+  /// In en, this message translates to:
+  /// **'A model on this computer'**
+  String get moWzLocalQ;
+
+  /// No description provided for @moWzLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'set by the environment'**
+  String get moWzLocked;
+
+  /// No description provided for @moWzMoe.
+  ///
+  /// In en, this message translates to:
+  /// **'{b} billion · mixture of experts'**
+  String moWzMoe(String b);
+
+  /// No description provided for @moWzMoreModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Other files and searches'**
+  String get moWzMoreModels;
+
+  /// No description provided for @moWzMoveHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Move them here'**
+  String get moWzMoveHere;
+
+  /// No description provided for @moWzMoveLead.
+  ///
+  /// In en, this message translates to:
+  /// **'{kind}, {free} free. The models already downloaded are copied to {folder}; the model in use starts again afterwards.'**
+  String moWzMoveLead(String folder, String free, String kind);
+
+  /// No description provided for @moWzMoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Move the models to {disk}?'**
+  String moWzMoveTitle(String disk);
+
+  /// No description provided for @moWzNModels.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} models'**
+  String moWzNModels(String n);
+
+  /// No description provided for @moWzNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get moWzNone;
+
+  /// No description provided for @moWzOfRamLong.
+  ///
+  /// In en, this message translates to:
+  /// **'of RAM'**
+  String get moWzOfRamLong;
+
+  /// No description provided for @moWzOrchestrators.
+  ///
+  /// In en, this message translates to:
+  /// **'Orchestrators'**
+  String get moWzOrchestrators;
+
+  /// No description provided for @moWzOrchestratorsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'the heads of the projects'**
+  String get moWzOrchestratorsSub;
+
+  /// No description provided for @moWzOrchestratorsText.
+  ///
+  /// In en, this message translates to:
+  /// **'One per project: splits the work and hands it to the agents.'**
+  String get moWzOrchestratorsText;
+
+  /// No description provided for @moWzPickFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose folder'**
+  String get moWzPickFolder;
+
+  /// No description provided for @moWzPickModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the model'**
+  String get moWzPickModel;
+
+  /// No description provided for @moWzPickRepo.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a repository'**
+  String get moWzPickRepo;
+
+  /// No description provided for @moWzProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get moWzProvider;
+
+  /// No description provided for @moWzRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get moWzRemove;
+
+  /// No description provided for @moWzSlowTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Slow here'**
+  String get moWzSlowTab;
+
+  /// No description provided for @moWzSlowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'They work, but slowly'**
+  String get moWzSlowTitle;
+
+  /// No description provided for @moWzStateKey.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: connected'**
+  String moWzStateKey(String name);
+
+  /// No description provided for @moWzStateKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} keys connected'**
+  String moWzStateKeys(String n);
+
+  /// No description provided for @moWzStateLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'connected'**
+  String get moWzStateLinked;
+
+  /// No description provided for @moWzStateLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'{model}, in use'**
+  String moWzStateLocal(String model);
+
+  /// No description provided for @moWzStateLocalNext.
+  ///
+  /// In en, this message translates to:
+  /// **'you choose it in the next step'**
+  String get moWzStateLocalNext;
+
+  /// No description provided for @moWzStateServer.
+  ///
+  /// In en, this message translates to:
+  /// **'connected: {url}'**
+  String moWzStateServer(String url);
+
+  /// No description provided for @moWzStreamInfo1.
+  ///
+  /// In en, this message translates to:
+  /// **'For models bigger than the graphics card, and for a much longer context.'**
+  String get moWzStreamInfo1;
+
+  /// No description provided for @moWzStreamInfo2.
+  ///
+  /// In en, this message translates to:
+  /// **'The parts of the model used most stay in the card and in RAM; the rest is read from the SSD when needed. It works best with mixture-of-experts models; dense ones work, but slower.'**
+  String get moWzStreamInfo2;
+
+  /// No description provided for @moWzStreamInfo3.
+  ///
+  /// In en, this message translates to:
+  /// **'At the first start Rasgeth measures this computer and keeps the fastest tuning. It needs an SSD with at least 20 GB free: a spinning disk is too slow.'**
+  String get moWzStreamInfo3;
+
+  /// No description provided for @moWzStreamOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: only the models that fit in the card and the RAM run.'**
+  String get moWzStreamOff;
+
+  /// No description provided for @moWzStreamOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On: models bigger than the card and the RAM read the rest from the SSD ({disk}) when needed. Slower, but they run.'**
+  String moWzStreamOn(String disk);
+
+  /// No description provided for @moWzSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'I know that using a personal subscription (instead of an API key) in a third-party tool may not be allowed by the provider\'s terms.'**
+  String get moWzSubscription;
+
+  /// No description provided for @moWzTrying.
+  ///
+  /// In en, this message translates to:
+  /// **'Trying the model…'**
+  String get moWzTrying;
+
+  /// No description provided for @moWzUnderstood.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get moWzUnderstood;
+
+  /// No description provided for @moWzUseFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this folder'**
+  String get moWzUseFolder;
+
+  /// No description provided for @moWzVram.
+  ///
+  /// In en, this message translates to:
+  /// **'{gb} of video memory'**
+  String moWzVram(String gb);
+
+  /// No description provided for @moWzWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'Which one should I pick?'**
+  String get moWzWhich;
+
+  /// No description provided for @chUiAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get chUiAdvanced;
+
+  /// No description provided for @moJob_engine.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting {model}'**
+  String moJob_engine(String model);
+
+  /// No description provided for @moJob_engine_load.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading {model}'**
+  String moJob_engine_load(String model);
+
+  /// No description provided for @moJob_error_bad_file.
+  ///
+  /// In en, this message translates to:
+  /// **'This is not a model file of Hugging Face.'**
+  String get moJob_error_bad_file;
+
+  /// No description provided for @moJob_error_checksum.
+  ///
+  /// In en, this message translates to:
+  /// **'The download arrived damaged (its fingerprint does not match): try again.'**
+  String get moJob_error_checksum;
+
+  /// No description provided for @moJob_error_engine_stopped.
+  ///
+  /// In en, this message translates to:
+  /// **'The engine stopped by itself. The details below say why.'**
+  String get moJob_error_engine_stopped;
+
+  /// No description provided for @moJob_error_incomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'The download stopped before the end: press Go on to continue from where it stopped.'**
+  String get moJob_error_incomplete;
+
+  /// No description provided for @moJob_error_load_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The model did not load within 15 minutes. Try a smaller one.'**
+  String get moJob_error_load_timeout;
+
+  /// No description provided for @moJob_error_model_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'The model file is not in the folder any more. Download it again.'**
+  String get moJob_error_model_missing;
+
+  /// No description provided for @moJob_error_no_gpu.
+  ///
+  /// In en, this message translates to:
+  /// **'The engine cannot see the graphics card. Update the card\'s drivers and restart the computer, or choose the processor under Advanced.'**
+  String get moJob_error_no_gpu;
+
+  /// No description provided for @moJob_error_out_of_memory.
+  ///
+  /// In en, this message translates to:
+  /// **'There is not enough memory for this model. Choose a smaller model, or the same one in a lower quality.'**
+  String get moJob_error_out_of_memory;
+
+  /// No description provided for @moJob_model_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading {model}'**
+  String moJob_model_download(String model);
+
+  /// No description provided for @moJob_speed_test.
+  ///
+  /// In en, this message translates to:
+  /// **'Measuring {model}'**
+  String moJob_speed_test(String model);
+
+  /// No description provided for @moJob_step_draft.
+  ///
+  /// In en, this message translates to:
+  /// **'With the small model'**
+  String get moJob_step_draft;
+
+  /// No description provided for @moJob_step_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading the engine (only once)'**
+  String get moJob_step_image;
+
+  /// No description provided for @moJob_step_load.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading the model into memory'**
+  String get moJob_step_load;
+
+  /// No description provided for @moJob_step_ngram.
+  ///
+  /// In en, this message translates to:
+  /// **'With the n-grams'**
+  String get moJob_step_ngram;
+
+  /// No description provided for @moJob_step_none.
+  ///
+  /// In en, this message translates to:
+  /// **'The model alone'**
+  String get moJob_step_none;
+
+  /// No description provided for @moJob_step_preload.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the model once, so the first message does not wait for the disk'**
+  String get moJob_step_preload;
+
+  /// No description provided for @moJob_step_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting the engine'**
+  String get moJob_step_start;
+
+  /// No description provided for @moJob_step_try.
+  ///
+  /// In en, this message translates to:
+  /// **'Trying an answer'**
+  String get moJob_step_try;
+
+  /// No description provided for @moJob_step_tune.
+  ///
+  /// In en, this message translates to:
+  /// **'Measuring this computer to pick the fastest setting'**
+  String get moJob_step_tune;
+
+  /// No description provided for @moLmQuality_good.
+  ///
+  /// In en, this message translates to:
+  /// **'good quality'**
+  String get moLmQuality_good;
+
+  /// No description provided for @moLmQuality_high.
+  ///
+  /// In en, this message translates to:
+  /// **'high quality'**
+  String get moLmQuality_high;
+
+  /// No description provided for @moLmQuality_reduced.
+  ///
+  /// In en, this message translates to:
+  /// **'reduced quality, to fit'**
+  String get moLmQuality_reduced;
+
+  /// No description provided for @moLmScore_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Programming'**
+  String get moLmScore_code;
+
+  /// No description provided for @moLmScore_languages.
+  ///
+  /// In en, this message translates to:
+  /// **'Other languages'**
+  String get moLmScore_languages;
+
+  /// No description provided for @moLmScore_smart.
+  ///
+  /// In en, this message translates to:
+  /// **'Intelligence'**
+  String get moLmScore_smart;
+
+  /// No description provided for @moLmScore_speed.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed here'**
+  String get moLmScore_speed;
+
+  /// No description provided for @moLmScore_tools.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get moLmScore_tools;
+
+  /// No description provided for @moLmSpeedMode_draft.
+  ///
+  /// In en, this message translates to:
+  /// **'With the small model'**
+  String get moLmSpeedMode_draft;
+
+  /// No description provided for @moLmSpeedMode_ngram.
+  ///
+  /// In en, this message translates to:
+  /// **'N-grams'**
+  String get moLmSpeedMode_ngram;
+
+  /// No description provided for @moLmSpeedMode_none.
+  ///
+  /// In en, this message translates to:
+  /// **'Model alone'**
+  String get moLmSpeedMode_none;
+
+  /// No description provided for @chHubTelegram.
+  ///
+  /// In en, this message translates to:
+  /// **'Demi-God on Telegram: the bot, its token and the accounts that talk to it'**
+  String get chHubTelegram;
+
+  /// No description provided for @chHubChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Demi-God on Discord, Slack, Signal, WhatsApp, Matrix, Teams and iMessage'**
+  String get chHubChats;
+
+  /// No description provided for @moHubModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions, API keys, your own server, the model on this computer and who uses which'**
+  String get moHubModels;
+
+  /// No description provided for @xtAddServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Add server'**
+  String get xtAddServer;
+
+  /// No description provided for @xtApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get xtApprove;
+
+  /// No description provided for @xtArgs.
+  ///
+  /// In en, this message translates to:
+  /// **'Arguments'**
+  String get xtArgs;
+
+  /// No description provided for @xtAxMagicDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Put it away'**
+  String get xtAxMagicDismiss;
+
+  /// No description provided for @xtAxMagicExamples.
+  ///
+  /// In en, this message translates to:
+  /// **'Or start from an example'**
+  String get xtAxMagicExamples;
+
+  /// No description provided for @xtAxMagicGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask God'**
+  String get xtAxMagicGo;
+
+  /// No description provided for @xtAxMagicReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Not like this'**
+  String get xtAxMagicReject;
+
+  /// No description provided for @xtAxMagicSendNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to God'**
+  String get xtAxMagicSendNo;
+
+  /// No description provided for @xtAxMagicStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Calling God…'**
+  String get xtAxMagicStarting;
+
+  /// No description provided for @xtAxMagicWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'What is wrong? God reads it and tries again'**
+  String get xtAxMagicWhy;
+
+  /// No description provided for @xtAxNeedMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing'**
+  String get xtAxNeedMissing;
+
+  /// No description provided for @xtAxNeedReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get xtAxNeedReady;
+
+  /// No description provided for @xtAxNeedVault.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to the keychain'**
+  String get xtAxNeedVault;
+
+  /// No description provided for @xtBy.
+  ///
+  /// In en, this message translates to:
+  /// **'by'**
+  String get xtBy;
+
+  /// No description provided for @xtCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get xtCancel;
+
+  /// No description provided for @xtCommand.
+  ///
+  /// In en, this message translates to:
+  /// **'Command'**
+  String get xtCommand;
+
+  /// No description provided for @xtCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get xtCopied;
+
+  /// No description provided for @xtCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get xtCopy;
+
+  /// No description provided for @xtCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get xtCreate;
+
+  /// No description provided for @xtDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get xtDescription;
+
+  /// No description provided for @xtExtAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get xtExtAdd;
+
+  /// No description provided for @xtExtAddAndConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Add and connect'**
+  String get xtExtAddAndConnect;
+
+  /// No description provided for @xtExtAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get xtExtAdded;
+
+  /// No description provided for @xtExtAppConsole.
+  ///
+  /// In en, this message translates to:
+  /// **'Open {name}\'s developer page'**
+  String xtExtAppConsole(String name);
+
+  /// No description provided for @xtExtAppGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your own app on {name} (once, about ten minutes)'**
+  String xtExtAppGuide(String name);
+
+  /// No description provided for @xtExtAskHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask God with a magic integration or extension, in your own words: God looks for a ready service in the catalog, or writes a new ability, tests it and asks you before installing anything.'**
+  String get xtExtAskHelp;
+
+  /// No description provided for @xtExtAskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What should your agents be able to do?'**
+  String get xtExtAskTitle;
+
+  /// No description provided for @xtExtAuth_app.
+  ///
+  /// In en, this message translates to:
+  /// **'Your own app, with a guide'**
+  String get xtExtAuth_app;
+
+  /// No description provided for @xtExtAuth_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs a key'**
+  String get xtExtAuth_header;
+
+  /// No description provided for @xtExtAuth_none.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to sign in to'**
+  String get xtExtAuth_none;
+
+  /// No description provided for @xtExtAuth_oauth.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in on its page'**
+  String get xtExtAuth_oauth;
+
+  /// No description provided for @xtExtBroken.
+  ///
+  /// In en, this message translates to:
+  /// **'Not working'**
+  String get xtExtBroken;
+
+  /// No description provided for @xtExtBrokenHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A service that does not work: check the key, or remove it and add it again. Hover over the label to see the error.'**
+  String get xtExtBrokenHelp;
+
+  /// No description provided for @xtExtCatAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get xtExtCatAll;
+
+  /// No description provided for @xtExtCat_cloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud'**
+  String get xtExtCat_cloud;
+
+  /// No description provided for @xtExtCat_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get xtExtCat_code;
+
+  /// No description provided for @xtExtCat_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Data'**
+  String get xtExtCat_data;
+
+  /// No description provided for @xtExtCat_design.
+  ///
+  /// In en, this message translates to:
+  /// **'Design'**
+  String get xtExtCat_design;
+
+  /// No description provided for @xtExtCat_docs.
+  ///
+  /// In en, this message translates to:
+  /// **'Documentation'**
+  String get xtExtCat_docs;
+
+  /// No description provided for @xtExtCat_home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get xtExtCat_home;
+
+  /// No description provided for @xtExtCat_web.
+  ///
+  /// In en, this message translates to:
+  /// **'Web'**
+  String get xtExtCat_web;
+
+  /// No description provided for @xtExtCat_work.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get xtExtCat_work;
+
+  /// No description provided for @xtExtCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Services you can add'**
+  String get xtExtCatalog;
+
+  /// No description provided for @xtExtCatalogHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Each one gives your agents new tools. The services\' own ones come first; the community ones are made by others.'**
+  String get xtExtCatalogHelp;
+
+  /// No description provided for @xtExtChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking…'**
+  String get xtExtChecking;
+
+  /// No description provided for @xtExtClientId.
+  ///
+  /// In en, this message translates to:
+  /// **'Client ID of your app'**
+  String get xtExtClientId;
+
+  /// No description provided for @xtExtClientSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'Client secret of your app'**
+  String get xtExtClientSecret;
+
+  /// No description provided for @xtExtClientSecretOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Client secret of your app (if it has one)'**
+  String get xtExtClientSecretOptional;
+
+  /// No description provided for @xtExtCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Community'**
+  String get xtExtCommunity;
+
+  /// No description provided for @xtExtConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get xtExtConnect;
+
+  /// No description provided for @xtExtConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Your services'**
+  String get xtExtConnected;
+
+  /// No description provided for @xtExtEverywhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Everywhere'**
+  String get xtExtEverywhere;
+
+  /// No description provided for @xtExtGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'How to set up {name}'**
+  String xtExtGuide(String name);
+
+  /// No description provided for @xtExtKey.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} key'**
+  String xtExtKey(String name);
+
+  /// No description provided for @xtExtKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It is kept in a private file on your server and never shown again, not even to the agents.'**
+  String get xtExtKeyHelp;
+
+  /// No description provided for @xtExtKeyWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where do I find the {name} key?'**
+  String xtExtKeyWhere(String name);
+
+  /// No description provided for @xtExtKindSkill.
+  ///
+  /// In en, this message translates to:
+  /// **'Skill'**
+  String get xtExtKindSkill;
+
+  /// No description provided for @xtExtKindTool.
+  ///
+  /// In en, this message translates to:
+  /// **'Tool'**
+  String get xtExtKindTool;
+
+  /// No description provided for @xtExtManualOauth.
+  ///
+  /// In en, this message translates to:
+  /// **'It signs in on its own page (OAuth)'**
+  String get xtExtManualOauth;
+
+  /// No description provided for @xtExtManualToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Key (optional, sent as Bearer)'**
+  String get xtExtManualToken;
+
+  /// No description provided for @xtExtMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More about it'**
+  String get xtExtMore;
+
+  /// No description provided for @xtExtNeedsLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs you to sign in'**
+  String get xtExtNeedsLogin;
+
+  /// No description provided for @xtExtNothingFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing found. Ask God with the magic extension above: it can write what is missing.'**
+  String get xtExtNothingFound;
+
+  /// No description provided for @xtExtOauthHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A new tab opens on {name}\'s page: sign in there and allow Rasgeth. Then come back here.'**
+  String xtExtOauthHelp(String name);
+
+  /// No description provided for @xtExtOfficial.
+  ///
+  /// In en, this message translates to:
+  /// **'Official'**
+  String get xtExtOfficial;
+
+  /// No description provided for @xtExtOnlyProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Only in {name}'**
+  String xtExtOnlyProject(String name);
+
+  /// No description provided for @xtExtProposals.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you'**
+  String get xtExtProposals;
+
+  /// No description provided for @xtExtProposalsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Abilities written by the agents and already tested: nothing is installed until you approve it.'**
+  String get xtExtProposalsHelp;
+
+  /// No description provided for @xtExtSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search a service'**
+  String get xtExtSearch;
+
+  /// No description provided for @xtExtServerUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\'s address'**
+  String xtExtServerUrl(String name);
+
+  /// No description provided for @xtExtServerUrlHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'As Rasgeth\'s server reaches it, for example on your home network.'**
+  String get xtExtServerUrlHelp;
+
+  /// No description provided for @xtExtSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills and tools'**
+  String get xtExtSkills;
+
+  /// No description provided for @xtExtSkillsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Abilities installed for your agents. Click one to read or change it.'**
+  String get xtExtSkillsHelp;
+
+  /// No description provided for @xtExtTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'How it runs'**
+  String get xtExtTransport;
+
+  /// No description provided for @xtExtTransportHttp.
+  ///
+  /// In en, this message translates to:
+  /// **'Online (address)'**
+  String get xtExtTransportHttp;
+
+  /// No description provided for @xtExtTransportStdio.
+  ///
+  /// In en, this message translates to:
+  /// **'On this server (command)'**
+  String get xtExtTransportStdio;
+
+  /// No description provided for @xtExtUnverified.
+  ///
+  /// In en, this message translates to:
+  /// **'Not confirmed on the service\'s own pages: if something does not match, its documentation is right.'**
+  String get xtExtUnverified;
+
+  /// No description provided for @xtExtUnverifiedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'to be checked'**
+  String get xtExtUnverifiedShort;
+
+  /// No description provided for @xtExtWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it works'**
+  String get xtExtWhere;
+
+  /// No description provided for @xtExtWhereHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Everywhere, or only for the agents of one project.'**
+  String get xtExtWhereHelp;
+
+  /// No description provided for @xtExtWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'Works · {n} tools'**
+  String xtExtWorks(String n);
+
+  /// No description provided for @xtExtensions.
+  ///
+  /// In en, this message translates to:
+  /// **'Extensions'**
+  String get xtExtensions;
+
+  /// No description provided for @xtFailedTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed its tests'**
+  String get xtFailedTests;
+
+  /// No description provided for @xtInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions'**
+  String get xtInstructions;
+
+  /// No description provided for @xtMediaGetKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a key'**
+  String get xtMediaGetKey;
+
+  /// No description provided for @xtMediaHasKey.
+  ///
+  /// In en, this message translates to:
+  /// **'key already there'**
+  String get xtMediaHasKey;
+
+  /// No description provided for @xtMediaKey.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} key'**
+  String xtMediaKey(String name);
+
+  /// No description provided for @xtMediaKeyLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} key linked'**
+  String xtMediaKeyLinked(String name);
+
+  /// No description provided for @xtMediaKeyStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the {name} page where keys are made and sign in (or create an account).'**
+  String xtMediaKeyStep1(String name);
+
+  /// No description provided for @xtMediaKeyStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new key and copy it.'**
+  String get xtMediaKeyStep2;
+
+  /// No description provided for @xtMediaKeyStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste it here and save:'**
+  String get xtMediaKeyStep3;
+
+  /// No description provided for @xtMediaNativeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.'**
+  String get xtMediaNativeHelp;
+
+  /// No description provided for @xtMediaNativeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the model\'s own tool when it has one'**
+  String get xtMediaNativeTitle;
+
+  /// No description provided for @xtMediaNeedsKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs its key'**
+  String get xtMediaNeedsKey;
+
+  /// No description provided for @xtMediaOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get xtMediaOff;
+
+  /// No description provided for @xtMediaOtherProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose another provider'**
+  String get xtMediaOtherProvider;
+
+  /// No description provided for @xtMediaPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Who makes pictures, videos, voices, music and sound effects when an agent is asked for one (the tools image_generation, video_generation and audio_generation). Choose a provider and a model for each, and paste its key: a key you already gave for the chat (OpenAI, Gemini, xAI) works here too. They are paid by the provider for what you make.'**
+  String get xtMediaPurpose;
+
+  /// No description provided for @xtMediaStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Who makes it'**
+  String get xtMediaStep1;
+
+  /// No description provided for @xtMediaStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'2. The {name} key'**
+  String xtMediaStep2(String name);
+
+  /// No description provided for @xtMediaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Default extensions'**
+  String get xtMediaTitle;
+
+  /// No description provided for @xtMediaTurnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get xtMediaTurnOff;
+
+  /// No description provided for @xtMediaVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get xtMediaVoice;
+
+  /// No description provided for @xtMediaVoiceFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'The account\'s first one'**
+  String get xtMediaVoiceFirst;
+
+  /// No description provided for @xtMedia_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Pictures'**
+  String get xtMedia_image;
+
+  /// No description provided for @xtMedia_image_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawings, photos, illustrations, logos from a description (or from a picture).'**
+  String get xtMedia_image_help;
+
+  /// No description provided for @xtMedia_music.
+  ///
+  /// In en, this message translates to:
+  /// **'Music'**
+  String get xtMedia_music;
+
+  /// No description provided for @xtMedia_music_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Songs and pieces from a description, with or without singing.'**
+  String get xtMedia_music_help;
+
+  /// No description provided for @xtMedia_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound effects'**
+  String get xtMedia_sound;
+
+  /// No description provided for @xtMedia_sound_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Short sounds from a description: a door, rain, a crowd, an engine.'**
+  String get xtMedia_sound_help;
+
+  /// No description provided for @xtMedia_speech.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get xtMedia_speech;
+
+  /// No description provided for @xtMedia_speech_help.
+  ///
+  /// In en, this message translates to:
+  /// **'A text read aloud, with the voice you choose.'**
+  String get xtMedia_speech_help;
+
+  /// No description provided for @xtMedia_video.
+  ///
+  /// In en, this message translates to:
+  /// **'Videos'**
+  String get xtMedia_video;
+
+  /// No description provided for @xtMedia_video_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Short clips from a description or from a first frame. They take minutes and cost more. (OpenAI closed Sora in September 2026.)'**
+  String get xtMedia_video_help;
+
+  /// No description provided for @xtModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get xtModel;
+
+  /// No description provided for @xtMxApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve and install'**
+  String get xtMxApprove;
+
+  /// No description provided for @xtMxArgs.
+  ///
+  /// In en, this message translates to:
+  /// **'Arguments:'**
+  String get xtMxArgs;
+
+  /// No description provided for @xtMxBadgeApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'To install'**
+  String get xtMxBadgeApprove;
+
+  /// No description provided for @xtMxBadgeInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed'**
+  String get xtMxBadgeInstalled;
+
+  /// No description provided for @xtMxBadgeMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Something missing'**
+  String get xtMxBadgeMissing;
+
+  /// No description provided for @xtMxBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'God is building it with you: answer its questions in the conversation.'**
+  String get xtMxBuilding;
+
+  /// No description provided for @xtMxChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change it'**
+  String get xtMxChange;
+
+  /// No description provided for @xtMxChangeGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask God'**
+  String get xtMxChangeGo;
+
+  /// No description provided for @xtMxChangeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'What should change? God proposes it again and you install it as before.'**
+  String get xtMxChangeLabel;
+
+  /// No description provided for @xtMxChanging.
+  ///
+  /// In en, this message translates to:
+  /// **'God is changing it with you; what is installed keeps working until you approve the new version.'**
+  String get xtMxChanging;
+
+  /// No description provided for @xtMxCheckHost.
+  ///
+  /// In en, this message translates to:
+  /// **'The address {what}'**
+  String xtMxCheckHost(String what);
+
+  /// No description provided for @xtMxCheckKey.
+  ///
+  /// In en, this message translates to:
+  /// **'The key for {what}'**
+  String xtMxCheckKey(String what);
+
+  /// No description provided for @xtMxCheckKeyUndeclared.
+  ///
+  /// In en, this message translates to:
+  /// **'The key {what}, used by the code but not declared'**
+  String xtMxCheckKeyUndeclared(String what);
+
+  /// No description provided for @xtMxCheckTest.
+  ///
+  /// In en, this message translates to:
+  /// **'The test of {what}'**
+  String xtMxCheckTest(String what);
+
+  /// No description provided for @xtMxCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Read the code'**
+  String get xtMxCode;
+
+  /// No description provided for @xtMxDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed: every agent has these tools from its next conversation.'**
+  String get xtMxDone;
+
+  /// No description provided for @xtMxExtension.
+  ///
+  /// In en, this message translates to:
+  /// **'Magic extension'**
+  String get xtMxExtension;
+
+  /// No description provided for @xtMxExtensionAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'What should the agents be able to do?'**
+  String get xtMxExtensionAsk;
+
+  /// No description provided for @xtMxExtensionEx1.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn a CSV into a chart and tell me the totals'**
+  String get xtMxExtensionEx1;
+
+  /// No description provided for @xtMxExtensionEx2.
+  ///
+  /// In en, this message translates to:
+  /// **'Check that an Italian VAT number and tax code are valid'**
+  String get xtMxExtensionEx2;
+
+  /// No description provided for @xtMxExtensionEx3.
+  ///
+  /// In en, this message translates to:
+  /// **'A skill for writing my weekly report the way I like it'**
+  String get xtMxExtensionEx3;
+
+  /// No description provided for @xtMxExtensionLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell God what the agents should be able to do. God asks, writes tools and skills with their tests and tries them in a closed sandbox: you see the result and install it with one button.'**
+  String get xtMxExtensionLead;
+
+  /// No description provided for @xtMxExtensionPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: turn a CSV into a chart and tell me the totals'**
+  String get xtMxExtensionPlaceholder;
+
+  /// No description provided for @xtMxExtensionTile.
+  ///
+  /// In en, this message translates to:
+  /// **'New abilities for the agents, of any kind: God writes the tools and skills, tests them apart and you install them.'**
+  String get xtMxExtensionTile;
+
+  /// No description provided for @xtMxGiveKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Give it to these tools'**
+  String get xtMxGiveKey;
+
+  /// No description provided for @xtMxGiveKeyText.
+  ///
+  /// In en, this message translates to:
+  /// **'Only these tools will receive it, through the proxy, and only towards {hosts}: {tools}.'**
+  String xtMxGiveKeyText(String hosts, String tools);
+
+  /// No description provided for @xtMxGiveKeyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Give {what} to this package?'**
+  String xtMxGiveKeyTitle(String what);
+
+  /// No description provided for @xtMxIntegration.
+  ///
+  /// In en, this message translates to:
+  /// **'Magic integration'**
+  String get xtMxIntegration;
+
+  /// No description provided for @xtMxIntegrationAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Which service, and what for?'**
+  String get xtMxIntegrationAsk;
+
+  /// No description provided for @xtMxIntegrationEx1.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect me to Notion: search my pages and create new ones'**
+  String get xtMxIntegrationEx1;
+
+  /// No description provided for @xtMxIntegrationEx2.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect me to my management software\'s API (invoices and customers)'**
+  String get xtMxIntegrationEx2;
+
+  /// No description provided for @xtMxIntegrationEx3.
+  ///
+  /// In en, this message translates to:
+  /// **'Read my Todoist tasks and mark them done'**
+  String get xtMxIntegrationEx3;
+
+  /// No description provided for @xtMxIntegrationLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell God which service and what the agents should do with it. God asks what it needs, writes the connector with its tests and tries it in a closed sandbox: you see the result and install it with one button.'**
+  String get xtMxIntegrationLead;
+
+  /// No description provided for @xtMxIntegrationPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: connect me to Notion so the agents can search my pages and add notes'**
+  String get xtMxIntegrationPlaceholder;
+
+  /// No description provided for @xtMxIntegrationTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Rasgeth to a service through its API (Notion, your management software, a bank…): God writes the connector, tests it apart and you install it.'**
+  String get xtMxIntegrationTile;
+
+  /// No description provided for @xtMxKeyHosts.
+  ///
+  /// In en, this message translates to:
+  /// **'It may go only to:'**
+  String get xtMxKeyHosts;
+
+  /// No description provided for @xtMxKeyLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the key here: it goes straight into your keychain, encrypted. Nobody reads it, God included; the tools receive it only through the proxy.'**
+  String get xtMxKeyLead;
+
+  /// No description provided for @xtMxKeyName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name in the keychain:'**
+  String get xtMxKeyName;
+
+  /// No description provided for @xtMxKeyOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Used only by this package\'s tools; you can change it in Settings > Keychain.'**
+  String get xtMxKeyOnly;
+
+  /// No description provided for @xtMxKeySave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save in the keychain'**
+  String get xtMxKeySave;
+
+  /// No description provided for @xtMxKeyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Key for {service}'**
+  String xtMxKeyTitle(String service);
+
+  /// No description provided for @xtMxKeyValue.
+  ///
+  /// In en, this message translates to:
+  /// **'The key'**
+  String get xtMxKeyValue;
+
+  /// No description provided for @xtMxKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Keys'**
+  String get xtMxKeys;
+
+  /// No description provided for @xtMxListLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Built with God: open one to go on with the conversation, install it, change it or remove it.'**
+  String get xtMxListLead;
+
+  /// No description provided for @xtMxListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Magic integrations and extensions'**
+  String get xtMxListTitle;
+
+  /// No description provided for @xtMxMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Before you can install it, this is missing:'**
+  String get xtMxMissing;
+
+  /// No description provided for @xtMxParts.
+  ///
+  /// In en, this message translates to:
+  /// **'What it adds'**
+  String get xtMxParts;
+
+  /// No description provided for @xtMxPromise1.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is installed without your yes.'**
+  String get xtMxPromise1;
+
+  /// No description provided for @xtMxPromise2.
+  ///
+  /// In en, this message translates to:
+  /// **'Every part is tested in a closed sandbox that reaches only the services it declares.'**
+  String get xtMxPromise2;
+
+  /// No description provided for @xtMxPromise3.
+  ///
+  /// In en, this message translates to:
+  /// **'Keys go into your keychain from the window, never in the chat.'**
+  String get xtMxPromise3;
+
+  /// No description provided for @xtMxProposal.
+  ///
+  /// In en, this message translates to:
+  /// **'God\'s package'**
+  String get xtMxProposal;
+
+  /// No description provided for @xtMxReaches.
+  ///
+  /// In en, this message translates to:
+  /// **'It reaches only'**
+  String get xtMxReaches;
+
+  /// No description provided for @xtMxReachesNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing: it works without the network.'**
+  String get xtMxReachesNothing;
+
+  /// No description provided for @xtMxRetest.
+  ///
+  /// In en, this message translates to:
+  /// **'Test again'**
+  String get xtMxRetest;
+
+  /// No description provided for @xtMxState_building.
+  ///
+  /// In en, this message translates to:
+  /// **'Being built'**
+  String get xtMxState_building;
+
+  /// No description provided for @xtMxState_dismissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Put away'**
+  String get xtMxState_dismissed;
+
+  /// No description provided for @xtMxState_done.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed'**
+  String get xtMxState_done;
+
+  /// No description provided for @xtMxState_ready.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready: it waits for you'**
+  String get xtMxState_ready;
+
+  /// No description provided for @xtMxState_testing.
+  ///
+  /// In en, this message translates to:
+  /// **'Tests running'**
+  String get xtMxState_testing;
+
+  /// No description provided for @xtMxStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'You say what you want'**
+  String get xtMxStep1;
+
+  /// No description provided for @xtMxStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'God writes and tests it'**
+  String get xtMxStep2;
+
+  /// No description provided for @xtMxStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'You install it'**
+  String get xtMxStep3;
+
+  /// No description provided for @xtMxTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'The tests are running again in the sandbox…'**
+  String get xtMxTesting;
+
+  /// No description provided for @xtMxUninstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstall'**
+  String get xtMxUninstall;
+
+  /// No description provided for @xtMxUninstallText.
+  ///
+  /// In en, this message translates to:
+  /// **'These go away: {what}. The keys added for it leave the keychain too.'**
+  String xtMxUninstallText(String what);
+
+  /// No description provided for @xtMxUninstallTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstall {what}?'**
+  String xtMxUninstallTitle(String what);
+
+  /// No description provided for @xtMxWhyGod.
+  ///
+  /// In en, this message translates to:
+  /// **'God has to fix it: tell it in the conversation if it does not.'**
+  String get xtMxWhyGod;
+
+  /// No description provided for @xtMxWhyHost.
+  ///
+  /// In en, this message translates to:
+  /// **'The code reaches it but does not declare it: God has to declare it or remove it.'**
+  String get xtMxWhyHost;
+
+  /// No description provided for @xtMxWhyMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Not in your keychain yet: add it here, it goes to these tools only.'**
+  String get xtMxWhyMissing;
+
+  /// No description provided for @xtMxWhyNotGiven.
+  ///
+  /// In en, this message translates to:
+  /// **'It is in your keychain, but not given to these tools (or not towards these addresses).'**
+  String get xtMxWhyNotGiven;
+
+  /// No description provided for @xtMxWhyTest.
+  ///
+  /// In en, this message translates to:
+  /// **'It failed in the sandbox: God reads why and fixes it; with a key added, the tests run again.'**
+  String get xtMxWhyTest;
+
+  /// No description provided for @xtName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get xtName;
+
+  /// No description provided for @xtNewSkill.
+  ///
+  /// In en, this message translates to:
+  /// **'New skill'**
+  String get xtNewSkill;
+
+  /// No description provided for @xtNoProposals.
+  ///
+  /// In en, this message translates to:
+  /// **'No proposals.'**
+  String get xtNoProposals;
+
+  /// No description provided for @xtOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'open'**
+  String get xtOpen;
+
+  /// No description provided for @xtProposals.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposals waiting for you'**
+  String get xtProposals;
+
+  /// No description provided for @xtReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get xtReject;
+
+  /// No description provided for @xtRemotePasswordChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change it'**
+  String get xtRemotePasswordChange;
+
+  /// No description provided for @xtRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get xtRemove;
+
+  /// No description provided for @xtSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get xtSave;
+
+  /// No description provided for @xtScope.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope'**
+  String get xtScope;
+
+  /// No description provided for @xtScopePlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'platform'**
+  String get xtScopePlatform;
+
+  /// No description provided for @xtSkillDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get xtSkillDownload;
+
+  /// No description provided for @xtSkillDownloadHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Download this skill as a .zip, to share it'**
+  String get xtSkillDownloadHelp;
+
+  /// No description provided for @xtSkillImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import a skill'**
+  String get xtSkillImport;
+
+  /// No description provided for @xtSkillImportFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a .zip file'**
+  String get xtSkillImportFile;
+
+  /// No description provided for @xtSkillImportHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A skill\'s folder as a .zip (the agentskills.io format), from another Rasgeth or another tool.'**
+  String get xtSkillImportHelp;
+
+  /// No description provided for @xtSkillImportWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Install in'**
+  String get xtSkillImportWhere;
+
+  /// No description provided for @xtSkillImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Skill \"{name}\" imported.'**
+  String xtSkillImported(String name);
+
+  /// No description provided for @xtSkillReplaceConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'A skill with this name already exists there. Replace it?'**
+  String get xtSkillReplaceConfirm;
+
+  /// No description provided for @xtSvApprovedAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'installed by itself (your choice in Safety)'**
+  String get xtSvApprovedAuto;
+
+  /// No description provided for @xtSvApprovedYou.
+  ///
+  /// In en, this message translates to:
+  /// **'approved by you'**
+  String get xtSvApprovedYou;
+
+  /// No description provided for @xtSvBy.
+  ///
+  /// In en, this message translates to:
+  /// **'by {who}'**
+  String xtSvBy(String who);
+
+  /// No description provided for @xtSvCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare with the one in use'**
+  String get xtSvCompare;
+
+  /// No description provided for @xtSvCompareFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare: every difference'**
+  String get xtSvCompareFull;
+
+  /// No description provided for @xtSvCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'in use'**
+  String get xtSvCurrent;
+
+  /// No description provided for @xtSvHideCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide the comparison'**
+  String get xtSvHideCompare;
+
+  /// No description provided for @xtSvHow_baseline.
+  ///
+  /// In en, this message translates to:
+  /// **'As it was before the history began'**
+  String get xtSvHow_baseline;
+
+  /// No description provided for @xtSvHow_edited.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed by hand'**
+  String get xtSvHow_edited;
+
+  /// No description provided for @xtSvHow_import.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported'**
+  String get xtSvHow_import;
+
+  /// No description provided for @xtSvHow_install.
+  ///
+  /// In en, this message translates to:
+  /// **'First version'**
+  String get xtSvHow_install;
+
+  /// No description provided for @xtSvHow_rollback.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to version {n}'**
+  String xtSvHow_rollback(String n);
+
+  /// No description provided for @xtSvHow_update.
+  ///
+  /// In en, this message translates to:
+  /// **'New version'**
+  String get xtSvHow_update;
+
+  /// No description provided for @xtSvLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Every change of this skill is kept: who wrote it, why and when. Agents use the newest from their next conversation.'**
+  String get xtSvLead;
+
+  /// No description provided for @xtSvLineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What changed and why'**
+  String get xtSvLineTitle;
+
+  /// No description provided for @xtSvNextSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Once installed, agents use it from their next conversation; the ones already talking keep the version they started with.'**
+  String get xtSvNextSession;
+
+  /// No description provided for @xtSvNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No versions yet.'**
+  String get xtSvNone;
+
+  /// No description provided for @xtSvNotRestorable.
+  ///
+  /// In en, this message translates to:
+  /// **'Too large to keep: it cannot come back.'**
+  String get xtSvNotRestorable;
+
+  /// No description provided for @xtSvRollback.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back to version {n}'**
+  String xtSvRollback(String n);
+
+  /// No description provided for @xtSvRollbackConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Its files replace those of «{name}» in use, as a new version: nothing is lost and you can come back here. Agents get it from their next conversation.'**
+  String xtSvRollbackConfirm(String name);
+
+  /// No description provided for @xtSvRollbackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back to version {n}?'**
+  String xtSvRollbackTitle(String n);
+
+  /// No description provided for @xtSvRolledBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to version {n}: it is version {v} now.'**
+  String xtSvRolledBack(String n, String v);
+
+  /// No description provided for @xtSvTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Versions'**
+  String get xtSvTitle;
+
+  /// No description provided for @xtSvUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'author unknown'**
+  String get xtSvUnknown;
+
+  /// No description provided for @xtSvVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {n}'**
+  String xtSvVersion(String n);
+
+  /// No description provided for @xtSvWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Why'**
+  String get xtSvWhy;
+
+  /// No description provided for @xtSvYou.
+  ///
+  /// In en, this message translates to:
+  /// **'you'**
+  String get xtSvYou;
+
+  /// No description provided for @xtUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'URL'**
+  String get xtUrl;
+
+  /// No description provided for @xtWzDoneBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get xtWzDoneBtn;
+
+  /// No description provided for @xtXwAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get xtXwAddress;
+
+  /// No description provided for @xtXwAuthor.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposed by'**
+  String get xtXwAuthor;
+
+  /// No description provided for @xtXwConnectedLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The lit ones work. Open one to sign in again or remove it.'**
+  String get xtXwConnectedLead;
+
+  /// No description provided for @xtXwFailedLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposals of the agents whose tests did not pass: they were never installed.'**
+  String get xtXwFailedLead;
+
+  /// No description provided for @xtXwFile.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get xtXwFile;
+
+  /// No description provided for @xtXwImportText.
+  ///
+  /// In en, this message translates to:
+  /// **'A .zip someone shared, into everything or one project.'**
+  String get xtXwImportText;
+
+  /// No description provided for @xtXwKeptFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files of the skill it keeps: {files}'**
+  String xtXwKeptFiles(String files);
+
+  /// No description provided for @xtXwKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Kind'**
+  String get xtXwKind;
+
+  /// No description provided for @xtXwNewSkillText.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions you write for your agents; it installs right away.'**
+  String get xtXwNewSkillText;
+
+  /// No description provided for @xtXwOpenFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the file'**
+  String get xtXwOpenFile;
+
+  /// No description provided for @xtXwOwnLead.
+  ///
+  /// In en, this message translates to:
+  /// **'For experts: a skill someone shared with you, one you write, a server not in the catalog.'**
+  String get xtXwOwnLead;
+
+  /// No description provided for @xtXwOwnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Made by hand'**
+  String get xtXwOwnTitle;
+
+  /// No description provided for @xtXwPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Now installed'**
+  String get xtXwPrevious;
+
+  /// No description provided for @xtXwScripts.
+  ///
+  /// In en, this message translates to:
+  /// **'It has scripts ({files}): approve only if you trust what they do.'**
+  String xtXwScripts(String files);
+
+  /// No description provided for @xtXwServerText.
+  ///
+  /// In en, this message translates to:
+  /// **'An MCP server by address or by command, with its key if it needs one.'**
+  String get xtXwServerText;
+
+  /// No description provided for @xtXwSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in'**
+  String get xtXwSignIn;
+
+  /// No description provided for @xtXwSkillNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowercase letters, digits and dashes, such as weekly-report.'**
+  String get xtXwSkillNameHelp;
+
+  /// No description provided for @xtXwSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Made by'**
+  String get xtXwSource;
+
+  /// No description provided for @xtXwState.
+  ///
+  /// In en, this message translates to:
+  /// **'State'**
+  String get xtXwState;
+
+  /// No description provided for @xtXwSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Why it came'**
+  String get xtXwSummary;
+
+  /// No description provided for @xtXwTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Tests in a throwaway sandbox'**
+  String get xtXwTests;
+
+  /// No description provided for @xtXwTestsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'tests failed'**
+  String get xtXwTestsFailed;
+
+  /// No description provided for @xtXwUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Update of an installed skill'**
+  String get xtXwUpdates;
+
+  /// No description provided for @xtXwWaitsYou.
+  ///
+  /// In en, this message translates to:
+  /// **'waits for your yes'**
+  String get xtXwWaitsYou;
+
+  /// No description provided for @xtYou.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get xtYou;
+
+  /// No description provided for @vkCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get vkCancel;
+
+  /// No description provided for @vkClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get vkClose;
+
+  /// No description provided for @vkDvSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices'**
+  String get vkDvSection;
+
+  /// No description provided for @vkKcAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get vkKcAdd;
+
+  /// No description provided for @vkKcAddSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Its value is sealed as soon as you save'**
+  String get vkKcAddSub;
+
+  /// No description provided for @vkKcAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A new credential'**
+  String get vkKcAddTitle;
+
+  /// No description provided for @vkKcAgentsHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents use a credential with use_credential, or through the tools you bind to it below each credential.'**
+  String get vkKcAgentsHow;
+
+  /// No description provided for @vkKcAgentsHowNoProxy.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents use a credential with use_credential.'**
+  String get vkKcAgentsHowNoProxy;
+
+  /// No description provided for @vkKcAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get vkKcAll;
+
+  /// No description provided for @vkKcAllAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent'**
+  String get vkKcAllAgents;
+
+  /// No description provided for @vkKcAllAgentsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: only the agents you choose.'**
+  String get vkKcAllAgentsHelp;
+
+  /// No description provided for @vkKcAllCats.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get vkKcAllCats;
+
+  /// No description provided for @vkKcAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me before it is used'**
+  String get vkKcAsk;
+
+  /// No description provided for @vkKcAsk_always.
+  ///
+  /// In en, this message translates to:
+  /// **'Every time'**
+  String get vkKcAsk_always;
+
+  /// No description provided for @vkKcAsk_never.
+  ///
+  /// In en, this message translates to:
+  /// **'Never: I trust the rules above'**
+  String get vkKcAsk_never;
+
+  /// No description provided for @vkKcAsk_session.
+  ///
+  /// In en, this message translates to:
+  /// **'The first time in each conversation'**
+  String get vkKcAsk_session;
+
+  /// No description provided for @vkKcAutos.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations that may use it'**
+  String get vkKcAutos;
+
+  /// No description provided for @vkKcBrAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth\'s address'**
+  String get vkKcBrAddress;
+
+  /// No description provided for @vkKcBrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get vkKcBrCode;
+
+  /// No description provided for @vkKcBrCodeLead.
+  ///
+  /// In en, this message translates to:
+  /// **'In the extension (the key in the browser\'s bar) write this address and this code. The code works for ten minutes and for one browser.'**
+  String get vkKcBrCodeLead;
+
+  /// No description provided for @vkKcBrCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get vkKcBrCopied;
+
+  /// No description provided for @vkKcBrCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get vkKcBrCopy;
+
+  /// No description provided for @vkKcBrDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked: «{name}». You can close this window.'**
+  String vkKcBrDone(String name);
+
+  /// No description provided for @vkKcBrDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the extension'**
+  String get vkKcBrDownload;
+
+  /// No description provided for @vkKcBrDownloadFirefox.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the version for Firefox'**
+  String get vkKcBrDownloadFirefox;
+
+  /// No description provided for @vkKcBrExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'That code expired: make a new one.'**
+  String get vkKcBrExpired;
+
+  /// No description provided for @vkKcBrExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid until {time}'**
+  String vkKcBrExpires(String time);
+
+  /// No description provided for @vkKcBrHowChromium.
+  ///
+  /// In en, this message translates to:
+  /// **'Unzip it into a folder you will keep. Open {page}, switch on «Developer mode», press «Load unpacked» and choose the folder. You can also drag the zip onto that page.'**
+  String vkKcBrHowChromium(String page);
+
+  /// No description provided for @vkKcBrHowFirefox.
+  ///
+  /// In en, this message translates to:
+  /// **'Open about:debugging#/runtime/this-firefox, press «Load Temporary Add-on…» and choose the zip. Firefox keeps it until it closes: to keep it for good it must be signed by Mozilla.'**
+  String get vkKcBrHowFirefox;
+
+  /// No description provided for @vkKcBrHowOpera.
+  ///
+  /// In en, this message translates to:
+  /// **'Unzip it into a folder you will keep. Open opera://extensions, switch on «Developer mode» at the top right, press «Load unpacked» and choose the folder. You can also drag the zip onto that page.'**
+  String get vkKcBrHowOpera;
+
+  /// No description provided for @vkKcBrHttpNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This address starts with http: the extension accepts it only at home (this computer or the local network). From outside use remote access, with https.'**
+  String get vkKcBrHttpNote;
+
+  /// No description provided for @vkKcBrLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The keychain\'s extension fills sign-ins in Opera, Chrome, Edge, Brave and Firefox, only on the site each password belongs to, and saves the new ones here. Every use shows in the list above.'**
+  String get vkKcBrLead;
+
+  /// No description provided for @vkKcBrLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Link a browser'**
+  String get vkKcBrLink;
+
+  /// No description provided for @vkKcBrLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'linked {when}'**
+  String vkKcBrLinked(String when);
+
+  /// No description provided for @vkKcBrMakeCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a code'**
+  String get vkKcBrMakeCode;
+
+  /// No description provided for @vkKcBrNever.
+  ///
+  /// In en, this message translates to:
+  /// **'not used yet'**
+  String get vkKcBrNever;
+
+  /// No description provided for @vkKcBrNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No browser linked yet.'**
+  String get vkKcBrNone;
+
+  /// No description provided for @vkKcBrSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'last seen {when}'**
+  String vkKcBrSeen(String when);
+
+  /// No description provided for @vkKcBrStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Install the extension'**
+  String get vkKcBrStep1;
+
+  /// No description provided for @vkKcBrStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'2. Link it with a code'**
+  String get vkKcBrStep2;
+
+  /// No description provided for @vkKcBrStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Later also in the Chrome Web Store: one click to install, and it updates itself.'**
+  String get vkKcBrStore;
+
+  /// No description provided for @vkKcBrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'In your browser'**
+  String get vkKcBrTitle;
+
+  /// No description provided for @vkKcBrUnlink.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink'**
+  String get vkKcBrUnlink;
+
+  /// No description provided for @vkKcBrUnlinkQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink {name}?'**
+  String vkKcBrUnlinkQ(String name);
+
+  /// No description provided for @vkKcBrUnlinkText.
+  ///
+  /// In en, this message translates to:
+  /// **'The browser stops reaching the keychain at once. The passwords stay here; to use it again, link it with a new code.'**
+  String get vkKcBrUnlinkText;
+
+  /// No description provided for @vkKcBrWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'Your browser'**
+  String get vkKcBrWhich;
+
+  /// No description provided for @vkKcBrWinLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The keychain\'s extension fills sign-ins in Opera, Chrome, Edge, Brave and Firefox, only on the site each password belongs to, and saves the new ones here.'**
+  String get vkKcBrWinLead;
+
+  /// No description provided for @vkKcBrWinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Link a browser'**
+  String get vkKcBrWinTitle;
+
+  /// No description provided for @vkKcCat_api.
+  ///
+  /// In en, this message translates to:
+  /// **'API keys'**
+  String get vkKcCat_api;
+
+  /// No description provided for @vkKcCat_bank.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank'**
+  String get vkKcCat_bank;
+
+  /// No description provided for @vkKcCat_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get vkKcCat_email;
+
+  /// No description provided for @vkKcCat_login.
+  ///
+  /// In en, this message translates to:
+  /// **'Logins'**
+  String get vkKcCat_login;
+
+  /// No description provided for @vkKcCat_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get vkKcCat_other;
+
+  /// No description provided for @vkKcCat_server.
+  ///
+  /// In en, this message translates to:
+  /// **'Servers'**
+  String get vkKcCat_server;
+
+  /// No description provided for @vkKcCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Kind'**
+  String get vkKcCategory;
+
+  /// No description provided for @vkKcChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get vkKcChange;
+
+  /// No description provided for @vkKcClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'The keychain is closed'**
+  String get vkKcClosed;
+
+  /// No description provided for @vkKcClosedKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Until it opens, the keys you gave Rasgeth stay where they were (secrets.json and the private files), and nothing is deleted.'**
+  String get vkKcClosedKeys;
+
+  /// No description provided for @vkKcCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get vkKcCopied;
+
+  /// No description provided for @vkKcCopiedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied: it leaves the clipboard in 30 seconds.'**
+  String get vkKcCopiedNote;
+
+  /// No description provided for @vkKcCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get vkKcCopy;
+
+  /// No description provided for @vkKcEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here yet. Add the key of a service an agent should use, or import your passwords from another manager.'**
+  String get vkKcEmpty;
+
+  /// No description provided for @vkKcExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get vkKcExpired;
+
+  /// No description provided for @vkKcExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires on'**
+  String get vkKcExpires;
+
+  /// No description provided for @vkKcExpiresHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth reminds you a month before.'**
+  String get vkKcExpiresHelp;
+
+  /// No description provided for @vkKcExpiresIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires in {n} days'**
+  String vkKcExpiresIn(String n);
+
+  /// No description provided for @vkKcExpiresToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires today'**
+  String get vkKcExpiresToday;
+
+  /// No description provided for @vkKcExpiringLead.
+  ///
+  /// In en, this message translates to:
+  /// **'To renew soon:'**
+  String get vkKcExpiringLead;
+
+  /// No description provided for @vkKcExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export sealed'**
+  String get vkKcExport;
+
+  /// No description provided for @vkKcExportGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get vkKcExportGo;
+
+  /// No description provided for @vkKcExportLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A file with every credential, sealed with a passphrase of yours: without it nobody can open it, Rasgeth included.'**
+  String get vkKcExportLead;
+
+  /// No description provided for @vkKcExportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export the keychain'**
+  String get vkKcExportTitle;
+
+  /// No description provided for @vkKcExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded. Keep the file and its passphrase apart.'**
+  String get vkKcExported;
+
+  /// No description provided for @vkKcEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Keychain'**
+  String get vkKcEyebrow;
+
+  /// No description provided for @vkKcFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Value of the header'**
+  String get vkKcFormat;
+
+  /// No description provided for @vkKcFormat_1password.
+  ///
+  /// In en, this message translates to:
+  /// **'1Password'**
+  String get vkKcFormat_1password;
+
+  /// No description provided for @vkKcFormat_bitwarden.
+  ///
+  /// In en, this message translates to:
+  /// **'Bitwarden'**
+  String get vkKcFormat_bitwarden;
+
+  /// No description provided for @vkKcFormat_chrome.
+  ///
+  /// In en, this message translates to:
+  /// **'Chrome or Edge'**
+  String get vkKcFormat_chrome;
+
+  /// No description provided for @vkKcFormat_firefox.
+  ///
+  /// In en, this message translates to:
+  /// **'Firefox'**
+  String get vkKcFormat_firefox;
+
+  /// No description provided for @vkKcFormat_generic.
+  ///
+  /// In en, this message translates to:
+  /// **'CSV'**
+  String get vkKcFormat_generic;
+
+  /// No description provided for @vkKcGenAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Another one'**
+  String get vkKcGenAgain;
+
+  /// No description provided for @vkKcGenChars.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} characters'**
+  String vkKcGenChars(String n);
+
+  /// No description provided for @vkKcGenDigits.
+  ///
+  /// In en, this message translates to:
+  /// **'Digits only (PIN)'**
+  String get vkKcGenDigits;
+
+  /// No description provided for @vkKcGenKind.
+  ///
+  /// In en, this message translates to:
+  /// **'What it is made of'**
+  String get vkKcGenKind;
+
+  /// No description provided for @vkKcGenLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Length'**
+  String get vkKcGenLength;
+
+  /// No description provided for @vkKcGenLetters.
+  ///
+  /// In en, this message translates to:
+  /// **'Letters and digits'**
+  String get vkKcGenLetters;
+
+  /// No description provided for @vkKcGenSymbols.
+  ///
+  /// In en, this message translates to:
+  /// **'Letters, digits, symbols'**
+  String get vkKcGenSymbols;
+
+  /// No description provided for @vkKcGenUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this'**
+  String get vkKcGenUse;
+
+  /// No description provided for @vkKcGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Make one'**
+  String get vkKcGenerate;
+
+  /// No description provided for @vkKcHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Header'**
+  String get vkKcHeader;
+
+  /// No description provided for @vkKcHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get vkKcHide;
+
+  /// No description provided for @vkKcHosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed addresses'**
+  String get vkKcHosts;
+
+  /// No description provided for @vkKcHostsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Host names separated by commas; *.example.com for all its subdomains.'**
+  String get vkKcHostsHelp;
+
+  /// No description provided for @vkKcHow.
+  ///
+  /// In en, this message translates to:
+  /// **'How it goes on a request'**
+  String get vkKcHow;
+
+  /// No description provided for @vkKcHowHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'When an agent does not write {ref} itself, the value goes in this header. {value} stands for the secret.'**
+  String vkKcHowHelp(String ref, String value);
+
+  /// No description provided for @vkKcImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get vkKcImport;
+
+  /// No description provided for @vkKcImport1password.
+  ///
+  /// In en, this message translates to:
+  /// **'1Password: File > Export > CSV'**
+  String get vkKcImport1password;
+
+  /// No description provided for @vkKcImportBitwarden.
+  ///
+  /// In en, this message translates to:
+  /// **'Bitwarden: Tools > Export vault > .csv'**
+  String get vkKcImportBitwarden;
+
+  /// No description provided for @vkKcImportChrome.
+  ///
+  /// In en, this message translates to:
+  /// **'Chrome and Edge: Settings > Passwords > Export passwords'**
+  String get vkKcImportChrome;
+
+  /// No description provided for @vkKcImportFirefox.
+  ///
+  /// In en, this message translates to:
+  /// **'Firefox: Passwords > menu > Export passwords'**
+  String get vkKcImportFirefox;
+
+  /// No description provided for @vkKcImportFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} passwords found in the {from} file. Choose the ones to keep:'**
+  String vkKcImportFound(String from, String n);
+
+  /// No description provided for @vkKcImportGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Import {n}'**
+  String vkKcImportGo(String n);
+
+  /// No description provided for @vkKcImportLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Export your passwords from the other manager as a CSV file, then choose it here. A keychain file exported by Rasgeth works too.'**
+  String get vkKcImportLead;
+
+  /// No description provided for @vkKcImportLogins.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported logins are for you only: no agent may use them until you allow it.'**
+  String get vkKcImportLogins;
+
+  /// No description provided for @vkKcImportPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the file'**
+  String get vkKcImportPick;
+
+  /// No description provided for @vkKcImportSafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the CSV file afterwards: it holds your passwords in clear.'**
+  String get vkKcImportSafe;
+
+  /// No description provided for @vkKcImportSealedGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Open and import'**
+  String get vkKcImportSealedGo;
+
+  /// No description provided for @vkKcImportSealedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The passphrase chosen when the file was exported.'**
+  String get vkKcImportSealedHelp;
+
+  /// No description provided for @vkKcImportSkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} without a password were left out.'**
+  String vkKcImportSkipped(String n);
+
+  /// No description provided for @vkKcImportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import passwords'**
+  String get vkKcImportTitle;
+
+  /// No description provided for @vkKcImported.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} credentials added to the keychain.'**
+  String vkKcImported(String n);
+
+  /// No description provided for @vkKcLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Sealed on this computer. Agents use them by name and never see them; you choose where each one may go and who may use it.'**
+  String get vkKcLead;
+
+  /// No description provided for @vkKcLockedAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Set by the administrator'**
+  String get vkKcLockedAdmin;
+
+  /// No description provided for @vkKcManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage'**
+  String get vkKcManage;
+
+  /// No description provided for @vkKcMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get vkKcMore;
+
+  /// No description provided for @vkKcMoveLead.
+  ///
+  /// In en, this message translates to:
+  /// **'From Bitwarden, 1Password, Chrome, Edge or Firefox; out in a file sealed with a passphrase of yours.'**
+  String get vkKcMoveLead;
+
+  /// No description provided for @vkKcMoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring them in, take them with you'**
+  String get vkKcMoveTitle;
+
+  /// No description provided for @vkKcName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name for the agents'**
+  String get vkKcName;
+
+  /// No description provided for @vkKcNameBad.
+  ///
+  /// In en, this message translates to:
+  /// **'Only lower-case letters, digits, - and _ (at least two)'**
+  String get vkKcNameBad;
+
+  /// No description provided for @vkKcNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower case, no spaces: agents write it to use the credential.'**
+  String get vkKcNameHelp;
+
+  /// No description provided for @vkKcNeverUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Never used'**
+  String get vkKcNeverUsed;
+
+  /// No description provided for @vkKcNoHosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Without an address no agent can use it: it stays for you only.'**
+  String get vkKcNoHosts;
+
+  /// No description provided for @vkKcNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches the search.'**
+  String get vkKcNoMatch;
+
+  /// No description provided for @vkKcNoUses.
+  ///
+  /// In en, this message translates to:
+  /// **'No agent has used a credential yet.'**
+  String get vkKcNoUses;
+
+  /// No description provided for @vkKcNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get vkKcNone;
+
+  /// No description provided for @vkKcNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get vkKcNotes;
+
+  /// No description provided for @vkKcPassphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrase'**
+  String get vkKcPassphrase;
+
+  /// No description provided for @vkKcPassphraseAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'The passphrase again'**
+  String get vkKcPassphraseAgain;
+
+  /// No description provided for @vkKcPassphraseDiffer.
+  ///
+  /// In en, this message translates to:
+  /// **'The two are different'**
+  String get vkKcPassphraseDiffer;
+
+  /// No description provided for @vkKcPassphraseHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 8 characters. Keep it somewhere safe: it cannot be recovered.'**
+  String get vkKcPassphraseHelp;
+
+  /// No description provided for @vkKcProt_dpapi.
+  ///
+  /// In en, this message translates to:
+  /// **'Protected by Windows'**
+  String get vkKcProt_dpapi;
+
+  /// No description provided for @vkKcProt_env.
+  ///
+  /// In en, this message translates to:
+  /// **'Sealed with the server\'s own key'**
+  String get vkKcProt_env;
+
+  /// No description provided for @vkKcProt_file.
+  ///
+  /// In en, this message translates to:
+  /// **'Sealed with a key kept on this computer'**
+  String get vkKcProt_file;
+
+  /// No description provided for @vkKcProt_keychain.
+  ///
+  /// In en, this message translates to:
+  /// **'Protected by the Mac\'s Keychain'**
+  String get vkKcProt_keychain;
+
+  /// No description provided for @vkKcQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Your keys and passwords, safe in one place'**
+  String get vkKcQ;
+
+  /// No description provided for @vkKcRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get vkKcRemove;
+
+  /// No description provided for @vkKcRemoveQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}?'**
+  String vkKcRemoveQ(String name);
+
+  /// No description provided for @vkKcRemoveText.
+  ///
+  /// In en, this message translates to:
+  /// **'The credential goes from the keychain for good: agents and tools can no longer use it.'**
+  String get vkKcRemoveText;
+
+  /// No description provided for @vkKcSafeText.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypted (AES-256), never in a project or in git, never written in a chat or a log.'**
+  String get vkKcSafeText;
+
+  /// No description provided for @vkKcSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, service, user or label'**
+  String get vkKcSearch;
+
+  /// No description provided for @vkKcSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'The secret'**
+  String get vkKcSecret;
+
+  /// No description provided for @vkKcSecretLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The key, token or password. Once saved it is never shown again unless you ask.'**
+  String get vkKcSecretLead;
+
+  /// No description provided for @vkKcSecretPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste or type it here'**
+  String get vkKcSecretPlaceholder;
+
+  /// No description provided for @vkKcService.
+  ///
+  /// In en, this message translates to:
+  /// **'Service'**
+  String get vkKcService;
+
+  /// No description provided for @vkKcServiceExample.
+  ///
+  /// In en, this message translates to:
+  /// **'Revolut Business'**
+  String get vkKcServiceExample;
+
+  /// No description provided for @vkKcServiceHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The name you know it by: Revolut, Gmail, the office server.'**
+  String get vkKcServiceHelp;
+
+  /// No description provided for @vkKcShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get vkKcShow;
+
+  /// No description provided for @vkKcShowQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the secret?'**
+  String get vkKcShowQ;
+
+  /// No description provided for @vkKcShowText.
+  ///
+  /// In en, this message translates to:
+  /// **'It will be on the screen until you hide it or close the window. Make sure nobody is looking.'**
+  String get vkKcShowText;
+
+  /// No description provided for @vkKcSomeAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents that may use it'**
+  String get vkKcSomeAgents;
+
+  /// No description provided for @vkKcSomeone.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone'**
+  String get vkKcSomeone;
+
+  /// No description provided for @vkKcSys_chat.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat: {what}'**
+  String vkKcSys_chat(String what);
+
+  /// No description provided for @vkKcSys_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Mailbox: {what}'**
+  String vkKcSys_email(String what);
+
+  /// No description provided for @vkKcSys_git.
+  ///
+  /// In en, this message translates to:
+  /// **'Code hosting: {what}'**
+  String vkKcSys_git(String what);
+
+  /// No description provided for @vkKcSys_mcp.
+  ///
+  /// In en, this message translates to:
+  /// **'Extension: {what}'**
+  String vkKcSys_mcp(String what);
+
+  /// No description provided for @vkKcSys_other.
+  ///
+  /// In en, this message translates to:
+  /// **'{what}'**
+  String vkKcSys_other(String what);
+
+  /// No description provided for @vkKcSys_provider.
+  ///
+  /// In en, this message translates to:
+  /// **'Model provider: {what}'**
+  String vkKcSys_provider(String what);
+
+  /// No description provided for @vkKcSys_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Web search: {what}'**
+  String vkKcSys_search(String what);
+
+  /// No description provided for @vkKcSys_ssh.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine (SSH): {what}'**
+  String vkKcSys_ssh(String what);
+
+  /// No description provided for @vkKcSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept by Rasgeth'**
+  String get vkKcSystem;
+
+  /// No description provided for @vkKcSystemLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Keys set by whoever installed this server (in its environment): Rasgeth uses them, they cannot be changed here.'**
+  String get vkKcSystemLead;
+
+  /// No description provided for @vkKcSystemTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set by the administrator'**
+  String get vkKcSystemTitle;
+
+  /// No description provided for @vkKcTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Labels'**
+  String get vkKcTags;
+
+  /// No description provided for @vkKcTagsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Separated by commas: work, home…'**
+  String get vkKcTagsHelp;
+
+  /// No description provided for @vkKcTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Extensions\' tools that receive it'**
+  String get vkKcTools;
+
+  /// No description provided for @vkKcToolsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A tool chosen here gets the address to reach the service with this credential, never the value.'**
+  String get vkKcToolsHelp;
+
+  /// No description provided for @vkKcUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Address (if any)'**
+  String get vkKcUrl;
+
+  /// No description provided for @vkKcUseAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents call it {name}'**
+  String vkKcUseAs(String name);
+
+  /// No description provided for @vkKcUseBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} (browser)'**
+  String vkKcUseBrowser(String name);
+
+  /// No description provided for @vkKcUse_denied.
+  ///
+  /// In en, this message translates to:
+  /// **'asked for {name} towards {host}: you said no'**
+  String vkKcUse_denied(String host, String name);
+
+  /// No description provided for @vkKcUse_moved.
+  ///
+  /// In en, this message translates to:
+  /// **'moved {name} here from {host}'**
+  String vkKcUse_moved(String host, String name);
+
+  /// No description provided for @vkKcUse_refused.
+  ///
+  /// In en, this message translates to:
+  /// **'could not use {name} towards {host}'**
+  String vkKcUse_refused(String host, String name);
+
+  /// No description provided for @vkKcUse_used.
+  ///
+  /// In en, this message translates to:
+  /// **'used {name} towards {host}'**
+  String vkKcUse_used(String host, String name);
+
+  /// No description provided for @vkKcUsedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Used by:'**
+  String get vkKcUsedBy;
+
+  /// No description provided for @vkKcUsedByText.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth uses this key by itself. Here you can change it, choose whether agents may use it too and see every use; you remove it from its page.'**
+  String get vkKcUsedByText;
+
+  /// No description provided for @vkKcUsedTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'Used {n} times, last {when}'**
+  String vkKcUsedTimes(String n, String when);
+
+  /// No description provided for @vkKcUser.
+  ///
+  /// In en, this message translates to:
+  /// **'User or email (if any)'**
+  String get vkKcUser;
+
+  /// No description provided for @vkKcUsesLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Every time an agent asked for a credential: when, where to, and how it went.'**
+  String get vkKcUsesLead;
+
+  /// No description provided for @vkKcUsesOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Its last uses'**
+  String get vkKcUsesOne;
+
+  /// No description provided for @vkKcUsesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who used them'**
+  String get vkKcUsesTitle;
+
+  /// No description provided for @vkKcWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it may go'**
+  String get vkKcWhere;
+
+  /// No description provided for @vkKcWhereLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The value is put on a request only towards these addresses: anywhere else it is refused.'**
+  String get vkKcWhereLead;
+
+  /// No description provided for @vkKcWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who may use it'**
+  String get vkKcWho;
+
+  /// No description provided for @vkKcWhoLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents never see the value: they ask for it by name, and Rasgeth puts it on the request.'**
+  String get vkKcWhoLead;
+
+  /// No description provided for @vkMcSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Machines'**
+  String get vkMcSection;
+
+  /// No description provided for @vkSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get vkSave;
+
+  /// No description provided for @vkSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get vkSettings;
+
+  /// No description provided for @vkWzCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the code lives'**
+  String get vkWzCode;
+
+  /// No description provided for @vkWzRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Access from outside home'**
+  String get vkWzRemote;
+
+  /// No description provided for @vkAutomations.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations'**
+  String get vkAutomations;
+
+  /// No description provided for @vkChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Other chats'**
+  String get vkChats;
+
+  /// No description provided for @vkExtensions.
+  ///
+  /// In en, this message translates to:
+  /// **'Extensions'**
+  String get vkExtensions;
+
+  /// No description provided for @vkSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Models and subscriptions'**
+  String get vkSubscriptions;
+
+  /// No description provided for @vkTelegram.
+  ///
+  /// In en, this message translates to:
+  /// **'Telegram'**
+  String get vkTelegram;
+
+  /// No description provided for @g4211Hub.
+  ///
+  /// In en, this message translates to:
+  /// **'Services, skills, generation and the agents\' proposals'**
+  String get g4211Hub;
+
+  /// No description provided for @g4212Hub.
+  ///
+  /// In en, this message translates to:
+  /// **'Keys and passwords, safe in one place'**
+  String get g4212Hub;
+
+  /// No description provided for @g4211SignInOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'The service\'s page opened in the browser: sign in there, then come back here.'**
+  String get g4211SignInOpened;
+
+  /// No description provided for @g4211OpenExtensions.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Extensions'**
+  String get g4211OpenExtensions;
+
+  /// No description provided for @g4212OpenKeychain.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the keychain'**
+  String get g4212OpenKeychain;
+
+  /// No description provided for @syBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get syBackup;
+
+  /// No description provided for @syBackupAddsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A project whose name is taken here comes in beside it, with a number after the name.'**
+  String get syBackupAddsHint;
+
+  /// No description provided for @syBackupAlreadyHere.
+  ///
+  /// In en, this message translates to:
+  /// **'already here, left as it is'**
+  String get syBackupAlreadyHere;
+
+  /// No description provided for @syBackupAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Import another backup'**
+  String get syBackupAnother;
+
+  /// No description provided for @syBackupChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the backup file'**
+  String get syBackupChoose;
+
+  /// No description provided for @syBackupCounts.
+  ///
+  /// In en, this message translates to:
+  /// **'{agents} agents · {conversations} conversations · {size} of files'**
+  String syBackupCounts(String agents, String conversations, String size);
+
+  /// No description provided for @syBackupDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download {file}'**
+  String syBackupDownload(String file);
+
+  /// No description provided for @syBackupExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a backup'**
+  String get syBackupExport;
+
+  /// No description provided for @syBackupExportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects with their files, agents, conversations, chats and the board. Keys and sign-ins to services are not in it: they stay on this computer. node_modules folders are left out (they are rebuilt).'**
+  String get syBackupExportHint;
+
+  /// No description provided for @syBackupFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup of {when}'**
+  String syBackupFrom(String when);
+
+  /// No description provided for @syBackupImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import a backup'**
+  String get syBackupImport;
+
+  /// No description provided for @syBackupImportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'From another Rasgeth or from this one. Nothing here is deleted or replaced: what is in the backup is added, and what is already here stays as it is.'**
+  String get syBackupImportHint;
+
+  /// No description provided for @syBackupImportNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get syBackupImportNow;
+
+  /// No description provided for @syBackupImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Done: {projects} projects, {agents} agents and {conversations} conversations added.'**
+  String syBackupImported(String agents, String conversations, String projects);
+
+  /// No description provided for @syBackupKeepName.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep {name}'**
+  String syBackupKeepName(String name);
+
+  /// No description provided for @syBackupKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Include the keychain'**
+  String get syBackupKeys;
+
+  /// No description provided for @syBackupKeysHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sealed with a passphrase of yours, with the keys of the models, chats and mailboxes: without it the backup\'s credentials cannot be opened.'**
+  String get syBackupKeysHelp;
+
+  /// No description provided for @syBackupKeysIn.
+  ///
+  /// In en, this message translates to:
+  /// **'The backup carries a keychain: its passphrase'**
+  String get syBackupKeysIn;
+
+  /// No description provided for @syBackupKeysInHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave it empty to import everything else without the credentials.'**
+  String get syBackupKeysInHelp;
+
+  /// No description provided for @syBackupKeysWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'The keychain was not imported: wrong passphrase. Everything else was.'**
+  String get syBackupKeysWrong;
+
+  /// No description provided for @syBackupMake.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare the backup'**
+  String get syBackupMake;
+
+  /// No description provided for @syBackupMakeAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare it again'**
+  String get syBackupMakeAgain;
+
+  /// No description provided for @syBackupNameQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'{who} is called {here} here and {backup} in the backup. Which name does it keep?'**
+  String syBackupNameQuestion(String backup, String here, String who);
+
+  /// No description provided for @syBackupNothingNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Every project in this backup is here already: only what is missing is added.'**
+  String get syBackupNothingNew;
+
+  /// No description provided for @syBackupPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Every project with its files, the agents and the conversations in one file: keep it safe, or carry it to another Rasgeth.'**
+  String get syBackupPurpose;
+
+  /// No description provided for @syBackupSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved in your Downloads folder.'**
+  String get syBackupSaved;
+
+  /// No description provided for @syBackupSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending the file to Rasgeth'**
+  String get syBackupSending;
+
+  /// No description provided for @syBackupTakeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Use {name}'**
+  String syBackupTakeName(String name);
+
+  /// No description provided for @syBrainDisconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get syBrainDisconnect;
+
+  /// No description provided for @syCaddyDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'The address'**
+  String get syCaddyDomain;
+
+  /// No description provided for @syCaddyDomainHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth gets its HTTPS certificate from Let\'s Encrypt by itself.'**
+  String get syCaddyDomainHelp;
+
+  /// No description provided for @syCaddyPihole.
+  ///
+  /// In en, this message translates to:
+  /// **'Inside home some routers cannot reach their own public address: then open Rasgeth at home with its usual link, or turn on Pi-hole in Settings, Access from outside home (it is optional).'**
+  String get syCaddyPihole;
+
+  /// No description provided for @syCaddyStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'At your domain\'s provider, make a DNS record of type A for the address you want (for example rasgeth.yourdomain.com) pointing at your home\'s public address. If it changes, use a dynamic DNS service.'**
+  String get syCaddyStep1;
+
+  /// No description provided for @syCaddyStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'On your router, forward ports 80 and 443 to this computer.'**
+  String get syCaddyStep2;
+
+  /// No description provided for @syCaddyWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'With this way Rasgeth\'s sign-in page is on the internet: keep the password strong and the second check on.'**
+  String get syCaddyWarning;
+
+  /// No description provided for @syCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get syCancel;
+
+  /// No description provided for @syCfAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Safer still: in Cloudflare Zero Trust, Access, add an application for this address, so Cloudflare asks who you are before the page even appears.'**
+  String get syCfAccess;
+
+  /// No description provided for @syCfBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy a domain on Cloudflare'**
+  String get syCfBuy;
+
+  /// No description provided for @syCfHost.
+  ///
+  /// In en, this message translates to:
+  /// **'The address you chose'**
+  String get syCfHost;
+
+  /// No description provided for @syCfHostHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For example rasgeth.yourdomain.com: the subdomain and domain of the Public hostname.'**
+  String get syCfHostHelp;
+
+  /// No description provided for @syCfStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'If you have no domain yet, buy one (Cloudflare sells them at cost, about 10 euros a year):'**
+  String get syCfStep1;
+
+  /// No description provided for @syCfStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Tunnels in Cloudflare Zero Trust, press Create a tunnel, choose Cloudflared and give it a name (for example rasgeth):'**
+  String get syCfStep2;
+
+  /// No description provided for @syCfStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'In the step Public hostname: subdomain rasgeth, your domain, Service type HTTP, URL redgiant:7600. Save.'**
+  String get syCfStep3;
+
+  /// No description provided for @syCfStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloudflare shows a command with a long token after --token: copy only the token and write the address here.'**
+  String get syCfStep4;
+
+  /// No description provided for @syCfToken.
+  ///
+  /// In en, this message translates to:
+  /// **'The tunnel\'s token'**
+  String get syCfToken;
+
+  /// No description provided for @syCfTokenHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The long string after --token in the command Cloudflare shows (it starts with eyJ).'**
+  String get syCfTokenHelp;
+
+  /// No description provided for @syCfTunnels.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloudflare tunnels'**
+  String get syCfTunnels;
+
+  /// No description provided for @syConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'connecting…'**
+  String get syConnecting;
+
+  /// No description provided for @syConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations'**
+  String get syConversations;
+
+  /// No description provided for @syErr_agent_limit.
+  ///
+  /// In en, this message translates to:
+  /// **'The project «{project}» can have at most {max} agents besides its orchestrator: it has {count}. Raise the limit in Settings › Projects or remove one.'**
+  String syErr_agent_limit(String count, String max, String project);
+
+  /// No description provided for @syErr_agent_removed.
+  ///
+  /// In en, this message translates to:
+  /// **'The agent was removed from the team: restore it to work with it.'**
+  String get syErr_agent_removed;
+
+  /// No description provided for @syErr_agent_stopped.
+  ///
+  /// In en, this message translates to:
+  /// **'The agent is stopped (paused): resume it to go on.'**
+  String get syErr_agent_stopped;
+
+  /// No description provided for @syErr_bad_name.
+  ///
+  /// In en, this message translates to:
+  /// **'That is not a name (for instance git.home.example.com).'**
+  String get syErr_bad_name;
+
+  /// No description provided for @syErr_code_rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Anthropic did not accept this code: it may be incomplete or old. Open the sign-in page again to get a new one.'**
+  String get syErr_code_rejected;
+
+  /// No description provided for @syErr_email_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The mailbox did not let Rasgeth in: check the server, the address and the app password.'**
+  String get syErr_email_failed;
+
+  /// No description provided for @syErr_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The sign-in did not finish. Try again from the start.'**
+  String get syErr_failed;
+
+  /// No description provided for @syErr_host_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'The server\'s name is known, but its address does not answer from Rasgeth. See Settings › Access from outside home › Your home services.'**
+  String get syErr_host_unreachable;
+
+  /// No description provided for @syErr_key_rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'The provider refused this key. Check that you copied all of it and that it is still active.'**
+  String get syErr_key_rejected;
+
+  /// No description provided for @syErr_memory_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Write something to remember.'**
+  String get syErr_memory_empty;
+
+  /// No description provided for @syErr_memory_forgotten.
+  ///
+  /// In en, this message translates to:
+  /// **'A memory forgotten for good cannot come back.'**
+  String get syErr_memory_forgotten;
+
+  /// No description provided for @syErr_memory_full.
+  ///
+  /// In en, this message translates to:
+  /// **'The memory is full: delete or merge some old memories first.'**
+  String get syErr_memory_full;
+
+  /// No description provided for @syErr_memory_gone.
+  ///
+  /// In en, this message translates to:
+  /// **'That memory is not there any more.'**
+  String get syErr_memory_gone;
+
+  /// No description provided for @syErr_memory_long.
+  ///
+  /// In en, this message translates to:
+  /// **'A memory is at most 400 characters: write it shorter.'**
+  String get syErr_memory_long;
+
+  /// No description provided for @syErr_memory_moved.
+  ///
+  /// In en, this message translates to:
+  /// **'The memory changed again since: undo the newer change first.'**
+  String get syErr_memory_moved;
+
+  /// No description provided for @syErr_memory_same.
+  ///
+  /// In en, this message translates to:
+  /// **'Another memory already says the same.'**
+  String get syErr_memory_same;
+
+  /// No description provided for @syErr_memory_secret.
+  ///
+  /// In en, this message translates to:
+  /// **'That looks like a password, a code or a card number: secrets are never kept in memory.'**
+  String get syErr_memory_secret;
+
+  /// No description provided for @syErr_memory_undone.
+  ///
+  /// In en, this message translates to:
+  /// **'That change was already undone.'**
+  String get syErr_memory_undone;
+
+  /// No description provided for @syErr_missing_permission.
+  ///
+  /// In en, this message translates to:
+  /// **'GitHub did not let the token create repositories. Make a new one with Administration set to Read and write.'**
+  String get syErr_missing_permission;
+
+  /// No description provided for @syErr_name_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth cannot find the server\'s name in the DNS it uses. See Settings › Access from outside home › Your home services.'**
+  String get syErr_name_not_found;
+
+  /// No description provided for @syErr_no_login.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Anthropic\'s sign-in page first.'**
+  String get syErr_no_login;
+
+  /// No description provided for @syErr_no_model.
+  ///
+  /// In en, this message translates to:
+  /// **'No model is chosen yet: open Settings, Models and subscriptions, connect one (a subscription, a key or a local model) and choose it in \"The model agents use\".'**
+  String get syErr_no_model;
+
+  /// No description provided for @syErr_no_page.
+  ///
+  /// In en, this message translates to:
+  /// **'Anthropic\'s sign-in page could not be prepared. Try again in a moment.'**
+  String get syErr_no_page;
+
+  /// No description provided for @syErr_no_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a password first.'**
+  String get syErr_no_password;
+
+  /// No description provided for @syErr_portrait_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the trait.'**
+  String get syErr_portrait_empty;
+
+  /// No description provided for @syErr_portrait_gone.
+  ///
+  /// In en, this message translates to:
+  /// **'That trait is not there any more.'**
+  String get syErr_portrait_gone;
+
+  /// No description provided for @syErr_portrait_long.
+  ///
+  /// In en, this message translates to:
+  /// **'A trait is at most 200 characters: write it shorter.'**
+  String get syErr_portrait_long;
+
+  /// No description provided for @syErr_portrait_private.
+  ///
+  /// In en, this message translates to:
+  /// **'Email addresses and phone numbers never go into the portrait.'**
+  String get syErr_portrait_private;
+
+  /// No description provided for @syErr_portrait_secret.
+  ///
+  /// In en, this message translates to:
+  /// **'That looks like a password, a code or a card number: secrets never go into the portrait.'**
+  String get syErr_portrait_secret;
+
+  /// No description provided for @syErr_project_archived.
+  ///
+  /// In en, this message translates to:
+  /// **'The project is archived: restore it to work in it.'**
+  String get syErr_project_archived;
+
+  /// No description provided for @syErr_provider_stalled.
+  ///
+  /// In en, this message translates to:
+  /// **'The provider has not answered for {minutes} minutes: I tried again {retries} times. Try again in a while, or choose another model.'**
+  String syErr_provider_stalled(String minutes, String retries);
+
+  /// No description provided for @syErr_terms.
+  ///
+  /// In en, this message translates to:
+  /// **'First tick the box about the providers\' terms.'**
+  String get syErr_terms;
+
+  /// No description provided for @syErr_token_rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Telegram refused this token. Copy it again from BotFather\'s message, all of it.'**
+  String get syErr_token_rejected;
+
+  /// No description provided for @syErr_too_many.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many wrong tries: wait 15 minutes, then try again.'**
+  String get syErr_too_many;
+
+  /// No description provided for @syErr_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'The provider did not answer. Check the address and the internet connection, then try again.'**
+  String get syErr_unreachable;
+
+  /// No description provided for @syErr_vault_bad_file.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is not a password export Rasgeth can read.'**
+  String get syErr_vault_bad_file;
+
+  /// No description provided for @syErr_vault_bad_passphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong passphrase, or a damaged file.'**
+  String get syErr_vault_bad_passphrase;
+
+  /// No description provided for @syErr_vault_closed.
+  ///
+  /// In en, this message translates to:
+  /// **'The keychain is closed on this computer.'**
+  String get syErr_vault_closed;
+
+  /// No description provided for @syErr_vault_in_git.
+  ///
+  /// In en, this message translates to:
+  /// **'The keychain\'s folder is inside a git repository: it must never be committed. Move Rasgeth\'s data folder outside it.'**
+  String get syErr_vault_in_git;
+
+  /// No description provided for @syErr_vault_name_taken.
+  ///
+  /// In en, this message translates to:
+  /// **'Another credential has that name for the agents: choose another one.'**
+  String get syErr_vault_name_taken;
+
+  /// No description provided for @syErr_vault_no_value.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the secret.'**
+  String get syErr_vault_no_value;
+
+  /// No description provided for @syErr_vault_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'That credential is no longer in the keychain.'**
+  String get syErr_vault_not_found;
+
+  /// No description provided for @syErr_vault_system.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth uses this key: remove it from its page in Settings.'**
+  String get syErr_vault_system;
+
+  /// No description provided for @syErr_voice_convert.
+  ///
+  /// In en, this message translates to:
+  /// **'The recording could not be converted for whisper on this computer.'**
+  String get syErr_voice_convert;
+
+  /// No description provided for @syErr_voice_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'The recording is empty.'**
+  String get syErr_voice_empty;
+
+  /// No description provided for @syErr_voice_key_refused.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} refused the key: check it in Settings, Voice.'**
+  String syErr_voice_key_refused(String name);
+
+  /// No description provided for @syErr_voice_no_key.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has no key yet: add it in Settings, Voice.'**
+  String syErr_voice_no_key(String name);
+
+  /// No description provided for @syErr_voice_no_service.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth has no transcription service: choose one in Settings, Voice, Transcription.'**
+  String get syErr_voice_no_service;
+
+  /// No description provided for @syErr_voice_provider.
+  ///
+  /// In en, this message translates to:
+  /// **'This provider cannot do it: choose another one.'**
+  String get syErr_voice_provider;
+
+  /// No description provided for @syErr_voice_rate_limited.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} says too many requests or no credit left.'**
+  String syErr_voice_rate_limited(String name);
+
+  /// No description provided for @syErr_voice_service_error.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} answered with an error ({status}).'**
+  String syErr_voice_service_error(String name, String status);
+
+  /// No description provided for @syErr_voice_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} took too long to answer.'**
+  String syErr_voice_timeout(String name);
+
+  /// No description provided for @syErr_voice_too_long.
+  ///
+  /// In en, this message translates to:
+  /// **'The recording is too long.'**
+  String get syErr_voice_too_long;
+
+  /// No description provided for @syErr_voice_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} cannot be reached: check that it is on and its address.'**
+  String syErr_voice_unreachable(String name);
+
+  /// No description provided for @syErr_weak.
+  ///
+  /// In en, this message translates to:
+  /// **'The password needs at least 10 characters.'**
+  String get syErr_weak;
+
+  /// No description provided for @syErr_wrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong password or code.'**
+  String get syErr_wrong;
+
+  /// No description provided for @syError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get syError;
+
+  /// No description provided for @syFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'failed'**
+  String get syFailed;
+
+  /// No description provided for @syFbArch.
+  ///
+  /// In en, this message translates to:
+  /// **'Architecture'**
+  String get syFbArch;
+
+  /// No description provided for @syFbBackupBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'A backup is already running.'**
+  String get syFbBackupBusy;
+
+  /// No description provided for @syFbBackupNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a backup now'**
+  String get syFbBackupNow;
+
+  /// No description provided for @syFbBackupQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Best on another disk: if this one breaks, the copy is still there.'**
+  String get syFbBackupQ;
+
+  /// No description provided for @syFbBackupStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup started: it shows in Downloads and jobs.'**
+  String get syFbBackupStarted;
+
+  /// No description provided for @syFbBackupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups'**
+  String get syFbBackupTitle;
+
+  /// No description provided for @syFbCannotMount.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot be mounted here'**
+  String get syFbCannotMount;
+
+  /// No description provided for @syFbContainerDisks.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth OS runs in a container ({name}): the disks it sees are those of the machine hosting it and cannot be used from here.'**
+  String syFbContainerDisks(String name);
+
+  /// No description provided for @syFbDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day'**
+  String get syFbDaily;
+
+  /// No description provided for @syFbDataDir.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get syFbDataDir;
+
+  /// No description provided for @syFbDataQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects, conversations and settings are here.'**
+  String get syFbDataQ;
+
+  /// No description provided for @syFbDataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The data'**
+  String get syFbDataTitle;
+
+  /// No description provided for @syFbDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get syFbDay;
+
+  /// No description provided for @syFbDestDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups go to the disk {label} ({path}).'**
+  String syFbDestDisk(String label, String path);
+
+  /// No description provided for @syFbDestFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups go to the folder {path}.'**
+  String syFbDestFolder(String path);
+
+  /// No description provided for @syFbDestNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups go to the node {name}, in the storage it lends.'**
+  String syFbDestNode(String name);
+
+  /// No description provided for @syFbDestSftp.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups go to {machine}, in {path} (SFTP).'**
+  String syFbDestSftp(String machine, String path);
+
+  /// No description provided for @syFbDestSmb.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups go to the shared folder {path}, as {user}.'**
+  String syFbDestSmb(String path, String user);
+
+  /// No description provided for @syFbDisks.
+  ///
+  /// In en, this message translates to:
+  /// **'Disks'**
+  String get syFbDisks;
+
+  /// No description provided for @syFbDisksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Removable disks'**
+  String get syFbDisksTitle;
+
+  /// No description provided for @syFbErr_already.
+  ///
+  /// In en, this message translates to:
+  /// **'The container already has a folder with that name.'**
+  String get syFbErr_already;
+
+  /// No description provided for @syFbErr_auth.
+  ///
+  /// In en, this message translates to:
+  /// **'The destination refused the sign-in: check the user and the password (or the machine\'s key).'**
+  String get syFbErr_auth;
+
+  /// No description provided for @syFbErr_bad_path.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a full folder path (/volume1/Rasgeth) or one from the home (~/backups).'**
+  String get syFbErr_bad_path;
+
+  /// No description provided for @syFbErr_denied.
+  ///
+  /// In en, this message translates to:
+  /// **'The destination does not let this user write there.'**
+  String get syFbErr_denied;
+
+  /// No description provided for @syFbErr_disk_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'The backup disk is not connected: plug it in. Nothing was written elsewhere.'**
+  String get syFbErr_disk_missing;
+
+  /// No description provided for @syFbErr_has_filesystem.
+  ///
+  /// In en, this message translates to:
+  /// **'That disk is formatted already: it is never formatted again from here.'**
+  String get syFbErr_has_filesystem;
+
+  /// No description provided for @syFbErr_keychain_closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the keychain first: the password is kept there.'**
+  String get syFbErr_keychain_closed;
+
+  /// No description provided for @syFbErr_mismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The copy arrived different from the original: it was not kept. Try again.'**
+  String get syFbErr_mismatch;
+
+  /// No description provided for @syFbErr_needs_format.
+  ///
+  /// In en, this message translates to:
+  /// **'That disk is not formatted.'**
+  String get syFbErr_needs_format;
+
+  /// No description provided for @syFbErr_no_container.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no container with that id on the host.'**
+  String get syFbErr_no_container;
+
+  /// No description provided for @syFbErr_no_destination.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose where backups go first.'**
+  String get syFbErr_no_destination;
+
+  /// No description provided for @syFbErr_no_disk.
+  ///
+  /// In en, this message translates to:
+  /// **'That disk is not a removable disk of the host (any more).'**
+  String get syFbErr_no_disk;
+
+  /// No description provided for @syFbErr_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'The folder or the destination is not there (any more).'**
+  String get syFbErr_not_found;
+
+  /// No description provided for @syFbErr_not_proxmox.
+  ///
+  /// In en, this message translates to:
+  /// **'That machine is not a Proxmox host.'**
+  String get syFbErr_not_proxmox;
+
+  /// No description provided for @syFbErr_not_trusted.
+  ///
+  /// In en, this message translates to:
+  /// **'Test this machine once in Settings › Machines and trust its key first.'**
+  String get syFbErr_not_trusted;
+
+  /// No description provided for @syFbErr_place_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'The folder from the host is not mounted now: nothing was written on the system disk.'**
+  String get syFbErr_place_missing;
+
+  /// No description provided for @syFbErr_smb_address.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the shared folder as \\\\host\\share\\folder (letters, digits, spaces, dots and dashes).'**
+  String get syFbErr_smb_address;
+
+  /// No description provided for @syFbErr_smb_bad_domain.
+  ///
+  /// In en, this message translates to:
+  /// **'The domain is letters, digits, dots and dashes.'**
+  String get syFbErr_smb_bad_domain;
+
+  /// No description provided for @syFbErr_smb_bad_password.
+  ///
+  /// In en, this message translates to:
+  /// **'This password cannot be used (no line breaks).'**
+  String get syFbErr_smb_bad_password;
+
+  /// No description provided for @syFbErr_smb_bad_user.
+  ///
+  /// In en, this message translates to:
+  /// **'This user name cannot be used.'**
+  String get syFbErr_smb_bad_user;
+
+  /// No description provided for @syFbErr_smb_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared folders need smbclient, which this installation does not have.'**
+  String get syFbErr_smb_missing;
+
+  /// No description provided for @syFbErr_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'The destination does not answer: is it on and on the network? Nothing was written elsewhere.'**
+  String get syFbErr_unreachable;
+
+  /// No description provided for @syFbFolderLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A folder this machine can write to: a network share, a disk mounted by you. Not inside the data folder.'**
+  String get syFbFolderLead;
+
+  /// No description provided for @syFbFolderPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get syFbFolderPath;
+
+  /// No description provided for @syFbFolderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Or a folder'**
+  String get syFbFolderTitle;
+
+  /// No description provided for @syFbFreeOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{free} free'**
+  String syFbFreeOf(String free);
+
+  /// No description provided for @syFbFreeOfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{free} GB free of {total} GB'**
+  String syFbFreeOfTotal(String free, String total);
+
+  /// No description provided for @syFbFri.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get syFbFri;
+
+  /// No description provided for @syFbHostBad_bad_device.
+  ///
+  /// In en, this message translates to:
+  /// **'This disk\'s device cannot be used.'**
+  String get syFbHostBad_bad_device;
+
+  /// No description provided for @syFbHostBad_bad_id.
+  ///
+  /// In en, this message translates to:
+  /// **'The container id is a number, like 105.'**
+  String get syFbHostBad_bad_id;
+
+  /// No description provided for @syFbHostBad_bad_mp.
+  ///
+  /// In en, this message translates to:
+  /// **'No free mount point.'**
+  String get syFbHostBad_bad_mp;
+
+  /// No description provided for @syFbHostBad_bad_name.
+  ///
+  /// In en, this message translates to:
+  /// **'This disk\'s name cannot be used for a folder.'**
+  String get syFbHostBad_bad_name;
+
+  /// No description provided for @syFbHostId.
+  ///
+  /// In en, this message translates to:
+  /// **'Container id on Proxmox'**
+  String get syFbHostId;
+
+  /// No description provided for @syFbHostIdHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The number in Proxmox\'s list (this container is called {hostname}).'**
+  String syFbHostIdHelp(String hostname);
+
+  /// No description provided for @syFbHostKind.
+  ///
+  /// In en, this message translates to:
+  /// **'The host'**
+  String get syFbHostKind;
+
+  /// No description provided for @syFbHostLead.
+  ///
+  /// In en, this message translates to:
+  /// **'From a container Rasgeth sees the host\'s disks but cannot mount them: the host mounts the disk and passes a folder in. Rasgeth notices it by itself.'**
+  String get syFbHostLead;
+
+  /// No description provided for @syFbHostMany.
+  ///
+  /// In en, this message translates to:
+  /// **'On this machine there are {n} removable disks: pick the one for backups.'**
+  String syFbHostMany(String n);
+
+  /// No description provided for @syFbHostNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No removable disk of the host is in sight: plug it into the host, or use a folder on the network below.'**
+  String get syFbHostNone;
+
+  /// No description provided for @syFbHostOne.
+  ///
+  /// In en, this message translates to:
+  /// **'On this machine there is the disk {title}, {how}, {size}.'**
+  String syFbHostOne(String how, String size, String title);
+
+  /// No description provided for @syFbHostOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get syFbHostOther;
+
+  /// No description provided for @syFbHostSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'To run on the host, as root'**
+  String get syFbHostSteps;
+
+  /// No description provided for @syFbHostTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A disk of the host'**
+  String get syFbHostTitle;
+
+  /// No description provided for @syFbHostWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking every few seconds: when {target} arrives it shows above, ready to use.'**
+  String syFbHostWatching(String target);
+
+  /// No description provided for @syFbHour.
+  ///
+  /// In en, this message translates to:
+  /// **'Hour'**
+  String get syFbHour;
+
+  /// No description provided for @syFbKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups kept'**
+  String get syFbKeep;
+
+  /// No description provided for @syFbKeepN.
+  ///
+  /// In en, this message translates to:
+  /// **'keep {n}'**
+  String syFbKeepN(String n);
+
+  /// No description provided for @syFbLastFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The backup of {when} did not work: {why}'**
+  String syFbLastFailed(String when, String why);
+
+  /// No description provided for @syFbLastOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Last backup: {when}, read back and complete.'**
+  String syFbLastOk(String when);
+
+  /// No description provided for @syFbListAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Look again'**
+  String get syFbListAgain;
+
+  /// No description provided for @syFbListEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup yet in {where}.'**
+  String syFbListEmpty(String where);
+
+  /// No description provided for @syFbListLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Each one can be brought back: what is new is added, nothing here is deleted.'**
+  String get syFbListLead;
+
+  /// No description provided for @syFbListShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the backups'**
+  String get syFbListShow;
+
+  /// No description provided for @syFbListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The backups there'**
+  String get syFbListTitle;
+
+  /// No description provided for @syFbMachineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine'**
+  String get syFbMachineTitle;
+
+  /// No description provided for @syFbMethod_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick one: Rasgeth mounts it only for backups. System disks are never offered.'**
+  String get syFbMethod_helper;
+
+  /// No description provided for @syFbMethod_none.
+  ///
+  /// In en, this message translates to:
+  /// **'This installation cannot mount disks (for example plain Docker without privileges): use a disk already mounted, or a folder below.'**
+  String get syFbMethod_none;
+
+  /// No description provided for @syFbMethod_udisks.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick one: the system mounts it (udisks2). System disks are never offered.'**
+  String get syFbMethod_udisks;
+
+  /// No description provided for @syFbMissing_not_installed.
+  ///
+  /// In en, this message translates to:
+  /// **'unknown: the program that tells is not installed'**
+  String get syFbMissing_not_installed;
+
+  /// No description provided for @syFbMissing_unreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'could not be read'**
+  String get syFbMissing_unreadable;
+
+  /// No description provided for @syFbMissing_unsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'not available on this system'**
+  String get syFbMissing_unsupported;
+
+  /// No description provided for @syFbMon.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get syFbMon;
+
+  /// No description provided for @syFbNetAProxy.
+  ///
+  /// In en, this message translates to:
+  /// **'a reverse proxy'**
+  String get syFbNetAProxy;
+
+  /// No description provided for @syFbNetDns.
+  ///
+  /// In en, this message translates to:
+  /// **'A DNS server on your network ({ip}): a name like rasgeth.home can point here.'**
+  String syFbNetDns(String ip);
+
+  /// No description provided for @syFbNetFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder there'**
+  String get syFbNetFolder;
+
+  /// No description provided for @syFbNetFolderHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A full path (/volume1/Rasgeth, E:\\Backup) or one from the home (~/RedGiant-backups). It is made if missing.'**
+  String get syFbNetFolderHelp;
+
+  /// No description provided for @syFbNetLanOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Local network only is a fine choice: skip this step.'**
+  String get syFbNetLanOnly;
+
+  /// No description provided for @syFbNetLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to mount: it works also in a container or in Docker. Each backup arrives under a temporary name and gets its real name only once complete and checked.'**
+  String get syFbNetLead;
+
+  /// No description provided for @syFbNetName.
+  ///
+  /// In en, this message translates to:
+  /// **'You reached Rasgeth by name: {name}.'**
+  String syFbNetName(String name);
+
+  /// No description provided for @syFbNetNoMachines.
+  ///
+  /// In en, this message translates to:
+  /// **'No machine yet: add your NAS or another computer in Settings › Machines (SSH), test it once, then come back here.'**
+  String get syFbNetNoMachines;
+
+  /// No description provided for @syFbNetNoNodes.
+  ///
+  /// In en, this message translates to:
+  /// **'No paired Rasgeth yet: pair one in Settings › Nodes (it must lend its storage).'**
+  String get syFbNetNoNodes;
+
+  /// No description provided for @syFbNetNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Another Rasgeth'**
+  String get syFbNetNode;
+
+  /// No description provided for @syFbNetNotTrusted.
+  ///
+  /// In en, this message translates to:
+  /// **'Test it in Settings › Machines first'**
+  String get syFbNetNotTrusted;
+
+  /// No description provided for @syFbNetNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing found that already reaches this machine from outside.'**
+  String get syFbNetNothing;
+
+  /// No description provided for @syFbNetPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Use for backups'**
+  String get syFbNetPick;
+
+  /// No description provided for @syFbNetProxies.
+  ///
+  /// In en, this message translates to:
+  /// **'Running on this machine: {names}.'**
+  String syFbNetProxies(String names);
+
+  /// No description provided for @syFbNetProxyFront.
+  ///
+  /// In en, this message translates to:
+  /// **'There is already {name} in front of Rasgeth.'**
+  String syFbNetProxyFront(String name);
+
+  /// No description provided for @syFbNetSftp.
+  ///
+  /// In en, this message translates to:
+  /// **'One of your machines'**
+  String get syFbNetSftp;
+
+  /// No description provided for @syFbNetSmb.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared folder (SMB)'**
+  String get syFbNetSmb;
+
+  /// No description provided for @syFbNetTailscale.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale is already running here ({name}): you can use it.'**
+  String syFbNetTailscale(String name);
+
+  /// No description provided for @syFbNetTailscaleOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale is installed here but not connected.'**
+  String get syFbNetTailscaleOff;
+
+  /// No description provided for @syFbNetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Or a folder on the network'**
+  String get syFbNetTitle;
+
+  /// No description provided for @syFbNoDisks.
+  ///
+  /// In en, this message translates to:
+  /// **'No removable disk found. Plug one in and open this page again, or use a folder.'**
+  String get syFbNoDisks;
+
+  /// No description provided for @syFbNodeOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline now'**
+  String get syFbNodeOffline;
+
+  /// No description provided for @syFbNodeOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get syFbNodeOnline;
+
+  /// No description provided for @syFbOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Only when I ask'**
+  String get syFbOff;
+
+  /// No description provided for @syFbOfferCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud models: always available.'**
+  String get syFbOfferCloud;
+
+  /// No description provided for @syFbOfferLocalCpu.
+  ///
+  /// In en, this message translates to:
+  /// **'Local models: yes, small ones on the processor, up to about {max} GB (slower than a card).'**
+  String syFbOfferLocalCpu(String max);
+
+  /// No description provided for @syFbOfferLocalGpu.
+  ///
+  /// In en, this message translates to:
+  /// **'Local models: yes, on the graphics card, up to about {max} GB.'**
+  String syFbOfferLocalGpu(String max);
+
+  /// No description provided for @syFbOfferNoLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Local models: not offered, too little memory here. You can still add one from Settings › Models.'**
+  String get syFbOfferNoLocal;
+
+  /// No description provided for @syFbPairLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the main Rasgeth\'s address and the code it shows in Settings › Nodes › «Add a node». You can also do it later, from Settings.'**
+  String get syFbPairLater;
+
+  /// No description provided for @syFbPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get syFbPassword;
+
+  /// No description provided for @syFbPasswordAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'The same password again'**
+  String get syFbPasswordAgain;
+
+  /// No description provided for @syFbPasswordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 10 characters.'**
+  String get syFbPasswordHelp;
+
+  /// No description provided for @syFbPlaceFree.
+  ///
+  /// In en, this message translates to:
+  /// **'{free} GB free of {total}'**
+  String syFbPlaceFree(String free, String total);
+
+  /// No description provided for @syFbPlaceNotWritable.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth cannot write here'**
+  String get syFbPlaceNotWritable;
+
+  /// No description provided for @syFbPlacesLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Folders the machine hosting Rasgeth mounted under /var/lib/redgiant/backups (a Proxmox mount point, a network share).'**
+  String get syFbPlacesLead;
+
+  /// No description provided for @syFbPlacesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Folders mounted for backups'**
+  String get syFbPlacesTitle;
+
+  /// No description provided for @syFbPveDo.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass it to Rasgeth'**
+  String get syFbPveDo;
+
+  /// No description provided for @syFbPveDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done: the folder {target} has arrived.'**
+  String syFbPveDone(String target);
+
+  /// No description provided for @syFbPveFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Not formatted: format and pass it'**
+  String get syFbPveFormat;
+
+  /// No description provided for @syFbPveFormatLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything on it is erased. To go on, type its name: {title}'**
+  String syFbPveFormatLabel(String title);
+
+  /// No description provided for @syFbPveFormatQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Format the disk {title}?'**
+  String syFbPveFormatQ(String title);
+
+  /// No description provided for @syFbPveFormatYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Format and pass it'**
+  String get syFbPveFormatYes;
+
+  /// No description provided for @syFbPveGuess.
+  ///
+  /// In en, this message translates to:
+  /// **'This container is {id}.'**
+  String syFbPveGuess(String id);
+
+  /// No description provided for @syFbPveHost.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: Proxmox {version}.'**
+  String syFbPveHost(String name, String version);
+
+  /// No description provided for @syFbPveLead.
+  ///
+  /// In en, this message translates to:
+  /// **'If the Proxmox host is among your machines (Settings › Machines), Rasgeth can run these steps there itself. It asks you first, with every command in the request.'**
+  String get syFbPveLead;
+
+  /// No description provided for @syFbPveLook.
+  ///
+  /// In en, this message translates to:
+  /// **'Look for the Proxmox host'**
+  String get syFbPveLook;
+
+  /// No description provided for @syFbPveNeedId.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the container id first.'**
+  String get syFbPveNeedId;
+
+  /// No description provided for @syFbPveNoDisks.
+  ///
+  /// In en, this message translates to:
+  /// **'No removable disk on that host.'**
+  String get syFbPveNoDisks;
+
+  /// No description provided for @syFbPveNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None of your {n} machines is a Proxmox host. Add the host in Settings › Machines (as root, with Rasgeth\'s key), test it, then look again.'**
+  String syFbPveNone(String n);
+
+  /// No description provided for @syFbPveQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass the disk {title} of {host} to container {id}?'**
+  String syFbPveQ(String host, String id, String title);
+
+  /// No description provided for @syFbPveRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Done on the host. If {target} does not appear in a minute, restart the container from Proxmox.'**
+  String syFbPveRestart(String target);
+
+  /// No description provided for @syFbPveText.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth asks you again in your requests, with the exact commands, before running anything on the host.'**
+  String get syFbPveText;
+
+  /// No description provided for @syFbPveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Do it for me'**
+  String get syFbPveTitle;
+
+  /// No description provided for @syFbPveYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me with the commands'**
+  String get syFbPveYes;
+
+  /// No description provided for @syFbRamFree.
+  ///
+  /// In en, this message translates to:
+  /// **'{gb} GB free now'**
+  String syFbRamFree(String gb);
+
+  /// No description provided for @syFbRamTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{gb} GB in all'**
+  String syFbRamTotal(String gb);
+
+  /// No description provided for @syFbRemovable.
+  ///
+  /// In en, this message translates to:
+  /// **'removable'**
+  String get syFbRemovable;
+
+  /// No description provided for @syFbRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get syFbRestore;
+
+  /// No description provided for @syFbRestoreQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore the backup of {when}?'**
+  String syFbRestoreQ(String when);
+
+  /// No description provided for @syFbRestoreText.
+  ///
+  /// In en, this message translates to:
+  /// **'It is read back first, then projects, agents and conversations that are not here are added. Nothing here is deleted.'**
+  String get syFbRestoreText;
+
+  /// No description provided for @syFbRestoreYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get syFbRestoreYes;
+
+  /// No description provided for @syFbRoleFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Rasgeth'**
+  String get syFbRoleFull;
+
+  /// No description provided for @syFbRoleFullText.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents, projects, chats and everything else, on this machine.'**
+  String get syFbRoleFullText;
+
+  /// No description provided for @syFbRoleNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Node of another Rasgeth'**
+  String get syFbRoleNode;
+
+  /// No description provided for @syFbRoleNodeText.
+  ///
+  /// In en, this message translates to:
+  /// **'This machine works for a Rasgeth you already have.'**
+  String get syFbRoleNodeText;
+
+  /// No description provided for @syFbRoleSettingsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'You can change it at any time: it asks first and says what changes.'**
+  String get syFbRoleSettingsLead;
+
+  /// No description provided for @syFbRoleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get syFbRoleTitle;
+
+  /// No description provided for @syFbSat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get syFbSat;
+
+  /// No description provided for @syFbSmbAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared folder'**
+  String get syFbSmbAddress;
+
+  /// No description provided for @syFbSmbAddressHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'As Windows writes it (\\\\nas\\backup\\Rasgeth) or smb://nas/backup/Rasgeth.'**
+  String get syFbSmbAddressHelp;
+
+  /// No description provided for @syFbSmbDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Domain or workgroup'**
+  String get syFbSmbDomain;
+
+  /// No description provided for @syFbSmbDomainHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Only if your network needs one (often empty).'**
+  String get syFbSmbDomainHelp;
+
+  /// No description provided for @syFbSmbMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared folders need smbclient, which this installation does not have (the Docker image and Rasgeth OS have it). On Windows use the folder field above with \\\\host\\share.'**
+  String get syFbSmbMissing;
+
+  /// No description provided for @syFbSmbPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get syFbSmbPassword;
+
+  /// No description provided for @syFbSmbPasswordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It goes into the keychain only, never into a file or a log.'**
+  String get syFbSmbPasswordHelp;
+
+  /// No description provided for @syFbSmbPasswordKept.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept in the keychain: leave it empty to keep it.'**
+  String get syFbSmbPasswordKept;
+
+  /// No description provided for @syFbSmbUser.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get syFbSmbUser;
+
+  /// No description provided for @syFbSshAddKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Add this key'**
+  String get syFbSshAddKey;
+
+  /// No description provided for @syFbSshContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'In a container ({name}) SSH reaches the container itself, at its own address, as the user redgiant.'**
+  String syFbSshContainer(String name);
+
+  /// No description provided for @syFbSshKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Public key'**
+  String get syFbSshKey;
+
+  /// No description provided for @syFbSshKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'One line starting with ssh-ed25519, ssh-rsa or ecdsa-sha2 (the .pub file).'**
+  String get syFbSshKeyHelp;
+
+  /// No description provided for @syFbSshKeyPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'ssh-ed25519 AAAA… me@laptop'**
+  String get syFbSshKeyPlaceholder;
+
+  /// No description provided for @syFbSshKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} key(s) allowed'**
+  String syFbSshKeys(String n);
+
+  /// No description provided for @syFbSshNeedKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a public key first, then switch it on.'**
+  String get syFbSshNeedKey;
+
+  /// No description provided for @syFbSshOffHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a public key below, then switch it on.'**
+  String get syFbSshOffHelp;
+
+  /// No description provided for @syFbSshOn.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH on'**
+  String get syFbSshOn;
+
+  /// No description provided for @syFbSshQ.
+  ///
+  /// In en, this message translates to:
+  /// **'To work on the machine itself from a terminal. Off unless you switch it on; keys only, never passwords.'**
+  String get syFbSshQ;
+
+  /// No description provided for @syFbSshTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH'**
+  String get syFbSshTitle;
+
+  /// No description provided for @syFbSshWhy_no_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'This installation has no Rasgeth OS system helper: SSH is managed by the system hosting it.'**
+  String get syFbSshWhy_no_helper;
+
+  /// No description provided for @syFbSshWhy_not_installed.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH (openssh-server) is not installed on this system.'**
+  String get syFbSshWhy_not_installed;
+
+  /// No description provided for @syFbSshWhy_other.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH cannot be read here: the system helper answered «{why}».'**
+  String syFbSshWhy_other(String why);
+
+  /// No description provided for @syFbSshWhy_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth OS\'s system helper took too long to answer: try again in a moment.'**
+  String get syFbSshWhy_timeout;
+
+  /// No description provided for @syFbSshWhy_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth OS\'s system helper does not answer (redgiant-helper.socket): SSH cannot be read or changed now. Restarting the machine usually brings it back.'**
+  String get syFbSshWhy_unreachable;
+
+  /// No description provided for @syFbSun.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get syFbSun;
+
+  /// No description provided for @syFbSystemLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine Rasgeth runs on, its role, where its data and backups live, and SSH.'**
+  String get syFbSystemLead;
+
+  /// No description provided for @syFbSystemQ.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get syFbSystemQ;
+
+  /// No description provided for @syFbSystemSection.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get syFbSystemSection;
+
+  /// No description provided for @syFbThu.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get syFbThu;
+
+  /// No description provided for @syFbToFullQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Make this a complete Rasgeth again?'**
+  String get syFbToFullQ;
+
+  /// No description provided for @syFbToFullText.
+  ///
+  /// In en, this message translates to:
+  /// **'It stops working for the other Rasgeth; its own agents, projects and conversations come back as they were.'**
+  String get syFbToFullText;
+
+  /// No description provided for @syFbToFullYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Make it complete'**
+  String get syFbToFullYes;
+
+  /// No description provided for @syFbToNodeQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Make this Rasgeth a node?'**
+  String get syFbToNodeQ;
+
+  /// No description provided for @syFbToNodeText.
+  ///
+  /// In en, this message translates to:
+  /// **'It will stop being a Rasgeth of its own once paired: its agents, projects and conversations stay saved, untouched, but they rest until you make it complete again.'**
+  String get syFbToNodeText;
+
+  /// No description provided for @syFbToNodeYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Make it a node'**
+  String get syFbToNodeYes;
+
+  /// No description provided for @syFbTue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get syFbTue;
+
+  /// No description provided for @syFbUseDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'Use for backups'**
+  String get syFbUseDisk;
+
+  /// No description provided for @syFbUseFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this folder'**
+  String get syFbUseFolder;
+
+  /// No description provided for @syFbUsePlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Use for backups'**
+  String get syFbUsePlace;
+
+  /// No description provided for @syFbUseShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this shared folder'**
+  String get syFbUseShare;
+
+  /// No description provided for @syFbVirt.
+  ///
+  /// In en, this message translates to:
+  /// **'Runs on'**
+  String get syFbVirt;
+
+  /// No description provided for @syFbVirtContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'a container ({name})'**
+  String syFbVirtContainer(String name);
+
+  /// No description provided for @syFbVirtNone.
+  ///
+  /// In en, this message translates to:
+  /// **'a physical machine'**
+  String get syFbVirtNone;
+
+  /// No description provided for @syFbVirtVm.
+  ///
+  /// In en, this message translates to:
+  /// **'a virtual machine ({name})'**
+  String syFbVirtVm(String name);
+
+  /// No description provided for @syFbWed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get syFbWed;
+
+  /// No description provided for @syFbWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every week'**
+  String get syFbWeekly;
+
+  /// No description provided for @syFbWhenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get syFbWhenTitle;
+
+  /// No description provided for @syFbWhyFs.
+  ///
+  /// In en, this message translates to:
+  /// **'Format not supported'**
+  String get syFbWhyFs;
+
+  /// No description provided for @syFbWhyNoFs.
+  ///
+  /// In en, this message translates to:
+  /// **'Not formatted'**
+  String get syFbWhyNoFs;
+
+  /// No description provided for @syFbWhyNoUuid.
+  ///
+  /// In en, this message translates to:
+  /// **'Without an id'**
+  String get syFbWhyNoUuid;
+
+  /// No description provided for @syFbWhyNotDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a disk'**
+  String get syFbWhyNotDisk;
+
+  /// No description provided for @syFbWhyNotRemovable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not removable'**
+  String get syFbWhyNotRemovable;
+
+  /// No description provided for @syFbWhySystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Holds the system'**
+  String get syFbWhySystem;
+
+  /// No description provided for @syFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get syFolder;
+
+  /// No description provided for @syGitGiteaAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'The same password again'**
+  String get syGitGiteaAgain;
+
+  /// No description provided for @syGitGiteaGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'Open «Your home services»'**
+  String get syGitGiteaGuide;
+
+  /// No description provided for @syGitGiteaMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The two passwords are different.'**
+  String get syGitGiteaMismatch;
+
+  /// No description provided for @syInspector.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspector'**
+  String get syInspector;
+
+  /// No description provided for @syJob_pihole.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting Pi-hole'**
+  String get syJob_pihole;
+
+  /// No description provided for @syJob_remote.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening access from outside'**
+  String get syJob_remote;
+
+  /// No description provided for @syJob_step_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating your account'**
+  String get syJob_step_account;
+
+  /// No description provided for @syJob_step_arrive.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the folder'**
+  String get syJob_step_arrive;
+
+  /// No description provided for @syJob_step_ask.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for your yes'**
+  String get syJob_step_ask;
+
+  /// No description provided for @syJob_step_conversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations'**
+  String get syJob_step_conversations;
+
+  /// No description provided for @syJob_step_convert.
+  ///
+  /// In en, this message translates to:
+  /// **'Converting'**
+  String get syJob_step_convert;
+
+  /// No description provided for @syJob_step_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copying the models'**
+  String get syJob_step_copy;
+
+  /// No description provided for @syJob_step_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects, agents and settings'**
+  String get syJob_step_data;
+
+  /// No description provided for @syJob_step_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading the model'**
+  String get syJob_step_download;
+
+  /// No description provided for @syJob_step_draft.
+  ///
+  /// In en, this message translates to:
+  /// **'With the small model'**
+  String get syJob_step_draft;
+
+  /// No description provided for @syJob_step_fetch.
+  ///
+  /// In en, this message translates to:
+  /// **'Bringing the backup here'**
+  String get syJob_step_fetch;
+
+  /// No description provided for @syJob_step_files.
+  ///
+  /// In en, this message translates to:
+  /// **'The projects\' files'**
+  String get syJob_step_files;
+
+  /// No description provided for @syJob_step_gitea_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading Gitea (only once)'**
+  String get syJob_step_gitea_image;
+
+  /// No description provided for @syJob_step_gitea_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting Gitea'**
+  String get syJob_step_gitea_start;
+
+  /// No description provided for @syJob_step_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading the engine (only once)'**
+  String get syJob_step_image;
+
+  /// No description provided for @syJob_step_image_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading'**
+  String get syJob_step_image_download;
+
+  /// No description provided for @syJob_step_load.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading the model into memory'**
+  String get syJob_step_load;
+
+  /// No description provided for @syJob_step_look.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking at the host'**
+  String get syJob_step_look;
+
+  /// No description provided for @syJob_step_model_download.
+  ///
+  /// In en, this message translates to:
+  /// **'The model'**
+  String get syJob_step_model_download;
+
+  /// No description provided for @syJob_step_model_prepare.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing it for the page'**
+  String get syJob_step_model_prepare;
+
+  /// No description provided for @syJob_step_move.
+  ///
+  /// In en, this message translates to:
+  /// **'Copying to the new disk'**
+  String get syJob_step_move;
+
+  /// No description provided for @syJob_step_ngram.
+  ///
+  /// In en, this message translates to:
+  /// **'With the n-grams'**
+  String get syJob_step_ngram;
+
+  /// No description provided for @syJob_step_node_check.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking the video (SHA-256)'**
+  String get syJob_step_node_check;
+
+  /// No description provided for @syJob_step_node_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copying the files to {node}'**
+  String syJob_step_node_copy(String node);
+
+  /// No description provided for @syJob_step_node_fetch.
+  ///
+  /// In en, this message translates to:
+  /// **'Bringing the video back from {node}'**
+  String syJob_step_node_fetch(String node);
+
+  /// No description provided for @syJob_step_node_ffmpeg.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting ffmpeg ready on {node}'**
+  String syJob_step_node_ffmpeg(String node);
+
+  /// No description provided for @syJob_step_none.
+  ///
+  /// In en, this message translates to:
+  /// **'The model alone'**
+  String get syJob_step_none;
+
+  /// No description provided for @syJob_step_ocr_languages.
+  ///
+  /// In en, this message translates to:
+  /// **'The languages'**
+  String get syJob_step_ocr_languages;
+
+  /// No description provided for @syJob_step_ocr_program.
+  ///
+  /// In en, this message translates to:
+  /// **'The program'**
+  String get syJob_step_ocr_program;
+
+  /// No description provided for @syJob_step_pihole_check.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking that it answers'**
+  String get syJob_step_pihole_check;
+
+  /// No description provided for @syJob_step_pihole_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading Pi-hole (only once)'**
+  String get syJob_step_pihole_image;
+
+  /// No description provided for @syJob_step_pihole_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting Pi-hole'**
+  String get syJob_step_pihole_start;
+
+  /// No description provided for @syJob_step_preload.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the model once, so the first message does not wait for the disk'**
+  String get syJob_step_preload;
+
+  /// No description provided for @syJob_step_remote_cert.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting the certificate from Let\'s Encrypt'**
+  String get syJob_step_remote_cert;
+
+  /// No description provided for @syJob_step_remote_connect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting to Cloudflare'**
+  String get syJob_step_remote_connect;
+
+  /// No description provided for @syJob_step_remote_https.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting the safe address (HTTPS)'**
+  String get syJob_step_remote_https;
+
+  /// No description provided for @syJob_step_remote_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading what is needed (only once)'**
+  String get syJob_step_remote_image;
+
+  /// No description provided for @syJob_step_remote_login.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you to sign in to Tailscale'**
+  String get syJob_step_remote_login;
+
+  /// No description provided for @syJob_step_remote_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting it'**
+  String get syJob_step_remote_start;
+
+  /// No description provided for @syJob_step_restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Putting the engine back as it was'**
+  String get syJob_step_restore;
+
+  /// No description provided for @syJob_step_run.
+  ///
+  /// In en, this message translates to:
+  /// **'Running the steps on the host'**
+  String get syJob_step_run;
+
+  /// No description provided for @syJob_step_searxng_check.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking that it answers'**
+  String get syJob_step_searxng_check;
+
+  /// No description provided for @syJob_step_searxng_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading SearXNG (only once)'**
+  String get syJob_step_searxng_image;
+
+  /// No description provided for @syJob_step_searxng_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting it'**
+  String get syJob_step_searxng_start;
+
+  /// No description provided for @syJob_step_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting the engine'**
+  String get syJob_step_start;
+
+  /// No description provided for @syJob_step_switch.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting the model on Windows'**
+  String get syJob_step_switch;
+
+  /// No description provided for @syJob_step_tool_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading'**
+  String get syJob_step_tool_download;
+
+  /// No description provided for @syJob_step_tool_unpack.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpacking'**
+  String get syJob_step_tool_unpack;
+
+  /// No description provided for @syJob_step_try.
+  ///
+  /// In en, this message translates to:
+  /// **'Trying an answer'**
+  String get syJob_step_try;
+
+  /// No description provided for @syJob_step_tune.
+  ///
+  /// In en, this message translates to:
+  /// **'Measuring this computer to pick the fastest setting'**
+  String get syJob_step_tune;
+
+  /// No description provided for @syJob_step_verify.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the backup back'**
+  String get syJob_step_verify;
+
+  /// No description provided for @syJob_step_video_derive.
+  ///
+  /// In en, this message translates to:
+  /// **'Making the file'**
+  String get syJob_step_video_derive;
+
+  /// No description provided for @syJob_step_video_probe.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the file'**
+  String get syJob_step_video_probe;
+
+  /// No description provided for @syJob_step_video_render.
+  ///
+  /// In en, this message translates to:
+  /// **'Rendering with ffmpeg'**
+  String get syJob_step_video_render;
+
+  /// No description provided for @syJob_step_video_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving it in the project'**
+  String get syJob_step_video_save;
+
+  /// No description provided for @syJob_step_video_silences.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding the silences'**
+  String get syJob_step_video_silences;
+
+  /// No description provided for @syJob_step_video_sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Taking the sound'**
+  String get syJob_step_video_sound;
+
+  /// No description provided for @syJob_step_video_transcribe.
+  ///
+  /// In en, this message translates to:
+  /// **'Writing down the words'**
+  String get syJob_step_video_transcribe;
+
+  /// No description provided for @syJob_step_video_wait.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the render before it'**
+  String get syJob_step_video_wait;
+
+  /// No description provided for @syKcImported.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} credentials added to the keychain.'**
+  String syKcImported(String n);
+
+  /// No description provided for @syKcPassphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrase'**
+  String get syKcPassphrase;
+
+  /// No description provided for @syKcPassphraseHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 8 characters. Keep it somewhere safe: it cannot be recovered.'**
+  String get syKcPassphraseHelp;
+
+  /// No description provided for @syLmRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'recommended'**
+  String get syLmRecommended;
+
+  /// No description provided for @syLoginCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code from the app (6 digits)'**
+  String get syLoginCode;
+
+  /// No description provided for @syMcAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get syMcAdd;
+
+  /// No description provided for @syMcAuthKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Key'**
+  String get syMcAuthKey;
+
+  /// No description provided for @syMcAuthPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get syMcAuthPassword;
+
+  /// No description provided for @syMcChangedNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get syMcChangedNow;
+
+  /// No description provided for @syMcChangedText.
+  ///
+  /// In en, this message translates to:
+  /// **'Another computer may be in the place of «{name}». Nothing was sent and the connection was refused. Trust the new key only if you know why it changed (the system was reinstalled, the machine was replaced).'**
+  String syMcChangedText(String name);
+
+  /// No description provided for @syMcChangedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Danger: the machine answered with another key'**
+  String get syMcChangedTitle;
+
+  /// No description provided for @syMcChangedWas.
+  ///
+  /// In en, this message translates to:
+  /// **'Trusted'**
+  String get syMcChangedWas;
+
+  /// No description provided for @syMcCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get syMcCopied;
+
+  /// No description provided for @syMcCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get syMcCopy;
+
+  /// No description provided for @syMcCopyKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the public key'**
+  String get syMcCopyKey;
+
+  /// No description provided for @syMcEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get syMcEdit;
+
+  /// No description provided for @syMcEditorLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the machine is and who logs in. The key or the password goes straight into the keychain.'**
+  String get syMcEditorLead;
+
+  /// No description provided for @syMcEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No machine yet. Add one: Rasgeth makes a key for it, you copy its public half onto the machine.'**
+  String get syMcEmpty;
+
+  /// No description provided for @syMcFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Working folder'**
+  String get syMcFolder;
+
+  /// No description provided for @syMcFolderHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Where commands start; deleting outside it always asks you. A full path (/srv/app, ~/app, or on Windows E:\\coding\\site). Leave empty for the home.'**
+  String get syMcFolderHelp;
+
+  /// No description provided for @syMcFolderNone.
+  ///
+  /// In en, this message translates to:
+  /// **'the home (every deletion asks you)'**
+  String get syMcFolderNone;
+
+  /// No description provided for @syMcHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get syMcHost;
+
+  /// No description provided for @syMcHostHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Its name or IP address on the network.'**
+  String get syMcHostHelp;
+
+  /// No description provided for @syMcHostKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine\'s key'**
+  String get syMcHostKey;
+
+  /// No description provided for @syMcKeyGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a new key'**
+  String get syMcKeyGenerate;
+
+  /// No description provided for @syMcKeyGenerateHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth makes an ed25519 key: you will copy its public half into ~/.ssh/authorized_keys on the machine.'**
+  String get syMcKeyGenerateHelp;
+
+  /// No description provided for @syMcKeyKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the key'**
+  String get syMcKeyKeep;
+
+  /// No description provided for @syMcKeyKeepHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The key kept in the keychain stays as it is.'**
+  String get syMcKeyKeepHelp;
+
+  /// No description provided for @syMcKeyPaste.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a private key'**
+  String get syMcKeyPaste;
+
+  /// No description provided for @syMcLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Other computers your agents reach over SSH: a server, a Raspberry Pi, a computer at the office. Keys and passwords stay in the keychain; the agents choose a machine by its name and never see them.'**
+  String get syMcLead;
+
+  /// No description provided for @syMcLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get syMcLogin;
+
+  /// No description provided for @syMcLoginGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'key made by Rasgeth, in the keychain'**
+  String get syMcLoginGenerated;
+
+  /// No description provided for @syMcLoginImported.
+  ///
+  /// In en, this message translates to:
+  /// **'your key, in the keychain'**
+  String get syMcLoginImported;
+
+  /// No description provided for @syMcLoginPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'password in the keychain'**
+  String get syMcLoginPassword;
+
+  /// No description provided for @syMcName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get syMcName;
+
+  /// No description provided for @syMcNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'How agents call it: letters, digits, dot, dash, no spaces (web, pi, office).'**
+  String get syMcNameHelp;
+
+  /// No description provided for @syMcNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a machine'**
+  String get syMcNew;
+
+  /// No description provided for @syMcNewKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a new key'**
+  String get syMcNewKey;
+
+  /// No description provided for @syMcNewKeyQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a new key for this machine?'**
+  String get syMcNewKeyQ;
+
+  /// No description provided for @syMcNewKeyText.
+  ///
+  /// In en, this message translates to:
+  /// **'The old key stops working here: copy the new public key onto the machine and remove the old one.'**
+  String get syMcNewKeyText;
+
+  /// No description provided for @syMcPassphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Its passphrase (if it has one)'**
+  String get syMcPassphrase;
+
+  /// No description provided for @syMcPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get syMcPassword;
+
+  /// No description provided for @syMcPasswordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept in the keychain. A key is safer: a password travels at every login.'**
+  String get syMcPasswordHelp;
+
+  /// No description provided for @syMcPasswordKept.
+  ///
+  /// In en, this message translates to:
+  /// **'The password in the keychain stays unless you write a new one.'**
+  String get syMcPasswordKept;
+
+  /// No description provided for @syMcPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get syMcPort;
+
+  /// No description provided for @syMcPrivateKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Private key'**
+  String get syMcPrivateKey;
+
+  /// No description provided for @syMcPrivateKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenSSH or PEM. It goes into the keychain and is never shown again.'**
+  String get syMcPrivateKeyHelp;
+
+  /// No description provided for @syMcPrivateKeyPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'-----BEGIN OPENSSH PRIVATE KEY-----'**
+  String get syMcPrivateKeyPlaceholder;
+
+  /// No description provided for @syMcProject.
+  ///
+  /// In en, this message translates to:
+  /// **'project'**
+  String get syMcProject;
+
+  /// No description provided for @syMcPublicKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Public key'**
+  String get syMcPublicKey;
+
+  /// No description provided for @syMcPublicKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy it into ~/.ssh/authorized_keys of the user on the machine (one line), then test the connection.'**
+  String get syMcPublicKeyHelp;
+
+  /// No description provided for @syMcRemoveQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove «{name}»?'**
+  String syMcRemoveQ(String name);
+
+  /// No description provided for @syMcRemoveText.
+  ///
+  /// In en, this message translates to:
+  /// **'Its key or password leaves the keychain; agents can no longer use it. Remove the public key from the machine too.'**
+  String get syMcRemoveText;
+
+  /// No description provided for @syMcReplaceQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Trust the new key of «{name}»?'**
+  String syMcReplaceQ(String name);
+
+  /// No description provided for @syMcReplaceText.
+  ///
+  /// In en, this message translates to:
+  /// **'Do it only if you know why the machine\'s key changed: otherwise someone could be reading what Rasgeth sends.'**
+  String get syMcReplaceText;
+
+  /// No description provided for @syMcReplaceYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Trust the new key'**
+  String get syMcReplaceYes;
+
+  /// No description provided for @syMcSafety.
+  ///
+  /// In en, this message translates to:
+  /// **'What happens there follows the same rules as here: sudo, switching the machine off, installing system programs, changing its system files and deleting outside its working folder always ask you, also with «Don\'t ask me anything».'**
+  String get syMcSafety;
+
+  /// No description provided for @syMcSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get syMcSave;
+
+  /// No description provided for @syMcSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Machines'**
+  String get syMcSection;
+
+  /// No description provided for @syMcStateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Last test failed'**
+  String get syMcStateFailed;
+
+  /// No description provided for @syMcStateNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Not checked yet'**
+  String get syMcStateNew;
+
+  /// No description provided for @syMcStateTrusted.
+  ///
+  /// In en, this message translates to:
+  /// **'Key trusted'**
+  String get syMcStateTrusted;
+
+  /// No description provided for @syMcTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Test the connection'**
+  String get syMcTest;
+
+  /// No description provided for @syMcTestAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine refused the login: is the public key in ~/.ssh/authorized_keys (or the password right)?'**
+  String get syMcTestAuth;
+
+  /// No description provided for @syMcTestError.
+  ///
+  /// In en, this message translates to:
+  /// **'It did not work: {message}'**
+  String syMcTestError(String message);
+
+  /// No description provided for @syMcTestNoSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no key or password in the keychain for this machine: change it and set one.'**
+  String get syMcTestNoSecret;
+
+  /// No description provided for @syMcTestOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected: {system}'**
+  String syMcTestOk(String system);
+
+  /// No description provided for @syMcTestTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine did not answer in time.'**
+  String get syMcTestTimeout;
+
+  /// No description provided for @syMcTestUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine cannot be reached: check the address and that it is on.'**
+  String get syMcTestUnreachable;
+
+  /// No description provided for @syMcTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting…'**
+  String get syMcTesting;
+
+  /// No description provided for @syMcTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your machines'**
+  String get syMcTitle;
+
+  /// No description provided for @syMcTofuHow.
+  ///
+  /// In en, this message translates to:
+  /// **'To see it on the machine: ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub'**
+  String get syMcTofuHow;
+
+  /// No description provided for @syMcTofuText.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing was sent yet. If the fingerprint is the machine\'s, trust it: from now on Rasgeth connects only to a machine with this key.'**
+  String get syMcTofuText;
+
+  /// No description provided for @syMcTofuTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'First connection: is this the machine\'s key?'**
+  String get syMcTofuTitle;
+
+  /// No description provided for @syMcTrust.
+  ///
+  /// In en, this message translates to:
+  /// **'Trust this key'**
+  String get syMcTrust;
+
+  /// No description provided for @syMcUser.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get syMcUser;
+
+  /// No description provided for @syMcWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who may use it'**
+  String get syMcWho;
+
+  /// No description provided for @syMcWhoAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get syMcWhoAgents;
+
+  /// No description provided for @syMcWhoEveryone.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent'**
+  String get syMcWhoEveryone;
+
+  /// No description provided for @syMcWhoEveryoneHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'God, the assistants and every project\'s agents.'**
+  String get syMcWhoEveryoneHelp;
+
+  /// No description provided for @syMcWhoLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents not chosen do not even see it.'**
+  String get syMcWhoLead;
+
+  /// No description provided for @syMcWhoNoAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no agents yet.'**
+  String get syMcWhoNoAgents;
+
+  /// No description provided for @syMcWhoNobody.
+  ///
+  /// In en, this message translates to:
+  /// **'nobody yet'**
+  String get syMcWhoNobody;
+
+  /// No description provided for @syMcWhoProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Every agent of these projects'**
+  String get syMcWhoProjects;
+
+  /// No description provided for @syNdAddButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Show a pairing code'**
+  String get syNdAddButton;
+
+  /// No description provided for @syNdAddLead.
+  ///
+  /// In en, this message translates to:
+  /// **'On the other machine, in its first start (role «Node of another Rasgeth») or in its Settings › Nodes, write this machine\'s address and the code below.'**
+  String get syNdAddLead;
+
+  /// No description provided for @syNdAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a node'**
+  String get syNdAddTitle;
+
+  /// No description provided for @syNdAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'The other Rasgeth\'s address'**
+  String get syNdAddress;
+
+  /// No description provided for @syNdAddressPh.
+  ///
+  /// In en, this message translates to:
+  /// **'https://rasgeth.local or 192.168.1.10:3000'**
+  String get syNdAddressPh;
+
+  /// No description provided for @syNdAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'uses and manages'**
+  String get syNdAdmin;
+
+  /// No description provided for @syNdBackupDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to the node: {name}'**
+  String syNdBackupDone(String name);
+
+  /// No description provided for @syNdBackupNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy now'**
+  String get syNdBackupNow;
+
+  /// No description provided for @syNdBackupsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups'**
+  String get syNdBackupsOn;
+
+  /// No description provided for @syNdCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Pairing code'**
+  String get syNdCode;
+
+  /// No description provided for @syNdCodeAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'This machine\'s address, as the other one reaches it (in the local network, through Tailscale or a proxy): {address}'**
+  String syNdCodeAddress(String address);
+
+  /// No description provided for @syNdCodeExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid once, for {min} more minutes.'**
+  String syNdCodeExpires(String min);
+
+  /// No description provided for @syNdCodeField.
+  ///
+  /// In en, this message translates to:
+  /// **'Its code'**
+  String get syNdCodeField;
+
+  /// No description provided for @syNdCodePh.
+  ///
+  /// In en, this message translates to:
+  /// **'ABCD-EFGH'**
+  String get syNdCodePh;
+
+  /// No description provided for @syNdCodeStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop showing it'**
+  String get syNdCodeStop;
+
+  /// No description provided for @syNdCommandsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Commands'**
+  String get syNdCommandsOn;
+
+  /// No description provided for @syNdConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'They match: confirm'**
+  String get syNdConfirm;
+
+  /// No description provided for @syNdConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting'**
+  String get syNdConnecting;
+
+  /// No description provided for @syNdControl.
+  ///
+  /// In en, this message translates to:
+  /// **'Control'**
+  String get syNdControl;
+
+  /// No description provided for @syNdControlLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Never implicit: a machine commands another only with this grant, which the commanded machine keeps and can take away.'**
+  String get syNdControlLead;
+
+  /// No description provided for @syNdControlTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who may command {name}'**
+  String syNdControlTitle(String name);
+
+  /// No description provided for @syNdController.
+  ///
+  /// In en, this message translates to:
+  /// **'Which machine'**
+  String get syNdController;
+
+  /// No description provided for @syNdCpu.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} CPU'**
+  String syNdCpu(String n);
+
+  /// No description provided for @syNdFingerprint.
+  ///
+  /// In en, this message translates to:
+  /// **'Its key\'s fingerprint'**
+  String get syNdFingerprint;
+
+  /// No description provided for @syNdFree.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} GB free'**
+  String syNdFree(String n);
+
+  /// No description provided for @syNdGive.
+  ///
+  /// In en, this message translates to:
+  /// **'Give'**
+  String get syNdGive;
+
+  /// No description provided for @syNdGrantsHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Who may command this machine'**
+  String get syNdGrantsHere;
+
+  /// No description provided for @syNdGrantsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Only these machines may use this one, each with what the person gave it. Taking it away works at once.'**
+  String get syNdGrantsLead;
+
+  /// No description provided for @syNdHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Here'**
+  String get syNdHere;
+
+  /// No description provided for @syNdJoinLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair this machine as a node of another Rasgeth: on that one, Settings › Nodes › «Add a node» shows its address and a code.'**
+  String get syNdJoinLead;
+
+  /// No description provided for @syNdJoinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Work for another Rasgeth'**
+  String get syNdJoinTitle;
+
+  /// No description provided for @syNdLastSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seen {when}'**
+  String syNdLastSeen(String when);
+
+  /// No description provided for @syNdLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Other Rasgeth machines that work with this one: they lend commands, local models and room for projects and backups. Who may command whom is decided here, machine by machine.'**
+  String get syNdLead;
+
+  /// No description provided for @syNdLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'load {n}%'**
+  String syNdLoad(String n);
+
+  /// No description provided for @syNdModels.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} models'**
+  String syNdModels(String n);
+
+  /// No description provided for @syNdName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get syNdName;
+
+  /// No description provided for @syNdNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'How the other machines and the agents call it.'**
+  String get syNdNameHelp;
+
+  /// No description provided for @syNdNoContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'commands only for who manages it'**
+  String get syNdNoContainer;
+
+  /// No description provided for @syNdNoContainerHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no container there (no Docker): it runs commands only for a machine that manages it, on the machine itself. With «use» alone, files, storage and models only.'**
+  String get syNdNoContainerHelp;
+
+  /// No description provided for @syNdNoNodes.
+  ///
+  /// In en, this message translates to:
+  /// **'No node yet.'**
+  String get syNdNoNodes;
+
+  /// No description provided for @syNdNoProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'No project yet.'**
+  String get syNdNoProjects;
+
+  /// No description provided for @syNdNoRights.
+  ///
+  /// In en, this message translates to:
+  /// **'No permissions'**
+  String get syNdNoRights;
+
+  /// No description provided for @syNdNoSandbox.
+  ///
+  /// In en, this message translates to:
+  /// **'no commands'**
+  String get syNdNoSandbox;
+
+  /// No description provided for @syNdNodeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name of the node'**
+  String get syNdNodeName;
+
+  /// No description provided for @syNdNodeNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'How you, the agents and the requests call it here. Empty: the name it gives itself.'**
+  String get syNdNodeNameHelp;
+
+  /// No description provided for @syNdNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Nodes need the keychain: this machine\'s key lives only there. Open it in Settings › Keychain.'**
+  String get syNdNotReady;
+
+  /// No description provided for @syNdOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get syNdOffline;
+
+  /// No description provided for @syNdOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get syNdOnline;
+
+  /// No description provided for @syNdPair.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair'**
+  String get syNdPair;
+
+  /// No description provided for @syNdPairing.
+  ///
+  /// In en, this message translates to:
+  /// **'Pairing…'**
+  String get syNdPairing;
+
+  /// No description provided for @syNdParent.
+  ///
+  /// In en, this message translates to:
+  /// **'Works for'**
+  String get syNdParent;
+
+  /// No description provided for @syNdPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the yes on the other machine'**
+  String get syNdPending;
+
+  /// No description provided for @syNdPendingFromNode.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} wants to be a node of this machine'**
+  String syNdPendingFromNode(String name);
+
+  /// No description provided for @syNdPendingFromPrincipal.
+  ///
+  /// In en, this message translates to:
+  /// **'This machine will work for {name}'**
+  String syNdPendingFromPrincipal(String name);
+
+  /// No description provided for @syNdPendingLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Both machines show the same six digits and each other\'s fingerprint. If they match on both screens, confirm on both: nothing is used before.'**
+  String get syNdPendingLead;
+
+  /// No description provided for @syNdPendingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare and confirm'**
+  String get syNdPendingTitle;
+
+  /// No description provided for @syNdPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Where things run'**
+  String get syNdPlaces;
+
+  /// No description provided for @syNdPlacesLead.
+  ///
+  /// In en, this message translates to:
+  /// **'For each project: by default everything stays here. A node pinned for commands is where its agents\' node_run goes; one for backups keeps copies of its files.'**
+  String get syNdPlacesLead;
+
+  /// No description provided for @syNdQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Nodes'**
+  String get syNdQ;
+
+  /// No description provided for @syNdRam.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} GB RAM'**
+  String syNdRam(String n);
+
+  /// No description provided for @syNdReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Why'**
+  String get syNdReason;
+
+  /// No description provided for @syNdRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'Refused: its key changed'**
+  String get syNdRefused;
+
+  /// No description provided for @syNdReject.
+  ///
+  /// In en, this message translates to:
+  /// **'They do not match'**
+  String get syNdReject;
+
+  /// No description provided for @syNdRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get syNdRename;
+
+  /// No description provided for @syNdRenameQ.
+  ///
+  /// In en, this message translates to:
+  /// **'A name for {name}'**
+  String syNdRenameQ(String name);
+
+  /// No description provided for @syNdRenderOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Videos'**
+  String get syNdRenderOn;
+
+  /// No description provided for @syNdRevoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Take away'**
+  String get syNdRevoke;
+
+  /// No description provided for @syNdRevokeQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Take away what {name} may do here?'**
+  String syNdRevokeQ(String name);
+
+  /// No description provided for @syNdRightAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage it'**
+  String get syNdRightAdmin;
+
+  /// No description provided for @syNdRightAdminHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Give and take away the control of this machine to other machines, and write outside the sandbox.'**
+  String get syNdRightAdminHelp;
+
+  /// No description provided for @syNdRightUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use it'**
+  String get syNdRightUse;
+
+  /// No description provided for @syNdRightUseHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Run its agents\' commands in a sandbox here, use its models and keep files here.'**
+  String get syNdRightUseHelp;
+
+  /// No description provided for @syNdRights.
+  ///
+  /// In en, this message translates to:
+  /// **'What it may do'**
+  String get syNdRights;
+
+  /// No description provided for @syNdRightsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What {name} may do on this machine'**
+  String syNdRightsTitle(String name);
+
+  /// No description provided for @syNdSas.
+  ///
+  /// In en, this message translates to:
+  /// **'The six digits'**
+  String get syNdSas;
+
+  /// No description provided for @syNdSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Nodes'**
+  String get syNdSection;
+
+  /// No description provided for @syNdTheirFp.
+  ///
+  /// In en, this message translates to:
+  /// **'The other machine\'s fingerprint'**
+  String get syNdTheirFp;
+
+  /// No description provided for @syNdThis.
+  ///
+  /// In en, this message translates to:
+  /// **'This machine'**
+  String get syNdThis;
+
+  /// No description provided for @syNdTree.
+  ///
+  /// In en, this message translates to:
+  /// **'The tree'**
+  String get syNdTree;
+
+  /// No description provided for @syNdTreeLead.
+  ///
+  /// In en, this message translates to:
+  /// **'This machine, its nodes and theirs. Control is separate: it is shown under each machine.'**
+  String get syNdTreeLead;
+
+  /// No description provided for @syNdUnpair.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpair'**
+  String get syNdUnpair;
+
+  /// No description provided for @syNdUnpairQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpair {name}?'**
+  String syNdUnpairQ(String name);
+
+  /// No description provided for @syNdUnpairText.
+  ///
+  /// In en, this message translates to:
+  /// **'The two machines forget each other: links, grants and placements with it go. Its files stay where they are. To pair again, a new code.'**
+  String get syNdUnpairText;
+
+  /// No description provided for @syNdUse.
+  ///
+  /// In en, this message translates to:
+  /// **'uses'**
+  String get syNdUse;
+
+  /// No description provided for @syNdWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who may command it'**
+  String get syNdWho;
+
+  /// No description provided for @syNdWhoNobody.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody but itself'**
+  String get syNdWhoNobody;
+
+  /// No description provided for @syOiAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth\'s address in the network'**
+  String get syOiAddress;
+
+  /// No description provided for @syOiAddressHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the proxy or the VPN finds Rasgeth; its port is {port}.'**
+  String syOiAddressHelp(String port);
+
+  /// No description provided for @syOiAuthCaddy.
+  ///
+  /// In en, this message translates to:
+  /// **'Caddyfile with forward auth (Authelia), leaving out the app\'s paths'**
+  String get syOiAuthCaddy;
+
+  /// No description provided for @syOiAuthIf.
+  ///
+  /// In en, this message translates to:
+  /// **'If you want it anyway, leave /api/ and /ws out of it: forward auth then guards the page, and Rasgeth\'s password everything else.'**
+  String get syOiAuthIf;
+
+  /// No description provided for @syOiAuthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Authelia, Authentik or another forward auth in front?'**
+  String get syOiAuthTitle;
+
+  /// No description provided for @syOiAuthWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Better not: Rasgeth has its own password, with limited tries and the optional code from an authenticator app, and a sign-in in front of it blocks the app, the command line, ACP agents, the browser extension and the webhooks (Telegram, WhatsApp, automations), which come in with their own tokens.'**
+  String get syOiAuthWhy;
+
+  /// No description provided for @syOiCaddy.
+  ///
+  /// In en, this message translates to:
+  /// **'Caddyfile: a site of its own'**
+  String get syOiCaddy;
+
+  /// No description provided for @syOiCaddyReload.
+  ///
+  /// In en, this message translates to:
+  /// **'Then reload Caddy (caddy reload, or restart its container).'**
+  String get syOiCaddyReload;
+
+  /// No description provided for @syOiCaddyWildcard.
+  ///
+  /// In en, this message translates to:
+  /// **'Caddyfile: inside a wildcard site you already have (*.{domain})'**
+  String syOiCaddyWildcard(String domain);
+
+  /// No description provided for @syOiCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check that it answers'**
+  String get syOiCheck;
+
+  /// No description provided for @syOiCheckAnswers.
+  ///
+  /// In en, this message translates to:
+  /// **'Something answers at this address (the browser does not let the page read who): open it to see Rasgeth.'**
+  String get syOiCheckAnswers;
+
+  /// No description provided for @syOiCheckGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Check {url} from here'**
+  String syOiCheckGo(String url);
+
+  /// No description provided for @syOiCheckLead.
+  ///
+  /// In en, this message translates to:
+  /// **'From any computer: Rasgeth answers {lb}\"ok\":true,…{rb}.'**
+  String syOiCheckLead(String lb, String rb);
+
+  /// No description provided for @syOiCheckNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No answer from this browser: check the name in the DNS, the proxy\'s block and, from outside, the VPN.'**
+  String get syOiCheckNo;
+
+  /// No description provided for @syOiCheckRedgiant.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth answers at this address.'**
+  String get syOiCheckRedgiant;
+
+  /// No description provided for @syOiClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide the guide'**
+  String get syOiClose;
+
+  /// No description provided for @syOiCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get syOiCopied;
+
+  /// No description provided for @syOiCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get syOiCopy;
+
+  /// No description provided for @syOiDnsAdguard.
+  ///
+  /// In en, this message translates to:
+  /// **'AdGuard Home: Filters › DNS rewrites: *.{domain} or the single name → {address}.'**
+  String syOiDnsAdguard(String address, String domain);
+
+  /// No description provided for @syOiDnsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A name instead of an address: point it to the proxy when there is one, otherwise to Rasgeth\'s address.'**
+  String get syOiDnsLead;
+
+  /// No description provided for @syOiDnsPihole.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole: Settings › Local DNS › DNS Records: {name} → {address}.'**
+  String syOiDnsPihole(String address, String name);
+
+  /// No description provided for @syOiDnsRouter.
+  ///
+  /// In en, this message translates to:
+  /// **'The router: its «static DNS», «local names» or DHCP reservation page (the name varies by router).'**
+  String get syOiDnsRouter;
+
+  /// No description provided for @syOiDnsTs.
+  ///
+  /// In en, this message translates to:
+  /// **'Away from home with Tailscale: add the home DNS in Tailscale\'s DNS › Nameservers, restricted to your domain, so the same names work outside too.'**
+  String get syOiDnsTs;
+
+  /// No description provided for @syOiDnsWildcard.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole or dnsmasq, every name of *.{domain} at once (a file in /etc/dnsmasq.d/)'**
+  String syOiDnsWildcard(String domain);
+
+  /// No description provided for @syOiHomeAdguard.
+  ///
+  /// In en, this message translates to:
+  /// **'AdGuard Home: Filters › DNS rewrites: {name} → {address}.'**
+  String syOiHomeAdguard(String address, String name);
+
+  /// No description provided for @syOiHomeDnsmasq.
+  ///
+  /// In en, this message translates to:
+  /// **'dnsmasq (or a file in Pi-hole\'s /etc/dnsmasq.d/)'**
+  String get syOiHomeDnsmasq;
+
+  /// No description provided for @syOiHomeHosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole\'s records or /etc/hosts, by hand'**
+  String get syOiHomeHosts;
+
+  /// No description provided for @syOiHomeLookup.
+  ///
+  /// In en, this message translates to:
+  /// **'On Rasgeth OS, what its DNS answers for the name'**
+  String get syOiHomeLookup;
+
+  /// No description provided for @syOiHomePihole.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole: Settings › Local DNS › DNS Records: {name} → {address}.'**
+  String syOiHomePihole(String address, String name);
+
+  /// No description provided for @syOiHomeRouter.
+  ///
+  /// In en, this message translates to:
+  /// **'The router: its «static DNS» or «local names» page: {name} → {address}.'**
+  String syOiHomeRouter(String address, String name);
+
+  /// No description provided for @syOiHomeSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth asks the name server {dns}.'**
+  String syOiHomeSeen(String dns);
+
+  /// No description provided for @syOiHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your home services (Gitea, NAS…) seen by Rasgeth'**
+  String get syOiHomeTitle;
+
+  /// No description provided for @syOiHomeTs.
+  ///
+  /// In en, this message translates to:
+  /// **'If your Pi-hole answers with Tailscale addresses (100.…), those work only for devices in Tailscale: add a local record with the address in your network as above, or let Rasgeth\'s machine use the router as DNS with the name there.'**
+  String get syOiHomeTs;
+
+  /// No description provided for @syOiHomeV6.
+  ///
+  /// In en, this message translates to:
+  /// **'A router that answers «does not exist» to the IPv6 (AAAA) question for names added by hand: Rasgeth OS handles it already; on other systems with systemd-resolved, put Cache=no-negative in a file of /etc/systemd/resolved.conf.d/, or the name seems missing for a while.'**
+  String get syOiHomeV6;
+
+  /// No description provided for @syOiHomeWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'In the DNS Rasgeth uses, give the name that local address:'**
+  String get syOiHomeWhat;
+
+  /// No description provided for @syOiHomeWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'Which DNS Rasgeth uses: on Rasgeth OS the console (or SSH) shows it with the command below, under «Current DNS Server»; on another computer it is that computer\'s DNS (its network settings, /etc/resolv.conf on Linux). «Try a name» asks the very DNS Rasgeth uses.'**
+  String get syOiHomeWhich;
+
+  /// No description provided for @syOiHomeWhichCmd.
+  ///
+  /// In en, this message translates to:
+  /// **'On Rasgeth OS, which DNS it uses'**
+  String get syOiHomeWhichCmd;
+
+  /// No description provided for @syOiHomeWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth reaches your Gitea, NAS or other services by name, through the DNS of the machine it runs on (often the router). A name your phone opens may be unknown there, or point to an address Rasgeth cannot reach: then «A Gitea you already have» fails even though the service works.'**
+  String get syOiHomeWhy;
+
+  /// No description provided for @syOiLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A reverse proxy, a VPN, a home DNS: if you already reach your machines that way, Rasgeth goes behind them like any other service. Here are the blocks to copy.'**
+  String get syOiLead;
+
+  /// No description provided for @syOiName.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth\'s name'**
+  String get syOiName;
+
+  /// No description provided for @syOiNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The name you will open, e.g. rasgeth.home.example.com.'**
+  String get syOiNameHelp;
+
+  /// No description provided for @syOiNpm1.
+  ///
+  /// In en, this message translates to:
+  /// **'Hosts › Proxy Hosts › Add Proxy Host; Domain Names: {name}.'**
+  String syOiNpm1(String name);
+
+  /// No description provided for @syOiNpm2.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheme http, Forward Hostname / IP {address}, Forward Port {port}.'**
+  String syOiNpm2(String address, String port);
+
+  /// No description provided for @syOiNpm3.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch on «Websockets Support» (Rasgeth\'s page lives on a WebSocket) and «Block Common Exploits».'**
+  String get syOiNpm3;
+
+  /// No description provided for @syOiNpm4.
+  ///
+  /// In en, this message translates to:
+  /// **'SSL: «Request a new SSL Certificate», «Force SSL», «HTTP/2 Support». Save.'**
+  String get syOiNpm4;
+
+  /// No description provided for @syOiOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the guide'**
+  String get syOiOpen;
+
+  /// No description provided for @syOiOtherVpn.
+  ///
+  /// In en, this message translates to:
+  /// **'WireGuard, ZeroTier and the others'**
+  String get syOiOtherVpn;
+
+  /// No description provided for @syOiOtherVpnLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The same idea: with the home network {subnet} in the peer\'s AllowedIPs (WireGuard) or as a managed route (ZeroTier), Rasgeth opens at its home address.'**
+  String syOiOtherVpnLead(String subnet);
+
+  /// No description provided for @syOiPart.
+  ///
+  /// In en, this message translates to:
+  /// **'What you have'**
+  String get syOiPart;
+
+  /// No description provided for @syOiPartDns.
+  ///
+  /// In en, this message translates to:
+  /// **'Home DNS'**
+  String get syOiPartDns;
+
+  /// No description provided for @syOiPartHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Your home services'**
+  String get syOiPartHome;
+
+  /// No description provided for @syOiPartProxy.
+  ///
+  /// In en, this message translates to:
+  /// **'Reverse proxy'**
+  String get syOiPartProxy;
+
+  /// No description provided for @syOiPartVpn.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale or another VPN'**
+  String get syOiPartVpn;
+
+  /// No description provided for @syOiProbe.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a name'**
+  String get syOiProbe;
+
+  /// No description provided for @syOiProbeBad.
+  ///
+  /// In en, this message translates to:
+  /// **'That is not a name (for instance git.home.example.com).'**
+  String get syOiProbeBad;
+
+  /// No description provided for @syOiProbeDnsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The DNS Rasgeth uses did not answer for {name}. Check that it works, then try again.'**
+  String syOiProbeDnsFailed(String name);
+
+  /// No description provided for @syOiProbeGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Try {name}'**
+  String syOiProbeGo(String name);
+
+  /// No description provided for @syOiProbeLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth looks the name up and opens https://{name} from where it runs, as it does for your Gitea. Nothing of the answer is kept or shown but its code.'**
+  String syOiProbeLead(String name);
+
+  /// No description provided for @syOiProbeNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'The DNS Rasgeth uses does not know {name}. Add the name there (router, Pi-hole or AdGuard) with the proxy\'s local address, then try again.'**
+  String syOiProbeNotFound(String name);
+
+  /// No description provided for @syOiProbeOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Fine: here {name} is {address}, and https://{name} answered (HTTP {status}).'**
+  String syOiProbeOk(String address, String name, String status);
+
+  /// No description provided for @syOiProbeTailscale.
+  ///
+  /// In en, this message translates to:
+  /// **'Here {name} is {address}: a Tailscale address, which Rasgeth cannot reach. In the DNS Rasgeth uses, give the name the proxy\'s local address.'**
+  String syOiProbeTailscale(String address, String name);
+
+  /// No description provided for @syOiProbeTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Here {name} is {address}, but it did not answer in time: probably an address Rasgeth cannot reach (another network, a VPN).'**
+  String syOiProbeTimeout(String address, String name);
+
+  /// No description provided for @syOiProbeTls.
+  ///
+  /// In en, this message translates to:
+  /// **'Here {name} is {address} and answers, but with a certificate Rasgeth does not trust (made by hand?). Give the proxy a certificate from a public authority (Let\'s Encrypt).'**
+  String syOiProbeTls(String address, String name);
+
+  /// No description provided for @syOiProbeUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Here {name} is {address}, but nothing answers on https from Rasgeth. Check that it is the proxy\'s local address and that the proxy is running.'**
+  String syOiProbeUnreachable(String address, String name);
+
+  /// No description provided for @syOiProxyAddr.
+  ///
+  /// In en, this message translates to:
+  /// **'The proxy\'s local address'**
+  String get syOiProxyAddr;
+
+  /// No description provided for @syOiProxyAddrHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The address in your network (192.168.…) of the proxy in front of the service, or of the service itself. Not a Tailscale address (100.…): Rasgeth reaches it only if it is in Tailscale too.'**
+  String get syOiProxyAddrHelp;
+
+  /// No description provided for @syOiProxyLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The proxy can be on another machine: it only needs to reach Rasgeth\'s address. It gets the certificate (HTTPS) and sends everything on, the WebSocket included.'**
+  String get syOiProxyLead;
+
+  /// No description provided for @syOiReachedAs.
+  ///
+  /// In en, this message translates to:
+  /// **'You are reachable already as {host}.'**
+  String syOiReachedAs(String host);
+
+  /// No description provided for @syOiReachedName.
+  ///
+  /// In en, this message translates to:
+  /// **'This page came with a name of your network: at home it works already; from outside one of the ways below is needed (Tailscale, for instance).'**
+  String get syOiReachedName;
+
+  /// No description provided for @syOiReachedProxy.
+  ///
+  /// In en, this message translates to:
+  /// **'This page came through a reverse proxy of your network: the guide below is filled with what Rasgeth saw.'**
+  String get syOiReachedProxy;
+
+  /// No description provided for @syOiSaid.
+  ///
+  /// In en, this message translates to:
+  /// **'You said Rasgeth is reachable already your own way: it does not ask again to set up its ways.'**
+  String get syOiSaid;
+
+  /// No description provided for @syOiSaidUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask again'**
+  String get syOiSaidUndo;
+
+  /// No description provided for @syOiSaidUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'You said Rasgeth is reachable already at {url}: it does not ask again to set up its ways, and its links (Telegram…) use that address.'**
+  String syOiSaidUrl(String url);
+
+  /// No description provided for @syOiService.
+  ///
+  /// In en, this message translates to:
+  /// **'The service\'s name'**
+  String get syOiService;
+
+  /// No description provided for @syOiServiceHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'As you open it, e.g. git.home.example.com.'**
+  String get syOiServiceHelp;
+
+  /// No description provided for @syOiSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip: I am reachable already'**
+  String get syOiSkip;
+
+  /// No description provided for @syOiSkipNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth stops asking to set up its own ways out (Tailscale, Cloudflare, its own domain); they stay here if you want one later.'**
+  String get syOiSkipNote;
+
+  /// No description provided for @syOiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have your own infrastructure'**
+  String get syOiTitle;
+
+  /// No description provided for @syOiTraefik.
+  ///
+  /// In en, this message translates to:
+  /// **'Traefik: file provider (dynamic configuration)'**
+  String get syOiTraefik;
+
+  /// No description provided for @syOiTraefikNote.
+  ///
+  /// In en, this message translates to:
+  /// **'With Docker labels instead: the same rule and the URL as a service with loadbalancer.server.url. Use your entry point and certificate resolver names.'**
+  String get syOiTraefikNote;
+
+  /// No description provided for @syOiTsHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale on Rasgeth\'s machine'**
+  String get syOiTsHere;
+
+  /// No description provided for @syOiTsHereLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Install Tailscale on the machine and sign in (tailscale up): from your devices in the tailnet Rasgeth opens at http://<machine>:7600. For HTTPS with a real certificate:'**
+  String get syOiTsHereLead;
+
+  /// No description provided for @syOiTsRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale runs here already as {name}: from your devices in the tailnet Rasgeth opens with that name. For HTTPS with a real certificate:'**
+  String syOiTsRunning(String name);
+
+  /// No description provided for @syOiTsServe.
+  ///
+  /// In en, this message translates to:
+  /// **'On the machine'**
+  String get syOiTsServe;
+
+  /// No description provided for @syOiTsSubnet.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale as a subnet router'**
+  String get syOiTsSubnet;
+
+  /// No description provided for @syOiTsSubnetLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale on another device of the house (the router, a Pi, the proxy\'s machine) that shares the network {subnet}:'**
+  String syOiTsSubnetLead(String subnet);
+
+  /// No description provided for @syOiTsSubnetThen.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve the route in Tailscale\'s admin console (Machines › Edit route settings). Your phone then opens http://{address}:{port} from anywhere, and the names of your home DNS too if you add it in DNS › Nameservers (restricted to your domain).'**
+  String syOiTsSubnetThen(String address, String port);
+
+  /// No description provided for @syOiWs.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth keeps the page live through a WebSocket at /ws: Caddy and Traefik pass it on by themselves; Nginx needs the Upgrade headers (Websockets Support in Nginx Proxy Manager).'**
+  String get syOiWs;
+
+  /// No description provided for @syOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'connected'**
+  String get syOnline;
+
+  /// No description provided for @syOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'open'**
+  String get syOpen;
+
+  /// No description provided for @syOsErr_bad_password.
+  ///
+  /// In en, this message translates to:
+  /// **'A Wi-Fi password has 8 to 63 characters.'**
+  String get syOsErr_bad_password;
+
+  /// No description provided for @syOsErr_bad_ssid.
+  ///
+  /// In en, this message translates to:
+  /// **'A network\'s name has 1 to 32 characters.'**
+  String get syOsErr_bad_ssid;
+
+  /// No description provided for @syOsErr_busy.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine is already joining a network: wait a moment.'**
+  String get syOsErr_busy;
+
+  /// No description provided for @syOsErr_cannot_https.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS is not managed by this installation.'**
+  String get syOsErr_cannot_https;
+
+  /// No description provided for @syOsErr_cannot_reboot.
+  ///
+  /// In en, this message translates to:
+  /// **'Restarts are not managed by this installation.'**
+  String get syOsErr_cannot_reboot;
+
+  /// No description provided for @syOsErr_cannot_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates are not managed by this installation.'**
+  String get syOsErr_cannot_update;
+
+  /// No description provided for @syOsErr_cannot_wifi.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi is not managed by this installation.'**
+  String get syOsErr_cannot_wifi;
+
+  /// No description provided for @syOsErr_clean_install.
+  ///
+  /// In en, this message translates to:
+  /// **'This version needs a clean install.'**
+  String get syOsErr_clean_install;
+
+  /// No description provided for @syOsErr_connect_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The network refused to connect: check the password and try again.'**
+  String get syOsErr_connect_failed;
+
+  /// No description provided for @syOsErr_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'That did not work. Try again in a moment.'**
+  String get syOsErr_failed;
+
+  /// No description provided for @syOsErr_https_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Local HTTPS did not start.'**
+  String get syOsErr_https_failed;
+
+  /// No description provided for @syOsErr_https_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Local HTTPS is off: switch it on first.'**
+  String get syOsErr_https_off;
+
+  /// No description provided for @syOsErr_manual.
+  ///
+  /// In en, this message translates to:
+  /// **'This installation cannot update by itself.'**
+  String get syOsErr_manual;
+
+  /// No description provided for @syOsErr_no_wifi.
+  ///
+  /// In en, this message translates to:
+  /// **'This machine has no Wi-Fi card.'**
+  String get syOsErr_no_wifi;
+
+  /// No description provided for @syOsErr_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'That network is not in reach now.'**
+  String get syOsErr_not_found;
+
+  /// No description provided for @syOsErr_not_installed.
+  ///
+  /// In en, this message translates to:
+  /// **'This system cannot do that.'**
+  String get syOsErr_not_installed;
+
+  /// No description provided for @syOsErr_not_trusted.
+  ///
+  /// In en, this message translates to:
+  /// **'This device does not trust the certificate yet.'**
+  String get syOsErr_not_trusted;
+
+  /// No description provided for @syOsErr_reboot_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The restart could not be scheduled.'**
+  String get syOsErr_reboot_failed;
+
+  /// No description provided for @syOsErr_start_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The update could not start.'**
+  String get syOsErr_start_failed;
+
+  /// No description provided for @syOsErr_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine took too long to answer.'**
+  String get syOsErr_timeout;
+
+  /// No description provided for @syOsErr_tls_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The certificate could not be made.'**
+  String get syOsErr_tls_failed;
+
+  /// No description provided for @syOsErr_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine\'s helper did not answer.'**
+  String get syOsErr_unreachable;
+
+  /// No description provided for @syOsErr_wifi_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi is not running on this machine.'**
+  String get syOsErr_wifi_off;
+
+  /// No description provided for @syOsHttpsAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get syOsHttpsAddress;
+
+  /// No description provided for @syOsHttpsCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check this device'**
+  String get syOsHttpsCheck;
+
+  /// No description provided for @syOsHttpsDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Your device'**
+  String get syOsHttpsDevice;
+
+  /// No description provided for @syOsHttpsDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the certificate'**
+  String get syOsHttpsDownload;
+
+  /// No description provided for @syOsHttpsFingerprint.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate\'s fingerprint (SHA-256)'**
+  String get syOsHttpsFingerprint;
+
+  /// No description provided for @syOsHttpsFirefox.
+  ///
+  /// In en, this message translates to:
+  /// **'Firefox on any system: Settings › Privacy & Security › Certificates › View Certificates › Authorities › Import, tick «Trust this CA to identify websites».'**
+  String get syOsHttpsFirefox;
+
+  /// No description provided for @syOsHttpsHow_android.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings › Security (or Security & privacy) › More › Encryption & credentials › Install a certificate › CA certificate: «Install anyway», choose Rasgeth-CA.crt.'**
+  String get syOsHttpsHow_android;
+
+  /// No description provided for @syOsHttpsHow_iphone.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the download in Safari, «Allow». Settings › General › VPN & Device Management: install the profile. Then Settings › General › About › Certificate Trust Settings: switch on «Rasgeth on …».'**
+  String get syOsHttpsHow_iphone;
+
+  /// No description provided for @syOsHttpsHow_linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Debian/Ubuntu: sudo cp Rasgeth-CA.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates. Chrome and Firefox keep their own list: add it under the browser\'s certificate settings (Authorities, «Import»).'**
+  String get syOsHttpsHow_linux;
+
+  /// No description provided for @syOsHttpsHow_mac.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Rasgeth-CA.crt: Keychain Access adds it. Double-click «Rasgeth on …» in the login keychain, open «Trust», set «When using this certificate» to «Always Trust», close and type your password.'**
+  String get syOsHttpsHow_mac;
+
+  /// No description provided for @syOsHttpsHow_windows.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Rasgeth-CA.crt, «Install certificate…», «Current user», «Place all certificates in the following store», «Trusted Root Certification Authorities», Finish, Yes. Restart the browser.'**
+  String get syOsHttpsHow_windows;
+
+  /// No description provided for @syOsHttpsInFront.
+  ///
+  /// In en, this message translates to:
+  /// **'You already reach Rasgeth over HTTPS through {name}: the local certificate is not needed for that address.'**
+  String syOsHttpsInFront(String name);
+
+  /// No description provided for @syOsHttpsLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS in the local network'**
+  String get syOsHttpsLocal;
+
+  /// No description provided for @syOsHttpsLocalOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: Rasgeth answers on http only (or through the HTTPS you set up yourself).'**
+  String get syOsHttpsLocalOff;
+
+  /// No description provided for @syOsHttpsLocalOn.
+  ///
+  /// In en, this message translates to:
+  /// **'https://{name} and the machine\'s addresses answer with a certificate of this machine. http keeps working until you say it is trusted.'**
+  String syOsHttpsLocalOn(String name);
+
+  /// No description provided for @syOsHttpsNotYet.
+  ///
+  /// In en, this message translates to:
+  /// **'This device does not trust the certificate yet (or https://… does not answer): nothing has changed, http keeps working.'**
+  String get syOsHttpsNotYet;
+
+  /// No description provided for @syOsHttpsNowOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'This device trusts it. From now on http goes to https for the machine\'s local name and addresses.'**
+  String get syOsHttpsNowOnly;
+
+  /// No description provided for @syOsHttpsOffQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch local HTTPS off?'**
+  String get syOsHttpsOffQ;
+
+  /// No description provided for @syOsHttpsOffText.
+  ///
+  /// In en, this message translates to:
+  /// **'Browsers that already went to https://rasgeth.local keep asking for https for up to 30 days: in those, open the machine by its address (http://192.168…:7600) until then.'**
+  String get syOsHttpsOffText;
+
+  /// No description provided for @syOsHttpsOffYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch off'**
+  String get syOsHttpsOffYes;
+
+  /// No description provided for @syOsHttpsQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Should the browser show the padlock on your home network?'**
+  String get syOsHttpsQ;
+
+  /// No description provided for @syOsHttpsQr.
+  ///
+  /// In en, this message translates to:
+  /// **'QR code to download the certificate'**
+  String get syOsHttpsQr;
+
+  /// No description provided for @syOsHttpsQrHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On a phone on the same network, scan the code to download it.'**
+  String get syOsHttpsQrHelp;
+
+  /// No description provided for @syOsHttpsRedirect.
+  ///
+  /// In en, this message translates to:
+  /// **'Always send to HTTPS'**
+  String get syOsHttpsRedirect;
+
+  /// No description provided for @syOsHttpsRedirectOn.
+  ///
+  /// In en, this message translates to:
+  /// **'http requests in your network go to https; browsers remember it (HSTS, 30 days). Devices without the certificate show a warning: install it there too.'**
+  String get syOsHttpsRedirectOn;
+
+  /// No description provided for @syOsHttpsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS in your network'**
+  String get syOsHttpsTitle;
+
+  /// No description provided for @syOsHttpsTrustLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Download it on the device (phone: scan the code), install it as below, then press «Check this device». The certificate works only for this machine\'s local names and addresses, never for any website.'**
+  String get syOsHttpsTrustLead;
+
+  /// No description provided for @syOsHttpsTrustTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trust the certificate on each device'**
+  String get syOsHttpsTrustTitle;
+
+  /// No description provided for @syOsHttpsUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine\'s certificate renews itself before'**
+  String get syOsHttpsUntil;
+
+  /// No description provided for @syOsNetSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get syOsNetSub;
+
+  /// No description provided for @syOsNetSubLead.
+  ///
+  /// In en, this message translates to:
+  /// **'How the machine joins the network, and HTTPS for the pages of your home network.'**
+  String get syOsNetSubLead;
+
+  /// No description provided for @syOsRebootNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart now'**
+  String get syOsRebootNow;
+
+  /// No description provided for @syOsRebootQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart the machine now?'**
+  String get syOsRebootQ;
+
+  /// No description provided for @syOsRebootText.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth stops for two or three minutes while the machine restarts; agents working now are interrupted and pick up again from what was saved. This page comes back by itself.'**
+  String get syOsRebootText;
+
+  /// No description provided for @syOsRebootYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get syOsRebootYes;
+
+  /// No description provided for @syOsRebooting.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine restarts in a few seconds. This page comes back by itself.'**
+  String get syOsRebooting;
+
+  /// No description provided for @syOsSecLast.
+  ///
+  /// In en, this message translates to:
+  /// **'Last time'**
+  String get syOsSecLast;
+
+  /// No description provided for @syOsSecLastAt.
+  ///
+  /// In en, this message translates to:
+  /// **'{when}'**
+  String syOsSecLastAt(String when);
+
+  /// No description provided for @syOsSecLastN.
+  ///
+  /// In en, this message translates to:
+  /// **'{when}, {n} packages'**
+  String syOsSecLastN(String n, String when);
+
+  /// No description provided for @syOsSecNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet (it runs once a day)'**
+  String get syOsSecNever;
+
+  /// No description provided for @syOsSecNoReboot.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing waits for a restart.'**
+  String get syOsSecNoReboot;
+
+  /// No description provided for @syOsSecQ.
+  ///
+  /// In en, this message translates to:
+  /// **'The system installs Debian\'s security updates by itself, every day.'**
+  String get syOsSecQ;
+
+  /// No description provided for @syOsSecReboot.
+  ///
+  /// In en, this message translates to:
+  /// **'An update asks for a restart to finish'**
+  String get syOsSecReboot;
+
+  /// No description provided for @syOsSecTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'System security updates'**
+  String get syOsSecTitle;
+
+  /// No description provided for @syOsUpdApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Update to {version}'**
+  String syOsUpdApply(String version);
+
+  /// No description provided for @syOsUpdApplyQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Rasgeth to {version}?'**
+  String syOsUpdApplyQ(String version);
+
+  /// No description provided for @syOsUpdApplyText.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine downloads the new version while this one keeps working, then restarts Rasgeth: the page stops for a few minutes and comes back by itself. Nothing is lost, and if the new version does not start the previous one comes back.'**
+  String get syOsUpdApplyText;
+
+  /// No description provided for @syOsUpdApplyYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Update now'**
+  String get syOsUpdApplyYes;
+
+  /// No description provided for @syOsUpdBreaking.
+  ///
+  /// In en, this message translates to:
+  /// **'This version cannot be installed over the current one: Rasgeth guides you (backup on a USB disk, reinstall Rasgeth OS, restore).'**
+  String get syOsUpdBreaking;
+
+  /// No description provided for @syOsUpdChecked.
+  ///
+  /// In en, this message translates to:
+  /// **'Last look'**
+  String get syOsUpdChecked;
+
+  /// No description provided for @syOsUpdInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed'**
+  String get syOsUpdInstalled;
+
+  /// No description provided for @syOsUpdQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Is Rasgeth up to date on this machine?'**
+  String get syOsUpdQ;
+
+  /// No description provided for @syOsUpdState.
+  ///
+  /// In en, this message translates to:
+  /// **'State'**
+  String get syOsUpdState;
+
+  /// No description provided for @syOsUpdSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates'**
+  String get syOsUpdSub;
+
+  /// No description provided for @syOsUpdSubLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth and the system it runs on, kept up to date.'**
+  String get syOsUpdSubLead;
+
+  /// No description provided for @syOsUpdTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth'**
+  String get syOsUpdTitle;
+
+  /// No description provided for @syOsUpd_applying.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating to {version}'**
+  String syOsUpd_applying(String version);
+
+  /// No description provided for @syOsUpd_available.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth {version} is ready to install'**
+  String syOsUpd_available(String version);
+
+  /// No description provided for @syOsUpd_breaking.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth {version} needs a clean install'**
+  String syOsUpd_breaking(String version);
+
+  /// No description provided for @syOsUpd_error.
+  ///
+  /// In en, this message translates to:
+  /// **'The last update did not finish (the previous version is running)'**
+  String get syOsUpd_error;
+
+  /// No description provided for @syOsUpd_latest.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get syOsUpd_latest;
+
+  /// No description provided for @syOsUpd_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Not looked yet'**
+  String get syOsUpd_unknown;
+
+  /// No description provided for @syOsUpd_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach GitHub to look'**
+  String get syOsUpd_unreachable;
+
+  /// No description provided for @syOsUpd_unsigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth {version} is out, but without a signed package for Rasgeth OS yet: it comes with a later release'**
+  String syOsUpd_unsigned(String version);
+
+  /// No description provided for @syOsWifi8021x.
+  ///
+  /// In en, this message translates to:
+  /// **'company network (not from here)'**
+  String get syOsWifi8021x;
+
+  /// No description provided for @syOsWifiConnectedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to «{name}» ({ip})'**
+  String syOsWifiConnectedTo(String ip, String name);
+
+  /// No description provided for @syOsWifiForget.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget'**
+  String get syOsWifiForget;
+
+  /// No description provided for @syOsWifiForgetQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget «{name}»?'**
+  String syOsWifiForgetQ(String name);
+
+  /// No description provided for @syOsWifiForgetText.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine stops joining this network and its password is erased. If it is the network in use and there is no cable, the page stops answering until the machine has another network.'**
+  String get syOsWifiForgetText;
+
+  /// No description provided for @syOsWifiGood.
+  ///
+  /// In en, this message translates to:
+  /// **'good signal'**
+  String get syOsWifiGood;
+
+  /// No description provided for @syOsWifiHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden network…'**
+  String get syOsWifiHidden;
+
+  /// No description provided for @syOsWifiHiddenName.
+  ///
+  /// In en, this message translates to:
+  /// **'The network\'s name'**
+  String get syOsWifiHiddenName;
+
+  /// No description provided for @syOsWifiInReach.
+  ///
+  /// In en, this message translates to:
+  /// **'Networks in reach'**
+  String get syOsWifiInReach;
+
+  /// No description provided for @syOsWifiInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'in use'**
+  String get syOsWifiInUse;
+
+  /// No description provided for @syOsWifiJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Join'**
+  String get syOsWifiJoin;
+
+  /// No description provided for @syOsWifiJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to «{name}». If you are using this page over that network, it keeps working.'**
+  String syOsWifiJoined(String name);
+
+  /// No description provided for @syOsWifiJoining.
+  ///
+  /// In en, this message translates to:
+  /// **'Joining…'**
+  String get syOsWifiJoining;
+
+  /// No description provided for @syOsWifiKnown.
+  ///
+  /// In en, this message translates to:
+  /// **'saved'**
+  String get syOsWifiKnown;
+
+  /// No description provided for @syOsWifiKnownAway.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved, not in reach now: {names}'**
+  String syOsWifiKnownAway(String names);
+
+  /// No description provided for @syOsWifiLooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking…'**
+  String get syOsWifiLooking;
+
+  /// No description provided for @syOsWifiNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No network found. Look again, or join a hidden network by its name.'**
+  String get syOsWifiNone;
+
+  /// No description provided for @syOsWifiNotConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected to a Wi-Fi network'**
+  String get syOsWifiNotConnected;
+
+  /// No description provided for @syOsWifiNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get syOsWifiNow;
+
+  /// No description provided for @syOsWifiPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password of «{name}»'**
+  String syOsWifiPassword(String name);
+
+  /// No description provided for @syOsWifiPasswordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'8 to 63 characters. It is kept only on the machine, readable by the system alone; Rasgeth never stores or shows it.'**
+  String get syOsWifiPasswordHelp;
+
+  /// No description provided for @syOsWifiQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Which wireless network does the machine join?'**
+  String get syOsWifiQ;
+
+  /// No description provided for @syOsWifiSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'«{name}» is saved: the machine joins it as soon as it is in reach.'**
+  String syOsWifiSaved(String name);
+
+  /// No description provided for @syOsWifiScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Look again'**
+  String get syOsWifiScan;
+
+  /// No description provided for @syOsWifiStrong.
+  ///
+  /// In en, this message translates to:
+  /// **'strong signal'**
+  String get syOsWifiStrong;
+
+  /// No description provided for @syOsWifiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi'**
+  String get syOsWifiTitle;
+
+  /// No description provided for @syOsWifiWeak.
+  ///
+  /// In en, this message translates to:
+  /// **'weak signal'**
+  String get syOsWifiWeak;
+
+  /// No description provided for @syOsWifiWhy_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi could not be read now. Try again in a moment.'**
+  String get syOsWifiWhy_failed;
+
+  /// No description provided for @syOsWifiWhy_no_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi is managed by the system of this machine.'**
+  String get syOsWifiWhy_no_helper;
+
+  /// No description provided for @syOsWifiWhy_no_wifi.
+  ///
+  /// In en, this message translates to:
+  /// **'This machine has no Wi-Fi card (or the system does not recognise it).'**
+  String get syOsWifiWhy_no_wifi;
+
+  /// No description provided for @syOsWifiWhy_not_installed.
+  ///
+  /// In en, this message translates to:
+  /// **'This system has no Wi-Fi tools.'**
+  String get syOsWifiWhy_not_installed;
+
+  /// No description provided for @syOsWifiWhy_wifi_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi is not running on this machine. Restart it, or connect a cable.'**
+  String get syOsWifiWhy_wifi_off;
+
+  /// No description provided for @syOsWifiWired.
+  ///
+  /// In en, this message translates to:
+  /// **'A cable is connected: the machine uses the cable, Wi-Fi stays as a spare.'**
+  String get syOsWifiWired;
+
+  /// No description provided for @syPiholeAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole\'s own page, to see what it blocks and allow a site:'**
+  String get syPiholeAdmin;
+
+  /// No description provided for @syPiholeAds.
+  ///
+  /// In en, this message translates to:
+  /// **'About blocking ads'**
+  String get syPiholeAds;
+
+  /// No description provided for @syPiholeAdsText.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole blocks the names of well-known advertising and tracking services, for every device that uses it, phones and TVs included. Now and then a site or an app needs one of those names to work (some shop links, some streaming apps): it then looks broken.'**
+  String get syPiholeAdsText;
+
+  /// No description provided for @syPiholeAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'If a site stops working: open the Pi-hole page, Query Log, find the blocked name and press Allow. To pause all blocking for a few minutes, use Disable blocking in the same page.'**
+  String get syPiholeAllow;
+
+  /// No description provided for @syPiholeAnswers.
+  ///
+  /// In en, this message translates to:
+  /// **'At home, {domain} now leads to {ip}.'**
+  String syPiholeAnswers(String domain, String ip);
+
+  /// No description provided for @syPiholeChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'What changes at home, and how to go back'**
+  String get syPiholeChanges;
+
+  /// No description provided for @syPiholeDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'If your router does not let you change the DNS (some providers\' routers do not), set it on each device instead: in the Wi-Fi network\'s details on phones, in the network adapter\'s settings on computers.'**
+  String get syPiholeDevice;
+
+  /// No description provided for @syPiholeDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Your domain (optional)'**
+  String get syPiholeDomain;
+
+  /// No description provided for @syPiholeDomainHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The address you use from outside, like rasgeth.yourdomain.com: Pi-hole answers for it with the address above. Leave it empty to use Pi-hole only to block ads.'**
+  String get syPiholeDomainHelp;
+
+  /// No description provided for @syPiholeDomainWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'It must be a name like rasgeth.yourdomain.com.'**
+  String get syPiholeDomainWrong;
+
+  /// No description provided for @syPiholeIp.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer\'s address at home'**
+  String get syPiholeIp;
+
+  /// No description provided for @syPiholeIpHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Four numbers like 192.168.1.50. Find it on the router\'s page among the connected devices, or on this computer: \"ip a\" on Linux, \"ipconfig\" on Windows, System Settings, Network on Mac. Better if the router always gives this computer the same address (address reservation).'**
+  String get syPiholeIpHelp;
+
+  /// No description provided for @syPiholeIpWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'It must be four numbers from 0 to 255 separated by dots, like 192.168.1.50.'**
+  String get syPiholeIpWrong;
+
+  /// No description provided for @syPiholeNeed.
+  ///
+  /// In en, this message translates to:
+  /// **'you reach Rasgeth from outside with your own domain, and at home the same link does not open. Many routers cannot send you back to your own house through the internet (the feature is called NAT loopback or hairpin, and theirs lacks it).'**
+  String get syPiholeNeed;
+
+  /// No description provided for @syPiholeNeedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You need it if'**
+  String get syPiholeNeedTitle;
+
+  /// No description provided for @syPiholeNoNeed.
+  ///
+  /// In en, this message translates to:
+  /// **'you use Tailscale or Cloudflare Tunnel: those links work the same at home and outside. You can still turn it on just to block ads, if you like.'**
+  String get syPiholeNoNeed;
+
+  /// No description provided for @syPiholeNoNeedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not need it if'**
+  String get syPiholeNoNeedTitle;
+
+  /// No description provided for @syPiholeNowRouter.
+  ///
+  /// In en, this message translates to:
+  /// **'Last step, yours: on your router (or on each device) set the DNS server to {ip}. Until then nothing at home uses Pi-hole.'**
+  String syPiholeNowRouter(String ip);
+
+  /// No description provided for @syPiholeOff.
+  ///
+  /// In en, this message translates to:
+  /// **'To go back: put the router\'s DNS back as it was (often \"automatic\") and turn Pi-hole off here. Nothing else on your computers changes.'**
+  String get syPiholeOff;
+
+  /// No description provided for @syPiholeOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole is on, at {ip}.'**
+  String syPiholeOn(String ip);
+
+  /// No description provided for @syPiholeOpenAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Pi-hole'**
+  String get syPiholeOpenAdmin;
+
+  /// No description provided for @syPiholePort.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical details: port 53'**
+  String get syPiholePort;
+
+  /// No description provided for @syPiholePortText.
+  ///
+  /// In en, this message translates to:
+  /// **'Pi-hole answers on port 53 (the DNS port) of this computer\'s home address only, not on the internet, and its own page on port 8053. If something on this computer already answers on port 53 (another DNS, or the system\'s own on some Linux systems), Pi-hole cannot start: Rasgeth says so and nothing changes.'**
+  String get syPiholePortText;
+
+  /// No description provided for @syPiholeRouter.
+  ///
+  /// In en, this message translates to:
+  /// **'For every device at once: open your router\'s page (its address is usually written under the router, like 192.168.1.1), find the DHCP or LAN settings and set the DNS server to this computer\'s home address. Devices pick it up the next time they connect (or restart them).'**
+  String get syPiholeRouter;
+
+  /// No description provided for @syPiholeSecond.
+  ///
+  /// In en, this message translates to:
+  /// **'A second DNS: if this computer is off, devices that only know Pi-hole cannot open any site. As a second DNS you can put your router\'s address or a public one (1.1.1.1): everything keeps working when this computer is off, but devices may sometimes ask the second one and then see ads, or not find your domain at home.'**
+  String get syPiholeSecond;
+
+  /// No description provided for @syPiholeShowPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show its password'**
+  String get syPiholeShowPassword;
+
+  /// No description provided for @syPiholeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Pi-hole'**
+  String get syPiholeStart;
+
+  /// No description provided for @syPiholeStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off Pi-hole'**
+  String get syPiholeStop;
+
+  /// No description provided for @syPiholeTest.
+  ///
+  /// In en, this message translates to:
+  /// **'How to check: connect your phone to the home Wi-Fi and open your Rasgeth link. If it opens, you do not need Pi-hole for this (you may still want it to block ads). If it does not, but works on mobile data, Pi-hole fixes it.'**
+  String get syPiholeTest;
+
+  /// No description provided for @syPiholeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The home\'s own DNS, with Pi-hole (optional)'**
+  String get syPiholeTitle;
+
+  /// No description provided for @syPiholeWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'Every device at home asks a DNS server which number is behind a name (for example rasgeth.yourdomain.com). Usually your router or your internet provider answers. Pi-hole is a small DNS that Rasgeth can run on this computer: it answers for your domain with this computer\'s home address, so the link works at home too, and it also blocks advertising and tracking for every device that uses it.'**
+  String get syPiholeWhat;
+
+  /// No description provided for @syPwSignOutOthersQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out your other devices too?'**
+  String get syPwSignOutOthersQ;
+
+  /// No description provided for @syPwSignOutOthersText.
+  ///
+  /// In en, this message translates to:
+  /// **'The other browsers and the apps signed in with the old password stay in if you keep them. Sign them out if you changed it because someone else might know it.'**
+  String get syPwSignOutOthersText;
+
+  /// No description provided for @syPwSignOutOthersYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign them out'**
+  String get syPwSignOutOthersYes;
+
+  /// No description provided for @syRemoteCaddy.
+  ///
+  /// In en, this message translates to:
+  /// **'For experts: your domain pointing at home, ports 80 and 443 opened on the router. Anyone on the internet can reach the sign-in page.'**
+  String get syRemoteCaddy;
+
+  /// No description provided for @syRemoteCloudflare.
+  ///
+  /// In en, this message translates to:
+  /// **'An address on your own domain (about 10 euros a year), nothing opened on the router. A few more steps on Cloudflare\'s site.'**
+  String get syRemoteCloudflare;
+
+  /// No description provided for @syRemoteCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Second check (recommended)'**
+  String get syRemoteCode;
+
+  /// No description provided for @syRemoteCodeConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get syRemoteCodeConfirm;
+
+  /// No description provided for @syRemoteCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Besides the password, a 6-digit code from an app on your phone (Google Authenticator, Microsoft Authenticator, 2FAS…): someone who learns the password still cannot get in.'**
+  String get syRemoteCodeHint;
+
+  /// No description provided for @syRemoteCodeOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Second check off.'**
+  String get syRemoteCodeOff;
+
+  /// No description provided for @syRemoteCodeOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Second check on'**
+  String get syRemoteCodeOn;
+
+  /// No description provided for @syRemoteCodeQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan with the authenticator app'**
+  String get syRemoteCodeQr;
+
+  /// No description provided for @syRemoteCodeScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the code with the app (or type the key below in it), then write here the 6 digits it shows.'**
+  String get syRemoteCodeScan;
+
+  /// No description provided for @syRemoteCodeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch on the second check'**
+  String get syRemoteCodeStart;
+
+  /// No description provided for @syRemoteConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get syRemoteConnect;
+
+  /// No description provided for @syRemoteHow.
+  ///
+  /// In en, this message translates to:
+  /// **'How to reach it'**
+  String get syRemoteHow;
+
+  /// No description provided for @syRemoteNeedsPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Set the password above first.'**
+  String get syRemoteNeedsPassword;
+
+  /// No description provided for @syRemoteNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get syRemoteNewPassword;
+
+  /// No description provided for @syRemoteOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch off access from outside'**
+  String get syRemoteOff;
+
+  /// No description provided for @syRemoteOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth can be reached from outside at this address:'**
+  String get syRemoteOn;
+
+  /// No description provided for @syRemoteOwnDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Your domain, open router'**
+  String get syRemoteOwnDomain;
+
+  /// No description provided for @syRemotePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password'**
+  String get syRemotePassword;
+
+  /// No description provided for @syRemotePasswordChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change it'**
+  String get syRemotePasswordChange;
+
+  /// No description provided for @syRemotePasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'From outside, Rasgeth asks for this password (the link with the token stays for this computer). Choose one you use nowhere else.'**
+  String get syRemotePasswordHint;
+
+  /// No description provided for @syRemotePasswordRule.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 10 characters. A short sentence is easy to remember and hard to guess.'**
+  String get syRemotePasswordRule;
+
+  /// No description provided for @syRemotePasswordSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Password saved.'**
+  String get syRemotePasswordSaved;
+
+  /// No description provided for @syRemotePasswordSet.
+  ///
+  /// In en, this message translates to:
+  /// **'A password is set'**
+  String get syRemotePasswordSet;
+
+  /// No description provided for @syRemotePurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Rasgeth from your phone or another computer when you are away. First a password, then one of three ways; nothing is reachable from outside until you finish. Optional.'**
+  String get syRemotePurpose;
+
+  /// No description provided for @syRemoteSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed-in browsers'**
+  String get syRemoteSessions;
+
+  /// No description provided for @syRemoteSessionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each sign-in lasts 30 days. If you lost a phone, or think someone else got in (the Rasgeth apps are signed out too):'**
+  String get syRemoteSessionsHint;
+
+  /// No description provided for @syRemoteSignOutAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out everywhere'**
+  String get syRemoteSignOutAll;
+
+  /// No description provided for @syRemoteSignedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed out everywhere.'**
+  String get syRemoteSignedOut;
+
+  /// No description provided for @syRemoteTailscale.
+  ///
+  /// In en, this message translates to:
+  /// **'A private network between your own devices: nothing opened on the router, free for personal use. You install Tailscale on your phone too.'**
+  String get syRemoteTailscale;
+
+  /// No description provided for @syRemoteWaysFolded.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth\'s own ways out'**
+  String get syRemoteWaysFolded;
+
+  /// No description provided for @syRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get syRemove;
+
+  /// No description provided for @sySave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get sySave;
+
+  /// No description provided for @sySaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get sySaved;
+
+  /// No description provided for @sySbBackupQ.
+  ///
+  /// In en, this message translates to:
+  /// **'All of Rasgeth in one file'**
+  String get sySbBackupQ;
+
+  /// No description provided for @sySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get sySettings;
+
+  /// No description provided for @sySnCable.
+  ///
+  /// In en, this message translates to:
+  /// **'I use the cable'**
+  String get sySnCable;
+
+  /// No description provided for @sySnCableDone.
+  ///
+  /// In en, this message translates to:
+  /// **'The cable works: Rasgeth is at {address}. Join your home network with this device and open http://{address}:7600 (or http://rasgeth.local:7600).'**
+  String sySnCableDone(String address);
+
+  /// No description provided for @sySnFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth could not join «{name}»: {why}'**
+  String sySnFailed(String name, String why);
+
+  /// No description provided for @sySnHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'A hidden network'**
+  String get sySnHidden;
+
+  /// No description provided for @sySnHiddenName.
+  ///
+  /// In en, this message translates to:
+  /// **'Network name'**
+  String get sySnHiddenName;
+
+  /// No description provided for @sySnJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this network'**
+  String get sySnJoin;
+
+  /// No description provided for @sySnMaintQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth could not find your home network, so it opened {ssid} again: choose the network it should use.'**
+  String sySnMaintQ(String ssid);
+
+  /// No description provided for @sySnNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No network was seen around: use the cable, or type the name of a hidden network.'**
+  String get sySnNone;
+
+  /// No description provided for @sySnPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password of «{name}»'**
+  String sySnPassword(String name);
+
+  /// No description provided for @sySnQ.
+  ///
+  /// In en, this message translates to:
+  /// **'You are on {ssid}, Rasgeth\'s temporary network: which network should Rasgeth use at home?'**
+  String sySnQ(String ssid);
+
+  /// No description provided for @sySnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your home network'**
+  String get sySnTitle;
+
+  /// No description provided for @sySnTrying.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth is joining «{name}»: this temporary network closes now. Join your home network with this device and open http://rasgeth.local:7600. If it does not work, {ssid} comes back in a minute with the reason.'**
+  String sySnTrying(String name, String ssid);
+
+  /// No description provided for @syStRemoteQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth away from home'**
+  String get syStRemoteQ;
+
+  /// No description provided for @syStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'stopped'**
+  String get syStopped;
+
+  /// No description provided for @syTgQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan with your phone\'s camera'**
+  String get syTgQr;
+
+  /// No description provided for @syTsApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale apps'**
+  String get syTsApps;
+
+  /// No description provided for @syTsDns.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale DNS settings'**
+  String get syTsDns;
+
+  /// No description provided for @syTsOpenSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Tailscale\'s sign-in page'**
+  String get syTsOpenSignIn;
+
+  /// No description provided for @syTsSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailscale wants you to sign in, to add Rasgeth to your network:'**
+  String get syTsSignIn;
+
+  /// No description provided for @syTsSignUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up on Tailscale'**
+  String get syTsSignUp;
+
+  /// No description provided for @syTsStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a free Tailscale account (with Google, Microsoft or GitHub is fine):'**
+  String get syTsStep1;
+
+  /// No description provided for @syTsStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'In Tailscale\'s DNS page switch on MagicDNS and HTTPS Certificates (they give Rasgeth a safe address):'**
+  String get syTsStep2;
+
+  /// No description provided for @syTsStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Then here:'**
+  String get syTsStep3;
+
+  /// No description provided for @syTsStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'Install Tailscale on your phone and the other computers, signed in with the same account:'**
+  String get syTsStep4;
+
+  /// No description provided for @syUiAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get syUiAdvanced;
+
+  /// No description provided for @syUiDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done.'**
+  String get syUiDone;
+
+  /// No description provided for @syUiNotNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'not needed'**
+  String get syUiNotNeeded;
+
+  /// No description provided for @syUpdBrkChecked.
+  ///
+  /// In en, this message translates to:
+  /// **'{file} · {size} · {projects} projects, {conversations} conversations, memories and settings'**
+  String syUpdBrkChecked(String conversations, String file, String projects, String size);
+
+  /// No description provided for @syUpdBrkDockerCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'The folder is inside Rasgeth\'s data volume, which a clean install removes: copy the file out first, from Rasgeth\'s folder:'**
+  String get syUpdBrkDockerCopy;
+
+  /// No description provided for @syUpdBrkDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get syUpdBrkDone;
+
+  /// No description provided for @syUpdBrkKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Your keychain ({n} keys, the models\', chats\' and mailboxes\' ones too) is not in the backup: it goes in only protected by a passphrase of yours.'**
+  String syUpdBrkKeys(String n);
+
+  /// No description provided for @syUpdBrkKeysAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the keychain too'**
+  String get syUpdBrkKeysAdd;
+
+  /// No description provided for @syUpdBrkKeysAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Make the backup again with the keychain'**
+  String get syUpdBrkKeysAgain;
+
+  /// No description provided for @syUpdBrkKeysIn.
+  ///
+  /// In en, this message translates to:
+  /// **'The keychain is in the backup too, protected by your passphrase.'**
+  String get syUpdBrkKeysIn;
+
+  /// No description provided for @syUpdBrkLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth {version} changed too much inside to update the usual way: installed over the old one it could break.'**
+  String syUpdBrkLead(String version);
+
+  /// No description provided for @syUpdBrkNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Go on'**
+  String get syUpdBrkNext;
+
+  /// No description provided for @syUpdBrkRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try the backup again'**
+  String get syUpdBrkRetry;
+
+  /// No description provided for @syUpdBrkSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup made and read back: it is in this folder'**
+  String get syUpdBrkSaved;
+
+  /// No description provided for @syUpdBrkStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the old Rasgeth'**
+  String get syUpdBrkStep1;
+
+  /// No description provided for @syUpdBrkStep1Docker.
+  ///
+  /// In en, this message translates to:
+  /// **'In Rasgeth\'s folder remove the containers and their volumes:'**
+  String get syUpdBrkStep1Docker;
+
+  /// No description provided for @syUpdBrkStep1Mac.
+  ///
+  /// In en, this message translates to:
+  /// **'From the menu bar icon choose «Uninstall…» (or drag Rasgeth from Applications to the Bin).'**
+  String get syUpdBrkStep1Mac;
+
+  /// No description provided for @syUpdBrkStep1Os.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the backup to a USB disk (Settings › System › Backups): reinstalling Rasgeth OS erases this machine\'s disk.'**
+  String get syUpdBrkStep1Os;
+
+  /// No description provided for @syUpdBrkStep1Source.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop Rasgeth and move its data folder away.'**
+  String get syUpdBrkStep1Source;
+
+  /// No description provided for @syUpdBrkStep1Win.
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstall Rasgeth. When it asks whether to keep the data, you can answer No: everything is in the backup.'**
+  String get syUpdBrkStep1Win;
+
+  /// No description provided for @syUpdBrkStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Install Rasgeth {version}'**
+  String syUpdBrkStep2(String version);
+
+  /// No description provided for @syUpdBrkStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get syUpdBrkStep3;
+
+  /// No description provided for @syUpdBrkStep3Docker.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Rasgeth, finish the setup and import the copied file in Settings › Backup › Import a backup.'**
+  String get syUpdBrkStep3Docker;
+
+  /// No description provided for @syUpdBrkStep3Os.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the new Rasgeth OS (USB stick or image) and start the machine: the first start offers «Restore from the backup» and finds it on the USB disk.'**
+  String get syUpdBrkStep3Os;
+
+  /// No description provided for @syUpdBrkStep3Text.
+  ///
+  /// In en, this message translates to:
+  /// **'At its first start the new Rasgeth offers «Restore from the backup»: it finds it in that folder by itself.'**
+  String get syUpdBrkStep3Text;
+
+  /// No description provided for @syUpdBrkSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth {version} cannot be installed over the {installed}'**
+  String syUpdBrkSub(String installed, String version);
+
+  /// No description provided for @syUpdBrkSure.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth closes and its uninstaller starts. The backup stays in {folder}.'**
+  String syUpdBrkSure(String folder);
+
+  /// No description provided for @syUpdBrkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This version needs a clean install'**
+  String get syUpdBrkTitle;
+
+  /// No description provided for @syUpdBrkUninstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstall Rasgeth'**
+  String get syUpdBrkUninstall;
+
+  /// No description provided for @syUpdBrkUninstallYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, uninstall'**
+  String get syUpdBrkUninstallYes;
+
+  /// No description provided for @syUpdBrkUninstalling.
+  ///
+  /// In en, this message translates to:
+  /// **'The uninstaller is starting on your desktop.'**
+  String get syUpdBrkUninstalling;
+
+  /// No description provided for @syUpdBrkWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'So it goes in three short steps: first a backup of everything (I am making it now, by myself), then you remove the old Rasgeth and install the new one, which puts everything back from the backup.'**
+  String get syUpdBrkWhy;
+
+  /// No description provided for @syUpdCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get syUpdCopied;
+
+  /// No description provided for @syUpdCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get syUpdCopy;
+
+  /// No description provided for @syUpdDownloadNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the new version'**
+  String get syUpdDownloadNew;
+
+  /// No description provided for @syUpdFoundDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything is back. Go on with the next steps to set up the models.'**
+  String get syUpdFoundDone;
+
+  /// No description provided for @syUpdFoundKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'The passphrase you chose for the keychain. Without it everything else is restored, and the keys of models and chats are put in again from their pages.'**
+  String get syUpdFoundKeys;
+
+  /// No description provided for @syUpdFoundLead.
+  ///
+  /// In en, this message translates to:
+  /// **'There is a backup of {date} (Rasgeth {version}): {projects} projects and {conversations} conversations. Put everything back now?'**
+  String syUpdFoundLead(String conversations, String date, String projects, String version);
+
+  /// No description provided for @syUpdFoundRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from the backup'**
+  String get syUpdFoundRestore;
+
+  /// No description provided for @syUpdFoundTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from the backup'**
+  String get syUpdFoundTitle;
+
+  /// No description provided for @syUpdLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get syUpdLater;
+
+  /// No description provided for @syUpdLook.
+  ///
+  /// In en, this message translates to:
+  /// **'Look for updates'**
+  String get syUpdLook;
+
+  /// No description provided for @syUpdLooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking…'**
+  String get syUpdLooking;
+
+  /// No description provided for @syUpdReqAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Look again'**
+  String get syUpdReqAgain;
+
+  /// No description provided for @syUpdReqClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close Rasgeth'**
+  String get syUpdReqClose;
+
+  /// No description provided for @syUpdReqClosing.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth is closing. You can close this page.'**
+  String get syUpdReqClosing;
+
+  /// No description provided for @syUpdReqDocker.
+  ///
+  /// In en, this message translates to:
+  /// **'On the computer where Rasgeth runs, in its folder, run:'**
+  String get syUpdReqDocker;
+
+  /// No description provided for @syUpdReqInstaller.
+  ///
+  /// In en, this message translates to:
+  /// **'If the update does not start, the whole installer is here:'**
+  String get syUpdReqInstaller;
+
+  /// No description provided for @syUpdReqInstallerLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth-Setup.exe'**
+  String get syUpdReqInstallerLink;
+
+  /// No description provided for @syUpdReqLead.
+  ///
+  /// In en, this message translates to:
+  /// **'This update cannot wait: Rasgeth {version} fixes something that the {installed} cannot keep doing safely.'**
+  String syUpdReqLead(String installed, String version);
+
+  /// No description provided for @syUpdReqMac.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the downloaded file and drag Rasgeth into Applications, replacing the old one; then open it again.'**
+  String get syUpdReqMac;
+
+  /// No description provided for @syUpdReqNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update now'**
+  String get syUpdReqNow;
+
+  /// No description provided for @syUpdReqSafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Until you update, agents and automations wait. Your conversations, projects and settings are safe: nothing is lost.'**
+  String get syUpdReqSafe;
+
+  /// No description provided for @syUpdReqSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring the code up to date (git pull), build it and start Rasgeth again.'**
+  String get syUpdReqSource;
+
+  /// No description provided for @syUpdReqSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} is needed (you have {installed})'**
+  String syUpdReqSub(String installed, String version);
+
+  /// No description provided for @syUpdReqTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth must be updated'**
+  String get syUpdReqTitle;
+
+  /// No description provided for @syUpdReqUpdating.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth is downloading the update: follow the window on your desktop. It restarts by itself.'**
+  String get syUpdReqUpdating;
+
+  /// No description provided for @syUpdReqUpdatingOs.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth OS is updating Rasgeth: the page stops for a few minutes and comes back by itself.'**
+  String get syUpdReqUpdatingOs;
+
+  /// No description provided for @syWzBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get syWzBack;
+
+  /// No description provided for @syWzCpu.
+  ///
+  /// In en, this message translates to:
+  /// **'Processor'**
+  String get syWzCpu;
+
+  /// No description provided for @syWzFree.
+  ///
+  /// In en, this message translates to:
+  /// **'free'**
+  String get syWzFree;
+
+  /// No description provided for @syWzGpu.
+  ///
+  /// In en, this message translates to:
+  /// **'Graphics card'**
+  String get syWzGpu;
+
+  /// No description provided for @syWzMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory'**
+  String get syWzMemory;
+
+  /// No description provided for @syWzNoGpu.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get syWzNoGpu;
+
+  /// No description provided for @syWzRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'recommended'**
+  String get syWzRecommended;
+
+  /// No description provided for @syWzRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Access from outside home'**
+  String get syWzRemote;
+
+  /// No description provided for @syWzStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Data and backups'**
+  String get syWzStorage;
+
+  /// No description provided for @syWzThreads.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} threads'**
+  String syWzThreads(String n);
+
+  /// No description provided for @syHubTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'System and access'**
+  String get syHubTitle;
+
+  /// No description provided for @syHubRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Password, second check, Tailscale, Cloudflare, your own domain, Pi-hole'**
+  String get syHubRemote;
+
+  /// No description provided for @syHubSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'The machine, its role, data and backups, Wi-Fi, HTTPS, SSH, updates'**
+  String get syHubSystem;
+
+  /// No description provided for @syHubMachines.
+  ///
+  /// In en, this message translates to:
+  /// **'Your computers the agents reach over SSH'**
+  String get syHubMachines;
+
+  /// No description provided for @syHubNodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Other machines working with this one'**
+  String get syHubNodes;
+
+  /// No description provided for @syHubBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything in one file, and a file brought back'**
+  String get syHubBackup;
+
+  /// No description provided for @syGateOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'What to do'**
+  String get syGateOpen;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

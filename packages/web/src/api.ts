@@ -278,7 +278,9 @@ export interface SetupState {
   policy: {
     humanOnly: string[];
     disabledDanger: string[];
-    dangers: { id: string }[];
+    /** Dangers off by default (`offByDefault`) the person switched on (remove-agent, 3.10). */
+    enabledDanger?: string[];
+    dangers: { id: string; offByDefault?: boolean }[];
     /** The guardian (2026-11-04): ask before writing outside the project, or let it be. */
     guardian?: "ask" | "auto";
     /** Skills written by agents (G29.4): wait for the human, or install once tested. */
@@ -509,6 +511,8 @@ export interface ModelChoice {
   name?: string;
   /** "new": released in the last weeks; "unconfirmed": not in the models catalog yet (3.5.4). */
   status?: "new" | "unconfirmed";
+  /** The day it was released, per the models catalog (the menus put the newest first). */
+  released?: string;
 }
 
 export interface SearchHit {

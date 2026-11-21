@@ -1,0 +1,1145 @@
+{
+  "vectors": [
+    {
+      "id": "gitlab",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://gitlab.com/api/v4/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "gitlab",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://gitlab.com/api/v4/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "sentry",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.sentry.dev/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "sentry",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.sentry.dev/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "cloudflare",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.cloudflare.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "cloudflare",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.cloudflare.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "notion",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.notion.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "notion",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.notion.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "atlassian",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.atlassian.com/v2/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "atlassian",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.atlassian.com/v2/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "linear",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.linear.app/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "linear",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.linear.app/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "trello",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.trello.com/v1",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "trello",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.trello.com/v1",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "todoist",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://ai.todoist.net/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "todoist",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://ai.todoist.net/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "monday",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.monday.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "monday",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.monday.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "clickup",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.clickup.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "clickup",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.clickup.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "zapier",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.zapier.com/api/v1/connect",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "zapier",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.zapier.com/api/v1/connect",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "intercom",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.intercom.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "intercom",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.intercom.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "stripe",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.stripe.com",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "stripe",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.stripe.com",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "paypal",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.paypal.com/http",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "paypal",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.paypal.com/http",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "square",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.squareup.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "square",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.squareup.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "airtable",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.airtable.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "airtable",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.airtable.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "supabase",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.supabase.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "supabase",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.supabase.com/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "neon",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.neon.tech/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "neon",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.neon.tech/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "hugging-face",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://huggingface.co/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "hugging-face",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://huggingface.co/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "perplexity",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://api.perplexity.ai/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "perplexity",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://api.perplexity.ai/mcp",
+          "oauth": true
+        }
+      }
+    },
+    {
+      "id": "github",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://api.githubcopilot.com/mcp/"
+        },
+        "secrets": {
+          "headers": {
+            "Authorization": "Bearer sk-test-1234"
+          }
+        }
+      }
+    },
+    {
+      "id": "github",
+      "input": {},
+      "error": "GitHub needs a key"
+    },
+    {
+      "id": "exa",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.exa.ai/mcp"
+        },
+        "secrets": {
+          "headers": {
+            "x-api-key": "sk-test-1234"
+          }
+        }
+      }
+    },
+    {
+      "id": "exa",
+      "input": {},
+      "error": "Exa needs a key"
+    },
+    {
+      "id": "google-maps",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mapstools.googleapis.com/mcp"
+        },
+        "secrets": {
+          "headers": {
+            "X-Goog-Api-Key": "sk-test-1234"
+          }
+        }
+      }
+    },
+    {
+      "id": "google-maps",
+      "input": {},
+      "error": "Google Maps (Grounding Lite) needs a key"
+    },
+    {
+      "id": "gmail",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": "s3"
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://gmailmcp.googleapis.com/mcp/v1",
+          "oauth": true
+        },
+        "secrets": {
+          "app": {
+            "clientId": "client-1",
+            "clientSecret": "s3",
+            "scope": "https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.compose",
+            "authParams": {
+              "access_type": "offline",
+              "prompt": "consent"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "gmail",
+      "input": {},
+      "error": "Gmail needs your app's details"
+    },
+    {
+      "id": "google-calendar",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": "s3"
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://calendarmcp.googleapis.com/mcp/v1",
+          "oauth": true
+        },
+        "secrets": {
+          "app": {
+            "clientId": "client-1",
+            "clientSecret": "s3",
+            "scope": "https://www.googleapis.com/auth/calendar.calendarlist.readonly https://www.googleapis.com/auth/calendar.events.freebusy https://www.googleapis.com/auth/calendar.events.readonly",
+            "authParams": {
+              "access_type": "offline",
+              "prompt": "consent"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "google-calendar",
+      "input": {},
+      "error": "Google Calendar needs your app's details"
+    },
+    {
+      "id": "google-drive",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": "s3"
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://drivemcp.googleapis.com/mcp/v1",
+          "oauth": true
+        },
+        "secrets": {
+          "app": {
+            "clientId": "client-1",
+            "clientSecret": "s3",
+            "scope": "https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.file",
+            "authParams": {
+              "access_type": "offline",
+              "prompt": "consent"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "google-drive",
+      "input": {},
+      "error": "Google Drive needs your app's details"
+    },
+    {
+      "id": "canva",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": "s3"
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://api.canva.com/connect/v1/mcp",
+          "oauth": true
+        },
+        "secrets": {
+          "app": {
+            "clientId": "client-1",
+            "clientSecret": "s3"
+          }
+        }
+      }
+    },
+    {
+      "id": "canva",
+      "input": {},
+      "error": "Canva needs your app's details"
+    },
+    {
+      "id": "slack",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": "s3"
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.slack.com/mcp",
+          "oauth": true
+        },
+        "secrets": {
+          "app": {
+            "clientId": "client-1",
+            "clientSecret": "s3",
+            "scope": "search:read.public search:read.private search:read.mpim search:read.im search:read.files search:read.users chat:write channels:history groups:history mpim:history im:history channels:read groups:read im:read mpim:read users:read users:read.email files:read canvases:read canvases:write reactions:read reactions:write"
+          }
+        }
+      }
+    },
+    {
+      "id": "slack",
+      "input": {},
+      "error": "Slack needs your app's details"
+    },
+    {
+      "id": "asana",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": "s3"
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.asana.com/v2/mcp",
+          "oauth": true
+        },
+        "secrets": {
+          "app": {
+            "clientId": "client-1",
+            "clientSecret": "s3",
+            "scope": "default"
+          }
+        }
+      }
+    },
+    {
+      "id": "asana",
+      "input": {},
+      "error": "Asana needs your app's details"
+    },
+    {
+      "id": "dropbox",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": "s3"
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.dropbox.com/dash",
+          "oauth": true
+        },
+        "secrets": {
+          "app": {
+            "clientId": "client-1",
+            "clientSecret": "s3",
+            "scope": "account_info.read dash/content.read dash/content.write"
+          }
+        }
+      }
+    },
+    {
+      "id": "dropbox",
+      "input": {},
+      "error": "Dropbox needs your app's details"
+    },
+    {
+      "id": "hubspot",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": "s3"
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://mcp.hubspot.com",
+          "oauth": true
+        },
+        "secrets": {
+          "app": {
+            "clientId": "client-1",
+            "clientSecret": "s3"
+          }
+        }
+      }
+    },
+    {
+      "id": "hubspot",
+      "input": {},
+      "error": "HubSpot needs your app's details"
+    },
+    {
+      "id": "salesforce",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://api.salesforce.com/platform/mcp/v1/platform/sobject-all",
+          "oauth": true
+        },
+        "secrets": {
+          "app": {
+            "clientId": "client-1",
+            "scope": "mcp_api refresh_token"
+          }
+        }
+      }
+    },
+    {
+      "id": "salesforce",
+      "input": {},
+      "error": "Salesforce needs your app's details"
+    },
+    {
+      "id": "microsoft-365",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": "s3"
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://workiq.svc.cloud.microsoft/mcp",
+          "oauth": true
+        },
+        "secrets": {
+          "app": {
+            "clientId": "client-1",
+            "clientSecret": "s3",
+            "scope": "api://workiq.svc.cloud.microsoft/WorkIQ.Read api://workiq.svc.cloud.microsoft/WorkIQ.Act api://workiq.svc.cloud.microsoft/WorkIQAgent.Ask offline_access"
+          }
+        }
+      }
+    },
+    {
+      "id": "microsoft-365",
+      "input": {},
+      "error": "Microsoft 365 (Work IQ) needs your app's details"
+    },
+    {
+      "id": "home-assistant",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "https://home.example.org:8123/",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "http",
+          "url": "https://home.example.org:8123/api/mcp"
+        },
+        "secrets": {
+          "headers": {
+            "Authorization": "Bearer sk-test-1234"
+          }
+        }
+      }
+    },
+    {
+      "id": "home-assistant",
+      "input": {},
+      "error": "Home Assistant needs a key"
+    },
+    {
+      "id": "wordpress",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {
+          "WP_API_URL": " wp_api_url ",
+          "WP_API_USERNAME": " wp_api_username ",
+          "WP_API_PASSWORD": " wp_api_password ",
+          "WOO_CUSTOMER_KEY": " woo_customer_key ",
+          "WOO_CUSTOMER_SECRET": " woo_customer_secret "
+        },
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+            "-y",
+            "@automattic/mcp-wordpress-remote"
+          ]
+        },
+        "secrets": {
+          "env": {
+            "WP_API_URL": "wp_api_url",
+            "WP_API_USERNAME": "wp_api_username",
+            "WP_API_PASSWORD": "wp_api_password",
+            "WOO_CUSTOMER_KEY": "woo_customer_key",
+            "WOO_CUSTOMER_SECRET": "woo_customer_secret"
+          }
+        }
+      }
+    },
+    {
+      "id": "wordpress",
+      "input": {},
+      "error": "WordPress needs Your site's MCP server address"
+    },
+    {
+      "id": "shopify-dev",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+            "-y",
+            "@shopify/dev-mcp@latest"
+          ]
+        }
+      }
+    },
+    {
+      "id": "shopify-dev",
+      "input": {},
+      "ok": {
+        "transport": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+            "-y",
+            "@shopify/dev-mcp@latest"
+          ]
+        }
+      }
+    },
+    {
+      "id": "postgres",
+      "input": {
+        "key": "  sk-test-1234  ",
+        "url": "",
+        "fields": {},
+        "app": {
+          "clientId": " client-1 ",
+          "clientSecret": ""
+        }
+      },
+      "ok": {
+        "transport": {
+          "type": "stdio",
+          "command": "uvx",
+          "args": [
+            "postgres-mcp",
+            "--access-mode=restricted"
+          ]
+        },
+        "secrets": {
+          "env": {
+            "DATABASE_URI": "sk-test-1234"
+          }
+        }
+      }
+    },
+    {
+      "id": "postgres",
+      "input": {},
+      "error": "PostgreSQL needs a key"
+    }
+  ]
+}

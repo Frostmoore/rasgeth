@@ -721,11 +721,13 @@ export interface SetupState {
   policy: {
     humanOnly: string[];
     disabledDanger: string[];
+    /** Dangers off by default (`offByDefault`) the person switched on (remove-agent, 3.10). */
+    enabledDanger?: string[];
     /** The guardian (2026-11-04): ask before writing outside the project, or let it be. */
     guardian: "ask" | "auto";
     /** Skills written by agents (G29.4): wait for the human, or install once tested. */
     skills: "ask" | "auto";
-    dangers: { id: string }[];
+    dangers: { id: string; offByDefault?: boolean }[];
   };
   budgetUsd: number | null;
   /** RedGiant can run its own search engine here (SearXNG in Docker). */
@@ -1255,7 +1257,11 @@ export class SetupService {
         skills: policy.skills ?? "ask",
         humanOnly: policy.humanOnly ?? DEFAULT_POLICY.humanOnly,
         disabledDanger: policy.disabledDanger,
-        dangers: DEFAULT_POLICY.danger.map((d) => ({ id: d.id })),
+        enabledDanger: policy.enabledDanger ?? [],
+        // A danger off by default (remove-agent, 3.10) asks nobody until switched on.
+        dangers: DEFAULT_POLICY.danger.map((d) =>
+          d.enabled === false ? { id: d.id, offByDefault: true } : { id: d.id },
+        ),
       },
       budgetUsd: global?.limit.usd ?? null,
       canRunSearch: this.canRunSearch,
@@ -2779,6 +2785,7 @@ export class SetupService {
   async saveSafety(s: {
     humanOnly?: string[] | undefined;
     disabledDanger?: string[] | undefined;
+    enabledDanger?: string[] | undefined;
     budgetUsd?: number | null | undefined;
     retentionDays?: number | null | undefined;
     subscriptionAck?: boolean | undefined;
@@ -2787,12 +2794,13 @@ export class SetupService {
   }): Promise<void> {
     const owner = this.o.ownerId;
     const core = this.o.core;
-    if (s.humanOnly || s.disabledDanger || s.guardian || s.skills) {
+    if (s.humanOnly || s.disabledDanger || s.enabledDanger || s.guardian || s.skills) {
       const p = core.policies.get(owner);
       await core.config.setPolicy(owner, "human", {
         ...p,
         ...(s.humanOnly && { humanOnly: s.humanOnly }),
         ...(s.disabledDanger && { disabledDanger: s.disabledDanger }),
+        ...(s.enabledDanger && { enabledDanger: s.enabledDanger }),
         ...(s.guardian && { guardian: s.guardian }),
         ...(s.skills && { skills: s.skills }),
       });

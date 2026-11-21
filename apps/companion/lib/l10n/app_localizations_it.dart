@@ -11061,4 +11061,6611 @@ class AppLocalizationsIt extends AppLocalizations {
   String devForgetUnusedDone(int count) {
     return 'Dispositivi tolti: $count.';
   }
+
+  @override
+  String get chAxCat_other => 'Altro';
+
+  @override
+  String get chAxCat_personal => 'Personale';
+
+  @override
+  String get chAxCat_social => 'Social';
+
+  @override
+  String get chAxCat_work => 'Lavoro';
+
+  @override
+  String get chAxMailboxAdd => 'Aggiungi casella';
+
+  @override
+  String get chAxMailboxAddText => 'Quante vuoi, ognuna nella sua categoria.';
+
+  @override
+  String get chAxMailboxAgents => 'Gli agenti possono usarla';
+
+  @override
+  String get chAxMailboxAgentsHelp =>
+      'Cercano, leggono e scrivono bozze qui; ogni email che inviano te la chiede prima e te la mostra intera.';
+
+  @override
+  String get chAxMailboxCategory => 'Categoria';
+
+  @override
+  String get chAxMailboxName => 'Come la chiami';
+
+  @override
+  String get chAxMailboxNameHelp => 'Per esempio Lavoro o Gmail; vuoto: l\'indirizzo.';
+
+  @override
+  String get chAxMailboxNew => 'Nuova casella';
+
+  @override
+  String get chAxMailboxNewCategory => 'Oppure una categoria nuova';
+
+  @override
+  String get chAxMailboxNewCategoryPlaceholder => 'Famiglia, Circolo, Negozio…';
+
+  @override
+  String get chAxMailboxPasswordKept => 'Lasciala vuota per tenere quella che hai già dato.';
+
+  @override
+  String get chAxMailboxPurpose =>
+      'Una casella per le automazioni: si legge solo la posta nuova, niente viene segnato o spostato.';
+
+  @override
+  String chAxMailboxesWatching(String n, String names) {
+    return '$n caselle collegate: $names.';
+  }
+
+  @override
+  String get chAxSmtpHost => 'Server per mandare (SMTP)';
+
+  @override
+  String get chAxSmtpHostHelp =>
+      'Serve solo per ricevere i messaggi via email; vuoto: quello solito.';
+
+  @override
+  String get chAxSmtpPort => 'Porta per mandare';
+
+  @override
+  String get chChatChange => 'Cambia le impostazioni';
+
+  @override
+  String get chChatDiscordHow =>
+      'Nel Discord Developer Portal crea un\'applicazione, aggiungi un bot, accendi Message Content Intent, copia il token e invita il bot in un tuo server (o scrivigli direttamente).';
+
+  @override
+  String get chChatDiscordToken => 'Token del bot';
+
+  @override
+  String get chChatImHow =>
+      'Apple non offre iMessage ai programmi: serve un Mac sempre acceso, con l\'accesso a Messaggi e il server gratuito BlueBubbles. Il Mac risponde con il suo ID Apple: usane uno fatto apposta per Rasgeth, non il tuo.';
+
+  @override
+  String get chChatImLimits =>
+      'Senza la Private API le risposte non si possono modificare e non compare «sta scrivendo»; approvazioni e domande si rispondono con i numeri. Mentre il Mac dorme o è spento i messaggi aspettano e arrivano al risveglio.';
+
+  @override
+  String get chChatImPassword => 'Password del server BlueBubbles';
+
+  @override
+  String get chChatImPrivate =>
+      'La Private API di BlueBubbles è attiva (modifiche e «sta scrivendo...»)';
+
+  @override
+  String get chChatImStep1 =>
+      'Sul Mac crea (o usa) un ID Apple solo per Rasgeth e accedi con quello in Messaggi.';
+
+  @override
+  String get chChatImStep2 =>
+      'Scarica BlueBubbles Server da bluebubbles.app, aprilo e scegli una password del server.';
+
+  @override
+  String get chChatImStep3 =>
+      'Quando lo chiede, consenti Accesso completo al disco e Accessibilità in Impostazioni di Sistema, Privacy e sicurezza: gli servono per leggere e mandare i messaggi.';
+
+  @override
+  String get chChatImStep4 =>
+      'In BlueBubbles impedisci al Mac di andare in stop e annota il suo indirizzo: http://<indirizzo del Mac>:1234 in casa, oppure l\'indirizzo del suo tunnel da fuori.';
+
+  @override
+  String get chChatImStep5 =>
+      'Scrivi qui indirizzo e password e premi Collega. Dal tuo iPhone scrivi all\'ID Apple del passo 1 e manda il codice.';
+
+  @override
+  String get chChatImUrl => 'Indirizzo del server BlueBubbles (http://...:1234)';
+
+  @override
+  String chChatLinked(String who) {
+    return 'Collegato: $who';
+  }
+
+  @override
+  String get chChatMatrixE2ee =>
+      'Chat cifrate: in Element le chat dirette sono cifrate e il bot non riesce a leggerle. Per tenere la cifratura avvia Pantalaimon (l\'aiutante gratuito di Matrix per la cifratura) accanto a Rasgeth e scrivi il suo indirizzo al posto di quello del server.';
+
+  @override
+  String get chChatMatrixHomeserver => 'Indirizzo del server (per esempio https://matrix.org)';
+
+  @override
+  String get chChatMatrixHow =>
+      'Rasgeth ha bisogno di un account Matrix tutto suo, non il tuo: è quello a cui scriverai.';
+
+  @override
+  String get chChatMatrixStep1 =>
+      'Crea un account nuovo per il bot, per esempio su app.element.io (o sul tuo server).';
+
+  @override
+  String get chChatMatrixStep2 =>
+      'Entrato come bot, apri Impostazioni, Aiuto e informazioni, Avanzate, Token di accesso, e copialo. Poi chiudi quella scheda senza uscire dall\'account: uscendo il token si annulla.';
+
+  @override
+  String get chChatMatrixStep3 =>
+      'Scrivi qui l\'indirizzo del server e incolla il token, poi premi Collega.';
+
+  @override
+  String get chChatMatrixStep4 =>
+      'Dal tuo account crea una stanza nuova senza cifratura (spegni «Attiva la crittografia end-to-end»), invita il bot (entra da solo) e manda il codice che compare.';
+
+  @override
+  String get chChatMatrixToken => 'Il token di accesso dell\'account del bot';
+
+  @override
+  String get chChatSendCode => 'Manda questo dalla chat per collegarla:';
+
+  @override
+  String get chChatSignalHow =>
+      'Signal ha bisogno di signal-cli-rest-api acceso con un numero suo collegato (una seconda SIM o un dispositivo collegato); scrivi qui il suo indirizzo e il numero.';
+
+  @override
+  String get chChatSignalNumber => 'Il numero del bot (+39...)';
+
+  @override
+  String get chChatSignalUrl => 'Indirizzo di signal-cli-rest-api';
+
+  @override
+  String get chChatSlackApp => 'Token dell\'app (xapp-..., connections:write)';
+
+  @override
+  String get chChatSlackBot => 'Token del bot (xoxb-...)';
+
+  @override
+  String get chChatSlackHow =>
+      'Su api.slack.com/apps crea un\'app, accendi Socket Mode (non serve un indirizzo pubblico), aggiungi i permessi chat:write, im:history, app_mentions:read, files:read, files:write, iscriviti a message.im e app_mention, installala e copia i due token.';
+
+  @override
+  String get chChatSteps => 'Passo per passo';
+
+  @override
+  String get chChatTeamsAppId => 'Microsoft App ID';
+
+  @override
+  String get chChatTeamsDownload => 'Scarica l\'app per Teams';
+
+  @override
+  String chChatTeamsEndpoint(String url) {
+    return 'Endpoint di messaggistica per Azure: $url';
+  }
+
+  @override
+  String get chChatTeamsFiles =>
+      'I file di Rasgeth arrivano come una scheda da accettare: accettati, finiscono nel tuo OneDrive. A un bot di Teams non si possono mandare messaggi vocali.';
+
+  @override
+  String get chChatTeamsHow =>
+      'Teams parla con i bot solo attraverso Microsoft Azure. Serve un account Microsoft 365 di lavoro o scuola che possa aggiungere app personalizzate (Teams gratuito per uso personale non accetta bot) e Rasgeth raggiungibile da fuori (Impostazioni, Accesso da fuori).';
+
+  @override
+  String get chChatTeamsSecret => 'Segreto client (il suo Valore)';
+
+  @override
+  String get chChatTeamsStep1 =>
+      'Apri portal.azure.com (basta un account gratuito), scegli Crea una risorsa, cerca Azure Bot e premi Crea.';
+
+  @override
+  String get chChatTeamsStep2 =>
+      'Dagli un nome, scegli il piano gratuito (F0), Tipo di app: Tenant singolo, Tipo di creazione: Crea un nuovo ID app Microsoft. Premi Crea, poi Vai alla risorsa.';
+
+  @override
+  String chChatTeamsStep3(String url) {
+    return 'In Configurazione scrivi questo Endpoint di messaggistica e premi Applica: $url. Copia il Microsoft App ID e l\'App Tenant ID.';
+  }
+
+  @override
+  String get chChatTeamsStep4 =>
+      'Accanto a Microsoft App ID premi Gestisci password, poi Nuovo segreto client, Aggiungi, e copia il suo Valore (si vede una volta sola).';
+
+  @override
+  String get chChatTeamsStep5 =>
+      'In Canali aggiungi Microsoft Teams, accetta le condizioni e premi Applica.';
+
+  @override
+  String get chChatTeamsStep6 =>
+      'Incolla qui i tre valori e premi Collega. Poi scarica l\'app per Teams con il pulsante che compare.';
+
+  @override
+  String get chChatTeamsTenant => 'App Tenant ID';
+
+  @override
+  String get chChatTeamsUpload =>
+      'In Teams apri App, Gestisci le tue app, Carica un\'app, Carica un\'app personalizzata, scegli il file scaricato e premi Aggiungi. Poi apri la chat con Rasgeth e manda il codice.';
+
+  @override
+  String get chChatTurnOff => 'Spegni';
+
+  @override
+  String get chChatWaHow =>
+      'In Meta for Developers crea un\'app WhatsApp, copia il token di accesso, l\'ID del numero e il segreto dell\'app, e scegli un token di verifica. WhatsApp manda i messaggi a un indirizzo pubblico: Rasgeth deve essere raggiungibile da fuori (Impostazioni, Accesso da fuori).';
+
+  @override
+  String get chChatWaPhoneId => 'ID del numero di telefono';
+
+  @override
+  String get chChatWaSecret => 'Segreto dell\'app';
+
+  @override
+  String get chChatWaToken => 'Token di accesso';
+
+  @override
+  String get chChatWaVerify => 'Token di verifica (sceglilo tu)';
+
+  @override
+  String chChatWaWebhook(String url) {
+    return 'Webhook per Meta: $url con il token di verifica che hai scelto; iscriviti a messages.';
+  }
+
+  @override
+  String get chChats => 'Altre chat';
+
+  @override
+  String get chChatsHint =>
+      'Parla con il Demi-God anche da Discord, Slack, Signal, WhatsApp, Matrix, Teams o iMessage. È una conversazione sola: cominciata su Telegram o qui, continua ovunque scrivi. Approvazioni e domande arrivano con i pulsanti (su Signal, Matrix e iMessage, con i numeri da rispondere).';
+
+  @override
+  String get chEmailChange => 'Cambia';
+
+  @override
+  String get chEmailConnect => 'Collega la casella email';
+
+  @override
+  String chEmailConnected(String host, String user) {
+    return 'Leggo $user su $host.';
+  }
+
+  @override
+  String get chEmailHost => 'Server di posta (IMAP)';
+
+  @override
+  String get chEmailHostHelp =>
+      'Per esempio imap.gmail.com, outlook.office365.com, imap.mail.me.com.';
+
+  @override
+  String get chEmailNeedFirst =>
+      'Prima collega la casella email: finché non è collegata, questa automazione non parte.';
+
+  @override
+  String get chEmailNotConnected => 'Non collegata';
+
+  @override
+  String get chEmailPassword => 'Password per le app';
+
+  @override
+  String get chEmailPasswordHelp =>
+      'Meglio una password per le app (Gmail, Outlook e iCloud la creano nelle impostazioni di sicurezza dell\'account) che la tua: la puoi revocare quando vuoi. Resta in un file privato sul tuo server.';
+
+  @override
+  String get chEmailPort => 'Porta';
+
+  @override
+  String get chEmailPurpose =>
+      'Una routine può partire quando arriva una email (una fattura, un avviso). Rasgeth guarda solo la posta nuova, ogni due minuti, e non cambia niente nella tua casella; l\'email arriva all\'agente come informazione, mai come istruzioni.';
+
+  @override
+  String get chEmailSave => 'Collega la casella';
+
+  @override
+  String get chEmailSecure => 'Cifrata da subito (porta 993)';
+
+  @override
+  String get chEmailTesting => 'Provo la casella…';
+
+  @override
+  String get chEmailTileText => 'Per le automazioni che partono quando arriva una email.';
+
+  @override
+  String get chEmailTitle => 'Casella email';
+
+  @override
+  String get chEmailUser => 'Indirizzo o nome utente';
+
+  @override
+  String chEmailWatching(String host, String user) {
+    return 'Guarda $user su $host.';
+  }
+
+  @override
+  String get chInput => 'letti';
+
+  @override
+  String get chRemove => 'Rimuovi';
+
+  @override
+  String get chSbChatAccounts => 'Account collegati';
+
+  @override
+  String get chSbChatDiscordText => 'Un bot nel tuo server Discord, in privato o in un canale.';
+
+  @override
+  String get chSbChatImText =>
+      'Con un Mac sempre acceso e BlueBubbles: risponde l\'app Messaggi del Mac.';
+
+  @override
+  String get chSbChatMatrixText =>
+      'Un account bot su qualsiasi server Matrix (matrix.org o il tuo), in chat o in una stanza.';
+
+  @override
+  String get chSbChatNoAccount =>
+      'Ancora nessun account collegato: manda il codice qui sotto dalla chat.';
+
+  @override
+  String get chSbChatOnWaiting => 'Acceso: manda il codice dalla chat';
+
+  @override
+  String get chSbChatSignalText => 'Un numero Signal tutto suo, con signal-cli-rest-api.';
+
+  @override
+  String get chSbChatSlackText =>
+      'Un\'app nel tuo spazio di lavoro Slack, in Socket Mode: niente indirizzo pubblico.';
+
+  @override
+  String get chSbChatTeamsText =>
+      'Un bot in Microsoft Teams, per account di lavoro o scuola, con un Azure Bot gratuito.';
+
+  @override
+  String get chSbChatWaText => 'Il tuo numero WhatsApp Business, con la Cloud API di Meta.';
+
+  @override
+  String get chSbChatWaiting => 'Aspetto il codice… questa finestra se ne accorge da sola.';
+
+  @override
+  String get chSbChatsQ => 'Parla con Demi-God anche da altre app';
+
+  @override
+  String get chStTgAccounts => 'Account collegati';
+
+  @override
+  String get chTelegram => 'Telegram';
+
+  @override
+  String get chTgChangeBot => 'Usa un altro bot';
+
+  @override
+  String chTgLinked(String who) {
+    return 'Collegato a $who';
+  }
+
+  @override
+  String get chTgLinkedHint =>
+      'Scrivi al tuo bot quando vuoi: Demi-God lo passa a God e ti riporta la risposta.';
+
+  @override
+  String chTgOpenBot(String bot) {
+    return 'Apri @$bot';
+  }
+
+  @override
+  String get chTgQr => 'Inquadra con la fotocamera del telefono';
+
+  @override
+  String get chTgWaiting => 'Aspetto che premi Avvia… questa pagina se ne accorge da sola.';
+
+  @override
+  String get chUnlink => 'Scollega';
+
+  @override
+  String get chWzConnect => 'Collega';
+
+  @override
+  String get chWzDoneBtn => 'Fatto';
+
+  @override
+  String get chWzLocked => 'impostato dall\'ambiente';
+
+  @override
+  String get chWzTgAsks => 'Qui ti avviso anche quando serve un tuo sì.';
+
+  @override
+  String get chWzTgBf1 => 'Va bene. Come lo chiamiamo?';
+
+  @override
+  String get chWzTgBf2 => 'Ora un nome utente, che finisca con «bot».';
+
+  @override
+  String get chWzTgBf3 => 'Fatto! Ecco il token: 123456789:AAH…';
+
+  @override
+  String get chWzTgBfName => 'Il mio Rasgeth';
+
+  @override
+  String get chWzTgCheck => 'Controlla';
+
+  @override
+  String get chWzTgChecking => 'Controllo…';
+
+  @override
+  String get chWzTgDone => 'fatto';
+
+  @override
+  String get chWzTgExampleBot => 'il_mio_rasgeth_bot';
+
+  @override
+  String get chWzTgHaveToken => 'Ho già un token';
+
+  @override
+  String chWzTgHello(String demigod, String god) {
+    return 'Ciao, sono $demigod. Scrivimi quando vuoi: passo tutto a $god e ti riporto la risposta.';
+  }
+
+  @override
+  String get chWzTgLater => 'dopo';
+
+  @override
+  String chWzTgLead(String demigod) {
+    return 'Con Telegram scrivi a $demigod da dove vuoi e ricevi lì gli avvisi: approvazioni, domande, lavori lunghi, budget. Tre passi, un paio di minuti.';
+  }
+
+  @override
+  String chWzTgLinked(String demigod, String who) {
+    return 'Collegato a $who. Scrivi a $demigod quando vuoi.';
+  }
+
+  @override
+  String get chWzTgLinkedShort => 'Collegato. Scrivi al tuo bot quando vuoi.';
+
+  @override
+  String get chWzTgMessage => 'Messaggio';
+
+  @override
+  String get chWzTgNow => 'adesso';
+
+  @override
+  String get chWzTgOfficial => 'bot ufficiale di Telegram';
+
+  @override
+  String get chWzTgOnline => 'bot · online';
+
+  @override
+  String get chWzTgOpenBf => 'Apri BotFather';
+
+  @override
+  String get chWzTgPressStart => 'Premi Avvia per iniziare a parlare con questo bot.';
+
+  @override
+  String get chWzTgQ => 'Rasgeth sul tuo telefono';
+
+  @override
+  String get chWzTgStart => 'AVVIA';
+
+  @override
+  String get chWzTgStep1 => 'Crea il bot con @BotFather';
+
+  @override
+  String get chWzTgStep1Text =>
+      'BotFather è il bot ufficiale di Telegram che crea i bot. Scrivigli /newbot, dagli un nome e un nome utente che finisce con «bot».';
+
+  @override
+  String get chWzTgStep2 => 'Incolla il token';
+
+  @override
+  String get chWzTgStep2Text =>
+      'BotFather risponde con una riga lunga, tipo 123456789:AAH… È la chiave del bot: tienila per te.';
+
+  @override
+  String get chWzTgStep3 => 'Abbina il telefono';
+
+  @override
+  String chWzTgStep3Text(String bot) {
+    return 'Apri $bot e premi Avvia: Telegram gli manda da solo questo codice, niente da scrivere.';
+  }
+
+  @override
+  String get chWzTgToken => 'Il token del bot';
+
+  @override
+  String get chWzTgYouWillSee => 'Cosa vedrai in Telegram';
+
+  @override
+  String get chWzTgYourBot => 'Il tuo bot';
+
+  @override
+  String get chWzTgYourBotName => 'il tuo bot';
+
+  @override
+  String get chWzTrying => 'Provo il modello…';
+
+  @override
+  String get moActive => 'attivo';
+
+  @override
+  String get moAgentModelDefault => 'Il modello predefinito';
+
+  @override
+  String get moAgents => 'Agenti';
+
+  @override
+  String get moAgentsModel => 'Modello dell\'agente';
+
+  @override
+  String get moBackup => 'Backup';
+
+  @override
+  String get moBackupModelNone => 'Nessuno: un task abbandonato resta tale';
+
+  @override
+  String get moBackupModelTitle => 'Modello di riserva per i task';
+
+  @override
+  String get moBrainChatgpt => 'Abbonamento ChatGPT';
+
+  @override
+  String get moBrainChatgptDevice =>
+      'Se OpenAI dice che l\'accesso con codice dispositivo non è permesso: su chatgpt.com apri Impostazioni, Sicurezza, attiva l\'autorizzazione con codice dispositivo e riprova.';
+
+  @override
+  String get moBrainChatgptHint =>
+      'Rasgeth usa ChatGPT tramite Codex, il programma ufficiale di OpenAI, collegato al tuo account. Quello che usi conta sui limiti del tuo piano.';
+
+  @override
+  String get moBrainChatgptStart => 'Collega ChatGPT';
+
+  @override
+  String get moBrainChatgptStep1 => 'Apri questa pagina e accedi:';
+
+  @override
+  String get moBrainChatgptStep2 => 'Lì scrivi questo codice:';
+
+  @override
+  String get moBrainClaude => 'Abbonamento Claude';
+
+  @override
+  String get moBrainClaudeCode => 'Incolla qui il codice';
+
+  @override
+  String get moBrainClaudeHint =>
+      'Rasgeth usa Claude tramite il programma ufficiale di Anthropic, collegato al tuo account. Quello che usi conta sui limiti del tuo piano, non costa soldi in più.';
+
+  @override
+  String get moBrainClaudeOpen => 'Apri la pagina di accesso di Anthropic';
+
+  @override
+  String get moBrainClaudeStep2 =>
+      'Accedi con il tuo account Claude. Alla fine Anthropic ti mostra un codice: copialo.';
+
+  @override
+  String get moBrainConnect => 'Collega';
+
+  @override
+  String get moBrainDefault => 'Il modello che usano gli agenti';
+
+  @override
+  String get moBrainDefaultHint =>
+      'Gli agenti usano questo modello, a meno che tu non ne scelga un altro per loro. Prima di salvarlo viene provato con una domanda vera.';
+
+  @override
+  String get moBrainDefaultSaved => 'Salvato: gli agenti useranno questo.';
+
+  @override
+  String get moBrainDefaultTry => 'Prova e usa questo';
+
+  @override
+  String get moBrainDisconnect => 'Scollega';
+
+  @override
+  String get moBrainEffortHelp =>
+      'Quanto ragiona prima di rispondere: basso è veloce ed economico, alto è più lento ma più accurato.';
+
+  @override
+  String moBrainKeyExample(String example) {
+    return 'È fatta così: $example';
+  }
+
+  @override
+  String moBrainKeyMake(String name) {
+    return 'Crea una chiave sulla pagina di $name';
+  }
+
+  @override
+  String get moBrainKeyTry => 'Prova e salva';
+
+  @override
+  String moBrainKeyWorks(String n) {
+    return 'Funziona: $n modelli disponibili.';
+  }
+
+  @override
+  String get moBrainLocal => 'Un modello su questo computer';
+
+  @override
+  String get moBrainNoModel =>
+      'Non è ancora collegato nessun modello, quindi gli agenti non possono rispondere. Collegane uno qui sopra (un abbonamento, una chiave, o un modello locale al passo dopo), oppure più tardi da Impostazioni, Modelli e abbonamenti.';
+
+  @override
+  String get moBrainNotOpened => 'Non si è aperto niente?';
+
+  @override
+  String get moBrainOpenHere => 'Aprila da qui';
+
+  @override
+  String get moBrainServer => 'Un server tuo';
+
+  @override
+  String get moBrainServerHint =>
+      'Se fai già girare dei modelli con Ollama, LM Studio o vLLM, dai a Rasgeth il suo indirizzo.';
+
+  @override
+  String get moBrainServerKey => 'La sua chiave';
+
+  @override
+  String get moBrainServerKeyHelp => 'Solo se il server la chiede; quasi sempre non serve.';
+
+  @override
+  String get moBrainServerUrl => 'Indirizzo del server';
+
+  @override
+  String get moBrainServerUrlHelp =>
+      'Con /v1 alla fine. Ollama: http://localhost:11434/v1, LM Studio: http://localhost:1234/v1.';
+
+  @override
+  String get moBrainWhyText =>
+      'Se paghi già Claude o ChatGPT, comincia da lì: non spendi altro. Con una chiave paghi quello che usi e puoi scegliere fra tanti fornitori. Un modello su questo computer non costa niente e tiene tutto privato, ma è più lento e meno bravo dei grandi modelli online. Puoi anche combinarli: per esempio un abbonamento per i lavori difficili e un modello locale per quelli piccoli.';
+
+  @override
+  String get moCatalogBuiltin => 'quello incluso in Rasgeth';
+
+  @override
+  String moCatalogChecked(String when) {
+    return 'controllato $when';
+  }
+
+  @override
+  String get moCatalogDownloaded => 'scaricato e firmato';
+
+  @override
+  String get moCatalogRefresh => 'Aggiorna ora';
+
+  @override
+  String get moCatalogRefreshing => 'Aggiorno…';
+
+  @override
+  String moCatalogRow(String date) {
+    return 'Catalogo dei modelli: aggiornato il $date';
+  }
+
+  @override
+  String get moCatalogUnreachable => 'GitHub non ha risposto: resta il catalogo in uso.';
+
+  @override
+  String get moCatalogUnsigned =>
+      'Il catalogo scaricato non ha una firma valida: non è stato usato.';
+
+  @override
+  String moCatalogVersion(String n) {
+    return 'versione $n';
+  }
+
+  @override
+  String get moChat => 'Chat';
+
+  @override
+  String get moDownloaded => 'scaricato';
+
+  @override
+  String get moDownloads => 'download';
+
+  @override
+  String get moEffort => 'Effort';
+
+  @override
+  String get moEffortHint =>
+      'Sforzo di ragionamento: più alto pensa di più, è più lento e costa di più. Dal prossimo messaggio.';
+
+  @override
+  String get moEffort_high => 'Alto';
+
+  @override
+  String get moEffort_low => 'Basso';
+
+  @override
+  String get moEffort_max => 'Massimo';
+
+  @override
+  String get moEffort_medium => 'Medio';
+
+  @override
+  String get moError => 'Errore';
+
+  @override
+  String get moFailed => 'fallito';
+
+  @override
+  String get moJob_step_model_download => 'Il modello';
+
+  @override
+  String get moLmBeyondMemory =>
+      'più grande di RAM e scheda insieme: una parte si legge dall\'SSD a ogni token, più lento';
+
+  @override
+  String get moLmBigChunks => 'Blocchi grandi';
+
+  @override
+  String get moLmBigChunksHelp =>
+      'Legge i messaggi lunghi a blocchi da 8.192 o 16.384 token invece che da 4.096, quando la scheda video ha posto, e carica il modello nella RAM quando ci sta con margine: gli esperti passano nella scheda una volta a blocco, quindi meno blocchi leggono più in fretta. Al primo avvio li misura su un messaggio lungo (qualche minuto in più) e tiene il più veloce. Solo per i modelli a esperti.';
+
+  @override
+  String moLmCardDownloading(String pct) {
+    return 'in download, $pct%';
+  }
+
+  @override
+  String moLmCardGet(String size) {
+    return 'da scaricare, $size';
+  }
+
+  @override
+  String get moLmCardOff => 'scelto, spento';
+
+  @override
+  String get moLmCardPaused => 'download in pausa';
+
+  @override
+  String get moLmCardReady => 'scaricato';
+
+  @override
+  String get moLmCardTooBig => 'troppo grande per questo computer';
+
+  @override
+  String get moLmContextTokens => 'token di contesto';
+
+  @override
+  String get moLmDelete => 'Elimina';
+
+  @override
+  String get moLmDeleteActiveConfirm =>
+      'Questo modello è in uso: il motore si ferma e il file viene eliminato. Vado avanti?';
+
+  @override
+  String get moLmDiscard => 'Butta via il download';
+
+  @override
+  String moLmDownload(String size) {
+    return 'Scarica · $size';
+  }
+
+  @override
+  String get moLmDownloadedBusy => 'in download';
+
+  @override
+  String moLmDownloadedConfirm(String name, String size) {
+    return 'Eliminare $name? Libera $size.';
+  }
+
+  @override
+  String moLmDownloadedConfirmActive(String name, String size) {
+    return '$name è il modello in uso: il motore si ferma e il file viene cancellato ($size). Procedo?';
+  }
+
+  @override
+  String get moLmDownloadedEmpty => 'Nessun modello scaricato.';
+
+  @override
+  String moLmDownloadedHelp(String size) {
+    return 'Tutti i file di modello nella cartella ($size in tutto), dal più grande. Eliminarne uno libera subito il suo spazio; quelli suggeriti si possono riscaricare.';
+  }
+
+  @override
+  String moLmDownloadedNote(String n, String size) {
+    return '$n sul disco · $size';
+  }
+
+  @override
+  String get moLmDownloadedPartial => 'incompleto';
+
+  @override
+  String get moLmDownloadedTitle => 'Modelli scaricati';
+
+  @override
+  String get moLmEngine => 'Motore';
+
+  @override
+  String get moLmEngineHelp =>
+      'Rasgeth sceglie quello adatto a questo computer. Cambialo solo se l\'avvio non riesce.';
+
+  @override
+  String get moLmEngine_cpu => 'Processore';
+
+  @override
+  String get moLmEngine_cuda => 'Scheda video NVIDIA (CUDA)';
+
+  @override
+  String get moLmEngine_mac => 'Il chip grafico del Mac (Metal), accanto a Rasgeth';
+
+  @override
+  String get moLmEngine_vulkan => 'Scheda AMD, Intel o integrata (Vulkan)';
+
+  @override
+  String get moLmEngine_windows => 'Scheda video, con il motore di Windows (Vulkan)';
+
+  @override
+  String get moLmExperimental => 'sperimentale';
+
+  @override
+  String get moLmFactCache => 'Cache degli esperti nella scheda';
+
+  @override
+  String get moLmFactRam => 'RAM libera contata';
+
+  @override
+  String get moLmFactSsd => 'Dall\'SSD a ogni token';
+
+  @override
+  String moLmFactSsdGb(String gb) {
+    return 'circa $gb GB';
+  }
+
+  @override
+  String get moLmFactSsdNone => 'niente: sta in RAM';
+
+  @override
+  String moLmGbPerSec(String n) {
+    return '$n GB/s';
+  }
+
+  @override
+  String moLmHwCpu(String max) {
+    return 'Nessuna scheda video da usare: i modelli girano sul processore, più lenti; piccoli, fino a circa $max GB.';
+  }
+
+  @override
+  String moLmHwGpu(String max, String name, String vram) {
+    return '$name con $vram GB di memoria video: ci girano veloci modelli fino a circa $max GB.';
+  }
+
+  @override
+  String get moLmHwGpuUnknown =>
+      'C\'è una scheda video NVIDIA, ma non si sa quanta memoria ha: comincia da un modello piccolo.';
+
+  @override
+  String moLmHwIgpu(String max) {
+    return 'Una scheda video integrata nel processore: un po\' più veloce del solo processore; modelli fino a circa $max GB.';
+  }
+
+  @override
+  String moLmHwUnreachable(String max) {
+    return 'Qui il motore non riesce a raggiungere la scheda video: i modelli girano sul processore, più lenti; fino a circa $max GB.';
+  }
+
+  @override
+  String get moLmInUse => 'in uso';
+
+  @override
+  String get moLmLoading => 'Cerco i modelli…';
+
+  @override
+  String get moLmMoePrefetch => 'Strato dopo in anticipo';
+
+  @override
+  String get moLmOff => 'Spento';
+
+  @override
+  String get moLmOn => 'Acceso';
+
+  @override
+  String get moLmOther => 'Altri modelli nella cartella';
+
+  @override
+  String moLmOtherHelp(String size) {
+    return 'Un file di modello nella cartella, fuori dai suggeriti ($size).';
+  }
+
+  @override
+  String moLmPartRamSub(String free) {
+    return '$free liberi adesso';
+  }
+
+  @override
+  String get moLmPartSsd => 'SSD dei modelli';
+
+  @override
+  String moLmPartSsdSub(String free) {
+    return '$free liberi';
+  }
+
+  @override
+  String get moLmPause => 'Pausa';
+
+  @override
+  String moLmPaused(String done, String total) {
+    return 'In pausa: $done di $total';
+  }
+
+  @override
+  String moLmPausedAt(String done) {
+    return 'In pausa a $done';
+  }
+
+  @override
+  String get moLmPreloadSpeed => 'Modello letto dal disco';
+
+  @override
+  String get moLmRecommended => 'consigliato';
+
+  @override
+  String get moLmResume => 'Riprendi';
+
+  @override
+  String get moLmRoom => 'Spazio';
+
+  @override
+  String get moLmScoresHint =>
+      'Le barre confrontano questi modelli tra loro (cinque è il migliore di loro). La velocità è una stima per questo computer.';
+
+  @override
+  String get moLmSearch => 'Altri modelli da Hugging Face';
+
+  @override
+  String get moLmSearchHint =>
+      'Cerca per nome, scegli un repository e un file. I file che non sono modelli sono nascosti.';
+
+  @override
+  String get moLmSearchPlaceholder => 'per esempio gemma, qwen, mistral';
+
+  @override
+  String get moLmShowActivation => 'Mostra l\'attivazione';
+
+  @override
+  String get moLmSpecDraft => 'Con un modello piccolo della famiglia';
+
+  @override
+  String moLmSpecDraftGet(String size) {
+    return 'Scarica il modello piccolo · $size';
+  }
+
+  @override
+  String moLmSpecDraftHelp(String name, String size) {
+    return '$name ($size) propone fino a 8 token; sta tutto nella scheda con il suo contesto, quindi al modello grande resta un po\' meno posto lì. Funziona solo con un modello della stessa famiglia (stesso vocabolario): lo sceglie Rasgeth.';
+  }
+
+  @override
+  String get moLmSpecDraftReady => 'modello piccolo pronto';
+
+  @override
+  String get moLmSpecHelp =>
+      'Scrive più in fretta senza cambiare le risposte: qualcosa di economico propone i token successivi e il modello li controlla tutti in un passaggio, leggendo i suoi pesi una volta per più token. Aiuta soprattutto dove il testo è prevedibile (codice da riscrivere, grandi modelli densi fuori dalla scheda); su testo nuovo guadagna poco. Misurato su una RTX 4080 Super: Llama 3.3 70B (quasi tutto in RAM) da 1,1 a 2,6 token/s su testo nuovo e a 7,4 sul codice riscritto; Qwen3 14B (nella scheda) da 59 a 155 sul codice, quasi pari sul testo. La velocità è sotto ogni risposta.';
+
+  @override
+  String get moLmSpecNgram => 'Dal testo già scritto';
+
+  @override
+  String get moLmSpecNgramHelp =>
+      'Le proposte vengono da pezzi della conversazione che si ripetono (codice che si modifica, documenti citati): nessun secondo modello, nessuna memoria in più. Aiuta solo lì: su testo nuovo niente, e su un grande modello denso poco anche sul codice (misurato: Llama 3.3 70B da 1,1 a 1,3). Se la famiglia ha un modello piccolo, meglio quello.';
+
+  @override
+  String get moLmSpecNone => 'Spenta';
+
+  @override
+  String get moLmSpecTitle => 'Decodifica speculativa (per esperti)';
+
+  @override
+  String get moLmSpeedEstimate => 'token/s, stima';
+
+  @override
+  String get moLmSpeedMeasured => 'token/s, misurati';
+
+  @override
+  String get moLmSpeedTest => 'Misura il guadagno';
+
+  @override
+  String get moLmSpeedTestCode => 'Codice riscritto (token/s)';
+
+  @override
+  String get moLmSpeedTestCost =>
+      'Richiede un bel po\' di tempo e di calcolo: il modello viene caricato più volte, minuti per uno grande. Nel frattempo il modello locale non risponde agli agenti.';
+
+  @override
+  String get moLmSpeedTestDone =>
+      'Il motore è tornato com\'era. Scegli il modo qui sopra e riavvia il modello per usarlo.';
+
+  @override
+  String get moLmSpeedTestIntro =>
+      'Rasgeth avvia questo modello una volta per ogni modo di scrivere (da solo, con il modello piccolo, con gli n-gram), gli fa scrivere un breve testo nuovo e riscrivere un pezzo di codice, e mostra i token al secondo di ciascuno. Alla fine il motore torna com\'era.';
+
+  @override
+  String get moLmSpeedTestMode => 'Modo';
+
+  @override
+  String get moLmSpeedTestProse => 'Testo nuovo (token/s)';
+
+  @override
+  String get moLmSpeedTestStart => 'Avvia il test';
+
+  @override
+  String get moLmSpeedTestTitle => 'Quanto va più veloce qui';
+
+  @override
+  String get moLmStart => 'Avvia';
+
+  @override
+  String get moLmStarting => 'Comincio…';
+
+  @override
+  String get moLmStream => 'SSD stream';
+
+  @override
+  String moLmStreamCache(String gb) {
+    return ', $gb della scheda per gli esperti';
+  }
+
+  @override
+  String get moLmStreamFromCard => 'il modello sta nella scheda';
+
+  @override
+  String get moLmStreamFromRam => 'il modello sta in RAM: l\'SSD si legge solo all\'avvio';
+
+  @override
+  String moLmStreamFromSsd(String gb) {
+    return 'circa $gb GB letti dall\'SSD a ogni token';
+  }
+
+  @override
+  String moLmStreamHdd(String disk) {
+    return 'Non disponibile: $disk è un disco meccanico, troppo lento per leggerci un modello a ogni token.';
+  }
+
+  @override
+  String moLmStreamMaybeSsd(String disk) {
+    return 'Windows non dice se $disk è un SSD: usalo solo se lo è.';
+  }
+
+  @override
+  String moLmStreamNoRoom(String disk, String free) {
+    return 'Non disponibile: $disk ha solo $free liberi; ne servono almeno 20 GB.';
+  }
+
+  @override
+  String moLmStreamPlan(String cache, String ctx, String ram, String source) {
+    return 'In uso: contesto fino a $ctx token$cache, $source (contando $ram di RAM libera).';
+  }
+
+  @override
+  String get moLmStreamThisDisk => 'il disco dei modelli';
+
+  @override
+  String get moLmStreamUnknownDisk =>
+      'Rasgeth non sa ancora su che disco stanno i modelli (lo saprà al prossimo avvio di Rasgeth): usalo solo se è un SSD.';
+
+  @override
+  String get moLmSysmemClose => 'Ho capito';
+
+  @override
+  String get moLmSysmemStep1 => 'Apri il Pannello di controllo NVIDIA (clic destro sul desktop).';
+
+  @override
+  String get moLmSysmemStep2 =>
+      'Gestisci impostazioni 3D, poi Impostazioni globali (oppure Impostazioni programma con llama-server.exe, solo per il motore).';
+
+  @override
+  String get moLmSysmemStep3 =>
+      'CUDA - Sysmem Fallback Policy: scegli «Prefer No Sysmem Fallback» e Applica.';
+
+  @override
+  String get moLmSysmemStep4 =>
+      'Riattiva il modello: il motore legge l\'impostazione quando parte.';
+
+  @override
+  String get moLmSysmemText =>
+      'Quando la memoria della scheda finisce, il driver NVIDIA su Windows usa la RAM del computer invece di dare errore: la lettura dei messaggi diventa da 2 a 3,5 volte più lenta. Rasgeth non può leggere questa impostazione, quindi controllala una volta:';
+
+  @override
+  String get moLmSysmemTitle => 'Scheda NVIDIA: spegni «CUDA Sysmem Fallback»';
+
+  @override
+  String get moLmThisPc => 'Questo computer';
+
+  @override
+  String moLmTokensPerSec(String n) {
+    return '$n token/s';
+  }
+
+  @override
+  String get moLmTokensUnit => 'token/s';
+
+  @override
+  String moLmTooBig(String max, String need) {
+    return 'Serve almeno $need: su questo computer ci sta fino a $max.';
+  }
+
+  @override
+  String moLmTuneBatch(String n) {
+    return 'blocchi da $n token';
+  }
+
+  @override
+  String get moLmTuneCache => 'Scheda per gli esperti';
+
+  @override
+  String get moLmTuneChosen => 'scelta';
+
+  @override
+  String get moLmTuneCtx => 'Contesto';
+
+  @override
+  String get moLmTuneFailed => 'non è partito';
+
+  @override
+  String get moLmTuneHelp =>
+      'Ogni riga è una prova vera: il modello legge un contesto di circa 2.000 token e ne scrive 64. Il turno tipico è un agente che legge 1.500 token di risultati e ne scrive 300: resta la riga più veloce, per questo modello, e puoi sceglierne un\'altra.';
+
+  @override
+  String moLmTuneLongRead(String n) {
+    return 'un messaggio da $n token';
+  }
+
+  @override
+  String get moLmTuneNoCopy => 'esperti calcolati sul processore nella lettura';
+
+  @override
+  String get moLmTuneRead => 'Lettura (tok/s)';
+
+  @override
+  String get moLmTuneRunning => 'misuro…';
+
+  @override
+  String get moLmTuneTitle => 'Regolazione su questo computer';
+
+  @override
+  String get moLmTuneTurn => 'Turno tipico (s)';
+
+  @override
+  String get moLmTuneUse => 'Usa';
+
+  @override
+  String get moLmTuneWrite => 'Scrittura (tok/s)';
+
+  @override
+  String get moLmUnavailable => 'Hugging Face non risponde: riprova più tardi.';
+
+  @override
+  String get moLmUseForAgents => 'Usalo per gli agenti';
+
+  @override
+  String get moLmUsedForAgents => 'Gli agenti useranno questo modello.';
+
+  @override
+  String get moLmVersionSuggested => 'consigliata';
+
+  @override
+  String get moLmVersions => 'Versione del file';
+
+  @override
+  String get moLmWarmHelp =>
+      'Il modello legge il suo primo contesto e scrive qualche parola. La prima volta su una scheda video nuova ci vogliono minuti: la scheda prepara i suoi programmi una volta sola, poi è veloce.';
+
+  @override
+  String get moLmWarmSpeed => 'Contesto letto (come un primo messaggio)';
+
+  @override
+  String get moLmWhere => 'Dove va il modello';
+
+  @override
+  String get moLoading => 'Carico…';
+
+  @override
+  String get moModelHint =>
+      'Il modello di questa conversazione (modelli degli agenti: Impostazioni, Agenti)';
+
+  @override
+  String get moModelNew => 'nuovo';
+
+  @override
+  String get moModelPick => 'Scegli un modello';
+
+  @override
+  String get moModelSearch => 'Cerca un modello';
+
+  @override
+  String get moModelUnconfirmed => 'dati da confermare';
+
+  @override
+  String get moModelWay => 'Da dove passa';
+
+  @override
+  String get moMpChange => 'Cambia';
+
+  @override
+  String get moMpLead =>
+      'Scegline uno o più: li combini come vuoi. Ogni riquadro apre la sua finestra; quelli accesi sono collegati.';
+
+  @override
+  String get moMpLocalLead =>
+      'Gratis, e niente esce da qui: il computer, dove stanno i modelli, quelli da scaricare e quelli già sul disco.';
+
+  @override
+  String get moMpNoDefault => 'Nessun modello scelto';
+
+  @override
+  String get moMpNoDefaultText => 'Collega un modo qui sopra, poi scegli quale usano gli agenti.';
+
+  @override
+  String get moMpSearchLead =>
+      'Come gli agenti cercano su internet. Un fornitore alla volta: quello acceso è in uso.';
+
+  @override
+  String get moMpSearchTitle => 'Ricerca sul web';
+
+  @override
+  String get moSearch => 'Cerca';
+
+  @override
+  String get moSearchInUse => 'in uso';
+
+  @override
+  String get moSubsDeviceWait => 'Questa pagina se ne accorge da sola quando hai finito.';
+
+  @override
+  String moSubsLoggedAs(String plan, String who) {
+    return 'Collegato: $who $plan';
+  }
+
+  @override
+  String moSubsProgramDownload(String name) {
+    return '$name viene scaricato quando lo attivi (una volta sola, qualche centinaio di MB, con la barra nell\'angolo).';
+  }
+
+  @override
+  String moSubsProgramSystem(String name) {
+    return '$name è già installato su questo computer: Rasgeth usa quello.';
+  }
+
+  @override
+  String moSubsSharedLogin(String name) {
+    return '$name è già collegato su questo computer: Rasgeth usa quell\'accesso così com\'è, senza rifarlo.';
+  }
+
+  @override
+  String get moSubsUseShared => 'Usa l\'accesso già presente';
+
+  @override
+  String get moSubscriptions => 'Modelli e abbonamenti';
+
+  @override
+  String moTermsOf(String name) {
+    return 'Termini di $name';
+  }
+
+  @override
+  String moUiAboutHours(String h, String min) {
+    return 'mancano circa $h h $min min';
+  }
+
+  @override
+  String moUiAboutMinutes(String min) {
+    return 'mancano circa $min min';
+  }
+
+  @override
+  String get moUiDropNone => 'Nessun risultato.';
+
+  @override
+  String get moUiLessThanMinute => 'manca meno di un minuto';
+
+  @override
+  String get moUiNotNeeded => 'non serve';
+
+  @override
+  String moUiOf(String done, String total) {
+    return '$done di $total';
+  }
+
+  @override
+  String get moViaLocal => 'locale';
+
+  @override
+  String get moViaSubscription => 'abbonamento';
+
+  @override
+  String get moWzAgents => 'Agenti';
+
+  @override
+  String get moWzAgentsSub => 'fanno il lavoro';
+
+  @override
+  String get moWzAgentsText =>
+      'Ricevono i compiti dagli orchestratori: scrivono codice, provano, cercano.';
+
+  @override
+  String get moWzAlreadySet => 'già impostata';
+
+  @override
+  String get moWzAssign => 'Chi usa quale modello';
+
+  @override
+  String get moWzAssignChat =>
+      'La chat di tutti i giorni, con la ricerca sul web: domande, testi, idee.';
+
+  @override
+  String get moWzAssignConnect => 'Collega un modello';
+
+  @override
+  String get moWzAssignDemigod2 =>
+      'Ti risponde su Telegram e nelle chat, e passa il lavoro: basta un modello veloce.';
+
+  @override
+  String get moWzAssignEmpty =>
+      'Non hai ancora collegato nessun modello, quindi qui non c\'è niente da scegliere. Collegane uno al passo «Come deve pensare Rasgeth?» o avvia un modello locale.';
+
+  @override
+  String get moWzAssignGod =>
+      'Quello che guida tutto: piani, progetti, altri agenti. Qui conviene il modello più forte.';
+
+  @override
+  String get moWzAssignLead =>
+      'Ognuno lavora con il suo modello: il più forte per chi decide, uno veloce per chi risponde. Tocca un modello per cambiarlo.';
+
+  @override
+  String get moWzAssignLocal => 'Scegli un modello locale';
+
+  @override
+  String get moWzAssignOthers => 'Gli agenti che crei dopo';
+
+  @override
+  String get moWzAssignOthersHelp =>
+      'E i riassunti della bacheca, se non ne scegli uno apposta per loro. Prima di salvarlo viene provato con una domanda vera.';
+
+  @override
+  String get moWzAssistants => 'Assistenti personali';
+
+  @override
+  String get moWzAssistantsSub => 'lavorano per te';
+
+  @override
+  String get moWzBackupText =>
+      'Se un agente rinuncia a un task (un errore, il budget, nessuna verifica superata), questo modello lo riprova una volta, sapendo cosa ha fatto il primo. Meglio se è di un altro fornitore.';
+
+  @override
+  String get moWzBackupWindow =>
+      'Riprova una volta i task abbandonati, in una conversazione nuova.';
+
+  @override
+  String get moWzBrain => 'Come deve pensare Rasgeth?';
+
+  @override
+  String get moWzBrainChatgpt =>
+      'Il tuo piano ChatGPT Plus o Pro. Scrivi un codice breve sulla pagina di OpenAI.';
+
+  @override
+  String get moWzBrainClaude => 'Il tuo piano Claude Pro o Max. Accedi sulla pagina di Anthropic.';
+
+  @override
+  String get moWzBrainKeys =>
+      'Anthropic, OpenAI, Gemini, Mistral, DeepSeek, Grok e altri. Paghi quello che usi.';
+
+  @override
+  String get moWzBrainKeysTitle => 'Una chiave API';
+
+  @override
+  String get moWzBrainLocal => 'Gratis e privato: niente esce da qui. Lo scegli al passo dopo.';
+
+  @override
+  String get moWzBrainQ => 'Come deve pensare Rasgeth?';
+
+  @override
+  String get moWzBrainServer =>
+      'Ollama, LM Studio, vLLM o un altro server che parla la lingua di OpenAI.';
+
+  @override
+  String get moWzChosen => 'scelto';
+
+  @override
+  String get moWzDefaultModel => 'Modello predefinito';
+
+  @override
+  String get moWzDemiRole => 'Il portavoce';
+
+  @override
+  String moWzDense(String b) {
+    return '$b miliardi · denso';
+  }
+
+  @override
+  String get moWzDiskHdd => 'Disco meccanico: troppo lento per i modelli.';
+
+  @override
+  String get moWzDisksLead =>
+      'Un modello occupa da 3 a 80 GB. Meglio un SSD veloce: lo SSD stream legge da lì.';
+
+  @override
+  String get moWzDisksNoMove =>
+      'I modelli si spostano su un altro disco solo nell\'installazione di Rasgeth per Windows.';
+
+  @override
+  String get moWzDisksOne =>
+      'Qui i modelli stanno nella cartella dei dati di Rasgeth. Nell\'installazione di Rasgeth per Windows puoi spostarli su un altro SSD.';
+
+  @override
+  String get moWzDisksTitle => 'Dove stanno i modelli';
+
+  @override
+  String get moWzDoneBtn => 'Fatto';
+
+  @override
+  String get moWzEffortHelp =>
+      'Poco è veloce ed economico, a fondo è più lento ma più accurato. Resta fisso per ogni conversazione.';
+
+  @override
+  String get moWzEffortTitle => 'Quanto ragiona prima di rispondere';
+
+  @override
+  String get moWzEffort_high => 'A fondo';
+
+  @override
+  String get moWzEffort_low => 'Poco';
+
+  @override
+  String get moWzEffort_max => 'Al massimo';
+
+  @override
+  String get moWzEffort_medium => 'Il giusto';
+
+  @override
+  String get moWzFitNone => 'Nessuno gira abbastanza veloce qui: quelli sotto funzionano, piano.';
+
+  @override
+  String get moWzFitTab => 'Adatti';
+
+  @override
+  String get moWzFitTitle => 'Adatti a questo computer';
+
+  @override
+  String moWzFitsUpTo(String max) {
+    return 'Ci girano veloci modelli fino a circa $max; quelli più grandi usano anche la RAM.';
+  }
+
+  @override
+  String get moWzFolder => 'Cartella';
+
+  @override
+  String get moWzFolderHelp => 'Una cartella di questo disco; se non c\'è, viene creata.';
+
+  @override
+  String get moWzFolderLead =>
+      'Dove Rasgeth salva i file dei modelli su questo disco. Quelli già scaricati vengono copiati lì.';
+
+  @override
+  String moWzFolderTitle(String disk) {
+    return 'Cartella dei modelli su $disk';
+  }
+
+  @override
+  String get moWzFree => 'liberi';
+
+  @override
+  String moWzFreeOf(String total) {
+    return 'liberi di $total GB';
+  }
+
+  @override
+  String get moWzGodRole => 'Il capo';
+
+  @override
+  String get moWzHereNow => 'qui ora';
+
+  @override
+  String get moWzHowItWorks => 'Come funziona';
+
+  @override
+  String moWzKeyOf(String name) {
+    return 'La chiave di $name';
+  }
+
+  @override
+  String get moWzKeysLead =>
+      'Una chiave è come una password che lascia usare a Rasgeth i modelli del fornitore sul tuo account. Paghi il fornitore per quello che usi. Aggiungine quante vuoi: ognuna viene provata subito.';
+
+  @override
+  String moWzLegend(String n) {
+    return 'Contorno verde: gira su questo computer tra scheda video e RAM, ad almeno $n token al secondo. Gli altri funzionano, ma piano.';
+  }
+
+  @override
+  String moWzLikeAbove(String who) {
+    return 'Lo stesso di $who';
+  }
+
+  @override
+  String get moWzLocal => 'Modello locale';
+
+  @override
+  String get moWzLocalQ => 'Un modello su questo computer';
+
+  @override
+  String get moWzLocked => 'impostato dall\'ambiente';
+
+  @override
+  String moWzMoe(String b) {
+    return '$b miliardi · a esperti';
+  }
+
+  @override
+  String get moWzMoreModels => 'Altri file e ricerche';
+
+  @override
+  String get moWzMoveHere => 'Sposta qui';
+
+  @override
+  String moWzMoveLead(String folder, String free, String kind) {
+    return '$kind, $free liberi. I modelli già scaricati vengono copiati in $folder; il modello in uso poi riparte.';
+  }
+
+  @override
+  String moWzMoveTitle(String disk) {
+    return 'Spostare i modelli su $disk?';
+  }
+
+  @override
+  String moWzNModels(String n) {
+    return '$n modelli';
+  }
+
+  @override
+  String get moWzNone => 'Nessuno';
+
+  @override
+  String get moWzOfRamLong => 'di RAM';
+
+  @override
+  String get moWzOrchestrators => 'Orchestratori';
+
+  @override
+  String get moWzOrchestratorsSub => 'i capi dei progetti';
+
+  @override
+  String get moWzOrchestratorsText => 'Uno per progetto: divide il lavoro e lo passa agli agenti.';
+
+  @override
+  String get moWzPickFolder => 'Scegli cartella';
+
+  @override
+  String get moWzPickModel => 'Scegli il modello';
+
+  @override
+  String get moWzPickRepo => 'Scegli un repository';
+
+  @override
+  String get moWzProvider => 'Fornitore';
+
+  @override
+  String get moWzRemove => 'Togli';
+
+  @override
+  String get moWzSlowTab => 'Vanno piano';
+
+  @override
+  String get moWzSlowTitle => 'Funzionano, ma piano';
+
+  @override
+  String moWzStateKey(String name) {
+    return '$name: collegata';
+  }
+
+  @override
+  String moWzStateKeys(String n) {
+    return '$n chiavi collegate';
+  }
+
+  @override
+  String get moWzStateLinked => 'collegato';
+
+  @override
+  String moWzStateLocal(String model) {
+    return '$model, in uso';
+  }
+
+  @override
+  String get moWzStateLocalNext => 'lo scegli al passo dopo';
+
+  @override
+  String moWzStateServer(String url) {
+    return 'collegato: $url';
+  }
+
+  @override
+  String get moWzStreamInfo1 =>
+      'Per modelli più grandi della scheda video, e per un contesto molto più lungo.';
+
+  @override
+  String get moWzStreamInfo2 =>
+      'Le parti del modello usate di più stanno nella scheda e in RAM; il resto si legge dall\'SSD quando serve. Rende al meglio con i modelli a esperti; quelli densi funzionano, ma più lenti.';
+
+  @override
+  String get moWzStreamInfo3 =>
+      'Al primo avvio Rasgeth misura questo computer e tiene la regolazione più veloce. Serve un SSD con almeno 20 GB liberi: un disco meccanico è troppo lento.';
+
+  @override
+  String get moWzStreamOff => 'Spento: girano solo i modelli che stanno nella scheda e nella RAM.';
+
+  @override
+  String moWzStreamOn(String disk) {
+    return 'Acceso: i modelli più grandi della scheda e della RAM leggono il resto dall\'SSD ($disk) quando serve. Più lenti, ma girano.';
+  }
+
+  @override
+  String get moWzSubscription =>
+      'So che usare un abbonamento personale (al posto di una chiave API) in uno strumento di terzi può non essere permesso dalle condizioni del fornitore.';
+
+  @override
+  String get moWzTrying => 'Provo il modello…';
+
+  @override
+  String get moWzUnderstood => 'Ho capito';
+
+  @override
+  String get moWzUseFolder => 'Usa questa cartella';
+
+  @override
+  String moWzVram(String gb) {
+    return '$gb di memoria video';
+  }
+
+  @override
+  String get moWzWhich => 'Quale scelgo?';
+
+  @override
+  String get chUiAdvanced => 'Avanzate';
+
+  @override
+  String moJob_engine(String model) {
+    return 'Avvio di $model';
+  }
+
+  @override
+  String moJob_engine_load(String model) {
+    return 'Carico $model';
+  }
+
+  @override
+  String get moJob_error_bad_file => 'Questo non è un file di modello di Hugging Face.';
+
+  @override
+  String get moJob_error_checksum =>
+      'Il download è arrivato rovinato (l\'impronta non coincide): riprova.';
+
+  @override
+  String get moJob_error_engine_stopped =>
+      'Il motore si è fermato da solo. I dettagli qui sotto dicono perché.';
+
+  @override
+  String get moJob_error_incomplete =>
+      'Il download si è fermato prima della fine: premi Riprendi per continuare da dove era.';
+
+  @override
+  String get moJob_error_load_timeout =>
+      'Il modello non si è caricato in 15 minuti. Prova con uno più piccolo.';
+
+  @override
+  String get moJob_error_model_missing =>
+      'Il file del modello non è più nella cartella. Scaricalo di nuovo.';
+
+  @override
+  String get moJob_error_no_gpu =>
+      'Il motore non vede la scheda video. Aggiorna i driver della scheda e riavvia il computer, oppure scegli il processore in Avanzate.';
+
+  @override
+  String get moJob_error_out_of_memory =>
+      'Non c\'è abbastanza memoria per questo modello. Scegline uno più piccolo, o lo stesso con una qualità più bassa.';
+
+  @override
+  String moJob_model_download(String model) {
+    return 'Download di $model';
+  }
+
+  @override
+  String moJob_speed_test(String model) {
+    return 'Misuro $model';
+  }
+
+  @override
+  String get moJob_step_draft => 'Con il modello piccolo';
+
+  @override
+  String get moJob_step_image => 'Scarico il motore (una volta sola)';
+
+  @override
+  String get moJob_step_load => 'Carico il modello in memoria';
+
+  @override
+  String get moJob_step_ngram => 'Con gli n-gram';
+
+  @override
+  String get moJob_step_none => 'Il modello da solo';
+
+  @override
+  String get moJob_step_preload =>
+      'Leggo il modello una volta, così il primo messaggio non aspetta il disco';
+
+  @override
+  String get moJob_step_start => 'Avvio il motore';
+
+  @override
+  String get moJob_step_try => 'Provo una risposta';
+
+  @override
+  String get moJob_step_tune => 'Misuro questo computer per scegliere la regolazione più veloce';
+
+  @override
+  String get moLmQuality_good => 'qualità buona';
+
+  @override
+  String get moLmQuality_high => 'qualità alta';
+
+  @override
+  String get moLmQuality_reduced => 'qualità ridotta, per starci';
+
+  @override
+  String get moLmScore_code => 'Programmazione';
+
+  @override
+  String get moLmScore_languages => 'Altre lingue';
+
+  @override
+  String get moLmScore_smart => 'Intelligenza';
+
+  @override
+  String get moLmScore_speed => 'Velocità qui';
+
+  @override
+  String get moLmScore_tools => 'Strumenti';
+
+  @override
+  String get moLmSpeedMode_draft => 'Con il modello piccolo';
+
+  @override
+  String get moLmSpeedMode_ngram => 'N-gram';
+
+  @override
+  String get moLmSpeedMode_none => 'Modello da solo';
+
+  @override
+  String get chHubTelegram =>
+      'Demi-God su Telegram: il bot, il suo token e gli account che gli scrivono';
+
+  @override
+  String get chHubChats => 'Demi-God su Discord, Slack, Signal, WhatsApp, Matrix, Teams e iMessage';
+
+  @override
+  String get moHubModels =>
+      'Abbonamenti, chiavi API, il tuo server, il modello su questo computer e chi usa quale';
+
+  @override
+  String get xtAddServer => 'Aggiungi server';
+
+  @override
+  String get xtApprove => 'Approva';
+
+  @override
+  String get xtArgs => 'Argomenti';
+
+  @override
+  String get xtAxMagicDismiss => 'Metti da parte';
+
+  @override
+  String get xtAxMagicExamples => 'Oppure parti da un esempio';
+
+  @override
+  String get xtAxMagicGo => 'Chiedi a God';
+
+  @override
+  String get xtAxMagicReject => 'Così no';
+
+  @override
+  String get xtAxMagicSendNo => 'Manda a God';
+
+  @override
+  String get xtAxMagicStarting => 'Chiamo God…';
+
+  @override
+  String get xtAxMagicWhy => 'Cosa non va? God lo legge e riprova';
+
+  @override
+  String get xtAxNeedMissing => 'Manca';
+
+  @override
+  String get xtAxNeedReady => 'Pronto';
+
+  @override
+  String get xtAxNeedVault => 'Aggiungi al portachiavi';
+
+  @override
+  String get xtBy => 'da';
+
+  @override
+  String get xtCancel => 'Annulla';
+
+  @override
+  String get xtCommand => 'Comando';
+
+  @override
+  String get xtCopied => 'Copiato';
+
+  @override
+  String get xtCopy => 'Copia';
+
+  @override
+  String get xtCreate => 'Crea';
+
+  @override
+  String get xtDescription => 'Descrizione';
+
+  @override
+  String get xtExtAdd => 'Aggiungi';
+
+  @override
+  String get xtExtAddAndConnect => 'Aggiungi e collega';
+
+  @override
+  String get xtExtAdded => 'Aggiunto';
+
+  @override
+  String xtExtAppConsole(String name) {
+    return 'Apri la pagina per sviluppatori di $name';
+  }
+
+  @override
+  String xtExtAppGuide(String name) {
+    return 'Crea la tua app su $name (una volta, una decina di minuti)';
+  }
+
+  @override
+  String get xtExtAskHelp =>
+      'Chiedilo a God con un\'integrazione o un\'estensione magica, con parole tue: cerca un servizio pronto nel catalogo, oppure scrive una capacità nuova, la prova e ti chiede il permesso prima di installare qualsiasi cosa.';
+
+  @override
+  String get xtExtAskTitle => 'Cosa vuoi che i tuoi agenti sappiano fare?';
+
+  @override
+  String get xtExtAuth_app => 'La tua app, con una guida';
+
+  @override
+  String get xtExtAuth_header => 'Serve una chiave';
+
+  @override
+  String get xtExtAuth_none => 'Nessun accesso da fare';
+
+  @override
+  String get xtExtAuth_oauth => 'Accedi sulla sua pagina';
+
+  @override
+  String get xtExtBroken => 'Non funziona';
+
+  @override
+  String get xtExtBrokenHelp =>
+      'Un servizio non funziona: controlla la chiave, oppure toglilo e aggiungilo di nuovo. Passa sopra l\'etichetta per vedere l\'errore.';
+
+  @override
+  String get xtExtCatAll => 'Tutti';
+
+  @override
+  String get xtExtCat_cloud => 'Cloud';
+
+  @override
+  String get xtExtCat_code => 'Codice';
+
+  @override
+  String get xtExtCat_data => 'Dati';
+
+  @override
+  String get xtExtCat_design => 'Grafica';
+
+  @override
+  String get xtExtCat_docs => 'Documentazione';
+
+  @override
+  String get xtExtCat_home => 'Casa';
+
+  @override
+  String get xtExtCat_web => 'Web';
+
+  @override
+  String get xtExtCat_work => 'Lavoro';
+
+  @override
+  String get xtExtCatalog => 'Servizi che puoi aggiungere';
+
+  @override
+  String get xtExtCatalogHelp =>
+      'Ognuno dà ai tuoi agenti strumenti nuovi. Prima quelli fatti dai servizi stessi; quelli della comunità sono fatti da altri.';
+
+  @override
+  String get xtExtChecking => 'Controllo…';
+
+  @override
+  String get xtExtClientId => 'Client ID della tua app';
+
+  @override
+  String get xtExtClientSecret => 'Client secret della tua app';
+
+  @override
+  String get xtExtClientSecretOptional => 'Client secret della tua app (se ce l\'ha)';
+
+  @override
+  String get xtExtCommunity => 'Della comunità';
+
+  @override
+  String get xtExtConnect => 'Collega';
+
+  @override
+  String get xtExtConnected => 'I tuoi servizi';
+
+  @override
+  String get xtExtEverywhere => 'Ovunque';
+
+  @override
+  String xtExtGuide(String name) {
+    return 'Come preparare $name';
+  }
+
+  @override
+  String xtExtKey(String name) {
+    return 'Chiave di $name';
+  }
+
+  @override
+  String get xtExtKeyHelp =>
+      'Resta in un file privato sul tuo server e non viene più mostrata, nemmeno agli agenti.';
+
+  @override
+  String xtExtKeyWhere(String name) {
+    return 'Dove trovo la chiave di $name?';
+  }
+
+  @override
+  String get xtExtKindSkill => 'Skill';
+
+  @override
+  String get xtExtKindTool => 'Strumento';
+
+  @override
+  String get xtExtManualOauth => 'Si accede sulla sua pagina (OAuth)';
+
+  @override
+  String get xtExtManualToken => 'Chiave (facoltativa, inviata come Bearer)';
+
+  @override
+  String get xtExtMore => 'Scopri di più';
+
+  @override
+  String get xtExtNeedsLogin => 'Devi accedere';
+
+  @override
+  String get xtExtNothingFound =>
+      'Non ho trovato niente. Chiedi a God con l\'estensione magica qui sopra: può scrivere quello che manca.';
+
+  @override
+  String xtExtOauthHelp(String name) {
+    return 'Si apre una nuova scheda sulla pagina di $name: accedi lì e autorizza Rasgeth. Poi torna qui.';
+  }
+
+  @override
+  String get xtExtOfficial => 'Ufficiale';
+
+  @override
+  String xtExtOnlyProject(String name) {
+    return 'Solo in $name';
+  }
+
+  @override
+  String get xtExtProposals => 'Aspettano te';
+
+  @override
+  String get xtExtProposalsHelp =>
+      'Capacità scritte dagli agenti e già provate: niente viene installato finché non approvi.';
+
+  @override
+  String get xtExtSearch => 'Cerca un servizio';
+
+  @override
+  String xtExtServerUrl(String name) {
+    return 'Indirizzo di $name';
+  }
+
+  @override
+  String get xtExtServerUrlHelp =>
+      'Come lo raggiunge il server di Rasgeth, per esempio sulla rete di casa.';
+
+  @override
+  String get xtExtSkills => 'Skill e strumenti';
+
+  @override
+  String get xtExtSkillsHelp =>
+      'Capacità installate per i tuoi agenti. Clicca per leggerle o cambiarle.';
+
+  @override
+  String get xtExtTransport => 'Come gira';
+
+  @override
+  String get xtExtTransportHttp => 'Online (indirizzo)';
+
+  @override
+  String get xtExtTransportStdio => 'Su questo server (comando)';
+
+  @override
+  String get xtExtUnverified =>
+      'Non confermato sulle pagine del servizio: se qualcosa non torna, ha ragione la sua documentazione.';
+
+  @override
+  String get xtExtUnverifiedShort => 'da verificare';
+
+  @override
+  String get xtExtWhere => 'Dove funziona';
+
+  @override
+  String get xtExtWhereHelp => 'Ovunque, o solo per gli agenti di un progetto.';
+
+  @override
+  String xtExtWorks(String n) {
+    return 'Funziona · $n strumenti';
+  }
+
+  @override
+  String get xtExtensions => 'Estensioni';
+
+  @override
+  String get xtFailedTests => 'Prove fallite';
+
+  @override
+  String get xtInstructions => 'Istruzioni';
+
+  @override
+  String get xtMediaGetKey => 'Crea la chiave';
+
+  @override
+  String get xtMediaHasKey => 'chiave già presente';
+
+  @override
+  String xtMediaKey(String name) {
+    return 'Chiave di $name';
+  }
+
+  @override
+  String xtMediaKeyLinked(String name) {
+    return 'Chiave di $name collegata';
+  }
+
+  @override
+  String xtMediaKeyStep1(String name) {
+    return 'Apri la pagina di $name dove si creano le chiavi ed entra (o crea un account).';
+  }
+
+  @override
+  String get xtMediaKeyStep2 => 'Crea una chiave nuova e copiala.';
+
+  @override
+  String get xtMediaKeyStep3 => 'Incollala qui e salva:';
+
+  @override
+  String get xtMediaNativeHelp =>
+      'Alcuni modelli fanno le immagini da sé (ChatGPT con Codex): allora si usa il loro, e l\'immagine ti arriva in chat come con il nostro. Spento: sempre il fornitore scelto qui. Se in una conversazione chiedi «il vostro strumento», si usa sempre il nostro. Vale per le conversazioni nuove.';
+
+  @override
+  String get xtMediaNativeTitle => 'Usa lo strumento del modello quando c\'è';
+
+  @override
+  String get xtMediaNeedsKey => 'Manca la chiave';
+
+  @override
+  String get xtMediaOff => 'Spento';
+
+  @override
+  String get xtMediaOtherProvider => 'Scegli un altro fornitore';
+
+  @override
+  String get xtMediaPurpose =>
+      'Chi fa immagini, video, voci, musica ed effetti sonori quando un agente ne deve fare uno (gli strumenti image_generation, video_generation e audio_generation). Per ognuno scegli un fornitore e un modello e incolla la sua chiave: una chiave che hai già dato per la chat (OpenAI, Gemini, xAI) vale anche qui. Si pagano al fornitore per quello che fai.';
+
+  @override
+  String get xtMediaStep1 => '1. Chi lo fa';
+
+  @override
+  String xtMediaStep2(String name) {
+    return '2. La chiave di $name';
+  }
+
+  @override
+  String get xtMediaTitle => 'Estensioni predefinite';
+
+  @override
+  String get xtMediaTurnOff => 'Spegni';
+
+  @override
+  String get xtMediaVoice => 'Voce';
+
+  @override
+  String get xtMediaVoiceFirst => 'La prima dell\'account';
+
+  @override
+  String get xtMedia_image => 'Immagini';
+
+  @override
+  String get xtMedia_image_help =>
+      'Disegni, foto, illustrazioni, loghi da una descrizione (o da un\'immagine).';
+
+  @override
+  String get xtMedia_music => 'Musica';
+
+  @override
+  String get xtMedia_music_help => 'Canzoni e brani da una descrizione, con o senza voce.';
+
+  @override
+  String get xtMedia_sound => 'Effetti sonori';
+
+  @override
+  String get xtMedia_sound_help =>
+      'Suoni brevi da una descrizione: una porta, la pioggia, una folla, un motore.';
+
+  @override
+  String get xtMedia_speech => 'Voce';
+
+  @override
+  String get xtMedia_speech_help => 'Un testo letto ad alta voce, con la voce che scegli.';
+
+  @override
+  String get xtMedia_video => 'Video';
+
+  @override
+  String get xtMedia_video_help =>
+      'Brevi clip da una descrizione o da un primo fotogramma. Ci mettono minuti e costano di più. (OpenAI ha chiuso Sora a settembre 2026.)';
+
+  @override
+  String get xtModel => 'Modello';
+
+  @override
+  String get xtMxApprove => 'Approva e installa';
+
+  @override
+  String get xtMxArgs => 'Argomenti:';
+
+  @override
+  String get xtMxBadgeApprove => 'Da installare';
+
+  @override
+  String get xtMxBadgeInstalled => 'Installata';
+
+  @override
+  String get xtMxBadgeMissing => 'Manca qualcosa';
+
+  @override
+  String get xtMxBuilding =>
+      'God la sta costruendo con te: rispondi alle sue domande nella conversazione.';
+
+  @override
+  String get xtMxChange => 'Cambiala';
+
+  @override
+  String get xtMxChangeGo => 'Chiedi a God';
+
+  @override
+  String get xtMxChangeLabel =>
+      'Cosa deve cambiare? God la propone di nuovo e tu la installi come prima.';
+
+  @override
+  String get xtMxChanging =>
+      'God la sta cambiando con te; quella installata continua a funzionare finché non approvi la nuova.';
+
+  @override
+  String xtMxCheckHost(String what) {
+    return 'L\'indirizzo $what';
+  }
+
+  @override
+  String xtMxCheckKey(String what) {
+    return 'La chiave per $what';
+  }
+
+  @override
+  String xtMxCheckKeyUndeclared(String what) {
+    return 'La chiave $what, usata dal codice ma non dichiarata';
+  }
+
+  @override
+  String xtMxCheckTest(String what) {
+    return 'Il test di $what';
+  }
+
+  @override
+  String get xtMxCode => 'Leggi il codice';
+
+  @override
+  String get xtMxDone =>
+      'Installata: ogni agente ha questi strumenti dalla sua prossima conversazione.';
+
+  @override
+  String get xtMxExtension => 'Estensione magica';
+
+  @override
+  String get xtMxExtensionAsk => 'Cosa devono saper fare gli agenti?';
+
+  @override
+  String get xtMxExtensionEx1 => 'Trasforma un CSV in un grafico e dimmi i totali';
+
+  @override
+  String get xtMxExtensionEx2 => 'Controlla che partita IVA e codice fiscale siano validi';
+
+  @override
+  String get xtMxExtensionEx3 =>
+      'Una skill per scrivere il mio resoconto settimanale come piace a me';
+
+  @override
+  String get xtMxExtensionLead =>
+      'Di\' a God cosa devono saper fare gli agenti. God chiede, scrive strumenti e skill con i loro test e li prova in una sandbox chiusa: tu vedi com\'è andata e li installi con un tasto.';
+
+  @override
+  String get xtMxExtensionPlaceholder =>
+      'Per esempio: trasforma un CSV in un grafico e dimmi i totali';
+
+  @override
+  String get xtMxExtensionTile =>
+      'Capacità nuove per gli agenti, di ogni tipo: God scrive strumenti e skill, li prova a parte e tu li installi.';
+
+  @override
+  String get xtMxGiveKey => 'Dalla a questi strumenti';
+
+  @override
+  String xtMxGiveKeyText(String hosts, String tools) {
+    return 'La riceveranno solo questi strumenti, attraverso il proxy, e solo verso $hosts: $tools.';
+  }
+
+  @override
+  String xtMxGiveKeyTitle(String what) {
+    return 'Dare $what a questo pacchetto?';
+  }
+
+  @override
+  String get xtMxIntegration => 'Integrazione magica';
+
+  @override
+  String get xtMxIntegrationAsk => 'Quale servizio, e per farci cosa?';
+
+  @override
+  String get xtMxIntegrationEx1 => 'Collegami a Notion: cerca nelle mie pagine e creane di nuove';
+
+  @override
+  String get xtMxIntegrationEx2 => 'Collegami alle API del mio gestionale (fatture e clienti)';
+
+  @override
+  String get xtMxIntegrationEx3 => 'Leggi i miei compiti di Todoist e segnali come fatti';
+
+  @override
+  String get xtMxIntegrationLead =>
+      'Di\' a God quale servizio e cosa devono farci gli agenti. God chiede quello che gli serve, scrive il connettore con i suoi test e lo prova in una sandbox chiusa: tu vedi com\'è andata e lo installi con un tasto.';
+
+  @override
+  String get xtMxIntegrationPlaceholder =>
+      'Per esempio: collegami a Notion così gli agenti cercano nelle mie pagine e aggiungono note';
+
+  @override
+  String get xtMxIntegrationTile =>
+      'Collega Rasgeth a un servizio tramite le sue API (Notion, il tuo gestionale, una banca…): God scrive il connettore, lo prova a parte e tu lo installi.';
+
+  @override
+  String get xtMxKeyHosts => 'Può andare solo a:';
+
+  @override
+  String get xtMxKeyLead =>
+      'Incolla qui la chiave: va dritta nel tuo Portachiavi, cifrata. Nessuno la legge, nemmeno God; gli strumenti la ricevono solo attraverso il proxy.';
+
+  @override
+  String get xtMxKeyName => 'Nome nel Portachiavi:';
+
+  @override
+  String get xtMxKeyOnly =>
+      'La usano solo gli strumenti di questo pacchetto; puoi cambiarla in Impostazioni > Portachiavi.';
+
+  @override
+  String get xtMxKeySave => 'Salva nel Portachiavi';
+
+  @override
+  String xtMxKeyTitle(String service) {
+    return 'Chiave per $service';
+  }
+
+  @override
+  String get xtMxKeyValue => 'La chiave';
+
+  @override
+  String get xtMxKeys => 'Chiavi';
+
+  @override
+  String get xtMxListLead =>
+      'Fatte con God: aprine una per continuare la conversazione, installarla, cambiarla o toglierla.';
+
+  @override
+  String get xtMxListTitle => 'Integrazioni ed estensioni magiche';
+
+  @override
+  String get xtMxMissing => 'Prima di installarla manca questo:';
+
+  @override
+  String get xtMxParts => 'Cosa aggiunge';
+
+  @override
+  String get xtMxPromise1 => 'Niente si installa senza il tuo sì.';
+
+  @override
+  String get xtMxPromise2 =>
+      'Ogni parte si prova in una sandbox chiusa che raggiunge solo i servizi che dichiara.';
+
+  @override
+  String get xtMxPromise3 => 'Le chiavi vanno nel tuo Portachiavi dalla finestra, mai nella chat.';
+
+  @override
+  String get xtMxProposal => 'Il pacchetto di God';
+
+  @override
+  String get xtMxReaches => 'Raggiunge solo';
+
+  @override
+  String get xtMxReachesNothing => 'Niente: lavora senza rete.';
+
+  @override
+  String get xtMxRetest => 'Riprova i test';
+
+  @override
+  String get xtMxState_building => 'In costruzione';
+
+  @override
+  String get xtMxState_dismissed => 'Messa da parte';
+
+  @override
+  String get xtMxState_done => 'Installata';
+
+  @override
+  String get xtMxState_ready => 'Pronta: aspetta te';
+
+  @override
+  String get xtMxState_testing => 'Test in corso';
+
+  @override
+  String get xtMxStep1 => 'Dici cosa vuoi';
+
+  @override
+  String get xtMxStep2 => 'God lo scrive e lo prova';
+
+  @override
+  String get xtMxStep3 => 'Tu lo installi';
+
+  @override
+  String get xtMxTesting => 'I test girano di nuovo nella sandbox…';
+
+  @override
+  String get xtMxUninstall => 'Disinstalla';
+
+  @override
+  String xtMxUninstallText(String what) {
+    return 'Se ne vanno: $what. Escono dal Portachiavi anche le chiavi aggiunte per lei.';
+  }
+
+  @override
+  String xtMxUninstallTitle(String what) {
+    return 'Disinstallare $what?';
+  }
+
+  @override
+  String get xtMxWhyGod => 'Deve correggerlo God: diglielo nella conversazione se non lo fa.';
+
+  @override
+  String get xtMxWhyHost =>
+      'Il codice lo raggiunge ma non lo dichiara: God deve dichiararlo o toglierlo.';
+
+  @override
+  String get xtMxWhyMissing =>
+      'Non è ancora nel tuo Portachiavi: aggiungila qui, va solo a questi strumenti.';
+
+  @override
+  String get xtMxWhyNotGiven =>
+      'È nel tuo Portachiavi, ma non è data a questi strumenti (o non verso questi indirizzi).';
+
+  @override
+  String get xtMxWhyTest =>
+      'Non è passato nella sandbox: God legge il perché e lo corregge; aggiunta una chiave, i test ripartono.';
+
+  @override
+  String get xtName => 'Nome';
+
+  @override
+  String get xtNewSkill => 'Nuova skill';
+
+  @override
+  String get xtNoProposals => 'Nessuna proposta.';
+
+  @override
+  String get xtOpen => 'apri';
+
+  @override
+  String get xtProposals => 'Proposte che aspettano te';
+
+  @override
+  String get xtReject => 'Rifiuta';
+
+  @override
+  String get xtRemotePasswordChange => 'Cambiala';
+
+  @override
+  String get xtRemove => 'Rimuovi';
+
+  @override
+  String get xtSave => 'Salva';
+
+  @override
+  String get xtScope => 'Ambito';
+
+  @override
+  String get xtScopePlatform => 'piattaforma';
+
+  @override
+  String get xtSkillDownload => 'Scarica';
+
+  @override
+  String get xtSkillDownloadHelp => 'Scarica questa skill come .zip, per condividerla';
+
+  @override
+  String get xtSkillImport => 'Importa una skill';
+
+  @override
+  String get xtSkillImportFile => 'Scegli un file .zip';
+
+  @override
+  String get xtSkillImportHelp =>
+      'La cartella di una skill come .zip (il formato agentskills.io), da un altro Rasgeth o da un altro strumento.';
+
+  @override
+  String get xtSkillImportWhere => 'Installa in';
+
+  @override
+  String xtSkillImported(String name) {
+    return 'Skill «$name» importata.';
+  }
+
+  @override
+  String get xtSkillReplaceConfirm => 'Lì c\'è già una skill con questo nome. La sostituisco?';
+
+  @override
+  String get xtSvApprovedAuto => 'installata da sola (la tua scelta in Sicurezza)';
+
+  @override
+  String get xtSvApprovedYou => 'approvata da te';
+
+  @override
+  String xtSvBy(String who) {
+    return 'di $who';
+  }
+
+  @override
+  String get xtSvCompare => 'Confronta con quella in uso';
+
+  @override
+  String get xtSvCompareFull => 'Confronta: tutte le differenze';
+
+  @override
+  String get xtSvCurrent => 'in uso';
+
+  @override
+  String get xtSvHideCompare => 'Nascondi il confronto';
+
+  @override
+  String get xtSvHow_baseline => 'Com\'era prima della cronologia';
+
+  @override
+  String get xtSvHow_edited => 'Cambiata a mano';
+
+  @override
+  String get xtSvHow_import => 'Importata';
+
+  @override
+  String get xtSvHow_install => 'Prima versione';
+
+  @override
+  String xtSvHow_rollback(String n) {
+    return 'Ritorno alla versione $n';
+  }
+
+  @override
+  String get xtSvHow_update => 'Nuova versione';
+
+  @override
+  String get xtSvLead =>
+      'Ogni cambiamento di questa skill resta: chi l\'ha scritto, perché e quando. Gli agenti usano la più nuova dalla loro conversazione successiva.';
+
+  @override
+  String get xtSvLineTitle => 'Cosa è cambiato e perché';
+
+  @override
+  String get xtSvNextSession =>
+      'Una volta installata, gli agenti la usano dalla loro conversazione successiva; quelli che stanno già parlando tengono la versione con cui hanno cominciato.';
+
+  @override
+  String get xtSvNone => 'Ancora nessuna versione.';
+
+  @override
+  String get xtSvNotRestorable => 'Troppo grande per essere conservata: non può tornare.';
+
+  @override
+  String xtSvRollback(String n) {
+    return 'Torna alla versione $n';
+  }
+
+  @override
+  String xtSvRollbackConfirm(String name) {
+    return 'I suoi file prendono il posto di quelli di «$name» in uso, come versione nuova: non si perde niente e puoi tornare qui. Gli agenti la usano dalla loro conversazione successiva.';
+  }
+
+  @override
+  String xtSvRollbackTitle(String n) {
+    return 'Tornare alla versione $n?';
+  }
+
+  @override
+  String xtSvRolledBack(String n, String v) {
+    return 'Tornata alla versione $n: adesso è la versione $v.';
+  }
+
+  @override
+  String get xtSvTitle => 'Versioni';
+
+  @override
+  String get xtSvUnknown => 'autore sconosciuto';
+
+  @override
+  String xtSvVersion(String n) {
+    return 'Versione $n';
+  }
+
+  @override
+  String get xtSvWhy => 'Perché';
+
+  @override
+  String get xtSvYou => 'te';
+
+  @override
+  String get xtUrl => 'URL';
+
+  @override
+  String get xtWzDoneBtn => 'Fatto';
+
+  @override
+  String get xtXwAddress => 'Indirizzo';
+
+  @override
+  String get xtXwAuthor => 'Proposta da';
+
+  @override
+  String get xtXwConnectedLead =>
+      'Quelli accesi funzionano. Aprine uno per rifare l\'accesso o toglierlo.';
+
+  @override
+  String get xtXwFailedLead =>
+      'Proposte degli agenti che non hanno passato le prove: non sono mai state installate.';
+
+  @override
+  String get xtXwFile => 'File';
+
+  @override
+  String get xtXwImportText => 'Uno .zip che ti hanno passato, per tutto o per un progetto.';
+
+  @override
+  String xtXwKeptFiles(String files) {
+    return 'File della skill che restano: $files';
+  }
+
+  @override
+  String get xtXwKind => 'Tipo';
+
+  @override
+  String get xtXwNewSkillText => 'Istruzioni che scrivi tu per i tuoi agenti; si installa subito.';
+
+  @override
+  String get xtXwOpenFile => 'Apri il file';
+
+  @override
+  String get xtXwOwnLead =>
+      'Per esperti: una skill che ti hanno passato, una che scrivi tu, un server che non è nel catalogo.';
+
+  @override
+  String get xtXwOwnTitle => 'Fatte a mano';
+
+  @override
+  String get xtXwPrevious => 'Installata ora';
+
+  @override
+  String xtXwScripts(String files) {
+    return 'Ha degli script ($files): approva solo se ti fidi di quello che fanno.';
+  }
+
+  @override
+  String get xtXwServerText =>
+      'Un server MCP per indirizzo o per comando, con la sua chiave se serve.';
+
+  @override
+  String get xtXwSignIn => 'Accesso';
+
+  @override
+  String get xtXwSkillNameHelp => 'Lettere minuscole, cifre e trattini, come report-settimanale.';
+
+  @override
+  String get xtXwSource => 'Fatto da';
+
+  @override
+  String get xtXwState => 'Stato';
+
+  @override
+  String get xtXwSummary => 'Perché è nata';
+
+  @override
+  String get xtXwTests => 'Prove in una sandbox usa e getta';
+
+  @override
+  String get xtXwTestsFailed => 'prove non superate';
+
+  @override
+  String get xtXwUpdates => 'Aggiornamento di una skill installata';
+
+  @override
+  String get xtXwWaitsYou => 'aspetta il tuo sì';
+
+  @override
+  String get xtYou => 'Tu';
+
+  @override
+  String get vkCancel => 'Annulla';
+
+  @override
+  String get vkClose => 'Chiudi';
+
+  @override
+  String get vkDvSection => 'Dispositivi';
+
+  @override
+  String get vkKcAdd => 'Aggiungi';
+
+  @override
+  String get vkKcAddSub => 'Il valore viene cifrato appena salvi';
+
+  @override
+  String get vkKcAddTitle => 'Una nuova credenziale';
+
+  @override
+  String get vkKcAgentsHow =>
+      'Gli agenti usano una credenziale con use_credential, o attraverso gli strumenti che le colleghi dentro ogni credenziale.';
+
+  @override
+  String get vkKcAgentsHowNoProxy => 'Gli agenti usano una credenziale con use_credential.';
+
+  @override
+  String get vkKcAll => 'Tutte';
+
+  @override
+  String get vkKcAllAgents => 'Tutti gli agenti';
+
+  @override
+  String get vkKcAllAgentsHelp => 'Spento: solo gli agenti che scegli tu.';
+
+  @override
+  String get vkKcAllCats => 'Tutte';
+
+  @override
+  String get vkKcAsk => 'Chiedimi prima che venga usata';
+
+  @override
+  String get vkKcAsk_always => 'Ogni volta';
+
+  @override
+  String get vkKcAsk_never => 'Mai: mi fido delle regole sopra';
+
+  @override
+  String get vkKcAsk_session => 'La prima volta in ogni conversazione';
+
+  @override
+  String get vkKcAutos => 'Automazioni che possono usarla';
+
+  @override
+  String get vkKcBrAddress => 'Indirizzo di Rasgeth';
+
+  @override
+  String get vkKcBrCode => 'Codice';
+
+  @override
+  String get vkKcBrCodeLead =>
+      'Nell\'estensione (la chiave nella barra del browser) scrivi questo indirizzo e questo codice. Il codice vale dieci minuti e per un solo browser.';
+
+  @override
+  String get vkKcBrCopied => 'Copiato';
+
+  @override
+  String get vkKcBrCopy => 'Copia';
+
+  @override
+  String vkKcBrDone(String name) {
+    return 'Collegato: «$name». Puoi chiudere questa finestra.';
+  }
+
+  @override
+  String get vkKcBrDownload => 'Scarica l\'estensione';
+
+  @override
+  String get vkKcBrDownloadFirefox => 'Scarica la versione per Firefox';
+
+  @override
+  String get vkKcBrExpired => 'Quel codice è scaduto: creane uno nuovo.';
+
+  @override
+  String vkKcBrExpires(String time) {
+    return 'Valido fino alle $time';
+  }
+
+  @override
+  String vkKcBrHowChromium(String page) {
+    return 'Decomprimila in una cartella che non sposterai. Apri $page, attiva «Modalità sviluppatore», premi «Carica estensione non pacchettizzata» e scegli la cartella. Puoi anche trascinare lo zip su quella pagina.';
+  }
+
+  @override
+  String get vkKcBrHowFirefox =>
+      'Apri about:debugging#/runtime/this-firefox, premi «Carica componente aggiuntivo temporaneo…» e scegli lo zip. Firefox la tiene finché non si chiude: per tenerla sempre deve essere firmata da Mozilla.';
+
+  @override
+  String get vkKcBrHowOpera =>
+      'Decomprimila in una cartella che non sposterai. Apri opera://extensions, attiva «Modalità sviluppatore» in alto a destra, premi «Carica estensione non pacchettizzata» e scegli la cartella. Puoi anche trascinare lo zip su quella pagina.';
+
+  @override
+  String get vkKcBrHttpNote =>
+      'Questo indirizzo inizia con http: l\'estensione lo accetta solo in casa (questo computer o la rete di casa). Da fuori usa l\'accesso remoto, con https.';
+
+  @override
+  String get vkKcBrLead =>
+      'L\'estensione del portachiavi compila gli accessi in Opera, Chrome, Edge, Brave e Firefox, solo sul sito a cui appartiene ogni password, e salva qui quelle nuove. Ogni uso compare nell\'elenco qui sopra.';
+
+  @override
+  String get vkKcBrLink => 'Collega un browser';
+
+  @override
+  String vkKcBrLinked(String when) {
+    return 'collegato $when';
+  }
+
+  @override
+  String get vkKcBrMakeCode => 'Crea un codice';
+
+  @override
+  String get vkKcBrNever => 'non ancora usato';
+
+  @override
+  String get vkKcBrNone => 'Nessun browser collegato.';
+
+  @override
+  String vkKcBrSeen(String when) {
+    return 'visto $when';
+  }
+
+  @override
+  String get vkKcBrStep1 => '1. Installa l\'estensione';
+
+  @override
+  String get vkKcBrStep2 => '2. Collegala con un codice';
+
+  @override
+  String get vkKcBrStore =>
+      'Più avanti anche nel Chrome Web Store: si installa con un clic e si aggiorna da sola.';
+
+  @override
+  String get vkKcBrTitle => 'Nel tuo browser';
+
+  @override
+  String get vkKcBrUnlink => 'Scollega';
+
+  @override
+  String vkKcBrUnlinkQ(String name) {
+    return 'Scollegare $name?';
+  }
+
+  @override
+  String get vkKcBrUnlinkText =>
+      'Il browser smette subito di raggiungere il portachiavi. Le password restano qui; per usarlo di nuovo, ricollegalo con un codice nuovo.';
+
+  @override
+  String get vkKcBrWhich => 'Il tuo browser';
+
+  @override
+  String get vkKcBrWinLead =>
+      'L\'estensione del portachiavi compila gli accessi in Opera, Chrome, Edge, Brave e Firefox, solo sul sito a cui appartiene ogni password, e salva qui quelle nuove.';
+
+  @override
+  String get vkKcBrWinTitle => 'Collega un browser';
+
+  @override
+  String get vkKcCat_api => 'Chiavi API';
+
+  @override
+  String get vkKcCat_bank => 'Banca';
+
+  @override
+  String get vkKcCat_email => 'Email';
+
+  @override
+  String get vkKcCat_login => 'Accessi';
+
+  @override
+  String get vkKcCat_other => 'Altro';
+
+  @override
+  String get vkKcCat_server => 'Server';
+
+  @override
+  String get vkKcCategory => 'Tipo';
+
+  @override
+  String get vkKcChange => 'Cambia';
+
+  @override
+  String get vkKcClosed => 'Il portachiavi è chiuso';
+
+  @override
+  String get vkKcClosedKeys =>
+      'Finché non si apre, le chiavi che hai dato a Rasgeth restano dove erano (secrets.json e i file privati) e non si cancella niente.';
+
+  @override
+  String get vkKcCopied => 'Copiato';
+
+  @override
+  String get vkKcCopiedNote => 'Copiato: tra 30 secondi lo tolgo dagli appunti.';
+
+  @override
+  String get vkKcCopy => 'Copia';
+
+  @override
+  String get vkKcEmpty =>
+      'Ancora niente. Aggiungi la chiave di un servizio che un agente deve usare, o importa le password da un altro gestore.';
+
+  @override
+  String get vkKcExpired => 'Scaduta';
+
+  @override
+  String get vkKcExpires => 'Scade il';
+
+  @override
+  String get vkKcExpiresHelp => 'Rasgeth te lo ricorda un mese prima.';
+
+  @override
+  String vkKcExpiresIn(String n) {
+    return 'Scade tra $n giorni';
+  }
+
+  @override
+  String get vkKcExpiresToday => 'Scade oggi';
+
+  @override
+  String get vkKcExpiringLead => 'Da rinnovare presto:';
+
+  @override
+  String get vkKcExport => 'Esporta cifrato';
+
+  @override
+  String get vkKcExportGo => 'Scarica';
+
+  @override
+  String get vkKcExportLead =>
+      'Un file con tutte le credenziali, cifrato con una frase segreta tua: senza nessuno può aprirlo, nemmeno Rasgeth.';
+
+  @override
+  String get vkKcExportTitle => 'Esporta il portachiavi';
+
+  @override
+  String get vkKcExported => 'Scaricato. Tieni il file e la frase segreta in posti diversi.';
+
+  @override
+  String get vkKcEyebrow => 'Portachiavi';
+
+  @override
+  String get vkKcFormat => 'Valore dell\'intestazione';
+
+  @override
+  String get vkKcFormat_1password => '1Password';
+
+  @override
+  String get vkKcFormat_bitwarden => 'Bitwarden';
+
+  @override
+  String get vkKcFormat_chrome => 'Chrome o Edge';
+
+  @override
+  String get vkKcFormat_firefox => 'Firefox';
+
+  @override
+  String get vkKcFormat_generic => 'CSV';
+
+  @override
+  String get vkKcGenAgain => 'Un\'altra';
+
+  @override
+  String vkKcGenChars(String n) {
+    return '$n caratteri';
+  }
+
+  @override
+  String get vkKcGenDigits => 'Solo cifre (PIN)';
+
+  @override
+  String get vkKcGenKind => 'Di che cosa è fatta';
+
+  @override
+  String get vkKcGenLength => 'Lunghezza';
+
+  @override
+  String get vkKcGenLetters => 'Lettere e cifre';
+
+  @override
+  String get vkKcGenSymbols => 'Lettere, cifre, simboli';
+
+  @override
+  String get vkKcGenUse => 'Usa questa';
+
+  @override
+  String get vkKcGenerate => 'Creane una';
+
+  @override
+  String get vkKcHeader => 'Intestazione';
+
+  @override
+  String get vkKcHide => 'Nascondi';
+
+  @override
+  String get vkKcHosts => 'Indirizzi consentiti';
+
+  @override
+  String get vkKcHostsHelp =>
+      'Nomi separati da virgole; *.esempio.it per tutti i suoi sottodomini.';
+
+  @override
+  String get vkKcHow => 'Come va sulla richiesta';
+
+  @override
+  String vkKcHowHelp(String ref, String value) {
+    return 'Quando un agente non scrive da sé $ref, il valore va in questa intestazione. $value sta per il segreto.';
+  }
+
+  @override
+  String get vkKcImport => 'Importa';
+
+  @override
+  String get vkKcImport1password => '1Password: File > Esporta > CSV';
+
+  @override
+  String get vkKcImportBitwarden => 'Bitwarden: Strumenti > Esporta cassaforte > .csv';
+
+  @override
+  String get vkKcImportChrome => 'Chrome ed Edge: Impostazioni > Password > Esporta password';
+
+  @override
+  String get vkKcImportFirefox => 'Firefox: Password > menu > Esporta password';
+
+  @override
+  String vkKcImportFound(String from, String n) {
+    return '$n password trovate nel file di $from. Scegli quelle da tenere:';
+  }
+
+  @override
+  String vkKcImportGo(String n) {
+    return 'Importa $n';
+  }
+
+  @override
+  String get vkKcImportLead =>
+      'Esporta le password dall\'altro gestore in un file CSV, poi sceglilo qui. Va bene anche un file del portachiavi esportato da Rasgeth.';
+
+  @override
+  String get vkKcImportLogins =>
+      'Gli accessi importati sono solo per te: nessun agente può usarli finché non lo permetti.';
+
+  @override
+  String get vkKcImportPick => 'Scegli il file';
+
+  @override
+  String get vkKcImportSafe => 'Dopo, cancella il file CSV: contiene le tue password in chiaro.';
+
+  @override
+  String get vkKcImportSealedGo => 'Apri e importa';
+
+  @override
+  String get vkKcImportSealedHelp => 'La frase segreta scelta quando il file è stato esportato.';
+
+  @override
+  String vkKcImportSkipped(String n) {
+    return '$n senza password sono state lasciate fuori.';
+  }
+
+  @override
+  String get vkKcImportTitle => 'Importa le password';
+
+  @override
+  String vkKcImported(String n) {
+    return '$n credenziali aggiunte al portachiavi.';
+  }
+
+  @override
+  String get vkKcLead =>
+      'Cifrate su questo computer. Gli agenti le usano per nome e non le vedono mai; tu scegli dove può andare ognuna e chi può usarla.';
+
+  @override
+  String get vkKcLockedAdmin => 'Impostata dall\'amministratore';
+
+  @override
+  String get vkKcManage => 'Gestisci';
+
+  @override
+  String get vkKcMore => 'Altro';
+
+  @override
+  String get vkKcMoveLead =>
+      'Da Bitwarden, 1Password, Chrome, Edge o Firefox; fuori in un file cifrato con una frase segreta tua.';
+
+  @override
+  String get vkKcMoveTitle => 'Portale qui, portale con te';
+
+  @override
+  String get vkKcName => 'Nome per gli agenti';
+
+  @override
+  String get vkKcNameBad => 'Solo lettere minuscole, cifre, - e _ (almeno due)';
+
+  @override
+  String get vkKcNameHelp =>
+      'Minuscole, senza spazi: gli agenti lo scrivono per usare la credenziale.';
+
+  @override
+  String get vkKcNeverUsed => 'Mai usata';
+
+  @override
+  String get vkKcNoHosts => 'Senza un indirizzo nessun agente può usarla: resta solo per te.';
+
+  @override
+  String get vkKcNoMatch => 'Nessuna corrisponde alla ricerca.';
+
+  @override
+  String get vkKcNoUses => 'Nessun agente ha ancora usato una credenziale.';
+
+  @override
+  String get vkKcNone => 'Nessuna';
+
+  @override
+  String get vkKcNotes => 'Note';
+
+  @override
+  String get vkKcPassphrase => 'Frase segreta';
+
+  @override
+  String get vkKcPassphraseAgain => 'Di nuovo la frase segreta';
+
+  @override
+  String get vkKcPassphraseDiffer => 'Le due sono diverse';
+
+  @override
+  String get vkKcPassphraseHelp =>
+      'Almeno 8 caratteri. Tienila in un posto sicuro: non si può recuperare.';
+
+  @override
+  String get vkKcProt_dpapi => 'Protetto da Windows';
+
+  @override
+  String get vkKcProt_env => 'Cifrato con la chiave del server';
+
+  @override
+  String get vkKcProt_file => 'Cifrato con una chiave tenuta su questo computer';
+
+  @override
+  String get vkKcProt_keychain => 'Protetto dal Portachiavi del Mac';
+
+  @override
+  String get vkKcQ => 'Le tue chiavi e password, al sicuro in un posto solo';
+
+  @override
+  String get vkKcRemove => 'Elimina';
+
+  @override
+  String vkKcRemoveQ(String name) {
+    return 'Eliminare $name?';
+  }
+
+  @override
+  String get vkKcRemoveText =>
+      'La credenziale esce dal portachiavi per sempre: agenti e strumenti non potranno più usarla.';
+
+  @override
+  String get vkKcSafeText =>
+      'Cifratura AES-256, mai dentro un progetto o in git, mai scritte in una chat o in un registro.';
+
+  @override
+  String get vkKcSearch => 'Cerca per nome, servizio, utente o etichetta';
+
+  @override
+  String get vkKcSecret => 'Il segreto';
+
+  @override
+  String get vkKcSecretLead =>
+      'La chiave, il token o la password. Una volta salvato non si vede più, a meno che lo chiedi tu.';
+
+  @override
+  String get vkKcSecretPlaceholder => 'Incollalo o scrivilo qui';
+
+  @override
+  String get vkKcService => 'Servizio';
+
+  @override
+  String get vkKcServiceExample => 'Revolut Business';
+
+  @override
+  String get vkKcServiceHelp =>
+      'Il nome con cui la conosci: Revolut, Gmail, il server dell\'ufficio.';
+
+  @override
+  String get vkKcShow => 'Mostra';
+
+  @override
+  String get vkKcShowQ => 'Mostrare il segreto?';
+
+  @override
+  String get vkKcShowText =>
+      'Resterà sullo schermo finché non lo nascondi o chiudi la finestra. Assicurati che nessuno stia guardando.';
+
+  @override
+  String get vkKcSomeAgents => 'Gli agenti che possono usarla';
+
+  @override
+  String get vkKcSomeone => 'Qualcuno';
+
+  @override
+  String vkKcSys_chat(String what) {
+    return 'Chat: $what';
+  }
+
+  @override
+  String vkKcSys_email(String what) {
+    return 'Casella email: $what';
+  }
+
+  @override
+  String vkKcSys_git(String what) {
+    return 'Codice: $what';
+  }
+
+  @override
+  String vkKcSys_mcp(String what) {
+    return 'Estensione: $what';
+  }
+
+  @override
+  String vkKcSys_other(String what) {
+    return '$what';
+  }
+
+  @override
+  String vkKcSys_provider(String what) {
+    return 'Fornitore di modelli: $what';
+  }
+
+  @override
+  String vkKcSys_search(String what) {
+    return 'Ricerca web: $what';
+  }
+
+  @override
+  String vkKcSys_ssh(String what) {
+    return 'Macchina (SSH): $what';
+  }
+
+  @override
+  String get vkKcSystem => 'Tenute da Rasgeth';
+
+  @override
+  String get vkKcSystemLead =>
+      'Chiavi messe da chi ha installato questo server (nel suo ambiente): Rasgeth le usa, qui non si possono cambiare.';
+
+  @override
+  String get vkKcSystemTitle => 'Impostate dall\'amministratore';
+
+  @override
+  String get vkKcTags => 'Etichette';
+
+  @override
+  String get vkKcTagsHelp => 'Separate da virgole: lavoro, casa…';
+
+  @override
+  String get vkKcTools => 'Strumenti delle estensioni che la ricevono';
+
+  @override
+  String get vkKcToolsHelp =>
+      'Uno strumento scelto qui riceve l\'indirizzo per raggiungere il servizio con questa credenziale, mai il valore.';
+
+  @override
+  String get vkKcUrl => 'Indirizzo (se c\'è)';
+
+  @override
+  String vkKcUseAs(String name) {
+    return 'Gli agenti la chiamano $name';
+  }
+
+  @override
+  String vkKcUseBrowser(String name) {
+    return '$name (browser)';
+  }
+
+  @override
+  String vkKcUse_denied(String host, String name) {
+    return 'ha chiesto $name verso $host: hai detto di no';
+  }
+
+  @override
+  String vkKcUse_moved(String host, String name) {
+    return 'ha spostato $name qui da $host';
+  }
+
+  @override
+  String vkKcUse_refused(String host, String name) {
+    return 'non ha potuto usare $name verso $host';
+  }
+
+  @override
+  String vkKcUse_used(String host, String name) {
+    return 'ha usato $name verso $host';
+  }
+
+  @override
+  String get vkKcUsedBy => 'Usata da:';
+
+  @override
+  String get vkKcUsedByText =>
+      'Rasgeth usa questa chiave da sola. Qui puoi cambiarla, scegliere se possono usarla anche gli agenti e vedere ogni uso; la togli dalla sua pagina.';
+
+  @override
+  String vkKcUsedTimes(String n, String when) {
+    return 'Usata $n volte, l\'ultima $when';
+  }
+
+  @override
+  String get vkKcUser => 'Utente o email (se c\'è)';
+
+  @override
+  String get vkKcUsesLead =>
+      'Ogni volta che un agente ha chiesto una credenziale: quando, verso dove e com\'è andata.';
+
+  @override
+  String get vkKcUsesOne => 'Gli ultimi usi';
+
+  @override
+  String get vkKcUsesTitle => 'Chi le ha usate';
+
+  @override
+  String get vkKcWhere => 'Dove può andare';
+
+  @override
+  String get vkKcWhereLead =>
+      'Il valore viene messo su una richiesta solo verso questi indirizzi: altrove viene rifiutato.';
+
+  @override
+  String get vkKcWho => 'Chi può usarla';
+
+  @override
+  String get vkKcWhoLead =>
+      'Gli agenti non vedono mai il valore: lo chiedono per nome e Rasgeth lo mette sulla richiesta.';
+
+  @override
+  String get vkMcSection => 'Macchine';
+
+  @override
+  String get vkSave => 'Salva';
+
+  @override
+  String get vkSettings => 'Impostazioni';
+
+  @override
+  String get vkWzCode => 'Dove sta il codice';
+
+  @override
+  String get vkWzRemote => 'Accesso da fuori casa';
+
+  @override
+  String get vkAutomations => 'Automazioni';
+
+  @override
+  String get vkChats => 'Altre chat';
+
+  @override
+  String get vkExtensions => 'Estensioni';
+
+  @override
+  String get vkSubscriptions => 'Modelli e abbonamenti';
+
+  @override
+  String get vkTelegram => 'Telegram';
+
+  @override
+  String get g4211Hub => 'Servizi, skill, generazione e le proposte degli agenti';
+
+  @override
+  String get g4212Hub => 'Chiavi e password, al sicuro in un posto solo';
+
+  @override
+  String get g4211SignInOpened =>
+      'La pagina del servizio si è aperta nel browser: accedi lì, poi torna qui.';
+
+  @override
+  String get g4211OpenExtensions => 'Apri Estensioni';
+
+  @override
+  String get g4212OpenKeychain => 'Apri il Portachiavi';
+
+  @override
+  String get syBackup => 'Backup';
+
+  @override
+  String get syBackupAddsHint =>
+      'Un progetto con un nome già usato qui entra accanto all\'altro, con un numero dopo il nome.';
+
+  @override
+  String get syBackupAlreadyHere => 'c\'è già, resta com\'è';
+
+  @override
+  String get syBackupAnother => 'Importa un altro backup';
+
+  @override
+  String get syBackupChoose => 'Scegli il file del backup';
+
+  @override
+  String syBackupCounts(String agents, String conversations, String size) {
+    return '$agents agenti · $conversations conversazioni · $size di file';
+  }
+
+  @override
+  String syBackupDownload(String file) {
+    return 'Scarica $file';
+  }
+
+  @override
+  String get syBackupExport => 'Fai un backup';
+
+  @override
+  String get syBackupExportHint =>
+      'Progetti con i loro file, agenti, conversazioni, chat e bacheca. Le chiavi e gli accessi ai servizi non ci sono: restano su questo computer. Le cartelle node_modules sono lasciate fuori (si ricreano).';
+
+  @override
+  String syBackupFrom(String when) {
+    return 'Backup del $when';
+  }
+
+  @override
+  String get syBackupImport => 'Importa un backup';
+
+  @override
+  String get syBackupImportHint =>
+      'Da un altro Rasgeth o da questo. Qui non si cancella né si sostituisce niente: quello che c\'è nel backup viene aggiunto, e quello che c\'è già resta com\'è.';
+
+  @override
+  String get syBackupImportNow => 'Importa';
+
+  @override
+  String syBackupImported(String agents, String conversations, String projects) {
+    return 'Fatto: aggiunti $projects progetti, $agents agenti e $conversations conversazioni.';
+  }
+
+  @override
+  String syBackupKeepName(String name) {
+    return 'Tieni $name';
+  }
+
+  @override
+  String get syBackupKeys => 'Includi il portachiavi';
+
+  @override
+  String get syBackupKeysHelp =>
+      'Cifrato con una frase segreta tua, con le chiavi dei modelli, delle chat e delle caselle: senza, le credenziali del backup non si possono aprire.';
+
+  @override
+  String get syBackupKeysIn => 'Il backup contiene un portachiavi: la sua frase segreta';
+
+  @override
+  String get syBackupKeysInHelp =>
+      'Lasciala vuota per importare tutto il resto senza le credenziali.';
+
+  @override
+  String get syBackupKeysWrong =>
+      'Il portachiavi non è stato importato: frase segreta sbagliata. Tutto il resto sì.';
+
+  @override
+  String get syBackupMake => 'Prepara il backup';
+
+  @override
+  String get syBackupMakeAgain => 'Preparalo di nuovo';
+
+  @override
+  String syBackupNameQuestion(String backup, String here, String who) {
+    return '$who qui si chiama $here e nel backup $backup. Che nome tiene?';
+  }
+
+  @override
+  String get syBackupNothingNew =>
+      'Tutti i progetti di questo backup ci sono già: si aggiunge solo quello che manca.';
+
+  @override
+  String get syBackupPurpose =>
+      'Tutti i progetti con i loro file, gli agenti e le conversazioni in un file solo: da tenere al sicuro, o da portare in un altro Rasgeth.';
+
+  @override
+  String get syBackupSaved => 'Salvato nella cartella Download.';
+
+  @override
+  String get syBackupSending => 'Mando il file a Rasgeth';
+
+  @override
+  String syBackupTakeName(String name) {
+    return 'Usa $name';
+  }
+
+  @override
+  String get syBrainDisconnect => 'Scollega';
+
+  @override
+  String get syCaddyDomain => 'L\'indirizzo';
+
+  @override
+  String get syCaddyDomainHelp => 'Rasgeth prende da solo il certificato HTTPS da Let\'s Encrypt.';
+
+  @override
+  String get syCaddyPihole =>
+      'In casa alcuni router non riescono a raggiungere il proprio indirizzo pubblico: allora apri Rasgeth in casa con il solito link, oppure accendi Pi-hole in Impostazioni, Accesso da fuori casa (è facoltativo).';
+
+  @override
+  String get syCaddyStep1 =>
+      'Dal fornitore del tuo dominio crea un record DNS di tipo A per l\'indirizzo che vuoi (per esempio rasgeth.tuodominio.it) che punti all\'indirizzo pubblico di casa. Se cambia, usa un servizio di DNS dinamico.';
+
+  @override
+  String get syCaddyStep2 => 'Sul router inoltra le porte 80 e 443 a questo computer.';
+
+  @override
+  String get syCaddyWarning =>
+      'Con questa strada la pagina di accesso di Rasgeth è su internet: tieni la password forte e la seconda verifica attiva.';
+
+  @override
+  String get syCancel => 'Annulla';
+
+  @override
+  String get syCfAccess =>
+      'Ancora più sicuro: in Cloudflare Zero Trust, Access, aggiungi un\'applicazione per questo indirizzo, così Cloudflare chiede chi sei prima ancora di mostrare la pagina.';
+
+  @override
+  String get syCfBuy => 'Compra un dominio su Cloudflare';
+
+  @override
+  String get syCfHost => 'L\'indirizzo che hai scelto';
+
+  @override
+  String get syCfHostHelp =>
+      'Per esempio rasgeth.tuodominio.it: sottodominio e dominio del Public hostname.';
+
+  @override
+  String get syCfStep1 =>
+      'Se non hai ancora un dominio, comprane uno (Cloudflare li vende a prezzo di costo, circa 10 euro l\'anno):';
+
+  @override
+  String get syCfStep2 =>
+      'Apri Tunnels in Cloudflare Zero Trust, premi Create a tunnel, scegli Cloudflared e dagli un nome (per esempio rasgeth):';
+
+  @override
+  String get syCfStep3 =>
+      'Nel passo Public hostname: sottodominio rasgeth, il tuo dominio, Service type HTTP, URL redgiant:7600. Salva.';
+
+  @override
+  String get syCfStep4 =>
+      'Cloudflare mostra un comando con un token lungo dopo --token: copia solo il token e scrivi qui l\'indirizzo.';
+
+  @override
+  String get syCfToken => 'Il token del tunnel';
+
+  @override
+  String get syCfTokenHelp =>
+      'La stringa lunga dopo --token nel comando che mostra Cloudflare (comincia con eyJ).';
+
+  @override
+  String get syCfTunnels => 'Tunnel di Cloudflare';
+
+  @override
+  String get syConnecting => 'collegamento…';
+
+  @override
+  String get syConversations => 'Conversazioni';
+
+  @override
+  String syErr_agent_limit(String count, String max, String project) {
+    return 'Il progetto «$project» può avere al massimo $max agenti oltre all\'orchestratore: ne ha $count. Alza il limite in Impostazioni › Progetti o rimuovine uno.';
+  }
+
+  @override
+  String get syErr_agent_removed =>
+      'L\'agente è stato rimosso dalla squadra: ripristinalo per lavorarci.';
+
+  @override
+  String get syErr_agent_stopped => 'L\'agente è fermato (in pausa): riattivalo per riprendere.';
+
+  @override
+  String get syErr_bad_name => 'Questo non è un nome (per esempio git.home.example.com).';
+
+  @override
+  String get syErr_code_rejected =>
+      'Anthropic non ha accettato questo codice: forse è incompleto o vecchio. Riapri la pagina di accesso per averne uno nuovo.';
+
+  @override
+  String get syErr_email_failed =>
+      'La casella non ha fatto entrare Rasgeth: controlla server, indirizzo e password per le app.';
+
+  @override
+  String get syErr_failed => 'L\'accesso non è andato a buon fine. Riprova dall\'inizio.';
+
+  @override
+  String get syErr_host_unreachable =>
+      'Il nome del server è noto, ma da Rasgeth il suo indirizzo non risponde. Vedi Impostazioni › Accesso da fuori casa › I tuoi servizi di casa.';
+
+  @override
+  String get syErr_key_rejected =>
+      'Il fornitore ha rifiutato questa chiave. Controlla di averla copiata tutta e che sia ancora attiva.';
+
+  @override
+  String get syErr_memory_empty => 'Scrivi qualcosa da ricordare.';
+
+  @override
+  String get syErr_memory_forgotten => 'Un ricordo dimenticato per sempre non può tornare.';
+
+  @override
+  String get syErr_memory_full =>
+      'La memoria è piena: cancella o unisci prima qualche ricordo vecchio.';
+
+  @override
+  String get syErr_memory_gone => 'Quel ricordo non c\'è più.';
+
+  @override
+  String get syErr_memory_long =>
+      'Un ricordo è lungo al massimo 400 caratteri: scrivilo più corto.';
+
+  @override
+  String get syErr_memory_moved =>
+      'Il ricordo è cambiato ancora: annulla prima la modifica più recente.';
+
+  @override
+  String get syErr_memory_same => 'Un altro ricordo dice già la stessa cosa.';
+
+  @override
+  String get syErr_memory_secret =>
+      'Sembra una password, un codice o il numero di una carta: i segreti non vanno mai in memoria.';
+
+  @override
+  String get syErr_memory_undone => 'Quella modifica è già stata annullata.';
+
+  @override
+  String get syErr_missing_permission =>
+      'GitHub non ha lasciato creare repository a questo token. Fanne uno nuovo con Administration su Read and write.';
+
+  @override
+  String get syErr_name_not_found =>
+      'Rasgeth non trova il nome del server nel DNS che usa. Vedi Impostazioni › Accesso da fuori casa › I tuoi servizi di casa.';
+
+  @override
+  String get syErr_no_login => 'Prima apri la pagina di accesso di Anthropic.';
+
+  @override
+  String get syErr_no_model =>
+      'Non hai ancora scelto un modello: apri Impostazioni, Modelli e abbonamenti, collegane uno (un abbonamento, una chiave o un modello locale) e sceglilo in \"Il modello che usano gli agenti\".';
+
+  @override
+  String get syErr_no_page =>
+      'Non è stato possibile preparare la pagina di accesso di Anthropic. Riprova fra un momento.';
+
+  @override
+  String get syErr_no_password => 'Prima imposta una password.';
+
+  @override
+  String get syErr_portrait_empty => 'Scrivi il tratto.';
+
+  @override
+  String get syErr_portrait_gone => 'Quel tratto non c\'è più.';
+
+  @override
+  String get syErr_portrait_long => 'Un tratto è al massimo di 200 caratteri: scrivilo più corto.';
+
+  @override
+  String get syErr_portrait_private =>
+      'Indirizzi email e numeri di telefono non entrano mai nel ritratto.';
+
+  @override
+  String get syErr_portrait_secret =>
+      'Sembra una password, un codice o un numero di carta: i segreti non entrano mai nel ritratto.';
+
+  @override
+  String get syErr_project_archived => 'Il progetto è archiviato: ripristinalo per lavorarci.';
+
+  @override
+  String syErr_provider_stalled(String minutes, String retries) {
+    return 'Il fornitore non risponde da $minutes minuti: ho riprovato $retries volte. Riprova fra un po\', o scegli un altro modello.';
+  }
+
+  @override
+  String get syErr_terms => 'Prima spunta la casella sulle condizioni dei fornitori.';
+
+  @override
+  String get syErr_token_rejected =>
+      'Telegram ha rifiutato questo token. Copialo di nuovo dal messaggio di BotFather, tutto intero.';
+
+  @override
+  String get syErr_too_many => 'Troppi tentativi sbagliati: aspetta 15 minuti e riprova.';
+
+  @override
+  String get syErr_unreachable =>
+      'Il fornitore non ha risposto. Controlla l\'indirizzo e la connessione a internet, poi riprova.';
+
+  @override
+  String get syErr_vault_bad_file =>
+      'Questo file non è un\'esportazione di password che Rasgeth sa leggere.';
+
+  @override
+  String get syErr_vault_bad_passphrase => 'Frase segreta sbagliata, o file rovinato.';
+
+  @override
+  String get syErr_vault_closed => 'Il portachiavi è chiuso su questo computer.';
+
+  @override
+  String get syErr_vault_in_git =>
+      'La cartella del portachiavi sta dentro un repository git: non deve mai finire in un commit. Sposta la cartella dei dati di Rasgeth fuori da lì.';
+
+  @override
+  String get syErr_vault_name_taken =>
+      'Un\'altra credenziale ha già quel nome per gli agenti: scegline un altro.';
+
+  @override
+  String get syErr_vault_no_value => 'Scrivi il segreto.';
+
+  @override
+  String get syErr_vault_not_found => 'Quella credenziale non è più nel portachiavi.';
+
+  @override
+  String get syErr_vault_system =>
+      'Rasgeth usa questa chiave: la togli dalla sua pagina nelle Impostazioni.';
+
+  @override
+  String get syErr_voice_convert =>
+      'Non sono riuscito a convertire la registrazione per whisper su questo computer.';
+
+  @override
+  String get syErr_voice_empty => 'La registrazione è vuota.';
+
+  @override
+  String syErr_voice_key_refused(String name) {
+    return '$name ha rifiutato la chiave: controllala in Impostazioni, Voce.';
+  }
+
+  @override
+  String syErr_voice_no_key(String name) {
+    return '$name non ha ancora una chiave: aggiungila in Impostazioni, Voce.';
+  }
+
+  @override
+  String get syErr_voice_no_service =>
+      'Rasgeth non ha un servizio di trascrizione: scegline uno in Impostazioni, Voce, Trascrizione.';
+
+  @override
+  String get syErr_voice_provider => 'Questo fornitore non lo sa fare: scegline un altro.';
+
+  @override
+  String syErr_voice_rate_limited(String name) {
+    return '$name dice troppe richieste o credito finito.';
+  }
+
+  @override
+  String syErr_voice_service_error(String name, String status) {
+    return '$name ha risposto con un errore ($status).';
+  }
+
+  @override
+  String syErr_voice_timeout(String name) {
+    return '$name ci ha messo troppo a rispondere.';
+  }
+
+  @override
+  String get syErr_voice_too_long => 'La registrazione è troppo lunga.';
+
+  @override
+  String syErr_voice_unreachable(String name) {
+    return '$name non si raggiunge: controlla che sia acceso e il suo indirizzo.';
+  }
+
+  @override
+  String get syErr_weak => 'La password deve avere almeno 10 caratteri.';
+
+  @override
+  String get syErr_wrong => 'Password o codice sbagliati.';
+
+  @override
+  String get syError => 'Errore';
+
+  @override
+  String get syFailed => 'fallito';
+
+  @override
+  String get syFbArch => 'Architettura';
+
+  @override
+  String get syFbBackupBusy => 'Una copia è già in corso.';
+
+  @override
+  String get syFbBackupNow => 'Fai una copia adesso';
+
+  @override
+  String get syFbBackupQ => 'Meglio su un altro disco: se questo si rompe, la copia c\'è ancora.';
+
+  @override
+  String get syFbBackupStarted => 'Copia avviata: la vedi tra i lavori in corso.';
+
+  @override
+  String get syFbBackupTitle => 'Copie di sicurezza';
+
+  @override
+  String get syFbCannotMount => 'Qui non si può montare';
+
+  @override
+  String syFbContainerDisks(String name) {
+    return 'Rasgeth OS gira in un container ($name): i dischi che vede sono quelli della macchina che lo ospita e da qui non si possono usare.';
+  }
+
+  @override
+  String get syFbDaily => 'Ogni giorno';
+
+  @override
+  String get syFbDataDir => 'Cartella';
+
+  @override
+  String get syFbDataQ => 'Qui ci sono progetti, conversazioni e impostazioni.';
+
+  @override
+  String get syFbDataTitle => 'I dati';
+
+  @override
+  String get syFbDay => 'Giorno';
+
+  @override
+  String syFbDestDisk(String label, String path) {
+    return 'Le copie vanno sul disco $label ($path).';
+  }
+
+  @override
+  String syFbDestFolder(String path) {
+    return 'Le copie vanno nella cartella $path.';
+  }
+
+  @override
+  String syFbDestNode(String name) {
+    return 'Le copie vanno sul nodo $name, nello spazio che presta.';
+  }
+
+  @override
+  String syFbDestSftp(String machine, String path) {
+    return 'Le copie vanno su $machine, in $path (SFTP).';
+  }
+
+  @override
+  String syFbDestSmb(String path, String user) {
+    return 'Le copie vanno nella cartella condivisa $path, come $user.';
+  }
+
+  @override
+  String get syFbDisks => 'Dischi';
+
+  @override
+  String get syFbDisksTitle => 'Dischi rimovibili';
+
+  @override
+  String get syFbErr_already => 'Il container ha già una cartella con quel nome.';
+
+  @override
+  String get syFbErr_auth =>
+      'La destinazione ha rifiutato l\'accesso: controlla utente e password (o la chiave della macchina).';
+
+  @override
+  String get syFbErr_bad_path =>
+      'Scrivi un percorso completo (/volume1/Rasgeth) o dalla home (~/backup).';
+
+  @override
+  String get syFbErr_denied => 'La destinazione non lascia scrivere questo utente.';
+
+  @override
+  String get syFbErr_disk_missing =>
+      'Il disco delle copie non è collegato: collegalo. Non è stato scritto niente altrove.';
+
+  @override
+  String get syFbErr_has_filesystem => 'Quel disco è già formattato: da qui non si riformatta mai.';
+
+  @override
+  String get syFbErr_keychain_closed => 'Apri prima il Portachiavi: la password si tiene lì.';
+
+  @override
+  String get syFbErr_mismatch =>
+      'La copia è arrivata diversa dall\'originale: non è stata tenuta. Riprova.';
+
+  @override
+  String get syFbErr_needs_format => 'Quel disco non è formattato.';
+
+  @override
+  String get syFbErr_no_container => 'Sull\'host non c\'è un container con quel numero.';
+
+  @override
+  String get syFbErr_no_destination => 'Scegli prima dove vanno le copie.';
+
+  @override
+  String get syFbErr_no_disk => 'Quel disco non è (più) un disco rimovibile dell\'host.';
+
+  @override
+  String get syFbErr_not_found => 'La cartella o la destinazione non c\'è (più).';
+
+  @override
+  String get syFbErr_not_proxmox => 'Quella macchina non è un host Proxmox.';
+
+  @override
+  String get syFbErr_not_trusted =>
+      'Prova prima questa macchina in Impostazioni › Macchine e fidati della sua chiave.';
+
+  @override
+  String get syFbErr_place_missing =>
+      'La cartella della macchina ospite ora non è montata: non è stato scritto niente sul disco di sistema.';
+
+  @override
+  String get syFbErr_smb_address =>
+      'Scrivi la cartella condivisa come \\\\host\\condivisione\\cartella (lettere, cifre, spazi, punti e trattini).';
+
+  @override
+  String get syFbErr_smb_bad_domain => 'Il dominio è fatto di lettere, cifre, punti e trattini.';
+
+  @override
+  String get syFbErr_smb_bad_password => 'Questa password non si può usare (niente a capo).';
+
+  @override
+  String get syFbErr_smb_bad_user => 'Questo nome utente non si può usare.';
+
+  @override
+  String get syFbErr_smb_missing =>
+      'Le cartelle condivise hanno bisogno di smbclient, che questa installazione non ha.';
+
+  @override
+  String get syFbErr_unreachable =>
+      'La destinazione non risponde: è accesa e in rete? Non è stato scritto niente altrove.';
+
+  @override
+  String get syFbFolderLead =>
+      'Una cartella in cui questa macchina può scrivere: una condivisione di rete, un disco montato da te. Non dentro la cartella dei dati.';
+
+  @override
+  String get syFbFolderPath => 'Cartella';
+
+  @override
+  String get syFbFolderTitle => 'Oppure una cartella';
+
+  @override
+  String syFbFreeOf(String free) {
+    return '$free liberi';
+  }
+
+  @override
+  String syFbFreeOfTotal(String free, String total) {
+    return '$free GB liberi su $total GB';
+  }
+
+  @override
+  String get syFbFri => 'Ven';
+
+  @override
+  String get syFbHostBad_bad_device => 'Il dispositivo di questo disco non si può usare.';
+
+  @override
+  String get syFbHostBad_bad_id => 'Il numero del container è un numero, come 105.';
+
+  @override
+  String get syFbHostBad_bad_mp => 'Nessun punto di montaggio libero.';
+
+  @override
+  String get syFbHostBad_bad_name => 'Il nome di questo disco non si può usare per una cartella.';
+
+  @override
+  String get syFbHostId => 'Numero del container su Proxmox';
+
+  @override
+  String syFbHostIdHelp(String hostname) {
+    return 'Il numero nell\'elenco di Proxmox (questo container si chiama $hostname).';
+  }
+
+  @override
+  String get syFbHostKind => 'La macchina ospite';
+
+  @override
+  String get syFbHostLead =>
+      'Da un container Rasgeth vede i dischi della macchina ospite ma non può montarli: li monta l\'ospite e passa dentro una cartella. Rasgeth se ne accorge da solo.';
+
+  @override
+  String syFbHostMany(String n) {
+    return 'Su questa macchina ci sono $n dischi rimovibili: scegli quello per le copie.';
+  }
+
+  @override
+  String get syFbHostNone =>
+      'Non si vede nessun disco rimovibile dell\'ospite: collegalo all\'ospite, oppure usa una cartella in rete qui sotto.';
+
+  @override
+  String syFbHostOne(String how, String size, String title) {
+    return 'Su questa macchina c\'è il disco $title, $how, $size.';
+  }
+
+  @override
+  String get syFbHostOther => 'Altro';
+
+  @override
+  String get syFbHostSteps => 'Da eseguire sulla macchina ospite, come root';
+
+  @override
+  String get syFbHostTitle => 'Un disco della macchina ospite';
+
+  @override
+  String syFbHostWatching(String target) {
+    return 'Controllo ogni pochi secondi: quando arriva $target compare qui sopra, pronta da usare.';
+  }
+
+  @override
+  String get syFbHour => 'Ora';
+
+  @override
+  String get syFbKeep => 'Copie tenute';
+
+  @override
+  String syFbKeepN(String n) {
+    return 'ne tiene $n';
+  }
+
+  @override
+  String syFbLastFailed(String when, String why) {
+    return 'La copia del $when non è riuscita: $why';
+  }
+
+  @override
+  String syFbLastOk(String when) {
+    return 'Ultima copia: $when, riletta e completa.';
+  }
+
+  @override
+  String get syFbListAgain => 'Guarda di nuovo';
+
+  @override
+  String syFbListEmpty(String where) {
+    return 'Ancora nessuna copia in $where.';
+  }
+
+  @override
+  String get syFbListLead =>
+      'Ognuna si può riportare qui: si aggiunge quello che manca, qui non si cancella niente.';
+
+  @override
+  String get syFbListShow => 'Mostra le copie';
+
+  @override
+  String get syFbListTitle => 'Le copie che ci sono';
+
+  @override
+  String get syFbMachineTitle => 'La macchina';
+
+  @override
+  String get syFbMethod_helper =>
+      'Scegline uno: Rasgeth lo monta solo per le copie. I dischi di sistema non vengono mai proposti.';
+
+  @override
+  String get syFbMethod_none =>
+      'Questa installazione non può montare dischi (per esempio Docker senza privilegi): usa un disco già montato, oppure una cartella qui sotto.';
+
+  @override
+  String get syFbMethod_udisks =>
+      'Scegline uno: lo monta il sistema (udisks2). I dischi di sistema non vengono mai proposti.';
+
+  @override
+  String get syFbMissing_not_installed => 'non noto: manca il programma che lo dice';
+
+  @override
+  String get syFbMissing_unreadable => 'non leggibile';
+
+  @override
+  String get syFbMissing_unsupported => 'non disponibile su questo sistema';
+
+  @override
+  String get syFbMon => 'Lun';
+
+  @override
+  String get syFbNetAProxy => 'un reverse proxy';
+
+  @override
+  String syFbNetDns(String ip) {
+    return 'Un server DNS nella tua rete ($ip): un nome come rasgeth.home può puntare qui.';
+  }
+
+  @override
+  String get syFbNetFolder => 'Cartella lì';
+
+  @override
+  String get syFbNetFolderHelp =>
+      'Un percorso completo (/volume1/Rasgeth, E:\\Backup) o dalla home (~/RedGiant-backups). Se manca la crea.';
+
+  @override
+  String get syFbNetLanOnly => 'Solo rete locale va benissimo: salta questo passo.';
+
+  @override
+  String get syFbNetLead =>
+      'Niente da montare: funziona anche in un container o in Docker. Ogni copia arriva con un nome temporaneo e prende il suo nome vero solo quando è completa e controllata.';
+
+  @override
+  String syFbNetName(String name) {
+    return 'Hai raggiunto Rasgeth con un nome: $name.';
+  }
+
+  @override
+  String get syFbNetNoMachines =>
+      'Nessuna macchina ancora: aggiungi il NAS o un altro computer in Impostazioni › Macchine (SSH), provalo una volta e torna qui.';
+
+  @override
+  String get syFbNetNoNodes =>
+      'Nessun Rasgeth abbinato: abbinane uno in Impostazioni › Nodi (deve prestare il suo spazio).';
+
+  @override
+  String get syFbNetNode => 'Un altro Rasgeth';
+
+  @override
+  String get syFbNetNotTrusted => 'Prima provala in Impostazioni › Macchine';
+
+  @override
+  String get syFbNetNothing => 'Non c\'è niente che raggiunga già questa macchina da fuori.';
+
+  @override
+  String get syFbNetPick => 'Usa per le copie';
+
+  @override
+  String syFbNetProxies(String names) {
+    return 'Gira già su questa macchina: $names.';
+  }
+
+  @override
+  String syFbNetProxyFront(String name) {
+    return 'Davanti a Rasgeth c\'è già $name.';
+  }
+
+  @override
+  String get syFbNetSftp => 'Una delle tue macchine';
+
+  @override
+  String get syFbNetSmb => 'Cartella condivisa (SMB)';
+
+  @override
+  String syFbNetTailscale(String name) {
+    return 'Tailscale è già attivo qui ($name): puoi usarlo.';
+  }
+
+  @override
+  String get syFbNetTailscaleOff => 'Tailscale è installato qui ma non collegato.';
+
+  @override
+  String get syFbNetTitle => 'Oppure una cartella in rete';
+
+  @override
+  String get syFbNoDisks =>
+      'Nessun disco rimovibile trovato. Collegane uno e riapri questa pagina, oppure usa una cartella.';
+
+  @override
+  String get syFbNodeOffline => 'Non in linea ora';
+
+  @override
+  String get syFbNodeOnline => 'In linea';
+
+  @override
+  String get syFbOff => 'Solo quando lo chiedo';
+
+  @override
+  String get syFbOfferCloud => 'Modelli nel cloud: sempre disponibili.';
+
+  @override
+  String syFbOfferLocalCpu(String max) {
+    return 'Modelli locali: sì, piccoli, sul processore, fino a circa $max GB (più lenti che su una scheda video).';
+  }
+
+  @override
+  String syFbOfferLocalGpu(String max) {
+    return 'Modelli locali: sì, sulla scheda video, fino a circa $max GB.';
+  }
+
+  @override
+  String get syFbOfferNoLocal =>
+      'Modelli locali: non proposti, qui c\'è troppa poca memoria. Puoi comunque aggiungerne uno da Impostazioni › Modelli.';
+
+  @override
+  String get syFbPairLater =>
+      'Scrivi l\'indirizzo del Rasgeth principale e il codice che mostra in Impostazioni › Nodi › «Aggiungi un nodo». Puoi farlo anche dopo, dalle Impostazioni.';
+
+  @override
+  String get syFbPassword => 'Password';
+
+  @override
+  String get syFbPasswordAgain => 'La stessa password di nuovo';
+
+  @override
+  String get syFbPasswordHelp => 'Almeno 10 caratteri.';
+
+  @override
+  String syFbPlaceFree(String free, String total) {
+    return '$free GB liberi su $total';
+  }
+
+  @override
+  String get syFbPlaceNotWritable => 'Rasgeth non può scriverci';
+
+  @override
+  String get syFbPlacesLead =>
+      'Cartelle che la macchina che ospita Rasgeth ha montato in /var/lib/redgiant/backups (un punto di montaggio di Proxmox, una cartella di rete).';
+
+  @override
+  String get syFbPlacesTitle => 'Cartelle montate per le copie';
+
+  @override
+  String get syFbPveDo => 'Passalo a Rasgeth';
+
+  @override
+  String syFbPveDone(String target) {
+    return 'Fatto: la cartella $target è arrivata.';
+  }
+
+  @override
+  String get syFbPveFormat => 'Non formattato: formattalo e passalo';
+
+  @override
+  String syFbPveFormatLabel(String title) {
+    return 'Tutto quello che c\'è sopra viene cancellato. Per andare avanti scrivi il suo nome: $title';
+  }
+
+  @override
+  String syFbPveFormatQ(String title) {
+    return 'Formattare il disco $title?';
+  }
+
+  @override
+  String get syFbPveFormatYes => 'Formatta e passalo';
+
+  @override
+  String syFbPveGuess(String id) {
+    return 'Questo container è il $id.';
+  }
+
+  @override
+  String syFbPveHost(String name, String version) {
+    return '$name: Proxmox $version.';
+  }
+
+  @override
+  String get syFbPveLead =>
+      'Se l\'host Proxmox è tra le tue macchine (Impostazioni › Macchine), Rasgeth può eseguire lì questi passi da solo. Prima te lo chiede, con tutti i comandi nella richiesta.';
+
+  @override
+  String get syFbPveLook => 'Cerca l\'host Proxmox';
+
+  @override
+  String get syFbPveNeedId => 'Scrivi prima il numero del container.';
+
+  @override
+  String get syFbPveNoDisks => 'Nessun disco rimovibile su quell\'host.';
+
+  @override
+  String syFbPveNone(String n) {
+    return 'Nessuna delle tue $n macchine è un host Proxmox. Aggiungi l\'host in Impostazioni › Macchine (come root, con la chiave di Rasgeth), provalo, poi cerca di nuovo.';
+  }
+
+  @override
+  String syFbPveQ(String host, String id, String title) {
+    return 'Passare il disco $title di $host al container $id?';
+  }
+
+  @override
+  String syFbPveRestart(String target) {
+    return 'Fatto sull\'host. Se $target non compare entro un minuto, riavvia il container da Proxmox.';
+  }
+
+  @override
+  String get syFbPveText =>
+      'Rasgeth te lo chiede di nuovo tra le richieste, con i comandi esatti, prima di eseguire qualcosa sull\'host.';
+
+  @override
+  String get syFbPveTitle => 'Fallo tu';
+
+  @override
+  String get syFbPveYes => 'Chiedimelo con i comandi';
+
+  @override
+  String syFbRamFree(String gb) {
+    return '$gb GB liberi adesso';
+  }
+
+  @override
+  String syFbRamTotal(String gb) {
+    return '$gb GB in tutto';
+  }
+
+  @override
+  String get syFbRemovable => 'rimovibile';
+
+  @override
+  String get syFbRestore => 'Ripristina';
+
+  @override
+  String syFbRestoreQ(String when) {
+    return 'Ripristinare la copia del $when?';
+  }
+
+  @override
+  String get syFbRestoreText =>
+      'Prima viene riletta, poi si aggiungono i progetti, gli agenti e le conversazioni che qui non ci sono. Qui non si cancella niente.';
+
+  @override
+  String get syFbRestoreYes => 'Ripristina';
+
+  @override
+  String get syFbRoleFull => 'Rasgeth completo';
+
+  @override
+  String get syFbRoleFullText => 'Agenti, progetti, chat e tutto il resto, su questa macchina.';
+
+  @override
+  String get syFbRoleNode => 'Nodo di un altro Rasgeth';
+
+  @override
+  String get syFbRoleNodeText => 'Questa macchina lavora per un Rasgeth che hai già.';
+
+  @override
+  String get syFbRoleSettingsLead => 'Puoi cambiarlo quando vuoi: prima chiede e dice cosa cambia.';
+
+  @override
+  String get syFbRoleTitle => 'Ruolo';
+
+  @override
+  String get syFbSat => 'Sab';
+
+  @override
+  String get syFbSmbAddress => 'Cartella condivisa';
+
+  @override
+  String get syFbSmbAddressHelp =>
+      'Come la scrive Windows (\\\\nas\\backup\\Rasgeth) oppure smb://nas/backup/Rasgeth.';
+
+  @override
+  String get syFbSmbDomain => 'Dominio o gruppo di lavoro';
+
+  @override
+  String get syFbSmbDomainHelp => 'Solo se la tua rete lo chiede (spesso vuoto).';
+
+  @override
+  String get syFbSmbMissing =>
+      'Le cartelle condivise hanno bisogno di smbclient, che questa installazione non ha (l\'immagine Docker e Rasgeth OS ce l\'hanno). Su Windows usa il campo cartella qui sopra con \\\\host\\condivisione.';
+
+  @override
+  String get syFbSmbPassword => 'Password';
+
+  @override
+  String get syFbSmbPasswordHelp => 'Va solo nel Portachiavi, mai in un file o in un log.';
+
+  @override
+  String get syFbSmbPasswordKept => 'È nel Portachiavi: lascia vuoto per tenerla.';
+
+  @override
+  String get syFbSmbUser => 'Utente';
+
+  @override
+  String get syFbSshAddKey => 'Aggiungi questa chiave';
+
+  @override
+  String syFbSshContainer(String name) {
+    return 'In un container ($name) SSH entra nel container stesso, al suo indirizzo, con l\'utente redgiant.';
+  }
+
+  @override
+  String get syFbSshKey => 'Chiave pubblica';
+
+  @override
+  String get syFbSshKeyHelp =>
+      'Una riga che inizia con ssh-ed25519, ssh-rsa o ecdsa-sha2 (il file .pub).';
+
+  @override
+  String get syFbSshKeyPlaceholder => 'ssh-ed25519 AAAA… io@portatile';
+
+  @override
+  String syFbSshKeys(String n) {
+    return '$n chiavi ammesse';
+  }
+
+  @override
+  String get syFbSshNeedKey => 'Incolla prima una chiave pubblica, poi accendilo.';
+
+  @override
+  String get syFbSshOffHelp => 'Incolla qui sotto una chiave pubblica, poi accendilo.';
+
+  @override
+  String get syFbSshOn => 'SSH acceso';
+
+  @override
+  String get syFbSshQ =>
+      'Per lavorare sulla macchina stessa da un terminale. Spento finché non lo accendi; solo chiavi, mai password.';
+
+  @override
+  String get syFbSshTitle => 'SSH';
+
+  @override
+  String get syFbSshWhy_no_helper =>
+      'Questa installazione non ha l\'aiutante di sistema di Rasgeth OS: SSH lo gestisce il sistema che la ospita.';
+
+  @override
+  String get syFbSshWhy_not_installed => 'SSH (openssh-server) non è installato in questo sistema.';
+
+  @override
+  String syFbSshWhy_other(String why) {
+    return 'Qui SSH non si può leggere: l\'aiutante di sistema ha risposto «$why».';
+  }
+
+  @override
+  String get syFbSshWhy_timeout =>
+      'L\'aiutante di sistema di Rasgeth OS ci ha messo troppo a rispondere: riprova tra poco.';
+
+  @override
+  String get syFbSshWhy_unreachable =>
+      'L\'aiutante di sistema di Rasgeth OS non risponde (redgiant-helper.socket): ora SSH non si può leggere né cambiare. Di solito riavviare la macchina lo rimette a posto.';
+
+  @override
+  String get syFbSun => 'Dom';
+
+  @override
+  String get syFbSystemLead =>
+      'La macchina su cui gira Rasgeth, il suo ruolo, dove stanno i dati e le copie, e SSH.';
+
+  @override
+  String get syFbSystemQ => 'Sistema';
+
+  @override
+  String get syFbSystemSection => 'Sistema';
+
+  @override
+  String get syFbThu => 'Gio';
+
+  @override
+  String get syFbToFullQ => 'Rendere di nuovo questo un Rasgeth completo?';
+
+  @override
+  String get syFbToFullText =>
+      'Smette di lavorare per l\'altro Rasgeth; i suoi agenti, progetti e conversazioni tornano com\'erano.';
+
+  @override
+  String get syFbToFullYes => 'Rendilo completo';
+
+  @override
+  String get syFbToNodeQ => 'Trasformare questo Rasgeth in un nodo?';
+
+  @override
+  String get syFbToNodeText =>
+      'Smetterà di essere un Rasgeth a sé quando sarà abbinato: agenti, progetti e conversazioni restano salvati, intatti, ma fermi finché non lo rendi di nuovo completo.';
+
+  @override
+  String get syFbToNodeYes => 'Rendilo un nodo';
+
+  @override
+  String get syFbTue => 'Mar';
+
+  @override
+  String get syFbUseDisk => 'Usa per le copie';
+
+  @override
+  String get syFbUseFolder => 'Usa questa cartella';
+
+  @override
+  String get syFbUsePlace => 'Usa per le copie';
+
+  @override
+  String get syFbUseShare => 'Usa questa cartella condivisa';
+
+  @override
+  String get syFbVirt => 'Gira su';
+
+  @override
+  String syFbVirtContainer(String name) {
+    return 'un container ($name)';
+  }
+
+  @override
+  String get syFbVirtNone => 'una macchina fisica';
+
+  @override
+  String syFbVirtVm(String name) {
+    return 'una macchina virtuale ($name)';
+  }
+
+  @override
+  String get syFbWed => 'Mer';
+
+  @override
+  String get syFbWeekly => 'Ogni settimana';
+
+  @override
+  String get syFbWhenTitle => 'Quando';
+
+  @override
+  String get syFbWhyFs => 'Formato non supportato';
+
+  @override
+  String get syFbWhyNoFs => 'Non formattato';
+
+  @override
+  String get syFbWhyNoUuid => 'Senza un identificativo';
+
+  @override
+  String get syFbWhyNotDisk => 'Non è un disco';
+
+  @override
+  String get syFbWhyNotRemovable => 'Non rimovibile';
+
+  @override
+  String get syFbWhySystem => 'Contiene il sistema';
+
+  @override
+  String get syFolder => 'Cartella';
+
+  @override
+  String get syGitGiteaAgain => 'La stessa password, di nuovo';
+
+  @override
+  String get syGitGiteaGuide => 'Apri «I tuoi servizi di casa»';
+
+  @override
+  String get syGitGiteaMismatch => 'Le due password sono diverse.';
+
+  @override
+  String get syInspector => 'Inspector';
+
+  @override
+  String get syJob_pihole => 'Avvio di Pi-hole';
+
+  @override
+  String get syJob_remote => 'Apro l\'accesso da fuori';
+
+  @override
+  String get syJob_step_account => 'Creo il tuo account';
+
+  @override
+  String get syJob_step_arrive => 'Aspetto la cartella';
+
+  @override
+  String get syJob_step_ask => 'Aspetto il tuo sì';
+
+  @override
+  String get syJob_step_conversations => 'Conversazioni';
+
+  @override
+  String get syJob_step_convert => 'Converto';
+
+  @override
+  String get syJob_step_copy => 'Copio i modelli';
+
+  @override
+  String get syJob_step_data => 'Progetti, agenti e impostazioni';
+
+  @override
+  String get syJob_step_download => 'Scarico il modello';
+
+  @override
+  String get syJob_step_draft => 'Con il modello piccolo';
+
+  @override
+  String get syJob_step_fetch => 'Porto qui la copia';
+
+  @override
+  String get syJob_step_files => 'I file dei progetti';
+
+  @override
+  String get syJob_step_gitea_image => 'Scarico Gitea (una volta sola)';
+
+  @override
+  String get syJob_step_gitea_start => 'Avvio Gitea';
+
+  @override
+  String get syJob_step_image => 'Scarico il motore (una volta sola)';
+
+  @override
+  String get syJob_step_image_download => 'Download';
+
+  @override
+  String get syJob_step_load => 'Carico il modello in memoria';
+
+  @override
+  String get syJob_step_look => 'Guardo l\'host';
+
+  @override
+  String get syJob_step_model_download => 'Il modello';
+
+  @override
+  String get syJob_step_model_prepare => 'Lo preparo per la pagina';
+
+  @override
+  String get syJob_step_move => 'Copio sul nuovo disco';
+
+  @override
+  String get syJob_step_ngram => 'Con gli n-gram';
+
+  @override
+  String get syJob_step_node_check => 'Controllo il video (SHA-256)';
+
+  @override
+  String syJob_step_node_copy(String node) {
+    return 'Copio i file su $node';
+  }
+
+  @override
+  String syJob_step_node_fetch(String node) {
+    return 'Riporto il video da $node';
+  }
+
+  @override
+  String syJob_step_node_ffmpeg(String node) {
+    return 'Preparo ffmpeg su $node';
+  }
+
+  @override
+  String get syJob_step_none => 'Il modello da solo';
+
+  @override
+  String get syJob_step_ocr_languages => 'Le lingue';
+
+  @override
+  String get syJob_step_ocr_program => 'Il programma';
+
+  @override
+  String get syJob_step_pihole_check => 'Controllo che risponda';
+
+  @override
+  String get syJob_step_pihole_image => 'Scarico Pi-hole (una volta sola)';
+
+  @override
+  String get syJob_step_pihole_start => 'Avvio Pi-hole';
+
+  @override
+  String get syJob_step_preload =>
+      'Leggo il modello una volta, così il primo messaggio non aspetta il disco';
+
+  @override
+  String get syJob_step_remote_cert => 'Prendo il certificato da Let\'s Encrypt';
+
+  @override
+  String get syJob_step_remote_connect => 'Mi collego a Cloudflare';
+
+  @override
+  String get syJob_step_remote_https => 'Prendo l\'indirizzo sicuro (HTTPS)';
+
+  @override
+  String get syJob_step_remote_image => 'Scarico quello che serve (una volta sola)';
+
+  @override
+  String get syJob_step_remote_login => 'Aspetto che tu acceda a Tailscale';
+
+  @override
+  String get syJob_step_remote_start => 'Lo avvio';
+
+  @override
+  String get syJob_step_restore => 'Rimetto il motore com\'era';
+
+  @override
+  String get syJob_step_run => 'Eseguo i passi sull\'host';
+
+  @override
+  String get syJob_step_searxng_check => 'Controllo che risponda';
+
+  @override
+  String get syJob_step_searxng_image => 'Scarico SearXNG (una volta sola)';
+
+  @override
+  String get syJob_step_searxng_start => 'Lo avvio';
+
+  @override
+  String get syJob_step_start => 'Avvio il motore';
+
+  @override
+  String get syJob_step_switch => 'Avvio il modello su Windows';
+
+  @override
+  String get syJob_step_tool_download => 'Scarico';
+
+  @override
+  String get syJob_step_tool_unpack => 'Estraggo';
+
+  @override
+  String get syJob_step_try => 'Provo una risposta';
+
+  @override
+  String get syJob_step_tune => 'Misuro questo computer per scegliere la regolazione più veloce';
+
+  @override
+  String get syJob_step_verify => 'Rileggo il backup';
+
+  @override
+  String get syJob_step_video_derive => 'Preparo il file';
+
+  @override
+  String get syJob_step_video_probe => 'Leggo il file';
+
+  @override
+  String get syJob_step_video_render => 'Faccio il video con ffmpeg';
+
+  @override
+  String get syJob_step_video_save => 'Lo salvo nel progetto';
+
+  @override
+  String get syJob_step_video_silences => 'Cerco i silenzi';
+
+  @override
+  String get syJob_step_video_sound => 'Prendo il suono';
+
+  @override
+  String get syJob_step_video_transcribe => 'Scrivo le parole';
+
+  @override
+  String get syJob_step_video_wait => 'Aspetto il video prima di questo';
+
+  @override
+  String syKcImported(String n) {
+    return '$n credenziali aggiunte al portachiavi.';
+  }
+
+  @override
+  String get syKcPassphrase => 'Frase segreta';
+
+  @override
+  String get syKcPassphraseHelp =>
+      'Almeno 8 caratteri. Tienila in un posto sicuro: non si può recuperare.';
+
+  @override
+  String get syLmRecommended => 'consigliato';
+
+  @override
+  String get syLoginCode => 'Codice dell\'app (6 cifre)';
+
+  @override
+  String get syMcAdd => 'Aggiungi';
+
+  @override
+  String get syMcAuthKey => 'Chiave';
+
+  @override
+  String get syMcAuthPassword => 'Password';
+
+  @override
+  String get syMcChangedNow => 'Adesso';
+
+  @override
+  String syMcChangedText(String name) {
+    return 'Al posto di «$name» potrebbe esserci un altro computer. Non è partito niente e la connessione è stata rifiutata. Fidati della chiave nuova solo se sai perché è cambiata (sistema reinstallato, macchina sostituita).';
+  }
+
+  @override
+  String get syMcChangedTitle => 'Pericolo: la macchina ha risposto con un\'altra chiave';
+
+  @override
+  String get syMcChangedWas => 'Fidata';
+
+  @override
+  String get syMcCopied => 'Copiata';
+
+  @override
+  String get syMcCopy => 'Copia';
+
+  @override
+  String get syMcCopyKey => 'Copia la chiave pubblica';
+
+  @override
+  String get syMcEdit => 'Modifica';
+
+  @override
+  String get syMcEditorLead =>
+      'Dove si trova la macchina e chi entra. La chiave o la password vanno dritte nel portachiavi.';
+
+  @override
+  String get syMcEmpty =>
+      'Ancora nessuna macchina. Aggiungine una: Rasgeth le prepara una chiave, tu ne copi la parte pubblica sulla macchina.';
+
+  @override
+  String get syMcFolder => 'Cartella di lavoro';
+
+  @override
+  String get syMcFolderHelp =>
+      'Dove partono i comandi; cancellare fuori da qui ti chiede sempre. Un percorso completo (/srv/app, ~/app, o su Windows E:\\coding\\sito). Vuota per la cartella personale.';
+
+  @override
+  String get syMcFolderNone => 'la cartella personale (ogni cancellazione ti chiede)';
+
+  @override
+  String get syMcHost => 'Indirizzo';
+
+  @override
+  String get syMcHostHelp => 'Il suo nome o indirizzo IP in rete.';
+
+  @override
+  String get syMcHostKey => 'Chiave della macchina';
+
+  @override
+  String get syMcKeyGenerate => 'Crea una chiave nuova';
+
+  @override
+  String get syMcKeyGenerateHelp =>
+      'Rasgeth crea una chiave ed25519: ne copierai la parte pubblica in ~/.ssh/authorized_keys sulla macchina.';
+
+  @override
+  String get syMcKeyKeep => 'Tieni la chiave';
+
+  @override
+  String get syMcKeyKeepHelp => 'La chiave nel portachiavi resta com\'è.';
+
+  @override
+  String get syMcKeyPaste => 'Incolla una chiave privata';
+
+  @override
+  String get syMcLead =>
+      'Altri computer che i tuoi agenti raggiungono via SSH: un server, un Raspberry Pi, il computer dell\'ufficio. Chiavi e password restano nel portachiavi; gli agenti scelgono una macchina per nome e non le vedono mai.';
+
+  @override
+  String get syMcLogin => 'Accesso';
+
+  @override
+  String get syMcLoginGenerated => 'chiave fatta da Rasgeth, nel portachiavi';
+
+  @override
+  String get syMcLoginImported => 'la tua chiave, nel portachiavi';
+
+  @override
+  String get syMcLoginPassword => 'password nel portachiavi';
+
+  @override
+  String get syMcName => 'Nome';
+
+  @override
+  String get syMcNameHelp =>
+      'Come la chiamano gli agenti: lettere, cifre, punto, trattino, senza spazi (web, pi, ufficio).';
+
+  @override
+  String get syMcNew => 'Aggiungi una macchina';
+
+  @override
+  String get syMcNewKey => 'Crea una chiave nuova';
+
+  @override
+  String get syMcNewKeyQ => 'Creare una chiave nuova per questa macchina?';
+
+  @override
+  String get syMcNewKeyText =>
+      'La chiave vecchia smette di funzionare qui: copia la nuova chiave pubblica sulla macchina e togli quella vecchia.';
+
+  @override
+  String get syMcPassphrase => 'La sua frase segreta (se ne ha una)';
+
+  @override
+  String get syMcPassword => 'Password';
+
+  @override
+  String get syMcPasswordHelp =>
+      'Resta nel portachiavi. Una chiave è più sicura: la password viaggia a ogni accesso.';
+
+  @override
+  String get syMcPasswordKept => 'La password nel portachiavi resta se non ne scrivi una nuova.';
+
+  @override
+  String get syMcPort => 'Porta';
+
+  @override
+  String get syMcPrivateKey => 'Chiave privata';
+
+  @override
+  String get syMcPrivateKeyHelp => 'OpenSSH o PEM. Va nel portachiavi e non si vede più.';
+
+  @override
+  String get syMcPrivateKeyPlaceholder => '-----BEGIN OPENSSH PRIVATE KEY-----';
+
+  @override
+  String get syMcProject => 'progetto';
+
+  @override
+  String get syMcPublicKey => 'Chiave pubblica';
+
+  @override
+  String get syMcPublicKeyHelp =>
+      'Copiala in ~/.ssh/authorized_keys dell\'utente sulla macchina (una riga), poi prova la connessione.';
+
+  @override
+  String syMcRemoveQ(String name) {
+    return 'Togliere «$name»?';
+  }
+
+  @override
+  String get syMcRemoveText =>
+      'La sua chiave o password esce dal portachiavi e gli agenti non possono più usarla. Togli anche la chiave pubblica dalla macchina.';
+
+  @override
+  String syMcReplaceQ(String name) {
+    return 'Fidarsi della chiave nuova di «$name»?';
+  }
+
+  @override
+  String get syMcReplaceText =>
+      'Fallo solo se sai perché la chiave della macchina è cambiata: altrimenti qualcuno potrebbe leggere quello che Rasgeth manda.';
+
+  @override
+  String get syMcReplaceYes => 'Fidati della chiave nuova';
+
+  @override
+  String get syMcSafety =>
+      'Quello che succede lì segue le stesse regole di qui: sudo, spegnere la macchina, installare programmi di sistema, cambiarne i file di sistema e cancellare fuori dalla sua cartella di lavoro ti chiedono sempre, anche con «Non chiedermi niente».';
+
+  @override
+  String get syMcSave => 'Salva';
+
+  @override
+  String get syMcSection => 'Macchine';
+
+  @override
+  String get syMcStateFailed => 'L\'ultima prova non è riuscita';
+
+  @override
+  String get syMcStateNew => 'Non ancora controllata';
+
+  @override
+  String get syMcStateTrusted => 'Chiave fidata';
+
+  @override
+  String get syMcTest => 'Prova la connessione';
+
+  @override
+  String get syMcTestAuth =>
+      'La macchina ha rifiutato l\'accesso: la chiave pubblica è in ~/.ssh/authorized_keys (o la password è giusta)?';
+
+  @override
+  String syMcTestError(String message) {
+    return 'Non è riuscito: $message';
+  }
+
+  @override
+  String get syMcTestNoSecret =>
+      'Nel portachiavi non c\'è né chiave né password per questa macchina: modificala e impostane una.';
+
+  @override
+  String syMcTestOk(String system) {
+    return 'Collegata: $system';
+  }
+
+  @override
+  String get syMcTestTimeout => 'La macchina non ha risposto in tempo.';
+
+  @override
+  String get syMcTestUnreachable =>
+      'La macchina non si raggiunge: controlla l\'indirizzo e che sia accesa.';
+
+  @override
+  String get syMcTesting => 'Mi collego…';
+
+  @override
+  String get syMcTitle => 'Le tue macchine';
+
+  @override
+  String get syMcTofuHow =>
+      'Per vederla sulla macchina: ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub';
+
+  @override
+  String get syMcTofuText =>
+      'Non è ancora partito niente. Se l\'impronta è quella della macchina, fidati: da ora Rasgeth si collega solo a una macchina con questa chiave.';
+
+  @override
+  String get syMcTofuTitle => 'Prima connessione: è la chiave della macchina?';
+
+  @override
+  String get syMcTrust => 'Fidati di questa chiave';
+
+  @override
+  String get syMcUser => 'Utente';
+
+  @override
+  String get syMcWho => 'Chi può usarla';
+
+  @override
+  String get syMcWhoAgents => 'Agenti';
+
+  @override
+  String get syMcWhoEveryone => 'Tutti gli agenti';
+
+  @override
+  String get syMcWhoEveryoneHelp => 'God, gli assistenti e gli agenti di ogni progetto.';
+
+  @override
+  String get syMcWhoLead => 'Gli agenti non scelti non la vedono nemmeno.';
+
+  @override
+  String get syMcWhoNoAgents => 'Non ci sono ancora agenti.';
+
+  @override
+  String get syMcWhoNobody => 'ancora nessuno';
+
+  @override
+  String get syMcWhoProjects => 'Tutti gli agenti di questi progetti';
+
+  @override
+  String get syNdAddButton => 'Mostra un codice di abbinamento';
+
+  @override
+  String get syNdAddLead =>
+      'Sull\'altra macchina, al primo avvio (ruolo «Nodo di un altro Rasgeth») o nelle sue Impostazioni › Nodi, scrivi l\'indirizzo di questa macchina e il codice qui sotto.';
+
+  @override
+  String get syNdAddTitle => 'Aggiungi un nodo';
+
+  @override
+  String get syNdAddress => 'L\'indirizzo dell\'altro Rasgeth';
+
+  @override
+  String get syNdAddressPh => 'https://rasgeth.local oppure 192.168.1.10:3000';
+
+  @override
+  String get syNdAdmin => 'la usa e la gestisce';
+
+  @override
+  String syNdBackupDone(String name) {
+    return 'Copiato sul nodo: $name';
+  }
+
+  @override
+  String get syNdBackupNow => 'Copia ora';
+
+  @override
+  String get syNdBackupsOn => 'Copie';
+
+  @override
+  String get syNdCode => 'Codice di abbinamento';
+
+  @override
+  String syNdCodeAddress(String address) {
+    return 'L\'indirizzo di questa macchina, come la raggiunge l\'altra (in rete locale, con Tailscale o un proxy): $address';
+  }
+
+  @override
+  String syNdCodeExpires(String min) {
+    return 'Vale una volta, ancora per $min minuti.';
+  }
+
+  @override
+  String get syNdCodeField => 'Il suo codice';
+
+  @override
+  String get syNdCodePh => 'ABCD-EFGH';
+
+  @override
+  String get syNdCodeStop => 'Smetti di mostrarlo';
+
+  @override
+  String get syNdCommandsOn => 'Comandi';
+
+  @override
+  String get syNdConfirm => 'Coincidono: conferma';
+
+  @override
+  String get syNdConnecting => 'Si collega';
+
+  @override
+  String get syNdControl => 'Controllo';
+
+  @override
+  String get syNdControlLead =>
+      'Mai implicito: una macchina ne comanda un\'altra solo con questo permesso, che la macchina comandata tiene e può togliere.';
+
+  @override
+  String syNdControlTitle(String name) {
+    return 'Chi può comandare $name';
+  }
+
+  @override
+  String get syNdController => 'Quale macchina';
+
+  @override
+  String syNdCpu(String n) {
+    return '$n CPU';
+  }
+
+  @override
+  String get syNdFingerprint => 'L\'impronta della sua chiave';
+
+  @override
+  String syNdFree(String n) {
+    return '$n GB liberi';
+  }
+
+  @override
+  String get syNdGive => 'Dai';
+
+  @override
+  String get syNdGrantsHere => 'Chi può comandare questa macchina';
+
+  @override
+  String get syNdGrantsLead =>
+      'Solo queste macchine possono usare questa, ognuna con quello che le ha dato la persona. Toglierlo vale subito.';
+
+  @override
+  String get syNdHere => 'Qui';
+
+  @override
+  String get syNdJoinLead =>
+      'Abbina questa macchina come nodo di un altro Rasgeth: su quello, Impostazioni › Nodi › «Aggiungi un nodo» mostra l\'indirizzo e un codice.';
+
+  @override
+  String get syNdJoinTitle => 'Lavora per un altro Rasgeth';
+
+  @override
+  String syNdLastSeen(String when) {
+    return 'Vista l\'ultima volta $when';
+  }
+
+  @override
+  String get syNdLead =>
+      'Altre macchine Rasgeth che lavorano con questa: prestano comandi, modelli locali e spazio per progetti e copie di sicurezza. Chi può comandare chi si decide qui, macchina per macchina.';
+
+  @override
+  String syNdLoad(String n) {
+    return 'carico $n%';
+  }
+
+  @override
+  String syNdModels(String n) {
+    return '$n modelli';
+  }
+
+  @override
+  String get syNdName => 'Nome';
+
+  @override
+  String get syNdNameHelp => 'Come la chiamano le altre macchine e gli agenti.';
+
+  @override
+  String get syNdNoContainer => 'comandi solo per chi la gestisce';
+
+  @override
+  String get syNdNoContainerHelp =>
+      'Lì non c\'è un contenitore (niente Docker): esegue comandi solo per una macchina che la gestisce, sulla macchina stessa. Con il solo «usare», solo file, spazio e modelli.';
+
+  @override
+  String get syNdNoNodes => 'Ancora nessun nodo.';
+
+  @override
+  String get syNdNoProjects => 'Ancora nessun progetto.';
+
+  @override
+  String get syNdNoRights => 'Senza permessi';
+
+  @override
+  String get syNdNoSandbox => 'niente comandi';
+
+  @override
+  String get syNdNodeName => 'Nome del nodo';
+
+  @override
+  String get syNdNodeNameHelp =>
+      'Come la chiamate qui tu, gli agenti e le richieste. Vuoto: il nome che si dà da sola.';
+
+  @override
+  String get syNdNotReady =>
+      'I nodi hanno bisogno del Portachiavi: la chiave di questa macchina sta solo lì. Aprilo in Impostazioni › Portachiavi.';
+
+  @override
+  String get syNdOffline => 'Non in linea';
+
+  @override
+  String get syNdOnline => 'In linea';
+
+  @override
+  String get syNdPair => 'Abbina';
+
+  @override
+  String get syNdPairing => 'Abbino…';
+
+  @override
+  String get syNdParent => 'Lavora per';
+
+  @override
+  String get syNdPending => 'In attesa del sì sull\'altra macchina';
+
+  @override
+  String syNdPendingFromNode(String name) {
+    return '$name vuole diventare un nodo di questa macchina';
+  }
+
+  @override
+  String syNdPendingFromPrincipal(String name) {
+    return 'Questa macchina lavorerà per $name';
+  }
+
+  @override
+  String get syNdPendingLead =>
+      'Le due macchine mostrano le stesse sei cifre e l\'impronta l\'una dell\'altra. Se coincidono su tutti e due gli schermi, conferma su tutte e due: prima non si usa niente.';
+
+  @override
+  String get syNdPendingTitle => 'Confronta e conferma';
+
+  @override
+  String get syNdPlaces => 'Dove girano le cose';
+
+  @override
+  String get syNdPlacesLead =>
+      'Per ogni progetto: di base resta tutto qui. Un nodo fissato per i comandi è dove va il node_run dei suoi agenti; uno per le copie tiene le copie dei suoi file.';
+
+  @override
+  String get syNdQ => 'Nodi';
+
+  @override
+  String syNdRam(String n) {
+    return '$n GB di RAM';
+  }
+
+  @override
+  String get syNdReason => 'Perché';
+
+  @override
+  String get syNdRefused => 'Rifiutata: la sua chiave è cambiata';
+
+  @override
+  String get syNdReject => 'Non coincidono';
+
+  @override
+  String get syNdRename => 'Rinomina';
+
+  @override
+  String syNdRenameQ(String name) {
+    return 'Un nome per $name';
+  }
+
+  @override
+  String get syNdRenderOn => 'Video';
+
+  @override
+  String get syNdRevoke => 'Togli';
+
+  @override
+  String syNdRevokeQ(String name) {
+    return 'Togliere quello che $name può fare qui?';
+  }
+
+  @override
+  String get syNdRightAdmin => 'Gestirla';
+
+  @override
+  String get syNdRightAdminHelp =>
+      'Dare e togliere ad altre macchine il controllo di questa, e scrivere fuori dalla sandbox.';
+
+  @override
+  String get syNdRightUse => 'Usarla';
+
+  @override
+  String get syNdRightUseHelp =>
+      'Far girare i comandi dei suoi agenti in una sandbox qui, usare i suoi modelli e tenere file qui.';
+
+  @override
+  String get syNdRights => 'Che cosa può fare';
+
+  @override
+  String syNdRightsTitle(String name) {
+    return 'Che cosa può fare $name su questa macchina';
+  }
+
+  @override
+  String get syNdSas => 'Le sei cifre';
+
+  @override
+  String get syNdSection => 'Nodi';
+
+  @override
+  String get syNdTheirFp => 'L\'impronta dell\'altra macchina';
+
+  @override
+  String get syNdThis => 'Questa macchina';
+
+  @override
+  String get syNdTree => 'L\'albero';
+
+  @override
+  String get syNdTreeLead =>
+      'Questa macchina, i suoi nodi e i loro. Il controllo è a parte: è scritto sotto ogni macchina.';
+
+  @override
+  String get syNdUnpair => 'Scollega';
+
+  @override
+  String syNdUnpairQ(String name) {
+    return 'Scollegare $name?';
+  }
+
+  @override
+  String get syNdUnpairText =>
+      'Le due macchine si dimenticano: se ne vanno collegamenti, permessi e collocazioni con lei. I suoi file restano dove sono. Per abbinarla di nuovo serve un codice nuovo.';
+
+  @override
+  String get syNdUse => 'la usa';
+
+  @override
+  String get syNdWho => 'Chi può comandarla';
+
+  @override
+  String get syNdWhoNobody => 'Nessuno oltre a lei';
+
+  @override
+  String get syOiAddress => 'L\'indirizzo di Rasgeth nella rete';
+
+  @override
+  String syOiAddressHelp(String port) {
+    return 'Dove il proxy o la VPN trovano Rasgeth; la sua porta è $port.';
+  }
+
+  @override
+  String get syOiAuthCaddy =>
+      'Caddyfile con forward auth (Authelia), lasciando fuori i percorsi dell\'app';
+
+  @override
+  String get syOiAuthIf =>
+      'Se lo vuoi comunque, lascia fuori /api/ e /ws: il forward auth protegge la pagina, la password di Rasgeth tutto il resto.';
+
+  @override
+  String get syOiAuthTitle => 'Authelia, Authentik o un altro forward auth davanti?';
+
+  @override
+  String get syOiAuthWhy =>
+      'Meglio di no: Rasgeth ha già la sua password, con tentativi limitati e il codice facoltativo dell\'app di autenticazione, e un accesso davanti blocca l\'app, la riga di comando, gli agenti ACP, l\'estensione del browser e i webhook (Telegram, WhatsApp, automazioni), che entrano con i loro token.';
+
+  @override
+  String get syOiCaddy => 'Caddyfile: un sito tutto suo';
+
+  @override
+  String get syOiCaddyReload => 'Poi ricarica Caddy (caddy reload, o riavvia il suo container).';
+
+  @override
+  String syOiCaddyWildcard(String domain) {
+    return 'Caddyfile: dentro un sito jolly che hai già (*.$domain)';
+  }
+
+  @override
+  String get syOiCheck => 'Controlla che risponda';
+
+  @override
+  String get syOiCheckAnswers =>
+      'Qualcosa risponde a questo indirizzo (il browser non lascia leggere chi): aprilo per vedere Rasgeth.';
+
+  @override
+  String syOiCheckGo(String url) {
+    return 'Controlla $url da qui';
+  }
+
+  @override
+  String syOiCheckLead(String lb, String rb) {
+    return 'Da qualsiasi computer: Rasgeth risponde $lb\"ok\":true,…$rb.';
+  }
+
+  @override
+  String get syOiCheckNo =>
+      'Nessuna risposta da questo browser: controlla il nome nel DNS, il blocco del proxy e, da fuori, la VPN.';
+
+  @override
+  String get syOiCheckRedgiant => 'Rasgeth risponde a questo indirizzo.';
+
+  @override
+  String get syOiClose => 'Nascondi la guida';
+
+  @override
+  String get syOiCopied => 'Copiato';
+
+  @override
+  String get syOiCopy => 'Copia';
+
+  @override
+  String syOiDnsAdguard(String address, String domain) {
+    return 'AdGuard Home: Filtri › Riscritture DNS: *.$domain o il nome singolo → $address.';
+  }
+
+  @override
+  String get syOiDnsLead =>
+      'Un nome al posto di un indirizzo: puntalo al proxy quando c\'è, altrimenti all\'indirizzo di Rasgeth.';
+
+  @override
+  String syOiDnsPihole(String address, String name) {
+    return 'Pi-hole: Settings › Local DNS › DNS Records: $name → $address.';
+  }
+
+  @override
+  String get syOiDnsRouter =>
+      'Il router: la sua pagina «DNS statico», «nomi locali» o prenotazione DHCP (il nome cambia da router a router).';
+
+  @override
+  String get syOiDnsTs =>
+      'Fuori casa con Tailscale: aggiungi il DNS di casa in DNS › Nameservers di Tailscale, limitato al tuo dominio, e gli stessi nomi funzionano anche fuori.';
+
+  @override
+  String syOiDnsWildcard(String domain) {
+    return 'Pi-hole o dnsmasq, tutti i nomi di *.$domain insieme (un file in /etc/dnsmasq.d/)';
+  }
+
+  @override
+  String syOiHomeAdguard(String address, String name) {
+    return 'AdGuard Home: Filtri › Riscritture DNS: $name → $address.';
+  }
+
+  @override
+  String get syOiHomeDnsmasq => 'dnsmasq (o un file in /etc/dnsmasq.d/ di Pi-hole)';
+
+  @override
+  String get syOiHomeHosts => 'I record di Pi-hole o /etc/hosts, a mano';
+
+  @override
+  String get syOiHomeLookup => 'Su Rasgeth OS, cosa risponde il suo DNS per il nome';
+
+  @override
+  String syOiHomePihole(String address, String name) {
+    return 'Pi-hole: Settings › Local DNS › DNS Records: $name → $address.';
+  }
+
+  @override
+  String syOiHomeRouter(String address, String name) {
+    return 'Il router: la pagina «DNS statico» o «nomi locali»: $name → $address.';
+  }
+
+  @override
+  String syOiHomeSeen(String dns) {
+    return 'Rasgeth chiede i nomi a $dns.';
+  }
+
+  @override
+  String get syOiHomeTitle => 'I tuoi servizi di casa (Gitea, NAS…) visti da Rasgeth';
+
+  @override
+  String get syOiHomeTs =>
+      'Se il tuo Pi-hole risponde con indirizzi Tailscale (100.…), quelli funzionano solo per i dispositivi in Tailscale: aggiungi un record locale con l\'indirizzo della tua rete come sopra, oppure fai usare alla macchina di Rasgeth il router come DNS, con il nome lì.';
+
+  @override
+  String get syOiHomeV6 =>
+      'Un router che risponde «non esiste» alla domanda IPv6 (AAAA) per i nomi aggiunti a mano: Rasgeth OS lo gestisce già; su altri sistemi con systemd-resolved serve Cache=no-negative in un file di /etc/systemd/resolved.conf.d/, altrimenti per un po\' il nome sembra non esistere.';
+
+  @override
+  String get syOiHomeWhat => 'Nel DNS che usa Rasgeth, dai al nome quell\'indirizzo locale:';
+
+  @override
+  String get syOiHomeWhich =>
+      'Quale DNS usa Rasgeth: su Rasgeth OS lo mostra la console (o SSH) con il comando qui sotto, alla voce «Current DNS Server»; su un altro computer è il DNS di quel computer (impostazioni di rete, /etc/resolv.conf su Linux). «Prova un nome» chiede proprio al DNS che usa Rasgeth.';
+
+  @override
+  String get syOiHomeWhichCmd => 'Su Rasgeth OS, quale DNS usa';
+
+  @override
+  String get syOiHomeWhy =>
+      'Rasgeth raggiunge il tuo Gitea, il NAS o gli altri servizi per nome, con il DNS della macchina su cui gira (spesso il router). Un nome che il telefono apre può lì essere sconosciuto, o portare a un indirizzo che Rasgeth non raggiunge: allora «Un Gitea che hai già» non riesce anche se il servizio funziona.';
+
+  @override
+  String get syOiLead =>
+      'Un reverse proxy, una VPN, un DNS di casa: se raggiungi già le tue macchine così, Rasgeth ci va dietro come qualsiasi altro servizio. Qui ci sono i blocchi da copiare.';
+
+  @override
+  String get syOiName => 'Il nome di Rasgeth';
+
+  @override
+  String get syOiNameHelp => 'Il nome che aprirai, per esempio rasgeth.casa.example.com.';
+
+  @override
+  String syOiNpm1(String name) {
+    return 'Hosts › Proxy Hosts › Add Proxy Host; Domain Names: $name.';
+  }
+
+  @override
+  String syOiNpm2(String address, String port) {
+    return 'Scheme http, Forward Hostname / IP $address, Forward Port $port.';
+  }
+
+  @override
+  String get syOiNpm3 =>
+      'Accendi «Websockets Support» (la pagina di Rasgeth vive su un WebSocket) e «Block Common Exploits».';
+
+  @override
+  String get syOiNpm4 =>
+      'SSL: «Request a new SSL Certificate», «Force SSL», «HTTP/2 Support». Salva.';
+
+  @override
+  String get syOiOpen => 'Mostra la guida';
+
+  @override
+  String get syOiOtherVpn => 'WireGuard, ZeroTier e le altre';
+
+  @override
+  String syOiOtherVpnLead(String subnet) {
+    return 'La stessa idea: con la rete di casa $subnet negli AllowedIPs del peer (WireGuard) o come rotta gestita (ZeroTier), Rasgeth si apre al suo indirizzo di casa.';
+  }
+
+  @override
+  String get syOiPart => 'Cosa hai';
+
+  @override
+  String get syOiPartDns => 'DNS di casa';
+
+  @override
+  String get syOiPartHome => 'I tuoi servizi di casa';
+
+  @override
+  String get syOiPartProxy => 'Reverse proxy';
+
+  @override
+  String get syOiPartVpn => 'Tailscale o un\'altra VPN';
+
+  @override
+  String get syOiProbe => 'Prova un nome';
+
+  @override
+  String get syOiProbeBad => 'Questo non è un nome (per esempio git.home.example.com).';
+
+  @override
+  String syOiProbeDnsFailed(String name) {
+    return 'Il DNS che usa Rasgeth non ha risposto per $name. Controlla che funzioni, poi riprova.';
+  }
+
+  @override
+  String syOiProbeGo(String name) {
+    return 'Prova $name';
+  }
+
+  @override
+  String syOiProbeLead(String name) {
+    return 'Rasgeth cerca il nome e apre https://$name da dove gira, come fa per il tuo Gitea. Della risposta non tiene e non mostra nulla, tranne il codice.';
+  }
+
+  @override
+  String syOiProbeNotFound(String name) {
+    return 'Il DNS che usa Rasgeth non conosce $name. Aggiungi lì il nome (router, Pi-hole o AdGuard) con l\'indirizzo locale del proxy, poi riprova.';
+  }
+
+  @override
+  String syOiProbeOk(String address, String name, String status) {
+    return 'Tutto a posto: qui $name è $address, e https://$name ha risposto (HTTP $status).';
+  }
+
+  @override
+  String syOiProbeTailscale(String address, String name) {
+    return 'Qui $name è $address: un indirizzo Tailscale, che Rasgeth non raggiunge. Nel DNS che usa Rasgeth, dai al nome l\'indirizzo locale del proxy.';
+  }
+
+  @override
+  String syOiProbeTimeout(String address, String name) {
+    return 'Qui $name è $address, ma non ha risposto in tempo: probabilmente un indirizzo che Rasgeth non raggiunge (un\'altra rete, una VPN).';
+  }
+
+  @override
+  String syOiProbeTls(String address, String name) {
+    return 'Qui $name è $address e risponde, ma con un certificato di cui Rasgeth non si fida (fatto a mano?). Dai al proxy un certificato di un\'autorità pubblica (Let\'s Encrypt).';
+  }
+
+  @override
+  String syOiProbeUnreachable(String address, String name) {
+    return 'Qui $name è $address, ma da Rasgeth nessuno risponde in https. Controlla che sia l\'indirizzo locale del proxy e che il proxy sia acceso.';
+  }
+
+  @override
+  String get syOiProxyAddr => 'L\'indirizzo locale del proxy';
+
+  @override
+  String get syOiProxyAddrHelp =>
+      'L\'indirizzo nella tua rete (192.168.…) del proxy davanti al servizio, o del servizio stesso. Non un indirizzo Tailscale (100.…): Rasgeth lo raggiunge solo se è anche lui in Tailscale.';
+
+  @override
+  String get syOiProxyLead =>
+      'Il proxy può stare su un\'altra macchina: gli basta raggiungere l\'indirizzo di Rasgeth. Prende il certificato (HTTPS) e passa tutto, WebSocket compreso.';
+
+  @override
+  String syOiReachedAs(String host) {
+    return 'Sei già raggiungibile come $host.';
+  }
+
+  @override
+  String get syOiReachedName =>
+      'Questa pagina è arrivata con un nome della tua rete: in casa funziona già; da fuori serve una delle strade qui sotto (per esempio Tailscale).';
+
+  @override
+  String get syOiReachedProxy =>
+      'Questa pagina è arrivata attraverso un reverse proxy della tua rete: la guida qui sotto è già compilata con quello che Rasgeth ha visto.';
+
+  @override
+  String get syOiSaid =>
+      'Hai detto che Rasgeth è già raggiungibile a modo tuo: non chiede più di configurare le sue strade.';
+
+  @override
+  String get syOiSaidUndo => 'Chiedimelo di nuovo';
+
+  @override
+  String syOiSaidUrl(String url) {
+    return 'Hai detto che Rasgeth è già raggiungibile a $url: non chiede più di configurare le sue strade e i suoi link (Telegram…) usano quell\'indirizzo.';
+  }
+
+  @override
+  String get syOiService => 'Il nome del servizio';
+
+  @override
+  String get syOiServiceHelp => 'Come lo apri, per esempio git.home.example.com.';
+
+  @override
+  String get syOiSkip => 'Salta: sono già raggiungibile';
+
+  @override
+  String get syOiSkipNote =>
+      'Rasgeth smette di chiederti di configurare le sue strade (Tailscale, Cloudflare, il tuo dominio); restano qui se un giorno ne vuoi una.';
+
+  @override
+  String get syOiTitle => 'Hai già un\'infrastruttura';
+
+  @override
+  String get syOiTraefik => 'Traefik: file provider (configurazione dinamica)';
+
+  @override
+  String get syOiTraefikNote =>
+      'Con le etichette di Docker invece: la stessa regola e l\'indirizzo come servizio con loadbalancer.server.url. Usa i nomi del tuo entry point e del tuo certificate resolver.';
+
+  @override
+  String get syOiTsHere => 'Tailscale sulla macchina di Rasgeth';
+
+  @override
+  String get syOiTsHereLead =>
+      'Installa Tailscale sulla macchina ed entra (tailscale up): dai tuoi dispositivi della tailnet Rasgeth si apre a http://<macchina>:7600. Per l\'HTTPS con un certificato vero:';
+
+  @override
+  String syOiTsRunning(String name) {
+    return 'Tailscale gira già qui come $name: dai tuoi dispositivi della tailnet Rasgeth si apre con quel nome. Per l\'HTTPS con un certificato vero:';
+  }
+
+  @override
+  String get syOiTsServe => 'Sulla macchina';
+
+  @override
+  String get syOiTsSubnet => 'Tailscale come subnet router';
+
+  @override
+  String syOiTsSubnetLead(String subnet) {
+    return 'Tailscale su un altro dispositivo di casa (il router, un Raspberry, la macchina del proxy) che condivide la rete $subnet:';
+  }
+
+  @override
+  String syOiTsSubnetThen(String address, String port) {
+    return 'Approva la rotta nella console di Tailscale (Machines › Edit route settings). Il telefono apre poi http://$address:$port da ovunque, e anche i nomi del tuo DNS di casa se lo aggiungi in DNS › Nameservers (limitato al tuo dominio).';
+  }
+
+  @override
+  String get syOiWs =>
+      'Rasgeth tiene viva la pagina con un WebSocket su /ws: Caddy e Traefik lo passano da soli; Nginx vuole gli header Upgrade (Websockets Support in Nginx Proxy Manager).';
+
+  @override
+  String get syOnline => 'collegato';
+
+  @override
+  String get syOpen => 'apri';
+
+  @override
+  String get syOsErr_bad_password => 'Una password Wi-Fi ha da 8 a 63 caratteri.';
+
+  @override
+  String get syOsErr_bad_ssid => 'Il nome di una rete ha da 1 a 32 caratteri.';
+
+  @override
+  String get syOsErr_busy => 'La macchina si sta già collegando a una rete: aspetta un momento.';
+
+  @override
+  String get syOsErr_cannot_https => 'L\'HTTPS non è gestito da questa installazione.';
+
+  @override
+  String get syOsErr_cannot_reboot => 'I riavvii non sono gestiti da questa installazione.';
+
+  @override
+  String get syOsErr_cannot_update => 'Gli aggiornamenti non sono gestiti da questa installazione.';
+
+  @override
+  String get syOsErr_cannot_wifi => 'Il Wi-Fi non è gestito da questa installazione.';
+
+  @override
+  String get syOsErr_clean_install => 'Questa versione chiede un\'installazione pulita.';
+
+  @override
+  String get syOsErr_connect_failed =>
+      'La rete ha rifiutato il collegamento: controlla la password e riprova.';
+
+  @override
+  String get syOsErr_failed => 'Non ha funzionato. Riprova tra un momento.';
+
+  @override
+  String get syOsErr_https_failed => 'L\'HTTPS locale non è partito.';
+
+  @override
+  String get syOsErr_https_off => 'L\'HTTPS locale è spento: accendilo prima.';
+
+  @override
+  String get syOsErr_manual => 'Questa installazione non si aggiorna da sola.';
+
+  @override
+  String get syOsErr_no_wifi => 'Questa macchina non ha una scheda Wi-Fi.';
+
+  @override
+  String get syOsErr_not_found => 'Quella rete adesso non è a portata.';
+
+  @override
+  String get syOsErr_not_installed => 'Questo sistema non può farlo.';
+
+  @override
+  String get syOsErr_not_trusted => 'Questo dispositivo non si fida ancora del certificato.';
+
+  @override
+  String get syOsErr_reboot_failed => 'Non sono riuscito a programmare il riavvio.';
+
+  @override
+  String get syOsErr_start_failed => 'L\'aggiornamento non è partito.';
+
+  @override
+  String get syOsErr_timeout => 'La macchina ci ha messo troppo a rispondere.';
+
+  @override
+  String get syOsErr_tls_failed => 'Non sono riuscito a fare il certificato.';
+
+  @override
+  String get syOsErr_unreachable => 'L\'aiutante della macchina non ha risposto.';
+
+  @override
+  String get syOsErr_wifi_off => 'Il Wi-Fi non è attivo su questa macchina.';
+
+  @override
+  String get syOsHttpsAddress => 'Indirizzo';
+
+  @override
+  String get syOsHttpsCheck => 'Prova questo dispositivo';
+
+  @override
+  String get syOsHttpsDevice => 'Il tuo dispositivo';
+
+  @override
+  String get syOsHttpsDownload => 'Scarica il certificato';
+
+  @override
+  String get syOsHttpsFingerprint => 'Impronta del certificato (SHA-256)';
+
+  @override
+  String get syOsHttpsFirefox =>
+      'Firefox su qualsiasi sistema: Impostazioni › Privacy e sicurezza › Certificati › Mostra certificati › Autorità › Importa, spunta «Considera attendibile questa CA per l\'identificazione di siti web».';
+
+  @override
+  String get syOsHttpsHow_android =>
+      'Impostazioni › Sicurezza (o Sicurezza e privacy) › Altro › Crittografia e credenziali › Installa un certificato › Certificato CA: «Installa comunque», scegli Rasgeth-CA.crt.';
+
+  @override
+  String get syOsHttpsHow_iphone =>
+      'Apri il file scaricato in Safari, «Consenti». Impostazioni › Generali › VPN e gestione dispositivi: installa il profilo. Poi Impostazioni › Generali › Info › Impostazioni certificati attendibili: attiva «Rasgeth on …».';
+
+  @override
+  String get syOsHttpsHow_linux =>
+      'Debian/Ubuntu: sudo cp Rasgeth-CA.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates. Chrome e Firefox hanno un elenco loro: aggiungilo nelle impostazioni dei certificati del browser (Autorità, «Importa»).';
+
+  @override
+  String get syOsHttpsHow_mac =>
+      'Apri Rasgeth-CA.crt: Accesso Portachiavi lo aggiunge. Fai doppio clic su «Rasgeth on …» nel portachiavi «login», apri «Attendibilità», metti «Quando si utilizza questo certificato» su «Fidati sempre», chiudi e scrivi la tua password.';
+
+  @override
+  String get syOsHttpsHow_windows =>
+      'Apri Rasgeth-CA.crt, «Installa certificato…», «Utente corrente», «Colloca tutti i certificati nel seguente archivio», «Autorità di certificazione radice attendibili», Fine, Sì. Riavvia il browser.';
+
+  @override
+  String syOsHttpsInFront(String name) {
+    return 'Arrivi già a Rasgeth in HTTPS attraverso $name: per quell\'indirizzo il certificato locale non serve.';
+  }
+
+  @override
+  String get syOsHttpsLocal => 'HTTPS nella rete locale';
+
+  @override
+  String get syOsHttpsLocalOff =>
+      'Spento: Rasgeth risponde solo in http (o attraverso l\'HTTPS che hai messo tu).';
+
+  @override
+  String syOsHttpsLocalOn(String name) {
+    return 'https://$name e gli indirizzi della macchina rispondono con un certificato di questa macchina. http continua a funzionare finché non dici che è fidato.';
+  }
+
+  @override
+  String get syOsHttpsNotYet =>
+      'Questo dispositivo non si fida ancora del certificato (o https://… non risponde): non è cambiato niente, http continua a funzionare.';
+
+  @override
+  String get syOsHttpsNowOnly =>
+      'Questo dispositivo si fida. Da ora http passa a https per il nome locale e gli indirizzi della macchina.';
+
+  @override
+  String get syOsHttpsOffQ => 'Spegnere l\'HTTPS locale?';
+
+  @override
+  String get syOsHttpsOffText =>
+      'I browser che sono già passati da https://rasgeth.local continuano a chiedere https per al massimo 30 giorni: lì apri la macchina con il suo indirizzo (http://192.168…:7600) fino ad allora.';
+
+  @override
+  String get syOsHttpsOffYes => 'Spegni';
+
+  @override
+  String get syOsHttpsQ => 'Vuoi il lucchetto del browser anche nella rete di casa?';
+
+  @override
+  String get syOsHttpsQr => 'Codice QR per scaricare il certificato';
+
+  @override
+  String get syOsHttpsQrHelp =>
+      'Da un telefono sulla stessa rete, inquadra il codice per scaricarlo.';
+
+  @override
+  String get syOsHttpsRedirect => 'Manda sempre a HTTPS';
+
+  @override
+  String get syOsHttpsRedirectOn =>
+      'Le richieste http nella tua rete passano a https; i browser se lo ricordano (HSTS, 30 giorni). I dispositivi senza certificato mostrano un avviso: installalo anche lì.';
+
+  @override
+  String get syOsHttpsTitle => 'HTTPS nella tua rete';
+
+  @override
+  String get syOsHttpsTrustLead =>
+      'Scaricalo sul dispositivo (dal telefono: inquadra il codice), installalo come scritto qui sotto, poi premi «Prova questo dispositivo». Il certificato vale solo per i nomi e gli indirizzi locali di questa macchina, mai per un sito qualsiasi.';
+
+  @override
+  String get syOsHttpsTrustTitle => 'Fidati del certificato su ogni dispositivo';
+
+  @override
+  String get syOsHttpsUntil => 'Il certificato della macchina si rinnova da solo prima del';
+
+  @override
+  String get syOsNetSub => 'Rete';
+
+  @override
+  String get syOsNetSubLead =>
+      'Come la macchina si collega alla rete, e l\'HTTPS per le pagine della rete di casa.';
+
+  @override
+  String get syOsRebootNow => 'Riavvia ora';
+
+  @override
+  String get syOsRebootQ => 'Riavviare la macchina adesso?';
+
+  @override
+  String get syOsRebootText =>
+      'Rasgeth si ferma per due o tre minuti mentre la macchina riparte; gli agenti al lavoro vengono interrotti e riprendono da quello che era salvato. La pagina torna da sola.';
+
+  @override
+  String get syOsRebootYes => 'Riavvia';
+
+  @override
+  String get syOsRebooting => 'La macchina si riavvia tra pochi secondi. La pagina torna da sola.';
+
+  @override
+  String get syOsSecLast => 'L\'ultima volta';
+
+  @override
+  String syOsSecLastAt(String when) {
+    return '$when';
+  }
+
+  @override
+  String syOsSecLastN(String n, String when) {
+    return '$when, $n pacchetti';
+  }
+
+  @override
+  String get syOsSecNever => 'Non ancora (gira una volta al giorno)';
+
+  @override
+  String get syOsSecNoReboot => 'Niente aspetta un riavvio.';
+
+  @override
+  String get syOsSecQ =>
+      'Il sistema installa da solo gli aggiornamenti di sicurezza di Debian, ogni giorno.';
+
+  @override
+  String get syOsSecReboot => 'Un aggiornamento chiede un riavvio per finire';
+
+  @override
+  String get syOsSecTitle => 'Aggiornamenti di sicurezza del sistema';
+
+  @override
+  String syOsUpdApply(String version) {
+    return 'Aggiorna alla $version';
+  }
+
+  @override
+  String syOsUpdApplyQ(String version) {
+    return 'Aggiornare Rasgeth alla $version?';
+  }
+
+  @override
+  String get syOsUpdApplyText =>
+      'La macchina scarica la versione nuova mentre questa continua a funzionare, poi riavvia Rasgeth: la pagina si ferma per qualche minuto e torna da sola. Non si perde niente, e se la versione nuova non parte torna quella di prima.';
+
+  @override
+  String get syOsUpdApplyYes => 'Aggiorna ora';
+
+  @override
+  String get syOsUpdBreaking =>
+      'Questa versione non si installa sopra quella di adesso: Rasgeth ti guida (backup su un disco USB, reinstalli Rasgeth OS, ripristini).';
+
+  @override
+  String get syOsUpdChecked => 'Ultimo controllo';
+
+  @override
+  String get syOsUpdInstalled => 'Installato';
+
+  @override
+  String get syOsUpdQ => 'Rasgeth è aggiornato su questa macchina?';
+
+  @override
+  String get syOsUpdState => 'Stato';
+
+  @override
+  String get syOsUpdSub => 'Aggiornamenti';
+
+  @override
+  String get syOsUpdSubLead => 'Rasgeth e il sistema su cui gira, sempre aggiornati.';
+
+  @override
+  String get syOsUpdTitle => 'Rasgeth';
+
+  @override
+  String syOsUpd_applying(String version) {
+    return 'Aggiorno alla $version';
+  }
+
+  @override
+  String syOsUpd_available(String version) {
+    return 'Rasgeth $version è pronto da installare';
+  }
+
+  @override
+  String syOsUpd_breaking(String version) {
+    return 'Rasgeth $version chiede un\'installazione pulita';
+  }
+
+  @override
+  String get syOsUpd_error => 'L\'ultimo aggiornamento non è finito (gira la versione di prima)';
+
+  @override
+  String get syOsUpd_latest => 'Aggiornato';
+
+  @override
+  String get syOsUpd_unknown => 'Non ancora controllato';
+
+  @override
+  String get syOsUpd_unreachable => 'Non riesco a raggiungere GitHub per controllare';
+
+  @override
+  String syOsUpd_unsigned(String version) {
+    return 'È uscito Rasgeth $version, ma ancora senza il pacchetto firmato per Rasgeth OS: arriva con un rilascio successivo';
+  }
+
+  @override
+  String get syOsWifi8021x => 'rete aziendale (non da qui)';
+
+  @override
+  String syOsWifiConnectedTo(String ip, String name) {
+    return 'Collegata a «$name» ($ip)';
+  }
+
+  @override
+  String get syOsWifiForget => 'Dimentica';
+
+  @override
+  String syOsWifiForgetQ(String name) {
+    return 'Dimenticare «$name»?';
+  }
+
+  @override
+  String get syOsWifiForgetText =>
+      'La macchina smette di collegarsi a questa rete e la sua password viene cancellata. Se è la rete in uso e non c\'è un cavo, la pagina smette di rispondere finché la macchina non ha un\'altra rete.';
+
+  @override
+  String get syOsWifiGood => 'segnale buono';
+
+  @override
+  String get syOsWifiHidden => 'Rete nascosta…';
+
+  @override
+  String get syOsWifiHiddenName => 'Il nome della rete';
+
+  @override
+  String get syOsWifiInReach => 'Reti a portata';
+
+  @override
+  String get syOsWifiInUse => 'in uso';
+
+  @override
+  String get syOsWifiJoin => 'Collegati';
+
+  @override
+  String syOsWifiJoined(String name) {
+    return 'Collegata a «$name». Se stai usando questa pagina attraverso quella rete, continua a funzionare.';
+  }
+
+  @override
+  String get syOsWifiJoining => 'Mi collego…';
+
+  @override
+  String get syOsWifiKnown => 'salvata';
+
+  @override
+  String syOsWifiKnownAway(String names) {
+    return 'Salvate, ora non a portata: $names';
+  }
+
+  @override
+  String get syOsWifiLooking => 'Cerco…';
+
+  @override
+  String get syOsWifiNone =>
+      'Nessuna rete trovata. Cerca di nuovo, o collegati a una rete nascosta con il suo nome.';
+
+  @override
+  String get syOsWifiNotConnected => 'Non collegata a una rete Wi-Fi';
+
+  @override
+  String get syOsWifiNow => 'Adesso';
+
+  @override
+  String syOsWifiPassword(String name) {
+    return 'Password di «$name»';
+  }
+
+  @override
+  String get syOsWifiPasswordHelp =>
+      'Da 8 a 63 caratteri. Resta solo sulla macchina, leggibile solo dal sistema; Rasgeth non la conserva e non la mostra mai.';
+
+  @override
+  String get syOsWifiQ => 'A quale rete senza fili si collega la macchina?';
+
+  @override
+  String syOsWifiSaved(String name) {
+    return '«$name» è salvata: la macchina si collega appena la rete è a portata.';
+  }
+
+  @override
+  String get syOsWifiScan => 'Cerca di nuovo';
+
+  @override
+  String get syOsWifiStrong => 'segnale forte';
+
+  @override
+  String get syOsWifiTitle => 'Wi-Fi';
+
+  @override
+  String get syOsWifiWeak => 'segnale debole';
+
+  @override
+  String get syOsWifiWhy_failed => 'Non riesco a leggere il Wi-Fi adesso. Riprova tra un momento.';
+
+  @override
+  String get syOsWifiWhy_no_helper => 'Il Wi-Fi lo gestisce il sistema di questa macchina.';
+
+  @override
+  String get syOsWifiWhy_no_wifi =>
+      'Questa macchina non ha una scheda Wi-Fi (o il sistema non la riconosce).';
+
+  @override
+  String get syOsWifiWhy_not_installed => 'Questo sistema non ha gli strumenti per il Wi-Fi.';
+
+  @override
+  String get syOsWifiWhy_wifi_off =>
+      'Il Wi-Fi non è attivo su questa macchina. Riavviala, o collega un cavo.';
+
+  @override
+  String get syOsWifiWired =>
+      'C\'è un cavo collegato: la macchina usa il cavo, il Wi-Fi resta di riserva.';
+
+  @override
+  String get syPiholeAdmin => 'La pagina di Pi-hole, per vedere cosa blocca e sbloccare un sito:';
+
+  @override
+  String get syPiholeAds => 'Sul blocco della pubblicità';
+
+  @override
+  String get syPiholeAdsText =>
+      'Pi-hole blocca i nomi dei servizi di pubblicità e tracciamento più noti, per ogni dispositivo che lo usa, telefoni e TV compresi. Ogni tanto un sito o un\'app ha bisogno di uno di quei nomi per funzionare (certi link dei negozi, certe app di streaming): allora sembra rotto.';
+
+  @override
+  String get syPiholeAllow =>
+      'Se un sito smette di funzionare: apri la pagina di Pi-hole, Query Log, trova il nome bloccato e premi Allow. Per sospendere tutto il blocco per qualche minuto usa Disable blocking nella stessa pagina.';
+
+  @override
+  String syPiholeAnswers(String domain, String ip) {
+    return 'In casa $domain ora porta a $ip.';
+  }
+
+  @override
+  String get syPiholeChanges => 'Cosa cambia in casa, e come tornare indietro';
+
+  @override
+  String get syPiholeDevice =>
+      'Se il router non permette di cambiare il DNS (alcuni router dei fornitori no), impostalo su ogni dispositivo: nei dettagli della rete Wi-Fi sui telefoni, nelle impostazioni della scheda di rete sui computer.';
+
+  @override
+  String get syPiholeDomain => 'Il tuo dominio (facoltativo)';
+
+  @override
+  String get syPiholeDomainHelp =>
+      'L\'indirizzo che usi da fuori, tipo rasgeth.tuodominio.it: Pi-hole risponde per quello con l\'indirizzo qui sopra. Lascialo vuoto per usare Pi-hole solo contro la pubblicità.';
+
+  @override
+  String get syPiholeDomainWrong => 'Deve essere un nome tipo rasgeth.tuodominio.it.';
+
+  @override
+  String get syPiholeIp => 'L\'indirizzo di casa di questo computer';
+
+  @override
+  String get syPiholeIpHelp =>
+      'Quattro numeri tipo 192.168.1.50. Lo trovi nella pagina del router tra i dispositivi collegati, oppure su questo computer: \"ip a\" su Linux, \"ipconfig\" su Windows, Impostazioni di Sistema, Rete su Mac. Meglio se il router dà sempre lo stesso indirizzo a questo computer (prenotazione dell\'indirizzo).';
+
+  @override
+  String get syPiholeIpWrong =>
+      'Devono essere quattro numeri da 0 a 255 separati da punti, tipo 192.168.1.50.';
+
+  @override
+  String get syPiholeNeed =>
+      'raggiungi Rasgeth da fuori con un tuo dominio, e in casa lo stesso link non si apre. Molti router non sanno rimandarti a casa tua passando da internet (la funzione si chiama NAT loopback o hairpin, e il loro non ce l\'ha).';
+
+  @override
+  String get syPiholeNeedTitle => 'Ti serve se';
+
+  @override
+  String get syPiholeNoNeed =>
+      'usi Tailscale o Cloudflare Tunnel: quei link funzionano uguale in casa e fuori. Puoi comunque accenderlo solo per bloccare la pubblicità, se ti va.';
+
+  @override
+  String get syPiholeNoNeedTitle => 'Non ti serve se';
+
+  @override
+  String syPiholeNowRouter(String ip) {
+    return 'Ultimo passo, tocca a te: sul router (o su ogni dispositivo) metti come server DNS $ip. Finché non lo fai, in casa nessuno usa Pi-hole.';
+  }
+
+  @override
+  String get syPiholeOff =>
+      'Per tornare indietro: rimetti il DNS del router com\'era (spesso \"automatico\") e spegni Pi-hole da qui. Sui tuoi computer non cambia nient\'altro.';
+
+  @override
+  String syPiholeOn(String ip) {
+    return 'Pi-hole è acceso, su $ip.';
+  }
+
+  @override
+  String get syPiholeOpenAdmin => 'Apri Pi-hole';
+
+  @override
+  String get syPiholePort => 'Dettagli tecnici: la porta 53';
+
+  @override
+  String get syPiholePortText =>
+      'Pi-hole risponde sulla porta 53 (quella del DNS) solo all\'indirizzo di casa di questo computer, non su internet, e la sua pagina sta sulla porta 8053. Se su questo computer qualcos\'altro risponde già sulla porta 53 (un altro DNS, o quello del sistema su alcuni Linux), Pi-hole non può partire: Rasgeth te lo dice e non cambia niente.';
+
+  @override
+  String get syPiholeRouter =>
+      'Per tutti i dispositivi insieme: apri la pagina del router (l\'indirizzo di solito è scritto sotto il router, tipo 192.168.1.1), cerca le impostazioni DHCP o LAN e metti come server DNS l\'indirizzo di casa di questo computer. I dispositivi lo prendono la prossima volta che si collegano (oppure riavviali).';
+
+  @override
+  String get syPiholeSecond =>
+      'Un secondo DNS: se questo computer è spento, i dispositivi che conoscono solo Pi-hole non aprono nessun sito. Come secondo DNS puoi mettere l\'indirizzo del router o uno pubblico (1.1.1.1): tutto continua a funzionare a computer spento, ma a volte i dispositivi chiedono al secondo e allora vedono la pubblicità, o in casa non trovano il tuo dominio.';
+
+  @override
+  String get syPiholeShowPassword => 'Mostra la sua password';
+
+  @override
+  String get syPiholeStart => 'Accendi Pi-hole';
+
+  @override
+  String get syPiholeStop => 'Spegni Pi-hole';
+
+  @override
+  String get syPiholeTest =>
+      'Come capirlo: collega il telefono al Wi-Fi di casa e apri il link di Rasgeth. Se si apre, Pi-hole per questo non ti serve (puoi volerlo lo stesso per bloccare la pubblicità). Se non si apre, ma con i dati del telefono sì, Pi-hole lo risolve.';
+
+  @override
+  String get syPiholeTitle => 'Il DNS di casa, con Pi-hole (facoltativo)';
+
+  @override
+  String get syPiholeWhat =>
+      'Ogni dispositivo di casa chiede a un server DNS quale numero sta dietro a un nome (per esempio rasgeth.tuodominio.it). Di solito risponde il router o il tuo fornitore di internet. Pi-hole è un piccolo DNS che Rasgeth può far girare su questo computer: per il tuo dominio risponde con l\'indirizzo di casa di questo computer, così il link funziona anche in casa, e in più blocca pubblicità e tracciamento per ogni dispositivo che lo usa.';
+
+  @override
+  String get syPwSignOutOthersQ => 'Scollegare anche gli altri dispositivi?';
+
+  @override
+  String get syPwSignOutOthersText =>
+      'Gli altri browser e le app collegate con la password vecchia restano dentro se li tieni. Scollegali se l\'hai cambiata perché qualcun altro potrebbe conoscerla.';
+
+  @override
+  String get syPwSignOutOthersYes => 'Scollegali';
+
+  @override
+  String get syRemoteCaddy =>
+      'Per esperti: il tuo dominio che punta a casa, porte 80 e 443 aperte sul router. Chiunque su internet raggiunge la pagina di accesso.';
+
+  @override
+  String get syRemoteCloudflare =>
+      'Un indirizzo sul tuo dominio (circa 10 euro l\'anno), niente da aprire sul router. Qualche passo in più sul sito di Cloudflare.';
+
+  @override
+  String get syRemoteCode => 'Seconda verifica (consigliata)';
+
+  @override
+  String get syRemoteCodeConfirm => 'Conferma';
+
+  @override
+  String get syRemoteCodeHint =>
+      'Oltre alla password, un codice di 6 cifre da un\'app sul telefono (Google Authenticator, Microsoft Authenticator, 2FAS…): chi scopre la password non entra lo stesso.';
+
+  @override
+  String get syRemoteCodeOff => 'Seconda verifica spenta.';
+
+  @override
+  String get syRemoteCodeOn => 'Seconda verifica attiva';
+
+  @override
+  String get syRemoteCodeQr => 'Inquadra con l\'app di autenticazione';
+
+  @override
+  String get syRemoteCodeScan =>
+      'Inquadra il codice con l\'app (oppure scrivici la chiave qui sotto), poi scrivi qui le 6 cifre che ti mostra.';
+
+  @override
+  String get syRemoteCodeStart => 'Attiva la seconda verifica';
+
+  @override
+  String get syRemoteConnect => 'Collega';
+
+  @override
+  String get syRemoteHow => 'Come raggiungerlo';
+
+  @override
+  String get syRemoteNeedsPassword => 'Prima imposta la password qui sopra.';
+
+  @override
+  String get syRemoteNewPassword => 'Nuova password';
+
+  @override
+  String get syRemoteOff => 'Spegni l\'accesso da fuori';
+
+  @override
+  String get syRemoteOn => 'Rasgeth si raggiunge da fuori a questo indirizzo:';
+
+  @override
+  String get syRemoteOwnDomain => 'Il tuo dominio, router aperto';
+
+  @override
+  String get syRemotePassword => 'La tua password';
+
+  @override
+  String get syRemotePasswordChange => 'Cambiala';
+
+  @override
+  String get syRemotePasswordHint =>
+      'Da fuori Rasgeth chiede questa password (il link con il token resta per questo computer). Scegline una che non usi da nessun\'altra parte.';
+
+  @override
+  String get syRemotePasswordRule =>
+      'Almeno 10 caratteri. Una frase breve è facile da ricordare e difficile da indovinare.';
+
+  @override
+  String get syRemotePasswordSaved => 'Password salvata.';
+
+  @override
+  String get syRemotePasswordSet => 'La password è impostata';
+
+  @override
+  String get syRemotePurpose =>
+      'Usa Rasgeth dal telefono o da un altro computer quando sei fuori. Prima una password, poi una di tre strade; niente è raggiungibile da fuori finché non hai finito. Facoltativo.';
+
+  @override
+  String get syRemoteSessions => 'Browser collegati';
+
+  @override
+  String get syRemoteSessionsHint =>
+      'Ogni accesso dura 30 giorni. Se hai perso un telefono, o pensi che qualcun altro sia entrato (si scollegano anche le app di Rasgeth):';
+
+  @override
+  String get syRemoteSignOutAll => 'Scollega tutti';
+
+  @override
+  String get syRemoteSignedOut => 'Scollegati tutti.';
+
+  @override
+  String get syRemoteTailscale =>
+      'Una rete privata fra i tuoi dispositivi: niente da aprire sul router, gratis per uso personale. Installi Tailscale anche sul telefono.';
+
+  @override
+  String get syRemoteWaysFolded => 'Le strade di Rasgeth';
+
+  @override
+  String get syRemove => 'Rimuovi';
+
+  @override
+  String get sySave => 'Salva';
+
+  @override
+  String get sySaved => 'Salvato';
+
+  @override
+  String get sySbBackupQ => 'Tutto Rasgeth in un file';
+
+  @override
+  String get sySettings => 'Impostazioni';
+
+  @override
+  String get sySnCable => 'Uso il cavo';
+
+  @override
+  String sySnCableDone(String address) {
+    return 'Il cavo funziona: Rasgeth è a $address. Collega questo dispositivo alla rete di casa e apri http://$address:7600 (oppure http://rasgeth.local:7600).';
+  }
+
+  @override
+  String sySnFailed(String name, String why) {
+    return 'Rasgeth non è riuscito a collegarsi a «$name»: $why';
+  }
+
+  @override
+  String get sySnHidden => 'Una rete nascosta';
+
+  @override
+  String get sySnHiddenName => 'Nome della rete';
+
+  @override
+  String get sySnJoin => 'Usa questa rete';
+
+  @override
+  String sySnMaintQ(String ssid) {
+    return 'Rasgeth non trovava più la rete di casa e ha riaperto $ssid: scegli la rete che deve usare.';
+  }
+
+  @override
+  String get sySnNone =>
+      'Intorno non si vede nessuna rete: usa il cavo, oppure scrivi il nome di una rete nascosta.';
+
+  @override
+  String sySnPassword(String name) {
+    return 'Password di «$name»';
+  }
+
+  @override
+  String sySnQ(String ssid) {
+    return 'Sei collegato a $ssid, la rete temporanea di Rasgeth: quale rete deve usare Rasgeth a casa?';
+  }
+
+  @override
+  String get sySnTitle => 'La rete di casa';
+
+  @override
+  String sySnTrying(String name, String ssid) {
+    return 'Rasgeth si collega a «$name»: questa rete temporanea adesso si chiude. Collega questo dispositivo alla rete di casa e apri http://rasgeth.local:7600. Se non funziona, $ssid torna fra un minuto con il motivo.';
+  }
+
+  @override
+  String get syStRemoteQ => 'Rasgeth anche fuori casa';
+
+  @override
+  String get syStopped => 'fermato';
+
+  @override
+  String get syTgQr => 'Inquadra con la fotocamera del telefono';
+
+  @override
+  String get syTsApps => 'App di Tailscale';
+
+  @override
+  String get syTsDns => 'Impostazioni DNS di Tailscale';
+
+  @override
+  String get syTsOpenSignIn => 'Apri la pagina di accesso di Tailscale';
+
+  @override
+  String get syTsSignIn => 'Tailscale vuole che tu acceda, per aggiungere Rasgeth alla tua rete:';
+
+  @override
+  String get syTsSignUp => 'Iscriviti a Tailscale';
+
+  @override
+  String get syTsStep1 =>
+      'Crea un account gratuito su Tailscale (va bene con Google, Microsoft o GitHub):';
+
+  @override
+  String get syTsStep2 =>
+      'Nella pagina DNS di Tailscale attiva MagicDNS e HTTPS Certificates (danno a Rasgeth un indirizzo sicuro):';
+
+  @override
+  String get syTsStep3 => 'Poi qui:';
+
+  @override
+  String get syTsStep4 =>
+      'Installa Tailscale sul telefono e sugli altri computer, con lo stesso account:';
+
+  @override
+  String get syUiAdvanced => 'Avanzate';
+
+  @override
+  String get syUiDone => 'Fatto.';
+
+  @override
+  String get syUiNotNeeded => 'non serve';
+
+  @override
+  String syUpdBrkChecked(String conversations, String file, String projects, String size) {
+    return '$file · $size · $projects progetti, $conversations conversazioni, memorie e impostazioni';
+  }
+
+  @override
+  String get syUpdBrkDockerCopy =>
+      'La cartella sta nel volume dei dati di Rasgeth, che l\'installazione pulita cancella: copia prima il file fuori, dalla cartella di Rasgeth:';
+
+  @override
+  String get syUpdBrkDone => 'Ho capito';
+
+  @override
+  String syUpdBrkKeys(String n) {
+    return 'Il tuo portachiavi ($n chiavi, anche quelle dei modelli, delle chat e delle caselle) non è nel backup: ci entra solo protetto da una frase tua.';
+  }
+
+  @override
+  String get syUpdBrkKeysAdd => 'Aggiungi anche il portachiavi';
+
+  @override
+  String get syUpdBrkKeysAgain => 'Rifai il backup con il portachiavi';
+
+  @override
+  String get syUpdBrkKeysIn => 'Nel backup c\'è anche il portachiavi, protetto dalla tua frase.';
+
+  @override
+  String syUpdBrkLead(String version) {
+    return 'Rasgeth $version è cambiato troppo dentro per aggiornarsi come al solito: installato sopra quello vecchio potrebbe rompersi.';
+  }
+
+  @override
+  String get syUpdBrkNext => 'Avanti';
+
+  @override
+  String get syUpdBrkRetry => 'Riprova il backup';
+
+  @override
+  String get syUpdBrkSaved => 'Backup fatto e riletto: è in questa cartella';
+
+  @override
+  String get syUpdBrkStep1 => 'Togli il Rasgeth vecchio';
+
+  @override
+  String get syUpdBrkStep1Docker => 'Nella cartella di Rasgeth togli i container e i loro volumi:';
+
+  @override
+  String get syUpdBrkStep1Mac =>
+      'Dall\'icona nella barra dei menu scegli «Disinstalla…» (oppure trascina Rasgeth da Applicazioni nel Cestino).';
+
+  @override
+  String get syUpdBrkStep1Os =>
+      'Copia il backup su un disco USB (Impostazioni › Sistema › Backup): reinstallare Rasgeth OS cancella il disco di questa macchina.';
+
+  @override
+  String get syUpdBrkStep1Source => 'Ferma Rasgeth e sposta altrove la sua cartella dei dati.';
+
+  @override
+  String get syUpdBrkStep1Win =>
+      'Disinstalla Rasgeth. Quando chiede se tenere i dati puoi rispondere No: è tutto nel backup.';
+
+  @override
+  String syUpdBrkStep2(String version) {
+    return 'Installa Rasgeth $version';
+  }
+
+  @override
+  String get syUpdBrkStep3 => 'Ripristina';
+
+  @override
+  String get syUpdBrkStep3Docker =>
+      'Apri Rasgeth, finisci la configurazione e importa il file copiato in Impostazioni › Backup › Importa un backup.';
+
+  @override
+  String get syUpdBrkStep3Os =>
+      'Scrivi la nuova Rasgeth OS (chiavetta o immagine) e accendi la macchina: il primo avvio propone «Ripristina dal backup» e lo trova sul disco USB.';
+
+  @override
+  String get syUpdBrkStep3Text =>
+      'Al primo avvio il nuovo Rasgeth propone «Ripristina dal backup»: lo trova da solo in quella cartella.';
+
+  @override
+  String syUpdBrkSub(String installed, String version) {
+    return 'Rasgeth $version non si può installare sopra la $installed';
+  }
+
+  @override
+  String syUpdBrkSure(String folder) {
+    return 'Rasgeth si chiude e parte il suo disinstallatore. Il backup resta in $folder.';
+  }
+
+  @override
+  String get syUpdBrkTitle => 'Questa versione richiede un\'installazione pulita';
+
+  @override
+  String get syUpdBrkUninstall => 'Disinstalla Rasgeth';
+
+  @override
+  String get syUpdBrkUninstallYes => 'Sì, disinstalla';
+
+  @override
+  String get syUpdBrkUninstalling => 'Il disinstallatore sta partendo sul desktop.';
+
+  @override
+  String get syUpdBrkWhy =>
+      'Quindi si fa in tre passi brevi: prima un backup di tutto (lo sto facendo adesso, da solo), poi togli il Rasgeth vecchio e installi quello nuovo, che rimette tutto a posto dal backup.';
+
+  @override
+  String get syUpdCopied => 'Copiato';
+
+  @override
+  String get syUpdCopy => 'Copia';
+
+  @override
+  String get syUpdDownloadNew => 'Scarica la versione nuova';
+
+  @override
+  String get syUpdFoundDone =>
+      'È tutto tornato. Vai avanti con i passi successivi per sistemare i modelli.';
+
+  @override
+  String get syUpdFoundKeys =>
+      'La frase che hai scelto per il portachiavi. Senza, tutto il resto si ripristina lo stesso, e le chiavi dei modelli e delle chat si rimettono dalle loro pagine.';
+
+  @override
+  String syUpdFoundLead(String conversations, String date, String projects, String version) {
+    return 'C\'è un backup del $date (Rasgeth $version): $projects progetti e $conversations conversazioni. Rimetto tutto a posto adesso?';
+  }
+
+  @override
+  String get syUpdFoundRestore => 'Ripristina dal backup';
+
+  @override
+  String get syUpdFoundTitle => 'Ripristina dal backup';
+
+  @override
+  String get syUpdLater => 'Più tardi';
+
+  @override
+  String get syUpdLook => 'Cerca aggiornamenti';
+
+  @override
+  String get syUpdLooking => 'Cerco…';
+
+  @override
+  String get syUpdReqAgain => 'Controlla di nuovo';
+
+  @override
+  String get syUpdReqClose => 'Chiudi Rasgeth';
+
+  @override
+  String get syUpdReqClosing => 'Rasgeth si sta chiudendo. Puoi chiudere questa pagina.';
+
+  @override
+  String get syUpdReqDocker => 'Sul computer dove gira Rasgeth, nella sua cartella, esegui:';
+
+  @override
+  String get syUpdReqInstaller => 'Se l\'aggiornamento non parte, l\'installazione completa è qui:';
+
+  @override
+  String get syUpdReqInstallerLink => 'Rasgeth-Setup.exe';
+
+  @override
+  String syUpdReqLead(String installed, String version) {
+    return 'Questo aggiornamento non può aspettare: Rasgeth $version sistema una cosa che la $installed non può continuare a fare in sicurezza.';
+  }
+
+  @override
+  String get syUpdReqMac =>
+      'Apri il file scaricato e trascina Rasgeth in Applicazioni, sostituendo quello vecchio; poi riaprilo.';
+
+  @override
+  String get syUpdReqNow => 'Aggiorna ora';
+
+  @override
+  String get syUpdReqSafe =>
+      'Finché non aggiorni, agenti e automazioni restano fermi. Conversazioni, progetti e impostazioni sono al sicuro: non si perde niente.';
+
+  @override
+  String get syUpdReqSource =>
+      'Porta il codice all\'ultima versione (git pull), ricompilalo e riavvia Rasgeth.';
+
+  @override
+  String syUpdReqSub(String installed, String version) {
+    return 'Serve la versione $version (hai la $installed)';
+  }
+
+  @override
+  String get syUpdReqTitle => 'È necessario aggiornare Rasgeth';
+
+  @override
+  String get syUpdReqUpdating =>
+      'Rasgeth sta scaricando l\'aggiornamento: segui la finestra sul desktop. Si riavvia da solo.';
+
+  @override
+  String get syUpdReqUpdatingOs =>
+      'Rasgeth OS sta aggiornando Rasgeth: la pagina si ferma per qualche minuto e torna da sola.';
+
+  @override
+  String get syWzBack => 'Indietro';
+
+  @override
+  String get syWzCpu => 'Processore';
+
+  @override
+  String get syWzFree => 'liberi';
+
+  @override
+  String get syWzGpu => 'Scheda video';
+
+  @override
+  String get syWzMemory => 'Memoria';
+
+  @override
+  String get syWzNoGpu => 'Nessuna';
+
+  @override
+  String get syWzRecommended => 'consigliata';
+
+  @override
+  String get syWzRemote => 'Accesso da fuori casa';
+
+  @override
+  String get syWzStorage => 'Dati e copie';
+
+  @override
+  String syWzThreads(String n) {
+    return '$n thread';
+  }
+
+  @override
+  String get syHubTitle => 'Sistema e accesso';
+
+  @override
+  String get syHubRemote =>
+      'Password, secondo controllo, Tailscale, Cloudflare, il tuo dominio, Pi-hole';
+
+  @override
+  String get syHubSystem =>
+      'La macchina, il ruolo, dati e backup, Wi-Fi, HTTPS, SSH, aggiornamenti';
+
+  @override
+  String get syHubMachines => 'I tuoi computer che gli agenti raggiungono via SSH';
+
+  @override
+  String get syHubNodes => 'Altre macchine che lavorano con questa';
+
+  @override
+  String get syHubBackup => 'Tutto in un file, e un file riportato qui';
+
+  @override
+  String get syGateOpen => 'Cosa fare';
 }

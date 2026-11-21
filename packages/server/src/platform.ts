@@ -47,6 +47,11 @@ export const PlatformPolicy = z.object({
   humanOnly: z.array(z.string()).optional(),
   /** Danger rules switched off. */
   disabledDanger: z.array(z.string()).default([]),
+  /**
+   * Danger rules off by default (`enabled: false` in DEFAULT_DANGER_RULES, like remove-agent
+   * since 3.10) that the person switched on. A policy saved before has none: they stay off.
+   */
+  enabledDanger: z.array(z.string()).default([]),
   /** The guardian (2026-11-04): ask before writing outside the project, or let it be. */
   guardian: z.enum(["ask", "auto"]).default("ask"),
   /** Skills an agent writes (G29.4): wait for the human, or install once their tests pass. */
@@ -124,7 +129,13 @@ export class PolicyStore {
 
   get(ownerId: string): PlatformPolicy {
     return (
-      this.cache.get(ownerId) ?? { rules: [], disabledDanger: [], guardian: "ask", skills: "ask" }
+      this.cache.get(ownerId) ?? {
+        rules: [],
+        disabledDanger: [],
+        enabledDanger: [],
+        guardian: "ask",
+        skills: "ask",
+      }
     );
   }
 
@@ -155,17 +166,26 @@ export class PolicyStore {
     return {
       ...DEFAULT_POLICY,
       rules,
-      danger: DEFAULT_DANGER_RULES.map((r) =>
-        p.disabledDanger.includes(r.id) ? { ...r, enabled: false } : r,
-      ),
+      danger: dangerRules(p),
       // The guardian's questions are always the person's, whatever the ready choice (2026-11-04).
-      // Removing an agent of their team is theirs too (p3.8.9), also with a list saved before it.
+      // Removing an agent of their team, when they switch that danger on, is theirs too (p3.8.9).
       humanOnly: [
         ...new Set([OUTSIDE_PROJECT, REMOVE_AGENT, ...(p.humanOnly ?? DEFAULT_POLICY.humanOnly)]),
       ],
       guardian: p.guardian ?? "ask",
     };
   }
+}
+
+/** The danger rules a saved policy applies: the defaults, as the person switched them. Pure. */
+export function dangerRules(p: Pick<PlatformPolicy, "disabledDanger" | "enabledDanger">) {
+  return DEFAULT_DANGER_RULES.map((r) =>
+    r.enabled === false
+      ? { ...r, enabled: (p.enabledDanger ?? []).includes(r.id) }
+      : p.disabledDanger.includes(r.id)
+        ? { ...r, enabled: false }
+        : r,
+  );
 }
 
 interface ChangeRow {
@@ -987,7 +1007,7 @@ export function platformConfigTools(
       def: {
         name: "platform_policy",
         description:
-          "Replace the permission policy: rules (tool, optional regex match on the input, allow/ask/deny), humanOnly (danger ids only the human may approve) and disabledDanger. Read the current one with platform_status first.",
+          "Replace the permission policy: rules (tool, optional regex match on the input, allow/ask/deny), humanOnly (danger ids only the human may approve), disabledDanger and enabledDanger (dangers off by default switched on, like remove-agent). Read the current one with platform_status first.",
         inputSchema: {
           type: "object",
           properties: {
@@ -1005,6 +1025,7 @@ export function platformConfigTools(
             },
             humanOnly: { type: "array", items: { type: "string" } },
             disabledDanger: { type: "array", items: { type: "string" } },
+            enabledDanger: { type: "array", items: { type: "string" } },
           },
         },
       },

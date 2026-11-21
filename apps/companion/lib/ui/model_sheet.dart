@@ -1,9 +1,8 @@
-// The model of an agent, of the Chat or of one conversation (3.8.1): the families with the drawn
-// choice of the way (Subscription / API key, G40.9b) and a line on what it means, the effort when
-// the model takes one, and «the same as above» (the agent's, the parent's or the default). The
-// sheet only chooses: the caller saves with the page's own API.
-import 'dart:math' as math;
-
+// The model of an agent, of the Chat or of one conversation (3.8.1): the models under a heading
+// per provider and way (Anthropic's subscription, Anthropic's API key…) with a line on what the
+// way means, the newest first and a search when the list is long (G42.15, the person's request of
+// 2026-11-20), the effort when the model takes one, and «the same as above» (the agent's, the
+// parent's or the default). The sheet only chooses: the caller saves with the page's own API.
 import 'package:flutter/material.dart';
 
 import '../api/model_routes.dart';
@@ -72,23 +71,35 @@ class AgentModelSheet extends StatefulWidget {
 }
 
 class _AgentModelSheetState extends State<AgentModelSheet> {
-  late final List<ModelFamily> _families = modelFamilies(widget.models);
-  late String? _family = familyOf(_families, widget.current?.key ?? '')?.$1.id;
-  late final Map<String, int> _way = {
-    for (final f in _families)
-      f.id: math.max(0, f.ways.indexWhere((w) => w.choice.key == widget.current?.key)),
-  };
+  // By provider and way, the newest first (2026-11-20, the person): every way is its own row.
+  late final List<ModelGroup> _groups = modelGroups(widget.models);
+  late String? _chosen = widget.models.any((m) => m.key == widget.current?.key)
+      ? widget.current!.key
+      : null;
   late String _effort = widget.current?.effort ?? 'medium';
+  String _query = '';
 
-  ModelFamily? get _chosen => _families.where((f) => f.id == _family).firstOrNull;
+  ModelChoice? get _choice => widget.models.where((m) => m.key == _chosen).firstOrNull;
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
-    final chosen = _chosen;
-    final way = chosen == null ? null : chosen.ways[_way[chosen.id] ?? 0];
+    final lang = Localizations.localeOf(context).languageCode;
+    final choice = _choice;
     final cur = widget.current;
+    final searchable = widget.models.length > 8;
+    final shown = [
+      for (final g in _groups)
+        (
+          g,
+          groupTitle(g, lang),
+          [
+            for (final m in g.choices)
+              if (modelMatches(m, groupTitle(g, lang), _query)) m,
+          ],
+        ),
+    ].where((e) => e.$3.isNotEmpty).toList();
     return SafeArea(
       child: ConstrainedBox(
         constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * .85),
@@ -115,23 +126,73 @@ class _AgentModelSheetState extends State<AgentModelSheet> {
                 style: TextStyle(color: c.dim, fontSize: 13.5),
               ),
             ),
+            if (searchable)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: TextField(
+                  key: const Key('model-search'),
+                  onChanged: (v) => setState(() => _query = v),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    hintText: l.moModelSearch,
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: RgIcon(RgIcons.search, size: 16, color: c.dim),
+                    ),
+                    prefixIconConstraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                  ),
+                ),
+              ),
             Flexible(
               child: ListView(
                 shrinkWrap: true,
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 children: [
-                  if (widget.inheritLabel != null)
+                  if (widget.inheritLabel != null && _query.trim().isEmpty)
                     _Row(
                       key: const Key('model-inherit'),
                       title: widget.inheritLabel!,
-                      on: cur == null && _family == null,
+                      on: cur == null && _chosen == null,
                       onTap: () => Navigator.pop(context, const ModelPick(null)),
                     ),
-                  for (final f in _families) _familyRow(l, c, f),
+                  if (shown.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Text(
+                        l.moUiDropNone,
+                        key: const Key('model-none'),
+                        style: TextStyle(color: c.dim),
+                      ),
+                    ),
+                  for (final (g, title, models) in shown) ...[
+                    _GroupHead(
+                      key: Key('model-group-${g.id}'),
+                      title: title,
+                      hint: wayHint(
+                        l,
+                        ModelWay(
+                          modelRoute(g.provider, models.first.model, models.first.name),
+                          models.first,
+                        ),
+                      ),
+                    ),
+                    for (final m in models)
+                      _Row(
+                        key: Key('model-${m.key}'),
+                        title: m.name ?? modelName(m.model),
+                        subtitle: switch (m.status) {
+                          'new' => l.moModelNew,
+                          'unconfirmed' => l.moModelUnconfirmed,
+                          _ => null,
+                        },
+                        on: _chosen == m.key,
+                        onTap: () => setState(() => _chosen = m.key),
+                      ),
+                  ],
                 ],
               ),
             ),
-            if (chosen != null && way != null)
+            if (choice != null)
               Container(
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
                 decoration: BoxDecoration(
@@ -141,7 +202,7 @@ class _AgentModelSheetState extends State<AgentModelSheet> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   spacing: 8,
                   children: [
-                    if (way.choice.effort) ...[
+                    if (choice.effort) ...[
                       Text(
                         l.effortTitle,
                         style: TextStyle(fontWeight: FontWeight.w700, color: c.dim, fontSize: 13),
@@ -161,13 +222,13 @@ class _AgentModelSheetState extends State<AgentModelSheet> {
                         context,
                         ModelPick(
                           AgentModel(
-                            provider: way.choice.provider,
-                            model: way.choice.model,
-                            effort: way.choice.effort ? _effort : null,
+                            provider: choice.provider,
+                            model: choice.model,
+                            effort: choice.effort ? _effort : null,
                           ),
                         ),
                       ),
-                      child: Text(l.modelUse(chosen.label)),
+                      child: Text(l.modelUse(choice.name ?? modelName(choice.model))),
                     ),
                   ],
                 ),
@@ -177,44 +238,38 @@ class _AgentModelSheetState extends State<AgentModelSheet> {
       ),
     );
   }
+}
 
-  Widget _familyRow(AppLocalizations l, RgColors c, ModelFamily f) {
-    final i = _way[f.id] ?? 0;
-    final way = f.ways[i];
-    final on = _family == f.id;
-    final many = f.ways.length > 1;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _Row(
-          key: Key('model-${f.id}'),
-          title: f.label,
-          subtitle: many
-              ? f.ways.map((w) => wayWord(l, w)).join(' ${l.modelWayOr} ')
-              : wayWord(l, way),
-          on: on,
-          onTap: () => setState(() => _family = f.id),
-        ),
-        if (on && many)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 6,
-              children: [
-                ChoiceRow(
-                  keyPrefix: 'way',
-                  values: [for (final w in f.ways) w.choice.key],
-                  selected: way.choice.key,
-                  label: (k) => wayWord(l, f.ways.firstWhere((w) => w.choice.key == k)),
-                  onChanged: (k) =>
-                      setState(() => _way[f.id] = f.ways.indexWhere((w) => w.choice.key == k)),
-                ),
-                Text(wayHint(l, way), style: TextStyle(color: c.dim, fontSize: 12.5)),
-              ],
+/// A group's heading (provider and way) and what that way means, in one line.
+class _GroupHead extends StatelessWidget {
+  const _GroupHead({super.key, required this.title, required this.hint});
+
+  final String title;
+  final String hint;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    return Semantics(
+      header: true,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(6, 12, 6, 6),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title.toUpperCase(),
+              style: TextStyle(
+                color: c.dim,
+                fontSize: 11.5,
+                fontWeight: FontWeight.w800,
+                letterSpacing: .5,
+              ),
             ),
-          ),
-      ],
+            Text(hint, style: TextStyle(color: c.dim, fontSize: 12)),
+          ],
+        ),
+      ),
     );
   }
 }

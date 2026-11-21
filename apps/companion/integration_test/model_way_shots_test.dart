@@ -51,10 +51,10 @@ void main() {
     await frames(t, 1200);
     expect(find.byKey(const Key('model-anthropic/claude-opus-5-5')), findsOneWidget);
     await shot(t, 'linux-way-02-sheet-subscription');
-    await t.tap(find.byKey(const Key('way-anthropic/claude-opus-5-5')).first);
+    await t.tap(find.byKey(const Key('model-anthropic/claude-opus-5-5')));
     await frames(t, 600);
     await shot(t, 'linux-way-03-sheet-key');
-    await t.tap(find.byKey(const Key('model-anthropic/claude-opus-5-5')));
+    await t.tap(find.byKey(const Key('model-use')));
     await frames(t, 2500);
     await shot(t, 'linux-way-04-chosen');
     expect(find.textContaining('· Chiave API'), findsWidgets);

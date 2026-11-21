@@ -52,6 +52,7 @@ import '../ui/turn_queue_view.dart';
 import '../api/image_shrink.dart';
 import '../api/pasted.dart';
 import '../api/secrets.dart';
+import '../settings/vault/keychain_screen.dart' show VaultDraft, openCredentialWindow;
 import '../api/password_export.dart';
 import 'board_screen.dart';
 import '../canvas/canvas_shell.dart';
@@ -571,10 +572,20 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
         choices: [
           RgWindowChoice('back', l.cvChSecretBack, key: const Key('secret-back')),
           RgWindowChoice('anyway', l.cvChSecretAnyway, key: const Key('secret-send-anyway')),
+          // G42.12: into the keychain, then the message goes without it (the page's).
+          RgWindowChoice('vault', l.cvChSecretVault, key: const Key('secret-vault')),
           RgWindowChoice('without', l.cvChSecretSend, key: const Key('dialog-yes'), main: true),
         ],
       );
       if (how == null || how == 'back' || !mounted) return;
+      if (how == 'vault') {
+        final saved = await openCredentialWindow(
+          context,
+          draft: VaultDraft(value: found.first.value),
+        );
+        if (!saved || !mounted) return;
+        t = hideSecrets(t, '[secret removed: now in the keychain]').text;
+      }
       if (how == 'without') t = hideSecrets(t, '[secret removed]').text;
       secretOk = how == 'anyway';
     }

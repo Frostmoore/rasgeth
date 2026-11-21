@@ -4197,6 +4197,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
           z.object({
             humanOnly: z.array(z.string()).optional(),
             disabledDanger: z.array(z.string()).optional(),
+            enabledDanger: z.array(z.string()).optional(),
             budgetUsd: z.number().positive().nullable().optional(),
             retentionDays: z.number().int().min(1).max(3650).nullable().optional(),
             subscriptionAck: z.boolean().optional(),

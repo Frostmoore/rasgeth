@@ -4,8 +4,8 @@
 // on, each opening a window (a sheet from below on a phone) with its switch, its webhook and the
 // secret shown only once, its runs, and the buttons to run it now, change it or delete it. Making
 // and changing happen in the editor (automation_editor.dart). The mailboxes they read sit under
-// «Sources» (added in Settings › Channels and mailboxes). The list is read again whenever the
-// server says an automation changed (`automations.changed`).
+// «Sources», added and changed there as on the page (G42.13, channels/mailboxes.dart). The list
+// is read again whenever the server says an automation changed (`automations.changed`).
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -21,6 +21,7 @@ import '../../ui/dialogs.dart';
 import '../../ui/icons.dart';
 import '../../ui/markdown.dart';
 import '../api/automations_api.dart';
+import '../channels/mailboxes.dart';
 import '../rules_kit.dart';
 import 'automation_draft.dart';
 import 'automation_editor.dart';
@@ -148,7 +149,6 @@ class AutomationsScreen extends StatefulWidget {
 class _AutomationsScreenState extends State<AutomationsScreen> {
   List<Automation>? _list;
   List<MagicAutomation> _magic = const [];
-  List<MailboxInfo>? _boxes;
   String? _error;
   late final ValueNotifier<int> _changed = AppScope.read(context).live.automationsChanged;
 
@@ -176,17 +176,10 @@ class _AutomationsScreenState extends State<AutomationsScreen> {
       } on ApiException {
         magic = const [];
       }
-      List<MailboxInfo> boxes;
-      try {
-        boxes = await c.mailboxes();
-      } on ApiException {
-        boxes = const [];
-      }
       if (!mounted) return;
       setState(() {
         _list = list;
         _magic = magic;
-        _boxes = boxes;
         _error = null;
       });
     } on ApiException catch (e) {
@@ -330,7 +323,8 @@ class _AutomationsScreenState extends State<AutomationsScreen> {
             ],
           ),
         RulesSub(title: l.auAwSourcesTitle, lead: l.auAwSourcesLead, icon: RgIcons.mail),
-        _Sources(boxes: _boxes),
+        // G42.13: the mailboxes, added and changed here as on the page.
+        MailboxesSection(onChange: _load),
       ],
     );
   }
@@ -397,58 +391,6 @@ class _MagicCta extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-/// The mailboxes automations read, by category; they are added in Channels and mailboxes.
-class _Sources extends StatelessWidget {
-  const _Sources({required this.boxes});
-
-  final List<MailboxInfo>? boxes;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    final c = RgColors.of(context);
-    final b = boxes;
-    return Container(
-      key: const Key('au-sources'),
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-      decoration: BoxDecoration(
-        color: c.panel,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: c.line),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (b == null)
-            Text(l.loading, style: TextStyle(color: c.dim))
-          else if (b.isEmpty)
-            Text(l.auOwnNoMailboxes, style: TextStyle(color: c.dim))
-          else
-            for (final m in b)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
-                child: Row(
-                  children: [
-                    RgIcon(RgIcons.mail, size: 18, color: c.accent),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        m.name,
-                        style: TextStyle(fontWeight: FontWeight.w700, color: c.text),
-                      ),
-                    ),
-                    Text(categoryLabel(l, m.category), style: TextStyle(color: c.dim)),
-                  ],
-                ),
-              ),
-          const SizedBox(height: 6),
-          Text(l.auOwnMailboxesElsewhere, style: TextStyle(color: c.dim, fontSize: 12.5)),
-        ],
       ),
     );
   }

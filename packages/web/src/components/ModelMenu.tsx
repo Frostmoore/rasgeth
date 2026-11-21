@@ -4,10 +4,10 @@ import type { ModelChoice } from "../api.js";
 import { localModelName } from "../format.js";
 import { t } from "../i18n.js";
 import { attempt, getApi, refreshConversations } from "../state.js";
-import { ModelFamilySelect } from "./ModelSelect.js";
+import { effortOptions, ModelFamilySelect } from "./ModelSelect.js";
+import { DropChoice } from "./ui.js";
 
 type Model = { provider: string; model: string; effort?: string };
-const EFFORTS = ["low", "medium", "high", "max"] as const;
 const AGENTS = "";
 
 /** A model's name as people say it: claude-opus-5-5 → Opus 5.5; other ids stay as they are. */
@@ -53,8 +53,7 @@ const loadModels = (fresh = false) => {
 };
 
 /**
- * The composer's model and effort, as in Officina: two native menus (the phone opens its own
- * picker). The next message uses them; "the agent's" goes back to what the agent is set to.
+ * The composer's model and effort, as in Officina: two of our drawn menus (3.10). The next message uses them; "the agent's" goes back to what the agent is set to.
  */
 export function ModelMenu({
   sessionId,
@@ -104,22 +103,15 @@ export function ModelMenu({
         }}
       />
       {current && effortOk && (
-        <select
+        <DropChoice
           class="model effort"
-          aria-label={t("effort")}
+          label={t("effort")}
           title={t("effortHint")}
           disabled={disabled}
           value={current.effort ?? "medium"}
-          onChange={(e) =>
-            void choose({ ...current, effort: (e.target as HTMLSelectElement).value })
-          }
-        >
-          {EFFORTS.map((e) => (
-            <option key={e} value={e}>
-              {t(`effort_${e}` as never)}
-            </option>
-          ))}
-        </select>
+          options={effortOptions()}
+          onChange={(v) => void choose({ ...current, effort: v })}
+        />
       )}
     </>
   );

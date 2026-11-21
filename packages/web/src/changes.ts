@@ -12,7 +12,13 @@ export interface Names {
 
 type Limit = { usd?: number; tokens?: number };
 type Rule = { tool: string; match?: string; decision: "allow" | "ask" | "deny" };
-type Policy = { rules?: Rule[]; humanOnly?: string[]; disabledDanger?: string[] };
+type Policy = {
+  rules?: Rule[];
+  humanOnly?: string[];
+  disabledDanger?: string[];
+  /** Dangers off by default switched on (remove-agent, 3.10). */
+  enabledDanger?: string[];
+};
 type AgentConfig = {
   model?: { provider: string; model: string; effort?: string } | null;
   mode?: string | null;
@@ -79,8 +85,14 @@ function policy(before: Policy, after: Policy) {
   const diff = (a: string[] = [], b: string[] = []) => a.filter((x) => !b.includes(x));
   const humanAdded = diff(after.humanOnly, before.humanOnly);
   const humanRemoved = diff(before.humanOnly, after.humanOnly);
-  const off = diff(after.disabledDanger, before.disabledDanger);
-  const on = diff(before.disabledDanger, after.disabledDanger);
+  const off = [
+    ...diff(after.disabledDanger, before.disabledDanger),
+    ...diff(before.enabledDanger, after.enabledDanger),
+  ];
+  const on = [
+    ...diff(before.disabledDanger, after.disabledDanger),
+    ...diff(after.enabledDanger, before.enabledDanger),
+  ];
   if (humanAdded.length) out.push(t("chgHumanOnly", { list: list(humanAdded) }));
   if (humanRemoved.length) out.push(t("chgNotHumanOnly", { list: list(humanRemoved) }));
   if (off.length) out.push(t("chgDangerOff", { list: list(off) }));

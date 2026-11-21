@@ -154,3 +154,153 @@ List<ModelFamily> modelFamilies(List<ModelChoice> choices) {
   }
   return null;
 }
+
+/// The model menus by provider and by how one pays (2026-11-20, the person), the app's copy of
+/// the protocol's `modelGroups`: every way a model goes is its own entry under a clear heading,
+/// companies first (subscription before key), then the nodes, then this computer and the
+/// person's own server; inside a group the newest first (the catalog's release day), the undated
+/// after in the provider's order. Checked with test/fixtures/model_groups_vectors.json.
+class ModelGroup {
+  ModelGroup(this.id, this.kind, this.vendor, this.provider, this.node);
+
+  final String id;
+  final ModelRouteKind kind;
+  final String vendor;
+  final String provider;
+  final String? node;
+  final List<ModelChoice> choices = [];
+}
+
+const _vendors = [
+  'anthropic',
+  'openai',
+  'gemini',
+  'xai',
+  'deepseek',
+  'mistral',
+  'groq',
+  'cerebras',
+  'together',
+  'fireworks',
+  'openrouter',
+];
+const _groupOrder = [
+  ModelRouteKind.subscription,
+  ModelRouteKind.key,
+  ModelRouteKind.other,
+  ModelRouteKind.node,
+  ModelRouteKind.local,
+];
+
+int _vendorRank(String v) {
+  final i = _vendors.indexOf(v);
+  return i < 0 ? _vendors.length : i;
+}
+
+List<ModelGroup> modelGroups(List<ModelChoice> choices) {
+  final groups = <ModelGroup>[];
+  final byId = <String, ModelGroup>{};
+  for (final c in choices) {
+    final r = modelRoute(c.provider, c.model, c.name);
+    final id = r.kind == ModelRouteKind.node ? '${c.provider}|${r.vendor}' : c.provider;
+    final g = byId.putIfAbsent(id, () {
+      final n = ModelGroup(id, r.kind, r.vendor, c.provider, r.node);
+      groups.add(n);
+      return n;
+    });
+    g.choices.add(c);
+  }
+  List<int> place(ModelGroup g) {
+    final outer = g.kind == ModelRouteKind.node ? 1 : (g.kind == ModelRouteKind.local ? 2 : 0);
+    return [
+      outer,
+      outer == 1 ? 0 : _vendorRank(g.vendor),
+      _groupOrder.indexOf(g.kind),
+      g.kind == ModelRouteKind.local && g.provider == 'local' ? 0 : 1,
+    ];
+  }
+
+  int cmp(ModelGroup a, ModelGroup b) {
+    final pa = place(a);
+    final pb = place(b);
+    for (var i = 0; i < pa.length; i++) {
+      if (pa[i] != pb[i]) return pa[i] - pb[i];
+    }
+    if (a.kind == ModelRouteKind.node && b.kind == ModelRouteKind.node) {
+      final n = (a.node ?? '').compareTo(b.node ?? '');
+      if (n != 0) return n;
+      final v = _vendorRank(a.vendor) - _vendorRank(b.vendor);
+      return v != 0 ? v : a.vendor.compareTo(b.vendor);
+    }
+    return a.vendor.compareTo(b.vendor);
+  }
+
+  // A stable sort, as the page's.
+  final indexed = [...groups.indexed]
+    ..sort((a, b) {
+      final k = cmp(a.$2, b.$2);
+      return k != 0 ? k : a.$1 - b.$1;
+    });
+  final out = [for (final e in indexed) e.$2];
+  for (final g in out) {
+    final dated = [...g.choices.indexed]
+      ..sort((a, b) {
+        final ra = a.$2.released;
+        final rb = b.$2.released;
+        if (ra != null && rb != null && ra != rb) return ra.compareTo(rb) < 0 ? 1 : -1;
+        if (ra != null && rb == null) return -1;
+        if (ra == null && rb != null) return 1;
+        return a.$1 - b.$1;
+      });
+    g.choices
+      ..clear()
+      ..addAll(dated.map((e) => e.$2));
+  }
+  return out;
+}
+
+const _vendorNames = {
+  'anthropic': 'Anthropic',
+  'openai': 'OpenAI',
+  'gemini': 'Google',
+  'xai': 'xAI',
+  'deepseek': 'DeepSeek',
+  'mistral': 'Mistral',
+  'groq': 'Groq',
+  'cerebras': 'Cerebras',
+  'together': 'Together AI',
+  'fireworks': 'Fireworks AI',
+  'openrouter': 'OpenRouter',
+};
+
+/// A group's heading, as the protocol's `groupTitle`: «Anthropic · Abbonamento Claude».
+String groupTitle(ModelGroup g, String lang) {
+  final it = lang == 'it';
+  final vendor = _vendorNames[g.vendor] ?? g.vendor;
+  switch (g.kind) {
+    case ModelRouteKind.subscription:
+      final plan = g.provider == 'claude-subscription'
+          ? 'Claude'
+          : (g.provider == 'chatgpt-subscription' ? 'ChatGPT' : '');
+      if (it) return '$vendor · Abbonamento${plan.isEmpty ? '' : ' $plan'}';
+      return '$vendor · ${plan.isEmpty ? 'Subscription' : '$plan subscription'}';
+    case ModelRouteKind.key:
+      return '$vendor · ${it ? 'Chiave API' : 'API key'}';
+    case ModelRouteKind.node:
+      final own = g.vendor == 'local' || g.vendor == 'server';
+      return '${it ? 'Tramite' : 'Via'} ${g.node} · ${own ? (it ? 'Locale' : 'Local') : vendor}';
+    case ModelRouteKind.local:
+      return g.provider == 'local'
+          ? (it ? 'Su questo computer' : 'On this computer')
+          : (it ? 'Il tuo server' : 'Your own server');
+    case ModelRouteKind.other:
+      return vendor;
+  }
+}
+
+/// Whether a model answers a search: its name, its id or its group's heading.
+bool modelMatches(ModelChoice m, String heading, String query) {
+  final q = query.trim().toLowerCase();
+  if (q.isEmpty) return true;
+  return [m.name ?? '', m.model, heading].any((s) => s.toLowerCase().contains(q));
+}

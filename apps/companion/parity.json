@@ -33,9 +33,15 @@
       "note": "Native (G42.4): theme, interface language, agents' language, instructions for all with the PromptRefiner (diff, writer model, tools proposal), backup model, web search, voice messages, images, updates, What's new whenever, debug log, sign out; Safety (guardian, approvals, spending, skills, retention) in Settings › Safety."
     },
     "system": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart",
+        "lib/settings/system/system_screen.dart",
+        "lib/settings/system/os_panels.dart",
+        "lib/settings/system/backup_targets.dart",
+        "lib/settings/system/update_gate.dart",
+        "lib/settings/system/system_kit.dart",
+        "lib/settings/api/system_api.dart",
+        "lib/ui/qr.dart",
         "lib/screens/server_settings_screen.dart"
       ],
       "phase": "G42.14",
@@ -44,10 +50,11 @@
         241,
         242,
         243,
+        245,
         284,
         285
       ],
-      "note": "Native: the machine's name and state; role, storage, disks, SSH, Wi-Fi, HTTPS only in «All settings»."
+      "note": "Native (G42.14): the machine (processor, memory, cards, disks, virtual or not), the role asked first with the node's pairing, data and backups (places, disks, a folder, SFTP/SMB/node, the host's steps in a container and Proxmox's «Do it for me», when, how many, a backup now, the backups there restored), Wi-Fi, HTTPS at home with the certificate's QR, SSH, the OS's updates and the restart; the mandatory and breaking updates' gate with the safety backup (update_gate.dart, opened by itself on connect). Disk space shows as the page shows it (the data folder, the disks, a node's free disk); the page has no clean-up or sandbox repair (study rows 284-285: nothing to mirror)."
     },
     "setup": {
       "app": "partial",
@@ -164,11 +171,19 @@
       "note": "Native (G42.9): the list with its switch, runs, run now, the webhook's secret shown once, delete; a new automation or reminder; the whole editor (When, Only if, What it does, Where it tells you, Advanced, the YAML in a coloured field, the next times from the server), ported from AutomationEditor.tsx and checked with the page's vectors; the magic automation with God (proposal beside the conversation, needs, approve, change, reject); an assistant's routines with the same editor; the messages in For you, the bell and the system's notifications (push kind automation). The mailboxes are only listed (added in Channels and mailboxes, G42.13)."
     },
     "extensions": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart",
+        "lib/settings/extensions/extensions_screen.dart",
+        "lib/settings/extensions/magic_extension.dart",
+        "lib/settings/extensions/media_kind.dart",
+        "lib/settings/extensions/proposals_block.dart",
+        "lib/settings/extensions/ext_catalog.dart",
+        "lib/settings/extensions/ext_catalog.g.dart",
+        "lib/settings/extensions/ext_kit.dart",
+        "lib/settings/api/extensions_api.dart",
         "lib/settings/skills_screen.dart",
-        "lib/settings/api/skills_api.dart"
+        "lib/settings/api/skills_api.dart",
+        "lib/desktop/bell.dart"
       ],
       "phase": "G42.11",
       "rows": [
@@ -181,12 +196,15 @@
         177,
         253
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native extensions, MCP and skills in G42.11. 3.9.7: Settings › Skills native (skills_screen.dart): the agents' skills waiting (a new version with its reason and what changes word by word, approve or reject), the installed skills with their versions (who, why, when, the one in use), compared and brought back after a yes."
+      "note": "Native (G42.11): the magic integration and extension with God (the package beside the conversation, its parts with their arguments and tests, the hosts it reaches, the missing key added in its window into the keychain or given to the package after a yes, approve, test again, reject with a reason, change, uninstall); the agents' proposals read in full (a new version with its line, word by word, its scripts) and decided, also in the bell and in For you; the services connected with their state (signing in opens the service's page in the system's browser, then the state is read again until it works), sign in again, remove; the generation (the model's own tool, who makes each kind, its key with where to get it, the model and the voice); the catalog (the protocol's MCP_CATALOG and catalogConfig, checked with its vectors: search, kinds, official first, the guide with the return address to copy, the person's own app, the fields, the key); the installed skills and tools (versions, download as .zip, open the file); a skill's .zip imported (asked before replacing), a skill written, an MCP server by address or command. No brand logos: the kinds' drawn icons. 3.9.7: Settings › Skills (skills_screen.dart) stays as a shortcut."
     },
     "keychain": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/vault/keychain_screen.dart",
+        "lib/settings/api/keychain_api.dart",
+        "lib/settings/extensions/ext_kit.dart",
+        "lib/screens/conversation_screen.dart"
       ],
       "phase": "G42.12",
       "rows": [
@@ -200,30 +218,36 @@
         265,
         12
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native keychain in G42.12."
+      "note": "Native (G42.12): the list with search and kinds, how it is sealed, what expires soon; the keys a part of Rasgeth uses (usedBy: «Used by» with its page, never deleted here) and the ones it keeps elsewhere (system, set by the administrator when locked); a credential's window (service and name, kind, user, address, the value shown or copied only after our window and dropped when hidden or closed, the clipboard emptied after 30 s, the generator, where it may go, who may use it, agents, tools and automations, when to ask, expiry, labels, notes, the header), its last uses; importing a password manager's CSV (preview, the rows kept) or a sealed file, the sealed export; the browsers linked with a code, unlinked after a yes; a secret held back in the composer put in the keychain («Put it in the keychain»), a magic automation's missing key added from its need. The device's own unlock (biometrics) is not there yet: the plugin is not in the app."
     },
     "telegram": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/channels/telegram_screen.dart",
+        "lib/settings/channels/channels_kit.dart",
+        "lib/settings/api/channels_api.dart"
       ],
       "phase": "G42.13",
       "rows": [
         231
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native Telegram setup in G42.13."
+      "note": "Native (G42.13): the three steps on a path (BotFather, the token tried by the server, the bot opened with the pairing code) with the chat Telegram will show (beside them on a computer, inside the step on a phone), the linked accounts with Unlink, «Change bot», set by the administrator. The QR of the bot's link is not drawn in the app (the link opens Telegram directly)."
     },
     "chats": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/channels/chats_screen.dart",
+        "lib/settings/channels/mailboxes.dart",
+        "lib/settings/channels/channels_kit.dart",
+        "lib/settings/api/channels_api.dart",
+        "lib/settings/automations/automations_screen.dart"
       ],
       "phase": "G42.13",
       "rows": [
         232,
         233
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native chat platforms and mailboxes in G42.13."
+      "note": "Native (G42.13): Discord, Slack, Signal, WhatsApp, Matrix, Microsoft Teams and iMessage as squares lit when on, each window with what it needs and the numbered steps, the code to send, the accounts with Unlink, Teams' app saved to the device, Turn off and Change; the mailboxes in Settings › Automations as on the page: the single one of before, then many by category, added, changed (the password stays unless a new one is written) and removed, tried by the server."
     },
     "budgets": {
       "app": "native",
@@ -241,10 +265,13 @@
       "note": "Native (G42.4): this month's total with its days, everything, each project and agent with their limit; the limit's window with the wizard's amounts, another amount or no limit."
     },
     "subscriptions": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart",
-        "lib/screens/server_settings_screen.dart",
+        "lib/settings/models/models_screen.dart",
+        "lib/settings/models/local_models.dart",
+        "lib/settings/models/local_speed.dart",
+        "lib/settings/models/key_providers.dart",
+        "lib/settings/api/models_api.dart",
         "lib/ui/model_sheet.dart",
         "lib/api/model_routes.dart"
       ],
@@ -257,7 +284,7 @@
         273,
         289
       ],
-      "note": "Default model and model routes are native; subscriptions, keys, own server and local models only in «All settings»."
+      "note": "Native (G42.15): the ways of thinking as squares (Claude signed in from the browser with the code pasted back, ChatGPT with the device code, an API key per provider tried by the server, the own server), the default model with its effort, who uses which model (God, Demi-God, the assistants, the others, the backup) in the one model sheet by provider and way with the newest first and a search (2026-11-20), the model on this computer (the machine, the engine, the models that run well and the slower ones with the estimated speed, the download with its bar, pause and go on, start, on and off, use for the agents, the speed test, delete, the other files and Downloaded models). Not yet in the app: SSD stream and its options, moving the models to another disk, Hugging Face search, speculative decoding, the tuning table, the catalog row; web search stays in General (G42.4). The request inspector (row 273) is not a page feature: n/a."
     },
     "code": {
       "app": "native",
@@ -273,10 +300,13 @@
       "note": "G42.5: Settings › Code as the page's CodeSettings and GitCode.tsx: GitHub and Gitea as two tiles lit when linked, each with its window (GitHub's guide for a fine-grained token, «Try and save», «Disconnect»; Gitea started here with its job followed step by step and the image's download bar, or one the person has, with the page's words when its name or address does not answer; «Open Gitea», «Switch off»), and «Create the repositories now» with each project's outcome. Same routes; nothing kept in the app."
     },
     "remote": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart",
-        "lib/screens/server_settings_screen.dart"
+        "lib/settings/system/remote_screen.dart",
+        "lib/settings/system/infra_rules.dart",
+        "lib/settings/system/system_kit.dart",
+        "lib/settings/api/system_api.dart",
+        "lib/ui/qr.dart"
       ],
       "phase": "G42.14",
       "rows": [
@@ -285,19 +315,21 @@
         279,
         287
       ],
-      "note": "The access link from outside is shown read only; password, 2FA, sessions, Tailscale, Cloudflare only in «All settings»."
+      "note": "Native (G42.14): the password (the others signed out on a yes), the authenticator's code with its QR, sign out everywhere, Tailscale, Cloudflare Tunnel and one's own domain with the job followed, the address with its QR and Switch off, one's own infrastructure (blocks filled by the page's own-infra rules, checked with vectors), «Try a name», «reachable already», Pi-hole."
     },
     "backup": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/system/backup_screen.dart",
+        "lib/settings/system/backup_targets.dart",
+        "lib/settings/api/system_api.dart"
       ],
       "phase": "G42.14",
       "rows": [
         248,
         249
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native backup and targets in G42.14."
+      "note": "Native (G42.14): the backup file made with its steps, saved with its bar, the keychain sealed with a passphrase; a file sent with its bar, its preview, the names chosen, imported; the destinations (SFTP, SMB, node, the host's disks, Proxmox) in Settings › System."
     },
     "platform": {
       "app": "partial",
@@ -419,26 +451,28 @@
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native external ACP agents in G42.17."
     },
     "machines": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/system/machines_screen.dart",
+        "lib/settings/api/system_api.dart"
       ],
       "phase": "G42.14",
       "rows": [
         246
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native SSH machines in G42.14."
+      "note": "Native (G42.14): add and change (secrets kept unless new ones are written), the public key to copy, the test with the first key trusted and a changed key replaced only after a yes, a new key, who may use it, remove."
     },
     "nodes": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/system/nodes_screen.dart",
+        "lib/settings/api/system_api.dart"
       ],
       "phase": "G42.14",
       "rows": [
         247
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native node pairing in G42.14."
+      "note": "Native (G42.14): this machine's name and fingerprint, the code for ten minutes, the pairs waiting with their six digits and both fingerprints, the tree with state, capabilities and who may command it, rename and unpair on a yes, grants and Take away, pairing under another machine, where each project's commands, backups and videos go. Never a pair without the person's yes on both screens."
     },
     "devices": {
       "app": "native",

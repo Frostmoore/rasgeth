@@ -871,6 +871,15 @@ class AppController extends ChangeNotifier {
     return v;
   }
 
+  /// G42.14: a mandatory or breaking update found when the app connected, for its screen (once).
+  UpdateStatus? _gateToOpen;
+
+  UpdateStatus? takeUpdateGate() {
+    final g = _gateToOpen;
+    _gateToOpen = null;
+    return g;
+  }
+
   /// Whether the RedGiant in use is updating now: then its update is followed and shown.
   Future<void> _lookForUpdate() async {
     final c = client;
@@ -881,6 +890,11 @@ class AppController extends ChangeNotifier {
       final os = s.install == 'os' ? await c.osUpdates() : null;
       final running = (os?.updating ?? false) || (s.progress != null && s.phase != 'failed');
       if (running) followUpdate(s, os);
+      // The page's UpdateGate: a mandatory or breaking update opens its screen by itself.
+      if (!running && (s.gate == 'mandatory' || s.gate == 'breaking') && s.available) {
+        _gateToOpen = s;
+        notifyListeners();
+      }
     } on ApiException {
       // An older server, or one that does not say: nothing to follow.
     }

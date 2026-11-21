@@ -8442,6 +8442,4106 @@
       }
     }
   },
+  "chAxCat_other": "Other",
+  "chAxCat_personal": "Personal",
+  "chAxCat_social": "Social",
+  "chAxCat_work": "Work",
+  "chAxMailboxAdd": "Add a mailbox",
+  "chAxMailboxAddText": "As many as you like, each in its category.",
+  "chAxMailboxAgents": "Agents may use it",
+  "chAxMailboxAgentsHelp": "They search, read and write drafts here; every email they send asks you first and shows it whole.",
+  "chAxMailboxCategory": "Category",
+  "chAxMailboxName": "Its name",
+  "chAxMailboxNameHelp": "For example Work or Gmail; empty: the address.",
+  "chAxMailboxNew": "New mailbox",
+  "chAxMailboxNewCategory": "Or a new category",
+  "chAxMailboxNewCategoryPlaceholder": "Family, Club, Shop…",
+  "chAxMailboxPasswordKept": "Leave it empty to keep the one you gave.",
+  "chAxMailboxPurpose": "A mailbox for the automations: only new mail is read, nothing is marked or moved.",
+  "chAxMailboxesWatching": "{n} mailboxes connected: {names}.",
+  "@chAxMailboxesWatching": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "chAxSmtpHost": "Sending server (SMTP)",
+  "chAxSmtpHostHelp": "Only to get messages by email; empty: the usual one.",
+  "chAxSmtpPort": "Sending port",
+  "chChatChange": "Change the settings",
+  "chChatDiscordHow": "In the Discord Developer Portal create an application, add a bot, turn on Message Content Intent, copy its token, and invite the bot to a server of yours (or write to it directly).",
+  "chChatDiscordToken": "Bot token",
+  "chChatImHow": "Apple has no iMessage service for programs: it takes a Mac that stays on, signed in to Messages, with the free BlueBubbles server. The Mac answers with its Apple ID: use one made for Rasgeth, not your own.",
+  "chChatImLimits": "Without the Private API answers cannot be edited and nobody shows as typing; approvals and questions are answered with numbers. While the Mac sleeps or is off, messages wait and arrive when it wakes.",
+  "chChatImPassword": "BlueBubbles server password",
+  "chChatImPrivate": "BlueBubbles' Private API is set up (edits and “typing...”)",
+  "chChatImStep1": "On the Mac make (or use) an Apple ID just for Rasgeth and sign in with it in Messages.",
+  "chChatImStep2": "Download BlueBubbles Server from bluebubbles.app, open it and choose a server password.",
+  "chChatImStep3": "When it asks, allow Full Disk Access and Accessibility in System Settings, Privacy & Security: it needs them to read and send messages.",
+  "chChatImStep4": "In BlueBubbles keep the Mac from sleeping and note its address: http://<the Mac's address>:1234 at home, or the address of its own tunnel from outside.",
+  "chChatImStep5": "Write the address and the password here and press Connect. From your iPhone write to the Apple ID of step 1 and send the code.",
+  "chChatImUrl": "Address of the BlueBubbles server (http://...:1234)",
+  "chChatLinked": "Linked: {who}",
+  "@chChatLinked": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "chChatMatrixE2ee": "Encrypted chats: direct chats in Element are encrypted and the bot cannot read them. To keep encryption, run Pantalaimon (Matrix's free encryption helper) next to Rasgeth and write its address instead of the server's.",
+  "chChatMatrixHomeserver": "Server address (for example https://matrix.org)",
+  "chChatMatrixHow": "Rasgeth needs a Matrix account of its own, not yours: it is the one you will write to.",
+  "chChatMatrixStep1": "Make a new account for the bot, for example at app.element.io (or on your own server).",
+  "chChatMatrixStep2": "Signed in as the bot, open Settings, Help & About, Advanced, Access token, and copy it. Then close that tab without signing out: signing out cancels the token.",
+  "chChatMatrixStep3": "Write the server address and paste the token here, then press Connect.",
+  "chChatMatrixStep4": "From your own account make a new room without encryption (switch off “Enable end-to-end encryption”), invite the bot (it joins by itself) and send the code that appears.",
+  "chChatMatrixToken": "The bot account's access token",
+  "chChatSendCode": "Send this from the chat to link it:",
+  "chChatSignalHow": "Signal needs signal-cli-rest-api running with a number of its own linked (a second SIM or a linked device); write its address and the number here.",
+  "chChatSignalNumber": "The bot's number (+39...)",
+  "chChatSignalUrl": "Address of signal-cli-rest-api",
+  "chChatSlackApp": "App-level token (xapp-..., connections:write)",
+  "chChatSlackBot": "Bot token (xoxb-...)",
+  "chChatSlackHow": "At api.slack.com/apps create an app, turn on Socket Mode (no public address needed), add the scopes chat:write, im:history, app_mentions:read, files:read, files:write, subscribe to message.im and app_mention, install it and copy the two tokens.",
+  "chChatSteps": "Step by step",
+  "chChatTeamsAppId": "Microsoft App ID",
+  "chChatTeamsDownload": "Download the app for Teams",
+  "chChatTeamsEndpoint": "Messaging endpoint for Azure: {url}",
+  "@chChatTeamsEndpoint": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "chChatTeamsFiles": "Files from Rasgeth arrive as a card to accept: once accepted they are saved in your OneDrive. Voice messages cannot be sent to a bot in Teams.",
+  "chChatTeamsHow": "Teams talks to bots only through Microsoft Azure. You need a Microsoft 365 work or school account that may add custom apps (the free personal Teams does not allow bots), and Rasgeth reachable from outside (Settings, Remote access).",
+  "chChatTeamsSecret": "Client secret (its Value)",
+  "chChatTeamsStep1": "Open portal.azure.com (a free account is enough), choose Create a resource, search for Azure Bot and press Create.",
+  "chChatTeamsStep2": "Give it a name, choose the Free plan (F0), Type of App: Single Tenant, Creation type: Create new Microsoft App ID. Press Create, then Go to resource.",
+  "chChatTeamsStep3": "In Configuration write this Messaging endpoint and Save: {url}. Copy the Microsoft App ID and the App Tenant ID.",
+  "@chChatTeamsStep3": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "chChatTeamsStep4": "Next to Microsoft App ID press Manage Password, then New client secret, Add, and copy its Value (it is shown only once).",
+  "chChatTeamsStep5": "In Channels add Microsoft Teams, accept the terms and press Apply.",
+  "chChatTeamsStep6": "Paste the three values here and press Connect. Then download the app for Teams with the button that appears.",
+  "chChatTeamsTenant": "App Tenant ID",
+  "chChatTeamsUpload": "In Teams open Apps, Manage your apps, Upload an app, Upload a custom app, choose the file you downloaded and press Add. Then open the chat with Rasgeth and send the code.",
+  "chChatTurnOff": "Turn off",
+  "chChatWaHow": "In Meta for Developers create a WhatsApp app, copy the access token, the phone number ID and the app secret, and choose a verify token. WhatsApp sends messages to a public address: Rasgeth must be reachable from outside (Settings, Remote access).",
+  "chChatWaPhoneId": "Phone number ID",
+  "chChatWaSecret": "App secret",
+  "chChatWaToken": "Access token",
+  "chChatWaVerify": "Verify token (choose one)",
+  "chChatWaWebhook": "Webhook for Meta: {url} with the verify token you chose; subscribe to messages.",
+  "@chChatWaWebhook": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "chChats": "Other chats",
+  "chChatsHint": "Talk to Demi-God from Discord, Slack, Signal, WhatsApp, Matrix, Teams or iMessage too. It is one conversation: begun on Telegram or here, it goes on wherever you write. Approvals and questions arrive with buttons (on Signal, Matrix and iMessage, with numbers to reply).",
+  "chEmailChange": "Change",
+  "chEmailConnect": "Connect the mailbox",
+  "chEmailConnected": "Reading {user} on {host}.",
+  "@chEmailConnected": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "chEmailHost": "Mail server (IMAP)",
+  "chEmailHostHelp": "For example imap.gmail.com, outlook.office365.com, imap.mail.me.com.",
+  "chEmailNeedFirst": "Connect the mailbox first: until then this automation never starts.",
+  "chEmailNotConnected": "Not connected",
+  "chEmailPassword": "Password for apps",
+  "chEmailPasswordHelp": "Better an app password (Gmail, Outlook and iCloud make one in the account's security settings) than your own: you can revoke it at any time. It stays in a private file on your server.",
+  "chEmailPort": "Port",
+  "chEmailPurpose": "A routine can start when an email arrives (an invoice, an alert). Rasgeth looks only at new mail, every two minutes, and changes nothing in your mailbox; the email reaches the agent as information, never as instructions.",
+  "chEmailSave": "Connect the mailbox",
+  "chEmailSecure": "Encrypted from the start (port 993)",
+  "chEmailTesting": "Trying the mailbox…",
+  "chEmailTileText": "For the automations that start when an email arrives.",
+  "chEmailTitle": "Mailbox",
+  "chEmailUser": "Address or username",
+  "chEmailWatching": "Watching {user} on {host}.",
+  "@chEmailWatching": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "chInput": "in",
+  "chRemove": "Remove",
+  "chSbChatAccounts": "Linked accounts",
+  "chSbChatDiscordText": "A bot in your Discord server, in private messages or in a channel.",
+  "chSbChatImText": "Through a Mac that stays on, with BlueBubbles: the Mac's Messages app answers.",
+  "chSbChatMatrixText": "A bot account on any Matrix server (matrix.org or your own), in a chat or a room.",
+  "chSbChatNoAccount": "No account linked yet: send the code below from the chat.",
+  "chSbChatOnWaiting": "On: send the code from the chat",
+  "chSbChatSignalText": "A Signal number of its own, through signal-cli-rest-api.",
+  "chSbChatSlackText": "An app in your Slack workspace, in Socket Mode: no public address needed.",
+  "chSbChatTeamsText": "A bot in Microsoft Teams, for work or school accounts, through a free Azure Bot.",
+  "chSbChatWaText": "Your WhatsApp Business number, through Meta's Cloud API.",
+  "chSbChatWaiting": "Waiting for the code… this window notices by itself.",
+  "chSbChatsQ": "Talk to Demi-God from other apps too",
+  "chStTgAccounts": "Linked accounts",
+  "chTelegram": "Telegram",
+  "chTgChangeBot": "Use another bot",
+  "chTgLinked": "Linked to {who}",
+  "@chTgLinked": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "chTgLinkedHint": "Write to your bot whenever you like: Demi-God passes it on to God and brings back the answer.",
+  "chTgOpenBot": "Open @{bot}",
+  "@chTgOpenBot": {
+    "placeholders": {
+      "bot": {
+        "type": "String"
+      }
+    }
+  },
+  "chTgQr": "Scan with your phone's camera",
+  "chTgWaiting": "Waiting for you to press Start… this page notices by itself.",
+  "chUnlink": "Unlink",
+  "chWzConnect": "Connect",
+  "chWzDoneBtn": "Done",
+  "chWzLocked": "set by the environment",
+  "chWzTgAsks": "Here I also tell you when a yes of yours is needed.",
+  "chWzTgBf1": "Alright. What shall we call it?",
+  "chWzTgBf2": "Now a username, ending in «bot».",
+  "chWzTgBf3": "Done! Here is the token: 123456789:AAH…",
+  "chWzTgBfName": "My Rasgeth",
+  "chWzTgCheck": "Check",
+  "chWzTgChecking": "Checking…",
+  "chWzTgDone": "done",
+  "chWzTgExampleBot": "my_rasgeth_bot",
+  "chWzTgHaveToken": "I already have a token",
+  "chWzTgHello": "Hi, I'm {demigod}. Write to me whenever you like: I pass everything to {god} and bring you the answer.",
+  "@chWzTgHello": {
+    "placeholders": {
+      "demigod": {
+        "type": "String"
+      },
+      "god": {
+        "type": "String"
+      }
+    }
+  },
+  "chWzTgLater": "later",
+  "chWzTgLead": "With Telegram you write to {demigod} from wherever you are and get the notices there: approvals, questions, long jobs, budget. Three steps, a couple of minutes.",
+  "@chWzTgLead": {
+    "placeholders": {
+      "demigod": {
+        "type": "String"
+      }
+    }
+  },
+  "chWzTgLinked": "Linked to {who}. Write to {demigod} whenever you like.",
+  "@chWzTgLinked": {
+    "placeholders": {
+      "demigod": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "chWzTgLinkedShort": "Linked. Write to your bot whenever you like.",
+  "chWzTgMessage": "Message",
+  "chWzTgNow": "now",
+  "chWzTgOfficial": "Telegram's official bot",
+  "chWzTgOnline": "bot · online",
+  "chWzTgOpenBf": "Open BotFather",
+  "chWzTgPressStart": "Press Start to begin talking with this bot.",
+  "chWzTgQ": "Rasgeth on your phone",
+  "chWzTgStart": "START",
+  "chWzTgStep1": "Make the bot with @BotFather",
+  "chWzTgStep1Text": "BotFather is Telegram's official bot that makes bots. Write /newbot to it, give it a name and a username that ends in «bot».",
+  "chWzTgStep2": "Paste the token",
+  "chWzTgStep2Text": "BotFather answers with a long line, like 123456789:AAH… It is the bot's key: keep it to yourself.",
+  "chWzTgStep3": "Pair the phone",
+  "chWzTgStep3Text": "Open {bot} and press Start: Telegram sends it this code by itself, nothing to type.",
+  "@chWzTgStep3Text": {
+    "placeholders": {
+      "bot": {
+        "type": "String"
+      }
+    }
+  },
+  "chWzTgToken": "The bot's token",
+  "chWzTgYouWillSee": "What you will see in Telegram",
+  "chWzTgYourBot": "Your bot",
+  "chWzTgYourBotName": "your bot",
+  "chWzTrying": "Trying the model…",
+  "moActive": "active",
+  "moAgentModelDefault": "The default model",
+  "moAgents": "Agents",
+  "moAgentsModel": "Agent's model",
+  "moBackup": "Backup",
+  "moBackupModelNone": "None: a task given up on stays so",
+  "moBackupModelTitle": "Backup model for tasks",
+  "moBrainChatgpt": "ChatGPT subscription",
+  "moBrainChatgptDevice": "If OpenAI says sign-in with a device code is not allowed: on chatgpt.com open Settings, Security, and turn on device code authorization, then try again.",
+  "moBrainChatgptHint": "Rasgeth uses ChatGPT through OpenAI's official Codex program, signed in with your account. What you use counts against your plan's limits.",
+  "moBrainChatgptStart": "Connect ChatGPT",
+  "moBrainChatgptStep1": "Open this page and sign in:",
+  "moBrainChatgptStep2": "Type this code there:",
+  "moBrainClaude": "Claude subscription",
+  "moBrainClaudeCode": "Paste the code here",
+  "moBrainClaudeHint": "Rasgeth uses Claude through Anthropic's official program, signed in with your account. What you use counts against your plan's limits, not money.",
+  "moBrainClaudeOpen": "Open Anthropic's sign-in page",
+  "moBrainClaudeStep2": "Sign in with your Claude account. At the end Anthropic shows a code: copy it.",
+  "moBrainConnect": "Connect",
+  "moBrainDefault": "The model agents use",
+  "moBrainDefaultHint": "Agents use this model unless you choose another one for them. It is tried with a real question before it is saved.",
+  "moBrainDefaultSaved": "Saved: agents will use it.",
+  "moBrainDefaultTry": "Try and use this one",
+  "moBrainDisconnect": "Disconnect",
+  "moBrainEffortHelp": "How much it reasons before answering: low is quick and cheap, high is slower but more careful.",
+  "moBrainKeyExample": "It looks like this: {example}",
+  "@moBrainKeyExample": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "moBrainKeyMake": "Create a key on {name}'s page",
+  "@moBrainKeyMake": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moBrainKeyTry": "Try and save",
+  "moBrainKeyWorks": "It works: {n} models available.",
+  "@moBrainKeyWorks": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moBrainLocal": "A model on this computer",
+  "moBrainNoModel": "No model is connected yet, so agents cannot answer. Connect one above (a subscription, a key or a local model in the next step), or later in Settings, Models and subscriptions.",
+  "moBrainNotOpened": "Did nothing open?",
+  "moBrainOpenHere": "Open it here",
+  "moBrainServer": "A server of yours",
+  "moBrainServerHint": "If you already run models with Ollama, LM Studio or vLLM, give Rasgeth its address.",
+  "moBrainServerKey": "Its key",
+  "moBrainServerKeyHelp": "Only if the server asks for one; most do not.",
+  "moBrainServerUrl": "Server address",
+  "moBrainServerUrlHelp": "With /v1 at the end. Ollama: http://localhost:11434/v1, LM Studio: http://localhost:1234/v1.",
+  "moBrainWhyText": "If you already pay for Claude or ChatGPT, start with that: nothing more to pay. With a key you pay for what you use, and you can pick among many providers. A model on this computer costs nothing and keeps everything private, but it is slower and less capable than the big online ones. You can combine them: for example a subscription for hard work and a local model for small jobs.",
+  "moCatalogBuiltin": "the one built into Rasgeth",
+  "moCatalogChecked": "checked {when}",
+  "@moCatalogChecked": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "moCatalogDownloaded": "downloaded and signed",
+  "moCatalogRefresh": "Update now",
+  "moCatalogRefreshing": "Updating…",
+  "moCatalogRow": "Models catalog: updated on {date}",
+  "@moCatalogRow": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "moCatalogUnreachable": "GitHub did not answer: the catalog in use stays.",
+  "moCatalogUnsigned": "The downloaded catalog has no valid signature: it was not used.",
+  "moCatalogVersion": "version {n}",
+  "@moCatalogVersion": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moChat": "Chat",
+  "moDownloaded": "downloaded",
+  "moDownloads": "downloads",
+  "moEffort": "Effort",
+  "moEffortHint": "Reasoning effort: higher thinks more, is slower and costs more. From the next message.",
+  "moEffort_high": "High",
+  "moEffort_low": "Low",
+  "moEffort_max": "Max",
+  "moEffort_medium": "Medium",
+  "moError": "Error",
+  "moFailed": "failed",
+  "moJob_step_model_download": "The model",
+  "moLmBeyondMemory": "bigger than RAM and card together: part of it is read from the SSD at each token, slower",
+  "moLmBigChunks": "Big chunks",
+  "moLmBigChunksHelp": "Reads long messages in passes of 8,192 or 16,384 tokens instead of 4,096, when the graphics card has room for them, and loads the model in RAM when it fits with a margin: the experts go through the card once a pass, so fewer passes read faster. The first start measures them on a long message (a few minutes more) and keeps the fastest. Only for mixture-of-experts models.",
+  "moLmCardDownloading": "downloading, {pct}%",
+  "@moLmCardDownloading": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmCardGet": "to download, {size}",
+  "@moLmCardGet": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmCardOff": "chosen, turned off",
+  "moLmCardPaused": "download paused",
+  "moLmCardReady": "downloaded",
+  "moLmCardTooBig": "too big for this computer",
+  "moLmContextTokens": "tokens of context",
+  "moLmDelete": "Delete",
+  "moLmDeleteActiveConfirm": "This model is in use: the engine stops and the file is deleted. Go on?",
+  "moLmDiscard": "Throw away the download",
+  "moLmDownload": "Download · {size}",
+  "@moLmDownload": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmDownloadedBusy": "downloading",
+  "moLmDownloadedConfirm": "Delete {name}? It frees {size}.",
+  "@moLmDownloadedConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmDownloadedConfirmActive": "{name} is the model in use: the engine stops and the file is deleted ({size}). Go on?",
+  "@moLmDownloadedConfirmActive": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmDownloadedEmpty": "No model downloaded yet.",
+  "moLmDownloadedHelp": "Every model file in the folder ({size} in all), the biggest first. Deleting one frees its room at once; the suggested ones can be downloaded again.",
+  "@moLmDownloadedHelp": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmDownloadedNote": "{n} on the disk · {size}",
+  "@moLmDownloadedNote": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmDownloadedPartial": "incomplete",
+  "moLmDownloadedTitle": "Downloaded models",
+  "moLmEngine": "Engine",
+  "moLmEngineHelp": "Rasgeth picks the one that suits this computer. Change it only if starting fails.",
+  "moLmEngine_cpu": "Processor",
+  "moLmEngine_cuda": "NVIDIA graphics card (CUDA)",
+  "moLmEngine_mac": "The Mac's graphics chip (Metal), next to Rasgeth",
+  "moLmEngine_vulkan": "AMD, Intel or built-in graphics (Vulkan)",
+  "moLmEngine_windows": "Graphics card, with Windows' own engine (Vulkan)",
+  "moLmExperimental": "experimental",
+  "moLmFactCache": "Experts' cache in the card",
+  "moLmFactRam": "Free RAM counted",
+  "moLmFactSsd": "From the SSD at each token",
+  "moLmFactSsdGb": "about {gb} GB",
+  "@moLmFactSsdGb": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmFactSsdNone": "nothing: it fits in RAM",
+  "moLmGbPerSec": "{n} GB/s",
+  "@moLmGbPerSec": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmHwCpu": "No graphics card to use: models run on the processor, slower; small ones, up to about {max} GB.",
+  "@moLmHwCpu": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmHwGpu": "{name} with {vram} GB of video memory: models up to about {max} GB run on it, fast.",
+  "@moLmHwGpu": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "vram": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmHwGpuUnknown": "An NVIDIA graphics card is available, but its memory is unknown: start with a small model.",
+  "moLmHwIgpu": "A graphics chip built into the processor: a little faster than the processor alone; models up to about {max} GB.",
+  "@moLmHwIgpu": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmHwUnreachable": "The engine cannot reach the graphics card here: models run on the processor, slower; up to about {max} GB.",
+  "@moLmHwUnreachable": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmInUse": "in use",
+  "moLmLoading": "Looking up the models…",
+  "moLmMoePrefetch": "Next layer ahead",
+  "moLmOff": "Off",
+  "moLmOn": "On",
+  "moLmOther": "Other models in the folder",
+  "moLmOtherHelp": "A model file in the folder, not among the suggested ones ({size}).",
+  "@moLmOtherHelp": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmPartRamSub": "{free} free now",
+  "@moLmPartRamSub": {
+    "placeholders": {
+      "free": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmPartSsd": "Models' SSD",
+  "moLmPartSsdSub": "{free} free",
+  "@moLmPartSsdSub": {
+    "placeholders": {
+      "free": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmPause": "Pause",
+  "moLmPaused": "Paused: {done} of {total}",
+  "@moLmPaused": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmPausedAt": "Paused at {done}",
+  "@moLmPausedAt": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmPreloadSpeed": "Model read from the disk",
+  "moLmRecommended": "recommended",
+  "moLmResume": "Go on",
+  "moLmRoom": "Room",
+  "moLmScoresHint": "The bars compare these models with each other (five is the best of them). Speed is an estimate for this computer.",
+  "moLmSearch": "Other models from Hugging Face",
+  "moLmSearchHint": "Search by name, choose a repository and a file. Files that are not models are hidden.",
+  "moLmSearchPlaceholder": "e.g. gemma, qwen, mistral",
+  "moLmShowActivation": "Show the activation",
+  "moLmSpecDraft": "With a small model of the family",
+  "moLmSpecDraftGet": "Download the small model · {size}",
+  "@moLmSpecDraftGet": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmSpecDraftHelp": "{name} ({size}) proposes up to 8 tokens; it stays all in the card with its own context, so the big model gets a little less room there. It only works with a model of the same family (same vocabulary): Rasgeth picks it.",
+  "@moLmSpecDraftHelp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmSpecDraftReady": "small model ready",
+  "moLmSpecHelp": "Writes faster without changing the answers: something cheap proposes the next tokens and the model checks them all in one pass, reading its weights once for several tokens. It helps most where the text is predictable (code being rewritten, long dense models outside the card); on new prose it gains little. Measured on an RTX 4080 Super: Llama 3.3 70B (mostly in RAM) from 1.1 to 2.6 tokens/s on new prose and to 7.4 on code rewritten; Qwen3 14B (in the card) from 59 to 155 on code, about even on prose. The speed is shown under each answer.",
+  "moLmSpecNgram": "From the text already written",
+  "moLmSpecNgramHelp": "The proposals come from pieces of the conversation that repeat (code being edited, documents quoted back): no second model, no memory used. It helps only there: on new prose nothing, and on a large dense model little even on code (measured: Llama 3.3 70B 1.1 -> 1.3). Prefer the small model when the family has one.",
+  "moLmSpecNone": "Off",
+  "moLmSpecTitle": "Speculative decoding (for experts)",
+  "moLmSpeedEstimate": "tokens/s, estimate",
+  "moLmSpeedMeasured": "tokens/s, measured",
+  "moLmSpeedTest": "Measure the gain",
+  "moLmSpeedTestCode": "Code rewritten (tokens/s)",
+  "moLmSpeedTestCost": "It takes a good while and a lot of compute: the model is loaded several times, minutes for a large one. Meanwhile the local model does not answer the agents.",
+  "moLmSpeedTestDone": "The engine is back as it was. Choose the way above and start the model again to use it.",
+  "moLmSpeedTestIntro": "Rasgeth starts this model once for each way of writing (alone, with the small model, with the n-grams), has it write a short new text and rewrite a piece of code, and shows the tokens a second of each. In the end the engine goes back to how it was.",
+  "moLmSpeedTestMode": "Way",
+  "moLmSpeedTestProse": "New text (tokens/s)",
+  "moLmSpeedTestStart": "Start the test",
+  "moLmSpeedTestTitle": "How much faster here",
+  "moLmStart": "Start",
+  "moLmStarting": "Starting…",
+  "moLmStream": "SSD stream",
+  "moLmStreamCache": ", {gb} of the card for the experts",
+  "@moLmStreamCache": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmStreamFromCard": "the model fits in the card",
+  "moLmStreamFromRam": "the model fits in RAM: the SSD is only read at the start",
+  "moLmStreamFromSsd": "about {gb} GB read from the SSD at each token",
+  "@moLmStreamFromSsd": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmStreamHdd": "Not available: {disk} is a spinning disk, too slow to read a model from at each token.",
+  "@moLmStreamHdd": {
+    "placeholders": {
+      "disk": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmStreamMaybeSsd": "Windows does not say whether {disk} is an SSD: use it only if it is.",
+  "@moLmStreamMaybeSsd": {
+    "placeholders": {
+      "disk": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmStreamNoRoom": "Not available: {disk} has only {free} free; it needs at least 20 GB.",
+  "@moLmStreamNoRoom": {
+    "placeholders": {
+      "disk": {
+        "type": "String"
+      },
+      "free": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmStreamPlan": "In use: context up to {ctx} tokens{cache}, {source} (counting {ram} of free RAM).",
+  "@moLmStreamPlan": {
+    "placeholders": {
+      "cache": {
+        "type": "String"
+      },
+      "ctx": {
+        "type": "String"
+      },
+      "ram": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmStreamThisDisk": "the models' disk",
+  "moLmStreamUnknownDisk": "Rasgeth does not know yet which disk holds the models (it learns at the next start of Rasgeth): use it only if it is an SSD.",
+  "moLmSysmemClose": "Got it",
+  "moLmSysmemStep1": "Open the NVIDIA Control Panel (right click on the desktop).",
+  "moLmSysmemStep2": "Manage 3D settings, then Global Settings (or Program Settings with llama-server.exe, for the engine only).",
+  "moLmSysmemStep3": "CUDA - Sysmem Fallback Policy: choose «Prefer No Sysmem Fallback» and Apply.",
+  "moLmSysmemStep4": "Start the model again: the engine reads the setting when it starts.",
+  "moLmSysmemText": "When the card's memory runs out, NVIDIA's driver on Windows uses the computer's RAM instead of failing: reading messages becomes 2 to 3.5 times slower. Rasgeth cannot read this setting, so check it once:",
+  "moLmSysmemTitle": "NVIDIA card: turn off «CUDA Sysmem Fallback»",
+  "moLmThisPc": "This computer",
+  "moLmTokensPerSec": "{n} tokens/s",
+  "@moLmTokensPerSec": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmTokensUnit": "tokens/s",
+  "moLmTooBig": "It needs at least {need}: this computer has room for {max}.",
+  "@moLmTooBig": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      },
+      "need": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmTuneBatch": "passes of {n} tokens",
+  "@moLmTuneBatch": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmTuneCache": "Card for the experts",
+  "moLmTuneChosen": "kept",
+  "moLmTuneCtx": "Context",
+  "moLmTuneFailed": "did not start",
+  "moLmTuneHelp": "Each row is a real try: the model reads a context of about 2,000 tokens and writes 64. A typical turn is an agent reading 1,500 tokens of tool results and writing 300: the fastest one is kept for this model, and you can pick another.",
+  "moLmTuneLongRead": "a message of {n} tokens",
+  "@moLmTuneLongRead": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmTuneNoCopy": "experts computed on the processor when reading",
+  "moLmTuneRead": "Reading (tok/s)",
+  "moLmTuneRunning": "measuring…",
+  "moLmTuneTitle": "Tuning on this computer",
+  "moLmTuneTurn": "Typical turn (s)",
+  "moLmTuneUse": "Use",
+  "moLmTuneWrite": "Writing (tok/s)",
+  "moLmUnavailable": "Hugging Face does not answer: try again later.",
+  "moLmUseForAgents": "Use it for the agents",
+  "moLmUsedForAgents": "The agents will use this model.",
+  "moLmVersionSuggested": "suggested",
+  "moLmVersions": "Version of the file",
+  "moLmWarmHelp": "The model reads its first context and writes a few words. The first time on a new graphics card this takes minutes: the card prepares its programs once, and then it is fast.",
+  "moLmWarmSpeed": "Context read (as a first message)",
+  "moLmWhere": "Where the model goes",
+  "moLoading": "Loading…",
+  "moModelHint": "The model of this conversation (agents' models: Settings, Agents)",
+  "moModelNew": "new",
+  "moModelPick": "Choose a model",
+  "moModelSearch": "Search a model",
+  "moModelUnconfirmed": "data to be confirmed",
+  "moModelWay": "How it goes",
+  "moMpChange": "Change",
+  "moMpLead": "Pick one or more ways: combine them as you like. Each square opens its window; the lit ones are connected.",
+  "moMpLocalLead": "Free, and nothing leaves here: the computer, where the models are, the models to download and the ones already on the disk.",
+  "moMpNoDefault": "No model chosen",
+  "moMpNoDefaultText": "Connect a way above, then choose the one agents use.",
+  "moMpSearchLead": "How agents look things up on the internet. One provider at a time: the lit one is in use.",
+  "moMpSearchTitle": "Web search",
+  "moSearch": "Search",
+  "moSearchInUse": "in use",
+  "moSubsDeviceWait": "This page notices by itself when you are done.",
+  "moSubsLoggedAs": "Signed in: {who} {plan}",
+  "@moSubsLoggedAs": {
+    "placeholders": {
+      "plan": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "moSubsProgramDownload": "{name} is downloaded when you switch this on (once, a few hundred MB, with its bar in the corner).",
+  "@moSubsProgramDownload": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moSubsProgramSystem": "{name} is already installed on this computer: Rasgeth uses it.",
+  "@moSubsProgramSystem": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moSubsSharedLogin": "{name} is already signed in on this computer: Rasgeth uses that sign-in as it is, no need to sign in again.",
+  "@moSubsSharedLogin": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moSubsUseShared": "Use the sign-in already here",
+  "moSubscriptions": "Models and subscriptions",
+  "moTermsOf": "{name}'s terms",
+  "@moTermsOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moUiAboutHours": "about {h} h {min} min left",
+  "@moUiAboutHours": {
+    "placeholders": {
+      "h": {
+        "type": "String"
+      },
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "moUiAboutMinutes": "about {min} min left",
+  "@moUiAboutMinutes": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "moUiDropNone": "Nothing matches.",
+  "moUiLessThanMinute": "less than a minute left",
+  "moUiNotNeeded": "not needed",
+  "moUiOf": "{done} of {total}",
+  "@moUiOf": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "moViaLocal": "local",
+  "moViaSubscription": "subscription",
+  "moWzAgents": "Agents",
+  "moWzAgentsSub": "they do the work",
+  "moWzAgentsText": "They get their tasks from the orchestrators: they write code, test, search.",
+  "moWzAlreadySet": "already set",
+  "moWzAssign": "Who uses which model",
+  "moWzAssignChat": "The everyday chat, with web search: questions, texts, ideas.",
+  "moWzAssignConnect": "Connect a model",
+  "moWzAssignDemigod2": "Answers you on Telegram and in the chats, and passes the work on: a fast model is enough.",
+  "moWzAssignEmpty": "You have not connected any model yet, so there is nothing to choose here. Connect one in «How should Rasgeth think?» or start a local model.",
+  "moWzAssignGod": "The one who runs everything: plans, projects, other agents. The strongest model pays off here.",
+  "moWzAssignLead": "Each one works with its own model: the strongest for who decides, a fast one for who answers. Touch a model to change it.",
+  "moWzAssignLocal": "Choose a local model",
+  "moWzAssignOthers": "The agents you create later",
+  "moWzAssignOthersHelp": "And the board's summaries, unless you choose one for them. It is tried with a real question before it is saved.",
+  "moWzAssistants": "Personal assistants",
+  "moWzAssistantsSub": "they work for you",
+  "moWzBackupText": "If an agent gives up on a task (an error, the budget, no check passed), this model tries it once more, knowing what the first one did. Best from another provider.",
+  "moWzBackupWindow": "Tries the tasks given up on once more, in a new conversation.",
+  "moWzBrain": "How should Rasgeth think?",
+  "moWzBrainChatgpt": "Your ChatGPT Plus or Pro plan. You type a short code on OpenAI's page.",
+  "moWzBrainClaude": "Your Claude Pro or Max plan. You sign in on Anthropic's page.",
+  "moWzBrainKeys": "Anthropic, OpenAI, Gemini, Mistral, DeepSeek, Grok and more. You pay for what you use.",
+  "moWzBrainKeysTitle": "An API key",
+  "moWzBrainLocal": "Free and private: nothing leaves this computer. You choose it in the next step.",
+  "moWzBrainQ": "How should Rasgeth think?",
+  "moWzBrainServer": "Ollama, LM Studio, vLLM or another server that speaks OpenAI's language.",
+  "moWzChosen": "chosen",
+  "moWzDefaultModel": "Default model",
+  "moWzDemiRole": "The spokesperson",
+  "moWzDense": "{b} billion · dense",
+  "@moWzDense": {
+    "placeholders": {
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzDiskHdd": "A spinning disk: too slow for the models.",
+  "moWzDisksLead": "A model takes from 3 to 80 GB. A fast SSD is best: SSD stream reads from there.",
+  "moWzDisksNoMove": "The models can be moved to another disk only in Rasgeth's Windows installation.",
+  "moWzDisksOne": "Here the models stay in Rasgeth's data folder. In Rasgeth's Windows installation you can move them to another SSD.",
+  "moWzDisksTitle": "Where the models stay",
+  "moWzDoneBtn": "Done",
+  "moWzEffortHelp": "A little is fast and cheap, deeply is slower but more careful. It stays fixed for each conversation.",
+  "moWzEffortTitle": "How much it thinks before answering",
+  "moWzEffort_high": "Deeply",
+  "moWzEffort_low": "A little",
+  "moWzEffort_max": "The most",
+  "moWzEffort_medium": "Just right",
+  "moWzFitNone": "None runs fast enough here: the ones below work, slowly.",
+  "moWzFitTab": "Suited",
+  "moWzFitTitle": "Suited to this computer",
+  "moWzFitsUpTo": "Models up to about {max} run fast here; bigger ones use the RAM too.",
+  "@moWzFitsUpTo": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzFolder": "Folder",
+  "moWzFolderHelp": "A folder of this disk; it is created if it is not there.",
+  "moWzFolderLead": "Where Rasgeth keeps the models' files on this disk. The ones already downloaded are copied there.",
+  "moWzFolderTitle": "The models' folder on {disk}",
+  "@moWzFolderTitle": {
+    "placeholders": {
+      "disk": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzFree": "free",
+  "moWzFreeOf": "free of {total} GB",
+  "@moWzFreeOf": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzGodRole": "The boss",
+  "moWzHereNow": "here now",
+  "moWzHowItWorks": "How it works",
+  "moWzKeyOf": "The key of {name}",
+  "@moWzKeyOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzKeysLead": "A key is like a password that lets Rasgeth use the provider's models on your account. You pay the provider for what you use. Add as many as you like: each one is tried at once.",
+  "moWzLegend": "Green outline: it runs on this computer between the graphics card and the RAM, at least {n} tokens a second. The others work, but slowly.",
+  "@moWzLegend": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzLikeAbove": "The same as {who}",
+  "@moWzLikeAbove": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzLocal": "Local model",
+  "moWzLocalQ": "A model on this computer",
+  "moWzLocked": "set by the environment",
+  "moWzMoe": "{b} billion · mixture of experts",
+  "@moWzMoe": {
+    "placeholders": {
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzMoreModels": "Other files and searches",
+  "moWzMoveHere": "Move them here",
+  "moWzMoveLead": "{kind}, {free} free. The models already downloaded are copied to {folder}; the model in use starts again afterwards.",
+  "@moWzMoveLead": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      },
+      "free": {
+        "type": "String"
+      },
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzMoveTitle": "Move the models to {disk}?",
+  "@moWzMoveTitle": {
+    "placeholders": {
+      "disk": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzNModels": "{n} models",
+  "@moWzNModels": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzNone": "None",
+  "moWzOfRamLong": "of RAM",
+  "moWzOrchestrators": "Orchestrators",
+  "moWzOrchestratorsSub": "the heads of the projects",
+  "moWzOrchestratorsText": "One per project: splits the work and hands it to the agents.",
+  "moWzPickFolder": "Choose folder",
+  "moWzPickModel": "Choose the model",
+  "moWzPickRepo": "Choose a repository",
+  "moWzProvider": "Provider",
+  "moWzRemove": "Remove",
+  "moWzSlowTab": "Slow here",
+  "moWzSlowTitle": "They work, but slowly",
+  "moWzStateKey": "{name}: connected",
+  "@moWzStateKey": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzStateKeys": "{n} keys connected",
+  "@moWzStateKeys": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzStateLinked": "connected",
+  "moWzStateLocal": "{model}, in use",
+  "@moWzStateLocal": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzStateLocalNext": "you choose it in the next step",
+  "moWzStateServer": "connected: {url}",
+  "@moWzStateServer": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzStreamInfo1": "For models bigger than the graphics card, and for a much longer context.",
+  "moWzStreamInfo2": "The parts of the model used most stay in the card and in RAM; the rest is read from the SSD when needed. It works best with mixture-of-experts models; dense ones work, but slower.",
+  "moWzStreamInfo3": "At the first start Rasgeth measures this computer and keeps the fastest tuning. It needs an SSD with at least 20 GB free: a spinning disk is too slow.",
+  "moWzStreamOff": "Off: only the models that fit in the card and the RAM run.",
+  "moWzStreamOn": "On: models bigger than the card and the RAM read the rest from the SSD ({disk}) when needed. Slower, but they run.",
+  "@moWzStreamOn": {
+    "placeholders": {
+      "disk": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzSubscription": "I know that using a personal subscription (instead of an API key) in a third-party tool may not be allowed by the provider's terms.",
+  "moWzTrying": "Trying the model…",
+  "moWzUnderstood": "Got it",
+  "moWzUseFolder": "Use this folder",
+  "moWzVram": "{gb} of video memory",
+  "@moWzVram": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzWhich": "Which one should I pick?",
+  "chUiAdvanced": "Advanced",
+  "moJob_engine": "Starting {model}",
+  "@moJob_engine": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "moJob_engine_load": "Loading {model}",
+  "@moJob_engine_load": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "moJob_error_bad_file": "This is not a model file of Hugging Face.",
+  "moJob_error_checksum": "The download arrived damaged (its fingerprint does not match): try again.",
+  "moJob_error_engine_stopped": "The engine stopped by itself. The details below say why.",
+  "moJob_error_incomplete": "The download stopped before the end: press Go on to continue from where it stopped.",
+  "moJob_error_load_timeout": "The model did not load within 15 minutes. Try a smaller one.",
+  "moJob_error_model_missing": "The model file is not in the folder any more. Download it again.",
+  "moJob_error_no_gpu": "The engine cannot see the graphics card. Update the card's drivers and restart the computer, or choose the processor under Advanced.",
+  "moJob_error_out_of_memory": "There is not enough memory for this model. Choose a smaller model, or the same one in a lower quality.",
+  "moJob_model_download": "Downloading {model}",
+  "@moJob_model_download": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "moJob_speed_test": "Measuring {model}",
+  "@moJob_speed_test": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "moJob_step_draft": "With the small model",
+  "moJob_step_image": "Downloading the engine (only once)",
+  "moJob_step_load": "Loading the model into memory",
+  "moJob_step_ngram": "With the n-grams",
+  "moJob_step_none": "The model alone",
+  "moJob_step_preload": "Reading the model once, so the first message does not wait for the disk",
+  "moJob_step_start": "Starting the engine",
+  "moJob_step_try": "Trying an answer",
+  "moJob_step_tune": "Measuring this computer to pick the fastest setting",
+  "moLmQuality_good": "good quality",
+  "moLmQuality_high": "high quality",
+  "moLmQuality_reduced": "reduced quality, to fit",
+  "moLmScore_code": "Programming",
+  "moLmScore_languages": "Other languages",
+  "moLmScore_smart": "Intelligence",
+  "moLmScore_speed": "Speed here",
+  "moLmScore_tools": "Tools",
+  "moLmSpeedMode_draft": "With the small model",
+  "moLmSpeedMode_ngram": "N-grams",
+  "moLmSpeedMode_none": "Model alone",
+  "chHubTelegram": "Demi-God on Telegram: the bot, its token and the accounts that talk to it",
+  "chHubChats": "Demi-God on Discord, Slack, Signal, WhatsApp, Matrix, Teams and iMessage",
+  "moHubModels": "Subscriptions, API keys, your own server, the model on this computer and who uses which",
+  "xtAddServer": "Add server",
+  "xtApprove": "Approve",
+  "xtArgs": "Arguments",
+  "xtAxMagicDismiss": "Put it away",
+  "xtAxMagicExamples": "Or start from an example",
+  "xtAxMagicGo": "Ask God",
+  "xtAxMagicReject": "Not like this",
+  "xtAxMagicSendNo": "Send to God",
+  "xtAxMagicStarting": "Calling God…",
+  "xtAxMagicWhy": "What is wrong? God reads it and tries again",
+  "xtAxNeedMissing": "Missing",
+  "xtAxNeedReady": "Ready",
+  "xtAxNeedVault": "Add to the keychain",
+  "xtBy": "by",
+  "xtCancel": "Cancel",
+  "xtCommand": "Command",
+  "xtCopied": "Copied",
+  "xtCopy": "Copy",
+  "xtCreate": "Create",
+  "xtDescription": "Description",
+  "xtExtAdd": "Add",
+  "xtExtAddAndConnect": "Add and connect",
+  "xtExtAdded": "Added",
+  "xtExtAppConsole": "Open {name}'s developer page",
+  "@xtExtAppConsole": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtAppGuide": "Create your own app on {name} (once, about ten minutes)",
+  "@xtExtAppGuide": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtAskHelp": "Ask God with a magic integration or extension, in your own words: God looks for a ready service in the catalog, or writes a new ability, tests it and asks you before installing anything.",
+  "xtExtAskTitle": "What should your agents be able to do?",
+  "xtExtAuth_app": "Your own app, with a guide",
+  "xtExtAuth_header": "Needs a key",
+  "xtExtAuth_none": "Nothing to sign in to",
+  "xtExtAuth_oauth": "Sign in on its page",
+  "xtExtBroken": "Not working",
+  "xtExtBrokenHelp": "A service that does not work: check the key, or remove it and add it again. Hover over the label to see the error.",
+  "xtExtCatAll": "All",
+  "xtExtCat_cloud": "Cloud",
+  "xtExtCat_code": "Code",
+  "xtExtCat_data": "Data",
+  "xtExtCat_design": "Design",
+  "xtExtCat_docs": "Documentation",
+  "xtExtCat_home": "Home",
+  "xtExtCat_web": "Web",
+  "xtExtCat_work": "Work",
+  "xtExtCatalog": "Services you can add",
+  "xtExtCatalogHelp": "Each one gives your agents new tools. The services' own ones come first; the community ones are made by others.",
+  "xtExtChecking": "Checking…",
+  "xtExtClientId": "Client ID of your app",
+  "xtExtClientSecret": "Client secret of your app",
+  "xtExtClientSecretOptional": "Client secret of your app (if it has one)",
+  "xtExtCommunity": "Community",
+  "xtExtConnect": "Connect",
+  "xtExtConnected": "Your services",
+  "xtExtEverywhere": "Everywhere",
+  "xtExtGuide": "How to set up {name}",
+  "@xtExtGuide": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtKey": "{name} key",
+  "@xtExtKey": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtKeyHelp": "It is kept in a private file on your server and never shown again, not even to the agents.",
+  "xtExtKeyWhere": "Where do I find the {name} key?",
+  "@xtExtKeyWhere": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtKindSkill": "Skill",
+  "xtExtKindTool": "Tool",
+  "xtExtManualOauth": "It signs in on its own page (OAuth)",
+  "xtExtManualToken": "Key (optional, sent as Bearer)",
+  "xtExtMore": "More about it",
+  "xtExtNeedsLogin": "Needs you to sign in",
+  "xtExtNothingFound": "Nothing found. Ask God with the magic extension above: it can write what is missing.",
+  "xtExtOauthHelp": "A new tab opens on {name}'s page: sign in there and allow Rasgeth. Then come back here.",
+  "@xtExtOauthHelp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtOfficial": "Official",
+  "xtExtOnlyProject": "Only in {name}",
+  "@xtExtOnlyProject": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtProposals": "Waiting for you",
+  "xtExtProposalsHelp": "Abilities written by the agents and already tested: nothing is installed until you approve it.",
+  "xtExtSearch": "Search a service",
+  "xtExtServerUrl": "{name}'s address",
+  "@xtExtServerUrl": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtServerUrlHelp": "As Rasgeth's server reaches it, for example on your home network.",
+  "xtExtSkills": "Skills and tools",
+  "xtExtSkillsHelp": "Abilities installed for your agents. Click one to read or change it.",
+  "xtExtTransport": "How it runs",
+  "xtExtTransportHttp": "Online (address)",
+  "xtExtTransportStdio": "On this server (command)",
+  "xtExtUnverified": "Not confirmed on the service's own pages: if something does not match, its documentation is right.",
+  "xtExtUnverifiedShort": "to be checked",
+  "xtExtWhere": "Where it works",
+  "xtExtWhereHelp": "Everywhere, or only for the agents of one project.",
+  "xtExtWorks": "Works · {n} tools",
+  "@xtExtWorks": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "xtExtensions": "Extensions",
+  "xtFailedTests": "Failed its tests",
+  "xtInstructions": "Instructions",
+  "xtMediaGetKey": "Get a key",
+  "xtMediaHasKey": "key already there",
+  "xtMediaKey": "{name} key",
+  "@xtMediaKey": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMediaKeyLinked": "{name} key linked",
+  "@xtMediaKeyLinked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMediaKeyStep1": "Open the {name} page where keys are made and sign in (or create an account).",
+  "@xtMediaKeyStep1": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMediaKeyStep2": "Create a new key and copy it.",
+  "xtMediaKeyStep3": "Paste it here and save:",
+  "xtMediaNativeHelp": "Some models make pictures by themselves (ChatGPT through Codex): then theirs is used, and the picture reaches you in the chat as with ours. Off: always the provider chosen here. Asking for «your tool» in a conversation always uses ours. New conversations follow this.",
+  "xtMediaNativeTitle": "Use the model's own tool when it has one",
+  "xtMediaNeedsKey": "Needs its key",
+  "xtMediaOff": "Off",
+  "xtMediaOtherProvider": "Choose another provider",
+  "xtMediaPurpose": "Who makes pictures, videos, voices, music and sound effects when an agent is asked for one (the tools image_generation, video_generation and audio_generation). Choose a provider and a model for each, and paste its key: a key you already gave for the chat (OpenAI, Gemini, xAI) works here too. They are paid by the provider for what you make.",
+  "xtMediaStep1": "1. Who makes it",
+  "xtMediaStep2": "2. The {name} key",
+  "@xtMediaStep2": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMediaTitle": "Default extensions",
+  "xtMediaTurnOff": "Turn off",
+  "xtMediaVoice": "Voice",
+  "xtMediaVoiceFirst": "The account's first one",
+  "xtMedia_image": "Pictures",
+  "xtMedia_image_help": "Drawings, photos, illustrations, logos from a description (or from a picture).",
+  "xtMedia_music": "Music",
+  "xtMedia_music_help": "Songs and pieces from a description, with or without singing.",
+  "xtMedia_sound": "Sound effects",
+  "xtMedia_sound_help": "Short sounds from a description: a door, rain, a crowd, an engine.",
+  "xtMedia_speech": "Voice",
+  "xtMedia_speech_help": "A text read aloud, with the voice you choose.",
+  "xtMedia_video": "Videos",
+  "xtMedia_video_help": "Short clips from a description or from a first frame. They take minutes and cost more. (OpenAI closed Sora in September 2026.)",
+  "xtModel": "Model",
+  "xtMxApprove": "Approve and install",
+  "xtMxArgs": "Arguments:",
+  "xtMxBadgeApprove": "To install",
+  "xtMxBadgeInstalled": "Installed",
+  "xtMxBadgeMissing": "Something missing",
+  "xtMxBuilding": "God is building it with you: answer its questions in the conversation.",
+  "xtMxChange": "Change it",
+  "xtMxChangeGo": "Ask God",
+  "xtMxChangeLabel": "What should change? God proposes it again and you install it as before.",
+  "xtMxChanging": "God is changing it with you; what is installed keeps working until you approve the new version.",
+  "xtMxCheckHost": "The address {what}",
+  "@xtMxCheckHost": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxCheckKey": "The key for {what}",
+  "@xtMxCheckKey": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxCheckKeyUndeclared": "The key {what}, used by the code but not declared",
+  "@xtMxCheckKeyUndeclared": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxCheckTest": "The test of {what}",
+  "@xtMxCheckTest": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxCode": "Read the code",
+  "xtMxDone": "Installed: every agent has these tools from its next conversation.",
+  "xtMxExtension": "Magic extension",
+  "xtMxExtensionAsk": "What should the agents be able to do?",
+  "xtMxExtensionEx1": "Turn a CSV into a chart and tell me the totals",
+  "xtMxExtensionEx2": "Check that an Italian VAT number and tax code are valid",
+  "xtMxExtensionEx3": "A skill for writing my weekly report the way I like it",
+  "xtMxExtensionLead": "Tell God what the agents should be able to do. God asks, writes tools and skills with their tests and tries them in a closed sandbox: you see the result and install it with one button.",
+  "xtMxExtensionPlaceholder": "For example: turn a CSV into a chart and tell me the totals",
+  "xtMxExtensionTile": "New abilities for the agents, of any kind: God writes the tools and skills, tests them apart and you install them.",
+  "xtMxGiveKey": "Give it to these tools",
+  "xtMxGiveKeyText": "Only these tools will receive it, through the proxy, and only towards {hosts}: {tools}.",
+  "@xtMxGiveKeyText": {
+    "placeholders": {
+      "hosts": {
+        "type": "String"
+      },
+      "tools": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxGiveKeyTitle": "Give {what} to this package?",
+  "@xtMxGiveKeyTitle": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxIntegration": "Magic integration",
+  "xtMxIntegrationAsk": "Which service, and what for?",
+  "xtMxIntegrationEx1": "Connect me to Notion: search my pages and create new ones",
+  "xtMxIntegrationEx2": "Connect me to my management software's API (invoices and customers)",
+  "xtMxIntegrationEx3": "Read my Todoist tasks and mark them done",
+  "xtMxIntegrationLead": "Tell God which service and what the agents should do with it. God asks what it needs, writes the connector with its tests and tries it in a closed sandbox: you see the result and install it with one button.",
+  "xtMxIntegrationPlaceholder": "For example: connect me to Notion so the agents can search my pages and add notes",
+  "xtMxIntegrationTile": "Connect Rasgeth to a service through its API (Notion, your management software, a bank…): God writes the connector, tests it apart and you install it.",
+  "xtMxKeyHosts": "It may go only to:",
+  "xtMxKeyLead": "Paste the key here: it goes straight into your keychain, encrypted. Nobody reads it, God included; the tools receive it only through the proxy.",
+  "xtMxKeyName": "Name in the keychain:",
+  "xtMxKeyOnly": "Used only by this package's tools; you can change it in Settings > Keychain.",
+  "xtMxKeySave": "Save in the keychain",
+  "xtMxKeyTitle": "Key for {service}",
+  "@xtMxKeyTitle": {
+    "placeholders": {
+      "service": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxKeyValue": "The key",
+  "xtMxKeys": "Keys",
+  "xtMxListLead": "Built with God: open one to go on with the conversation, install it, change it or remove it.",
+  "xtMxListTitle": "Magic integrations and extensions",
+  "xtMxMissing": "Before you can install it, this is missing:",
+  "xtMxParts": "What it adds",
+  "xtMxPromise1": "Nothing is installed without your yes.",
+  "xtMxPromise2": "Every part is tested in a closed sandbox that reaches only the services it declares.",
+  "xtMxPromise3": "Keys go into your keychain from the window, never in the chat.",
+  "xtMxProposal": "God's package",
+  "xtMxReaches": "It reaches only",
+  "xtMxReachesNothing": "Nothing: it works without the network.",
+  "xtMxRetest": "Test again",
+  "xtMxState_building": "Being built",
+  "xtMxState_dismissed": "Put away",
+  "xtMxState_done": "Installed",
+  "xtMxState_ready": "Ready: it waits for you",
+  "xtMxState_testing": "Tests running",
+  "xtMxStep1": "You say what you want",
+  "xtMxStep2": "God writes and tests it",
+  "xtMxStep3": "You install it",
+  "xtMxTesting": "The tests are running again in the sandbox…",
+  "xtMxUninstall": "Uninstall",
+  "xtMxUninstallText": "These go away: {what}. The keys added for it leave the keychain too.",
+  "@xtMxUninstallText": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxUninstallTitle": "Uninstall {what}?",
+  "@xtMxUninstallTitle": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "xtMxWhyGod": "God has to fix it: tell it in the conversation if it does not.",
+  "xtMxWhyHost": "The code reaches it but does not declare it: God has to declare it or remove it.",
+  "xtMxWhyMissing": "Not in your keychain yet: add it here, it goes to these tools only.",
+  "xtMxWhyNotGiven": "It is in your keychain, but not given to these tools (or not towards these addresses).",
+  "xtMxWhyTest": "It failed in the sandbox: God reads why and fixes it; with a key added, the tests run again.",
+  "xtName": "Name",
+  "xtNewSkill": "New skill",
+  "xtNoProposals": "No proposals.",
+  "xtOpen": "open",
+  "xtProposals": "Proposals waiting for you",
+  "xtReject": "Reject",
+  "xtRemotePasswordChange": "Change it",
+  "xtRemove": "Remove",
+  "xtSave": "Save",
+  "xtScope": "Scope",
+  "xtScopePlatform": "platform",
+  "xtSkillDownload": "Download",
+  "xtSkillDownloadHelp": "Download this skill as a .zip, to share it",
+  "xtSkillImport": "Import a skill",
+  "xtSkillImportFile": "Choose a .zip file",
+  "xtSkillImportHelp": "A skill's folder as a .zip (the agentskills.io format), from another Rasgeth or another tool.",
+  "xtSkillImportWhere": "Install in",
+  "xtSkillImported": "Skill \"{name}\" imported.",
+  "@xtSkillImported": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSkillReplaceConfirm": "A skill with this name already exists there. Replace it?",
+  "xtSvApprovedAuto": "installed by itself (your choice in Safety)",
+  "xtSvApprovedYou": "approved by you",
+  "xtSvBy": "by {who}",
+  "@xtSvBy": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSvCompare": "Compare with the one in use",
+  "xtSvCompareFull": "Compare: every difference",
+  "xtSvCurrent": "in use",
+  "xtSvHideCompare": "Hide the comparison",
+  "xtSvHow_baseline": "As it was before the history began",
+  "xtSvHow_edited": "Changed by hand",
+  "xtSvHow_import": "Imported",
+  "xtSvHow_install": "First version",
+  "xtSvHow_rollback": "Back to version {n}",
+  "@xtSvHow_rollback": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSvHow_update": "New version",
+  "xtSvLead": "Every change of this skill is kept: who wrote it, why and when. Agents use the newest from their next conversation.",
+  "xtSvLineTitle": "What changed and why",
+  "xtSvNextSession": "Once installed, agents use it from their next conversation; the ones already talking keep the version they started with.",
+  "xtSvNone": "No versions yet.",
+  "xtSvNotRestorable": "Too large to keep: it cannot come back.",
+  "xtSvRollback": "Go back to version {n}",
+  "@xtSvRollback": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSvRollbackConfirm": "Its files replace those of «{name}» in use, as a new version: nothing is lost and you can come back here. Agents get it from their next conversation.",
+  "@xtSvRollbackConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSvRollbackTitle": "Go back to version {n}?",
+  "@xtSvRollbackTitle": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSvRolledBack": "Back to version {n}: it is version {v} now.",
+  "@xtSvRolledBack": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSvTitle": "Versions",
+  "xtSvUnknown": "author unknown",
+  "xtSvVersion": "Version {n}",
+  "@xtSvVersion": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "xtSvWhy": "Why",
+  "xtSvYou": "you",
+  "xtUrl": "URL",
+  "xtWzDoneBtn": "Done",
+  "xtXwAddress": "Address",
+  "xtXwAuthor": "Proposed by",
+  "xtXwConnectedLead": "The lit ones work. Open one to sign in again or remove it.",
+  "xtXwFailedLead": "Proposals of the agents whose tests did not pass: they were never installed.",
+  "xtXwFile": "File",
+  "xtXwImportText": "A .zip someone shared, into everything or one project.",
+  "xtXwKeptFiles": "Files of the skill it keeps: {files}",
+  "@xtXwKeptFiles": {
+    "placeholders": {
+      "files": {
+        "type": "String"
+      }
+    }
+  },
+  "xtXwKind": "Kind",
+  "xtXwNewSkillText": "Instructions you write for your agents; it installs right away.",
+  "xtXwOpenFile": "Open the file",
+  "xtXwOwnLead": "For experts: a skill someone shared with you, one you write, a server not in the catalog.",
+  "xtXwOwnTitle": "Made by hand",
+  "xtXwPrevious": "Now installed",
+  "xtXwScripts": "It has scripts ({files}): approve only if you trust what they do.",
+  "@xtXwScripts": {
+    "placeholders": {
+      "files": {
+        "type": "String"
+      }
+    }
+  },
+  "xtXwServerText": "An MCP server by address or by command, with its key if it needs one.",
+  "xtXwSignIn": "Sign-in",
+  "xtXwSkillNameHelp": "Lowercase letters, digits and dashes, such as weekly-report.",
+  "xtXwSource": "Made by",
+  "xtXwState": "State",
+  "xtXwSummary": "Why it came",
+  "xtXwTests": "Tests in a throwaway sandbox",
+  "xtXwTestsFailed": "tests failed",
+  "xtXwUpdates": "Update of an installed skill",
+  "xtXwWaitsYou": "waits for your yes",
+  "xtYou": "You",
+  "vkCancel": "Cancel",
+  "vkClose": "Close",
+  "vkDvSection": "Devices",
+  "vkKcAdd": "Add",
+  "vkKcAddSub": "Its value is sealed as soon as you save",
+  "vkKcAddTitle": "A new credential",
+  "vkKcAgentsHow": "Agents use a credential with use_credential, or through the tools you bind to it below each credential.",
+  "vkKcAgentsHowNoProxy": "Agents use a credential with use_credential.",
+  "vkKcAll": "All",
+  "vkKcAllAgents": "Every agent",
+  "vkKcAllAgentsHelp": "Off: only the agents you choose.",
+  "vkKcAllCats": "All",
+  "vkKcAsk": "Ask me before it is used",
+  "vkKcAsk_always": "Every time",
+  "vkKcAsk_never": "Never: I trust the rules above",
+  "vkKcAsk_session": "The first time in each conversation",
+  "vkKcAutos": "Automations that may use it",
+  "vkKcBrAddress": "Rasgeth's address",
+  "vkKcBrCode": "Code",
+  "vkKcBrCodeLead": "In the extension (the key in the browser's bar) write this address and this code. The code works for ten minutes and for one browser.",
+  "vkKcBrCopied": "Copied",
+  "vkKcBrCopy": "Copy",
+  "vkKcBrDone": "Linked: «{name}». You can close this window.",
+  "@vkKcBrDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcBrDownload": "Download the extension",
+  "vkKcBrDownloadFirefox": "Download the version for Firefox",
+  "vkKcBrExpired": "That code expired: make a new one.",
+  "vkKcBrExpires": "Valid until {time}",
+  "@vkKcBrExpires": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcBrHowChromium": "Unzip it into a folder you will keep. Open {page}, switch on «Developer mode», press «Load unpacked» and choose the folder. You can also drag the zip onto that page.",
+  "@vkKcBrHowChromium": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcBrHowFirefox": "Open about:debugging#/runtime/this-firefox, press «Load Temporary Add-on…» and choose the zip. Firefox keeps it until it closes: to keep it for good it must be signed by Mozilla.",
+  "vkKcBrHowOpera": "Unzip it into a folder you will keep. Open opera://extensions, switch on «Developer mode» at the top right, press «Load unpacked» and choose the folder. You can also drag the zip onto that page.",
+  "vkKcBrHttpNote": "This address starts with http: the extension accepts it only at home (this computer or the local network). From outside use remote access, with https.",
+  "vkKcBrLead": "The keychain's extension fills sign-ins in Opera, Chrome, Edge, Brave and Firefox, only on the site each password belongs to, and saves the new ones here. Every use shows in the list above.",
+  "vkKcBrLink": "Link a browser",
+  "vkKcBrLinked": "linked {when}",
+  "@vkKcBrLinked": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcBrMakeCode": "Make a code",
+  "vkKcBrNever": "not used yet",
+  "vkKcBrNone": "No browser linked yet.",
+  "vkKcBrSeen": "last seen {when}",
+  "@vkKcBrSeen": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcBrStep1": "1. Install the extension",
+  "vkKcBrStep2": "2. Link it with a code",
+  "vkKcBrStore": "Later also in the Chrome Web Store: one click to install, and it updates itself.",
+  "vkKcBrTitle": "In your browser",
+  "vkKcBrUnlink": "Unlink",
+  "vkKcBrUnlinkQ": "Unlink {name}?",
+  "@vkKcBrUnlinkQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcBrUnlinkText": "The browser stops reaching the keychain at once. The passwords stay here; to use it again, link it with a new code.",
+  "vkKcBrWhich": "Your browser",
+  "vkKcBrWinLead": "The keychain's extension fills sign-ins in Opera, Chrome, Edge, Brave and Firefox, only on the site each password belongs to, and saves the new ones here.",
+  "vkKcBrWinTitle": "Link a browser",
+  "vkKcCat_api": "API keys",
+  "vkKcCat_bank": "Bank",
+  "vkKcCat_email": "Email",
+  "vkKcCat_login": "Logins",
+  "vkKcCat_other": "Other",
+  "vkKcCat_server": "Servers",
+  "vkKcCategory": "Kind",
+  "vkKcChange": "Change",
+  "vkKcClosed": "The keychain is closed",
+  "vkKcClosedKeys": "Until it opens, the keys you gave Rasgeth stay where they were (secrets.json and the private files), and nothing is deleted.",
+  "vkKcCopied": "Copied",
+  "vkKcCopiedNote": "Copied: it leaves the clipboard in 30 seconds.",
+  "vkKcCopy": "Copy",
+  "vkKcEmpty": "Nothing here yet. Add the key of a service an agent should use, or import your passwords from another manager.",
+  "vkKcExpired": "Expired",
+  "vkKcExpires": "Expires on",
+  "vkKcExpiresHelp": "Rasgeth reminds you a month before.",
+  "vkKcExpiresIn": "Expires in {n} days",
+  "@vkKcExpiresIn": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcExpiresToday": "Expires today",
+  "vkKcExpiringLead": "To renew soon:",
+  "vkKcExport": "Export sealed",
+  "vkKcExportGo": "Download",
+  "vkKcExportLead": "A file with every credential, sealed with a passphrase of yours: without it nobody can open it, Rasgeth included.",
+  "vkKcExportTitle": "Export the keychain",
+  "vkKcExported": "Downloaded. Keep the file and its passphrase apart.",
+  "vkKcEyebrow": "Keychain",
+  "vkKcFormat": "Value of the header",
+  "vkKcFormat_1password": "1Password",
+  "vkKcFormat_bitwarden": "Bitwarden",
+  "vkKcFormat_chrome": "Chrome or Edge",
+  "vkKcFormat_firefox": "Firefox",
+  "vkKcFormat_generic": "CSV",
+  "vkKcGenAgain": "Another one",
+  "vkKcGenChars": "{n} characters",
+  "@vkKcGenChars": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcGenDigits": "Digits only (PIN)",
+  "vkKcGenKind": "What it is made of",
+  "vkKcGenLength": "Length",
+  "vkKcGenLetters": "Letters and digits",
+  "vkKcGenSymbols": "Letters, digits, symbols",
+  "vkKcGenUse": "Use this",
+  "vkKcGenerate": "Make one",
+  "vkKcHeader": "Header",
+  "vkKcHide": "Hide",
+  "vkKcHosts": "Allowed addresses",
+  "vkKcHostsHelp": "Host names separated by commas; *.example.com for all its subdomains.",
+  "vkKcHow": "How it goes on a request",
+  "vkKcHowHelp": "When an agent does not write {ref} itself, the value goes in this header. {value} stands for the secret.",
+  "@vkKcHowHelp": {
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcImport": "Import",
+  "vkKcImport1password": "1Password: File > Export > CSV",
+  "vkKcImportBitwarden": "Bitwarden: Tools > Export vault > .csv",
+  "vkKcImportChrome": "Chrome and Edge: Settings > Passwords > Export passwords",
+  "vkKcImportFirefox": "Firefox: Passwords > menu > Export passwords",
+  "vkKcImportFound": "{n} passwords found in the {from} file. Choose the ones to keep:",
+  "@vkKcImportFound": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcImportGo": "Import {n}",
+  "@vkKcImportGo": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcImportLead": "Export your passwords from the other manager as a CSV file, then choose it here. A keychain file exported by Rasgeth works too.",
+  "vkKcImportLogins": "Imported logins are for you only: no agent may use them until you allow it.",
+  "vkKcImportPick": "Choose the file",
+  "vkKcImportSafe": "Delete the CSV file afterwards: it holds your passwords in clear.",
+  "vkKcImportSealedGo": "Open and import",
+  "vkKcImportSealedHelp": "The passphrase chosen when the file was exported.",
+  "vkKcImportSkipped": "{n} without a password were left out.",
+  "@vkKcImportSkipped": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcImportTitle": "Import passwords",
+  "vkKcImported": "{n} credentials added to the keychain.",
+  "@vkKcImported": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcLead": "Sealed on this computer. Agents use them by name and never see them; you choose where each one may go and who may use it.",
+  "vkKcLockedAdmin": "Set by the administrator",
+  "vkKcManage": "Manage",
+  "vkKcMore": "More",
+  "vkKcMoveLead": "From Bitwarden, 1Password, Chrome, Edge or Firefox; out in a file sealed with a passphrase of yours.",
+  "vkKcMoveTitle": "Bring them in, take them with you",
+  "vkKcName": "Name for the agents",
+  "vkKcNameBad": "Only lower-case letters, digits, - and _ (at least two)",
+  "vkKcNameHelp": "Lower case, no spaces: agents write it to use the credential.",
+  "vkKcNeverUsed": "Never used",
+  "vkKcNoHosts": "Without an address no agent can use it: it stays for you only.",
+  "vkKcNoMatch": "Nothing matches the search.",
+  "vkKcNoUses": "No agent has used a credential yet.",
+  "vkKcNone": "None",
+  "vkKcNotes": "Notes",
+  "vkKcPassphrase": "Passphrase",
+  "vkKcPassphraseAgain": "The passphrase again",
+  "vkKcPassphraseDiffer": "The two are different",
+  "vkKcPassphraseHelp": "At least 8 characters. Keep it somewhere safe: it cannot be recovered.",
+  "vkKcProt_dpapi": "Protected by Windows",
+  "vkKcProt_env": "Sealed with the server's own key",
+  "vkKcProt_file": "Sealed with a key kept on this computer",
+  "vkKcProt_keychain": "Protected by the Mac's Keychain",
+  "vkKcQ": "Your keys and passwords, safe in one place",
+  "vkKcRemove": "Delete",
+  "vkKcRemoveQ": "Delete {name}?",
+  "@vkKcRemoveQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcRemoveText": "The credential goes from the keychain for good: agents and tools can no longer use it.",
+  "vkKcSafeText": "Encrypted (AES-256), never in a project or in git, never written in a chat or a log.",
+  "vkKcSearch": "Search by name, service, user or label",
+  "vkKcSecret": "The secret",
+  "vkKcSecretLead": "The key, token or password. Once saved it is never shown again unless you ask.",
+  "vkKcSecretPlaceholder": "Paste or type it here",
+  "vkKcService": "Service",
+  "vkKcServiceExample": "Revolut Business",
+  "vkKcServiceHelp": "The name you know it by: Revolut, Gmail, the office server.",
+  "vkKcShow": "Show",
+  "vkKcShowQ": "Show the secret?",
+  "vkKcShowText": "It will be on the screen until you hide it or close the window. Make sure nobody is looking.",
+  "vkKcSomeAgents": "The agents that may use it",
+  "vkKcSomeone": "Someone",
+  "vkKcSys_chat": "Chat: {what}",
+  "@vkKcSys_chat": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSys_email": "Mailbox: {what}",
+  "@vkKcSys_email": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSys_git": "Code hosting: {what}",
+  "@vkKcSys_git": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSys_mcp": "Extension: {what}",
+  "@vkKcSys_mcp": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSys_other": "{what}",
+  "@vkKcSys_other": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSys_provider": "Model provider: {what}",
+  "@vkKcSys_provider": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSys_search": "Web search: {what}",
+  "@vkKcSys_search": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSys_ssh": "Machine (SSH): {what}",
+  "@vkKcSys_ssh": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcSystem": "Kept by Rasgeth",
+  "vkKcSystemLead": "Keys set by whoever installed this server (in its environment): Rasgeth uses them, they cannot be changed here.",
+  "vkKcSystemTitle": "Set by the administrator",
+  "vkKcTags": "Labels",
+  "vkKcTagsHelp": "Separated by commas: work, home…",
+  "vkKcTools": "Extensions' tools that receive it",
+  "vkKcToolsHelp": "A tool chosen here gets the address to reach the service with this credential, never the value.",
+  "vkKcUrl": "Address (if any)",
+  "vkKcUseAs": "Agents call it {name}",
+  "@vkKcUseAs": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcUseBrowser": "{name} (browser)",
+  "@vkKcUseBrowser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcUse_denied": "asked for {name} towards {host}: you said no",
+  "@vkKcUse_denied": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcUse_moved": "moved {name} here from {host}",
+  "@vkKcUse_moved": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcUse_refused": "could not use {name} towards {host}",
+  "@vkKcUse_refused": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcUse_used": "used {name} towards {host}",
+  "@vkKcUse_used": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcUsedBy": "Used by:",
+  "vkKcUsedByText": "Rasgeth uses this key by itself. Here you can change it, choose whether agents may use it too and see every use; you remove it from its page.",
+  "vkKcUsedTimes": "Used {n} times, last {when}",
+  "@vkKcUsedTimes": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "vkKcUser": "User or email (if any)",
+  "vkKcUsesLead": "Every time an agent asked for a credential: when, where to, and how it went.",
+  "vkKcUsesOne": "Its last uses",
+  "vkKcUsesTitle": "Who used them",
+  "vkKcWhere": "Where it may go",
+  "vkKcWhereLead": "The value is put on a request only towards these addresses: anywhere else it is refused.",
+  "vkKcWho": "Who may use it",
+  "vkKcWhoLead": "Agents never see the value: they ask for it by name, and Rasgeth puts it on the request.",
+  "vkMcSection": "Machines",
+  "vkSave": "Save",
+  "vkSettings": "Settings",
+  "vkWzCode": "Where the code lives",
+  "vkWzRemote": "Access from outside home",
+  "vkAutomations": "Automations",
+  "vkChats": "Other chats",
+  "vkExtensions": "Extensions",
+  "vkSubscriptions": "Models and subscriptions",
+  "vkTelegram": "Telegram",
+  "g4211Hub": "Services, skills, generation and the agents' proposals",
+  "g4212Hub": "Keys and passwords, safe in one place",
+  "g4211SignInOpened": "The service's page opened in the browser: sign in there, then come back here.",
+  "g4211OpenExtensions": "Open Extensions",
+  "g4212OpenKeychain": "Open the keychain",
+  "syBackup": "Backup",
+  "syBackupAddsHint": "A project whose name is taken here comes in beside it, with a number after the name.",
+  "syBackupAlreadyHere": "already here, left as it is",
+  "syBackupAnother": "Import another backup",
+  "syBackupChoose": "Choose the backup file",
+  "syBackupCounts": "{agents} agents · {conversations} conversations · {size} of files",
+  "@syBackupCounts": {
+    "placeholders": {
+      "agents": {
+        "type": "String"
+      },
+      "conversations": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "syBackupDownload": "Download {file}",
+  "@syBackupDownload": {
+    "placeholders": {
+      "file": {
+        "type": "String"
+      }
+    }
+  },
+  "syBackupExport": "Make a backup",
+  "syBackupExportHint": "Projects with their files, agents, conversations, chats and the board. Keys and sign-ins to services are not in it: they stay on this computer. node_modules folders are left out (they are rebuilt).",
+  "syBackupFrom": "Backup of {when}",
+  "@syBackupFrom": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "syBackupImport": "Import a backup",
+  "syBackupImportHint": "From another Rasgeth or from this one. Nothing here is deleted or replaced: what is in the backup is added, and what is already here stays as it is.",
+  "syBackupImportNow": "Import",
+  "syBackupImported": "Done: {projects} projects, {agents} agents and {conversations} conversations added.",
+  "@syBackupImported": {
+    "placeholders": {
+      "agents": {
+        "type": "String"
+      },
+      "conversations": {
+        "type": "String"
+      },
+      "projects": {
+        "type": "String"
+      }
+    }
+  },
+  "syBackupKeepName": "Keep {name}",
+  "@syBackupKeepName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syBackupKeys": "Include the keychain",
+  "syBackupKeysHelp": "Sealed with a passphrase of yours, with the keys of the models, chats and mailboxes: without it the backup's credentials cannot be opened.",
+  "syBackupKeysIn": "The backup carries a keychain: its passphrase",
+  "syBackupKeysInHelp": "Leave it empty to import everything else without the credentials.",
+  "syBackupKeysWrong": "The keychain was not imported: wrong passphrase. Everything else was.",
+  "syBackupMake": "Prepare the backup",
+  "syBackupMakeAgain": "Prepare it again",
+  "syBackupNameQuestion": "{who} is called {here} here and {backup} in the backup. Which name does it keep?",
+  "@syBackupNameQuestion": {
+    "placeholders": {
+      "backup": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "syBackupNothingNew": "Every project in this backup is here already: only what is missing is added.",
+  "syBackupPurpose": "Every project with its files, the agents and the conversations in one file: keep it safe, or carry it to another Rasgeth.",
+  "syBackupSaved": "Saved in your Downloads folder.",
+  "syBackupSending": "Sending the file to Rasgeth",
+  "syBackupTakeName": "Use {name}",
+  "@syBackupTakeName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syBrainDisconnect": "Disconnect",
+  "syCaddyDomain": "The address",
+  "syCaddyDomainHelp": "Rasgeth gets its HTTPS certificate from Let's Encrypt by itself.",
+  "syCaddyPihole": "Inside home some routers cannot reach their own public address: then open Rasgeth at home with its usual link, or turn on Pi-hole in Settings, Access from outside home (it is optional).",
+  "syCaddyStep1": "At your domain's provider, make a DNS record of type A for the address you want (for example rasgeth.yourdomain.com) pointing at your home's public address. If it changes, use a dynamic DNS service.",
+  "syCaddyStep2": "On your router, forward ports 80 and 443 to this computer.",
+  "syCaddyWarning": "With this way Rasgeth's sign-in page is on the internet: keep the password strong and the second check on.",
+  "syCancel": "Cancel",
+  "syCfAccess": "Safer still: in Cloudflare Zero Trust, Access, add an application for this address, so Cloudflare asks who you are before the page even appears.",
+  "syCfBuy": "Buy a domain on Cloudflare",
+  "syCfHost": "The address you chose",
+  "syCfHostHelp": "For example rasgeth.yourdomain.com: the subdomain and domain of the Public hostname.",
+  "syCfStep1": "If you have no domain yet, buy one (Cloudflare sells them at cost, about 10 euros a year):",
+  "syCfStep2": "Open Tunnels in Cloudflare Zero Trust, press Create a tunnel, choose Cloudflared and give it a name (for example rasgeth):",
+  "syCfStep3": "In the step Public hostname: subdomain rasgeth, your domain, Service type HTTP, URL redgiant:7600. Save.",
+  "syCfStep4": "Cloudflare shows a command with a long token after --token: copy only the token and write the address here.",
+  "syCfToken": "The tunnel's token",
+  "syCfTokenHelp": "The long string after --token in the command Cloudflare shows (it starts with eyJ).",
+  "syCfTunnels": "Cloudflare tunnels",
+  "syConnecting": "connecting…",
+  "syConversations": "Conversations",
+  "syErr_agent_limit": "The project «{project}» can have at most {max} agents besides its orchestrator: it has {count}. Raise the limit in Settings › Projects or remove one.",
+  "@syErr_agent_limit": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      },
+      "project": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_agent_removed": "The agent was removed from the team: restore it to work with it.",
+  "syErr_agent_stopped": "The agent is stopped (paused): resume it to go on.",
+  "syErr_bad_name": "That is not a name (for instance git.home.example.com).",
+  "syErr_code_rejected": "Anthropic did not accept this code: it may be incomplete or old. Open the sign-in page again to get a new one.",
+  "syErr_email_failed": "The mailbox did not let Rasgeth in: check the server, the address and the app password.",
+  "syErr_failed": "The sign-in did not finish. Try again from the start.",
+  "syErr_host_unreachable": "The server's name is known, but its address does not answer from Rasgeth. See Settings › Access from outside home › Your home services.",
+  "syErr_key_rejected": "The provider refused this key. Check that you copied all of it and that it is still active.",
+  "syErr_memory_empty": "Write something to remember.",
+  "syErr_memory_forgotten": "A memory forgotten for good cannot come back.",
+  "syErr_memory_full": "The memory is full: delete or merge some old memories first.",
+  "syErr_memory_gone": "That memory is not there any more.",
+  "syErr_memory_long": "A memory is at most 400 characters: write it shorter.",
+  "syErr_memory_moved": "The memory changed again since: undo the newer change first.",
+  "syErr_memory_same": "Another memory already says the same.",
+  "syErr_memory_secret": "That looks like a password, a code or a card number: secrets are never kept in memory.",
+  "syErr_memory_undone": "That change was already undone.",
+  "syErr_missing_permission": "GitHub did not let the token create repositories. Make a new one with Administration set to Read and write.",
+  "syErr_name_not_found": "Rasgeth cannot find the server's name in the DNS it uses. See Settings › Access from outside home › Your home services.",
+  "syErr_no_login": "Open Anthropic's sign-in page first.",
+  "syErr_no_model": "No model is chosen yet: open Settings, Models and subscriptions, connect one (a subscription, a key or a local model) and choose it in \"The model agents use\".",
+  "syErr_no_page": "Anthropic's sign-in page could not be prepared. Try again in a moment.",
+  "syErr_no_password": "Set a password first.",
+  "syErr_portrait_empty": "Write the trait.",
+  "syErr_portrait_gone": "That trait is not there any more.",
+  "syErr_portrait_long": "A trait is at most 200 characters: write it shorter.",
+  "syErr_portrait_private": "Email addresses and phone numbers never go into the portrait.",
+  "syErr_portrait_secret": "That looks like a password, a code or a card number: secrets never go into the portrait.",
+  "syErr_project_archived": "The project is archived: restore it to work in it.",
+  "syErr_provider_stalled": "The provider has not answered for {minutes} minutes: I tried again {retries} times. Try again in a while, or choose another model.",
+  "@syErr_provider_stalled": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      },
+      "retries": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_terms": "First tick the box about the providers' terms.",
+  "syErr_token_rejected": "Telegram refused this token. Copy it again from BotFather's message, all of it.",
+  "syErr_too_many": "Too many wrong tries: wait 15 minutes, then try again.",
+  "syErr_unreachable": "The provider did not answer. Check the address and the internet connection, then try again.",
+  "syErr_vault_bad_file": "This file is not a password export Rasgeth can read.",
+  "syErr_vault_bad_passphrase": "Wrong passphrase, or a damaged file.",
+  "syErr_vault_closed": "The keychain is closed on this computer.",
+  "syErr_vault_in_git": "The keychain's folder is inside a git repository: it must never be committed. Move Rasgeth's data folder outside it.",
+  "syErr_vault_name_taken": "Another credential has that name for the agents: choose another one.",
+  "syErr_vault_no_value": "Write the secret.",
+  "syErr_vault_not_found": "That credential is no longer in the keychain.",
+  "syErr_vault_system": "Rasgeth uses this key: remove it from its page in Settings.",
+  "syErr_voice_convert": "The recording could not be converted for whisper on this computer.",
+  "syErr_voice_empty": "The recording is empty.",
+  "syErr_voice_key_refused": "{name} refused the key: check it in Settings, Voice.",
+  "@syErr_voice_key_refused": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_voice_no_key": "{name} has no key yet: add it in Settings, Voice.",
+  "@syErr_voice_no_key": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_voice_no_service": "Rasgeth has no transcription service: choose one in Settings, Voice, Transcription.",
+  "syErr_voice_provider": "This provider cannot do it: choose another one.",
+  "syErr_voice_rate_limited": "{name} says too many requests or no credit left.",
+  "@syErr_voice_rate_limited": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_voice_service_error": "{name} answered with an error ({status}).",
+  "@syErr_voice_service_error": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_voice_timeout": "{name} took too long to answer.",
+  "@syErr_voice_timeout": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_voice_too_long": "The recording is too long.",
+  "syErr_voice_unreachable": "{name} cannot be reached: check that it is on and its address.",
+  "@syErr_voice_unreachable": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_weak": "The password needs at least 10 characters.",
+  "syErr_wrong": "Wrong password or code.",
+  "syError": "Error",
+  "syFailed": "failed",
+  "syFbArch": "Architecture",
+  "syFbBackupBusy": "A backup is already running.",
+  "syFbBackupNow": "Make a backup now",
+  "syFbBackupQ": "Best on another disk: if this one breaks, the copy is still there.",
+  "syFbBackupStarted": "Backup started: it shows in Downloads and jobs.",
+  "syFbBackupTitle": "Backups",
+  "syFbCannotMount": "Cannot be mounted here",
+  "syFbContainerDisks": "Rasgeth OS runs in a container ({name}): the disks it sees are those of the machine hosting it and cannot be used from here.",
+  "@syFbContainerDisks": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbDaily": "Every day",
+  "syFbDataDir": "Folder",
+  "syFbDataQ": "Projects, conversations and settings are here.",
+  "syFbDataTitle": "The data",
+  "syFbDay": "Day",
+  "syFbDestDisk": "Backups go to the disk {label} ({path}).",
+  "@syFbDestDisk": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbDestFolder": "Backups go to the folder {path}.",
+  "@syFbDestFolder": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbDestNode": "Backups go to the node {name}, in the storage it lends.",
+  "@syFbDestNode": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbDestSftp": "Backups go to {machine}, in {path} (SFTP).",
+  "@syFbDestSftp": {
+    "placeholders": {
+      "machine": {
+        "type": "String"
+      },
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbDestSmb": "Backups go to the shared folder {path}, as {user}.",
+  "@syFbDestSmb": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      },
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbDisks": "Disks",
+  "syFbDisksTitle": "Removable disks",
+  "syFbErr_already": "The container already has a folder with that name.",
+  "syFbErr_auth": "The destination refused the sign-in: check the user and the password (or the machine's key).",
+  "syFbErr_bad_path": "Write a full folder path (/volume1/Rasgeth) or one from the home (~/backups).",
+  "syFbErr_denied": "The destination does not let this user write there.",
+  "syFbErr_disk_missing": "The backup disk is not connected: plug it in. Nothing was written elsewhere.",
+  "syFbErr_has_filesystem": "That disk is formatted already: it is never formatted again from here.",
+  "syFbErr_keychain_closed": "Open the keychain first: the password is kept there.",
+  "syFbErr_mismatch": "The copy arrived different from the original: it was not kept. Try again.",
+  "syFbErr_needs_format": "That disk is not formatted.",
+  "syFbErr_no_container": "There is no container with that id on the host.",
+  "syFbErr_no_destination": "Choose where backups go first.",
+  "syFbErr_no_disk": "That disk is not a removable disk of the host (any more).",
+  "syFbErr_not_found": "The folder or the destination is not there (any more).",
+  "syFbErr_not_proxmox": "That machine is not a Proxmox host.",
+  "syFbErr_not_trusted": "Test this machine once in Settings › Machines and trust its key first.",
+  "syFbErr_place_missing": "The folder from the host is not mounted now: nothing was written on the system disk.",
+  "syFbErr_smb_address": "Write the shared folder as \\\\host\\share\\folder (letters, digits, spaces, dots and dashes).",
+  "syFbErr_smb_bad_domain": "The domain is letters, digits, dots and dashes.",
+  "syFbErr_smb_bad_password": "This password cannot be used (no line breaks).",
+  "syFbErr_smb_bad_user": "This user name cannot be used.",
+  "syFbErr_smb_missing": "Shared folders need smbclient, which this installation does not have.",
+  "syFbErr_unreachable": "The destination does not answer: is it on and on the network? Nothing was written elsewhere.",
+  "syFbFolderLead": "A folder this machine can write to: a network share, a disk mounted by you. Not inside the data folder.",
+  "syFbFolderPath": "Folder",
+  "syFbFolderTitle": "Or a folder",
+  "syFbFreeOf": "{free} free",
+  "@syFbFreeOf": {
+    "placeholders": {
+      "free": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbFreeOfTotal": "{free} GB free of {total} GB",
+  "@syFbFreeOfTotal": {
+    "placeholders": {
+      "free": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbFri": "Fri",
+  "syFbHostBad_bad_device": "This disk's device cannot be used.",
+  "syFbHostBad_bad_id": "The container id is a number, like 105.",
+  "syFbHostBad_bad_mp": "No free mount point.",
+  "syFbHostBad_bad_name": "This disk's name cannot be used for a folder.",
+  "syFbHostId": "Container id on Proxmox",
+  "syFbHostIdHelp": "The number in Proxmox's list (this container is called {hostname}).",
+  "@syFbHostIdHelp": {
+    "placeholders": {
+      "hostname": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbHostKind": "The host",
+  "syFbHostLead": "From a container Rasgeth sees the host's disks but cannot mount them: the host mounts the disk and passes a folder in. Rasgeth notices it by itself.",
+  "syFbHostMany": "On this machine there are {n} removable disks: pick the one for backups.",
+  "@syFbHostMany": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbHostNone": "No removable disk of the host is in sight: plug it into the host, or use a folder on the network below.",
+  "syFbHostOne": "On this machine there is the disk {title}, {how}, {size}.",
+  "@syFbHostOne": {
+    "placeholders": {
+      "how": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbHostOther": "Other",
+  "syFbHostSteps": "To run on the host, as root",
+  "syFbHostTitle": "A disk of the host",
+  "syFbHostWatching": "Looking every few seconds: when {target} arrives it shows above, ready to use.",
+  "@syFbHostWatching": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbHour": "Hour",
+  "syFbKeep": "Backups kept",
+  "syFbKeepN": "keep {n}",
+  "@syFbKeepN": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbLastFailed": "The backup of {when} did not work: {why}",
+  "@syFbLastFailed": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbLastOk": "Last backup: {when}, read back and complete.",
+  "@syFbLastOk": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbListAgain": "Look again",
+  "syFbListEmpty": "No backup yet in {where}.",
+  "@syFbListEmpty": {
+    "placeholders": {
+      "where": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbListLead": "Each one can be brought back: what is new is added, nothing here is deleted.",
+  "syFbListShow": "Show the backups",
+  "syFbListTitle": "The backups there",
+  "syFbMachineTitle": "The machine",
+  "syFbMethod_helper": "Pick one: Rasgeth mounts it only for backups. System disks are never offered.",
+  "syFbMethod_none": "This installation cannot mount disks (for example plain Docker without privileges): use a disk already mounted, or a folder below.",
+  "syFbMethod_udisks": "Pick one: the system mounts it (udisks2). System disks are never offered.",
+  "syFbMissing_not_installed": "unknown: the program that tells is not installed",
+  "syFbMissing_unreadable": "could not be read",
+  "syFbMissing_unsupported": "not available on this system",
+  "syFbMon": "Mon",
+  "syFbNetAProxy": "a reverse proxy",
+  "syFbNetDns": "A DNS server on your network ({ip}): a name like rasgeth.home can point here.",
+  "@syFbNetDns": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbNetFolder": "Folder there",
+  "syFbNetFolderHelp": "A full path (/volume1/Rasgeth, E:\\Backup) or one from the home (~/RedGiant-backups). It is made if missing.",
+  "syFbNetLanOnly": "Local network only is a fine choice: skip this step.",
+  "syFbNetLead": "Nothing to mount: it works also in a container or in Docker. Each backup arrives under a temporary name and gets its real name only once complete and checked.",
+  "syFbNetName": "You reached Rasgeth by name: {name}.",
+  "@syFbNetName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbNetNoMachines": "No machine yet: add your NAS or another computer in Settings › Machines (SSH), test it once, then come back here.",
+  "syFbNetNoNodes": "No paired Rasgeth yet: pair one in Settings › Nodes (it must lend its storage).",
+  "syFbNetNode": "Another Rasgeth",
+  "syFbNetNotTrusted": "Test it in Settings › Machines first",
+  "syFbNetNothing": "Nothing found that already reaches this machine from outside.",
+  "syFbNetPick": "Use for backups",
+  "syFbNetProxies": "Running on this machine: {names}.",
+  "@syFbNetProxies": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbNetProxyFront": "There is already {name} in front of Rasgeth.",
+  "@syFbNetProxyFront": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbNetSftp": "One of your machines",
+  "syFbNetSmb": "Shared folder (SMB)",
+  "syFbNetTailscale": "Tailscale is already running here ({name}): you can use it.",
+  "@syFbNetTailscale": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbNetTailscaleOff": "Tailscale is installed here but not connected.",
+  "syFbNetTitle": "Or a folder on the network",
+  "syFbNoDisks": "No removable disk found. Plug one in and open this page again, or use a folder.",
+  "syFbNodeOffline": "Offline now",
+  "syFbNodeOnline": "Online",
+  "syFbOff": "Only when I ask",
+  "syFbOfferCloud": "Cloud models: always available.",
+  "syFbOfferLocalCpu": "Local models: yes, small ones on the processor, up to about {max} GB (slower than a card).",
+  "@syFbOfferLocalCpu": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbOfferLocalGpu": "Local models: yes, on the graphics card, up to about {max} GB.",
+  "@syFbOfferLocalGpu": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbOfferNoLocal": "Local models: not offered, too little memory here. You can still add one from Settings › Models.",
+  "syFbPairLater": "Write the main Rasgeth's address and the code it shows in Settings › Nodes › «Add a node». You can also do it later, from Settings.",
+  "syFbPassword": "Password",
+  "syFbPasswordAgain": "The same password again",
+  "syFbPasswordHelp": "At least 10 characters.",
+  "syFbPlaceFree": "{free} GB free of {total}",
+  "@syFbPlaceFree": {
+    "placeholders": {
+      "free": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPlaceNotWritable": "Rasgeth cannot write here",
+  "syFbPlacesLead": "Folders the machine hosting Rasgeth mounted under /var/lib/redgiant/backups (a Proxmox mount point, a network share).",
+  "syFbPlacesTitle": "Folders mounted for backups",
+  "syFbPveDo": "Pass it to Rasgeth",
+  "syFbPveDone": "Done: the folder {target} has arrived.",
+  "@syFbPveDone": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveFormat": "Not formatted: format and pass it",
+  "syFbPveFormatLabel": "Everything on it is erased. To go on, type its name: {title}",
+  "@syFbPveFormatLabel": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveFormatQ": "Format the disk {title}?",
+  "@syFbPveFormatQ": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveFormatYes": "Format and pass it",
+  "syFbPveGuess": "This container is {id}.",
+  "@syFbPveGuess": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveHost": "{name}: Proxmox {version}.",
+  "@syFbPveHost": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveLead": "If the Proxmox host is among your machines (Settings › Machines), Rasgeth can run these steps there itself. It asks you first, with every command in the request.",
+  "syFbPveLook": "Look for the Proxmox host",
+  "syFbPveNeedId": "Write the container id first.",
+  "syFbPveNoDisks": "No removable disk on that host.",
+  "syFbPveNone": "None of your {n} machines is a Proxmox host. Add the host in Settings › Machines (as root, with Rasgeth's key), test it, then look again.",
+  "@syFbPveNone": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveQ": "Pass the disk {title} of {host} to container {id}?",
+  "@syFbPveQ": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "id": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveRestart": "Done on the host. If {target} does not appear in a minute, restart the container from Proxmox.",
+  "@syFbPveRestart": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveText": "Rasgeth asks you again in your requests, with the exact commands, before running anything on the host.",
+  "syFbPveTitle": "Do it for me",
+  "syFbPveYes": "Ask me with the commands",
+  "syFbRamFree": "{gb} GB free now",
+  "@syFbRamFree": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbRamTotal": "{gb} GB in all",
+  "@syFbRamTotal": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbRemovable": "removable",
+  "syFbRestore": "Restore",
+  "syFbRestoreQ": "Restore the backup of {when}?",
+  "@syFbRestoreQ": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbRestoreText": "It is read back first, then projects, agents and conversations that are not here are added. Nothing here is deleted.",
+  "syFbRestoreYes": "Restore",
+  "syFbRoleFull": "Complete Rasgeth",
+  "syFbRoleFullText": "Agents, projects, chats and everything else, on this machine.",
+  "syFbRoleNode": "Node of another Rasgeth",
+  "syFbRoleNodeText": "This machine works for a Rasgeth you already have.",
+  "syFbRoleSettingsLead": "You can change it at any time: it asks first and says what changes.",
+  "syFbRoleTitle": "Role",
+  "syFbSat": "Sat",
+  "syFbSmbAddress": "Shared folder",
+  "syFbSmbAddressHelp": "As Windows writes it (\\\\nas\\backup\\Rasgeth) or smb://nas/backup/Rasgeth.",
+  "syFbSmbDomain": "Domain or workgroup",
+  "syFbSmbDomainHelp": "Only if your network needs one (often empty).",
+  "syFbSmbMissing": "Shared folders need smbclient, which this installation does not have (the Docker image and Rasgeth OS have it). On Windows use the folder field above with \\\\host\\share.",
+  "syFbSmbPassword": "Password",
+  "syFbSmbPasswordHelp": "It goes into the keychain only, never into a file or a log.",
+  "syFbSmbPasswordKept": "Kept in the keychain: leave it empty to keep it.",
+  "syFbSmbUser": "User",
+  "syFbSshAddKey": "Add this key",
+  "syFbSshContainer": "In a container ({name}) SSH reaches the container itself, at its own address, as the user redgiant.",
+  "@syFbSshContainer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbSshKey": "Public key",
+  "syFbSshKeyHelp": "One line starting with ssh-ed25519, ssh-rsa or ecdsa-sha2 (the .pub file).",
+  "syFbSshKeyPlaceholder": "ssh-ed25519 AAAA… me@laptop",
+  "syFbSshKeys": "{n} key(s) allowed",
+  "@syFbSshKeys": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbSshNeedKey": "Paste a public key first, then switch it on.",
+  "syFbSshOffHelp": "Paste a public key below, then switch it on.",
+  "syFbSshOn": "SSH on",
+  "syFbSshQ": "To work on the machine itself from a terminal. Off unless you switch it on; keys only, never passwords.",
+  "syFbSshTitle": "SSH",
+  "syFbSshWhy_no_helper": "This installation has no Rasgeth OS system helper: SSH is managed by the system hosting it.",
+  "syFbSshWhy_not_installed": "SSH (openssh-server) is not installed on this system.",
+  "syFbSshWhy_other": "SSH cannot be read here: the system helper answered «{why}».",
+  "@syFbSshWhy_other": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbSshWhy_timeout": "Rasgeth OS's system helper took too long to answer: try again in a moment.",
+  "syFbSshWhy_unreachable": "Rasgeth OS's system helper does not answer (redgiant-helper.socket): SSH cannot be read or changed now. Restarting the machine usually brings it back.",
+  "syFbSun": "Sun",
+  "syFbSystemLead": "The machine Rasgeth runs on, its role, where its data and backups live, and SSH.",
+  "syFbSystemQ": "System",
+  "syFbSystemSection": "System",
+  "syFbThu": "Thu",
+  "syFbToFullQ": "Make this a complete Rasgeth again?",
+  "syFbToFullText": "It stops working for the other Rasgeth; its own agents, projects and conversations come back as they were.",
+  "syFbToFullYes": "Make it complete",
+  "syFbToNodeQ": "Make this Rasgeth a node?",
+  "syFbToNodeText": "It will stop being a Rasgeth of its own once paired: its agents, projects and conversations stay saved, untouched, but they rest until you make it complete again.",
+  "syFbToNodeYes": "Make it a node",
+  "syFbTue": "Tue",
+  "syFbUseDisk": "Use for backups",
+  "syFbUseFolder": "Use this folder",
+  "syFbUsePlace": "Use for backups",
+  "syFbUseShare": "Use this shared folder",
+  "syFbVirt": "Runs on",
+  "syFbVirtContainer": "a container ({name})",
+  "@syFbVirtContainer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbVirtNone": "a physical machine",
+  "syFbVirtVm": "a virtual machine ({name})",
+  "@syFbVirtVm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbWed": "Wed",
+  "syFbWeekly": "Every week",
+  "syFbWhenTitle": "When",
+  "syFbWhyFs": "Format not supported",
+  "syFbWhyNoFs": "Not formatted",
+  "syFbWhyNoUuid": "Without an id",
+  "syFbWhyNotDisk": "Not a disk",
+  "syFbWhyNotRemovable": "Not removable",
+  "syFbWhySystem": "Holds the system",
+  "syFolder": "Folder",
+  "syGitGiteaAgain": "The same password again",
+  "syGitGiteaGuide": "Open «Your home services»",
+  "syGitGiteaMismatch": "The two passwords are different.",
+  "syInspector": "Inspector",
+  "syJob_pihole": "Starting Pi-hole",
+  "syJob_remote": "Opening access from outside",
+  "syJob_step_account": "Creating your account",
+  "syJob_step_arrive": "Waiting for the folder",
+  "syJob_step_ask": "Waiting for your yes",
+  "syJob_step_conversations": "Conversations",
+  "syJob_step_convert": "Converting",
+  "syJob_step_copy": "Copying the models",
+  "syJob_step_data": "Projects, agents and settings",
+  "syJob_step_download": "Downloading the model",
+  "syJob_step_draft": "With the small model",
+  "syJob_step_fetch": "Bringing the backup here",
+  "syJob_step_files": "The projects' files",
+  "syJob_step_gitea_image": "Downloading Gitea (only once)",
+  "syJob_step_gitea_start": "Starting Gitea",
+  "syJob_step_image": "Downloading the engine (only once)",
+  "syJob_step_image_download": "Downloading",
+  "syJob_step_load": "Loading the model into memory",
+  "syJob_step_look": "Looking at the host",
+  "syJob_step_model_download": "The model",
+  "syJob_step_model_prepare": "Preparing it for the page",
+  "syJob_step_move": "Copying to the new disk",
+  "syJob_step_ngram": "With the n-grams",
+  "syJob_step_node_check": "Checking the video (SHA-256)",
+  "syJob_step_node_copy": "Copying the files to {node}",
+  "@syJob_step_node_copy": {
+    "placeholders": {
+      "node": {
+        "type": "String"
+      }
+    }
+  },
+  "syJob_step_node_fetch": "Bringing the video back from {node}",
+  "@syJob_step_node_fetch": {
+    "placeholders": {
+      "node": {
+        "type": "String"
+      }
+    }
+  },
+  "syJob_step_node_ffmpeg": "Getting ffmpeg ready on {node}",
+  "@syJob_step_node_ffmpeg": {
+    "placeholders": {
+      "node": {
+        "type": "String"
+      }
+    }
+  },
+  "syJob_step_none": "The model alone",
+  "syJob_step_ocr_languages": "The languages",
+  "syJob_step_ocr_program": "The program",
+  "syJob_step_pihole_check": "Checking that it answers",
+  "syJob_step_pihole_image": "Downloading Pi-hole (only once)",
+  "syJob_step_pihole_start": "Starting Pi-hole",
+  "syJob_step_preload": "Reading the model once, so the first message does not wait for the disk",
+  "syJob_step_remote_cert": "Getting the certificate from Let's Encrypt",
+  "syJob_step_remote_connect": "Connecting to Cloudflare",
+  "syJob_step_remote_https": "Getting the safe address (HTTPS)",
+  "syJob_step_remote_image": "Downloading what is needed (only once)",
+  "syJob_step_remote_login": "Waiting for you to sign in to Tailscale",
+  "syJob_step_remote_start": "Starting it",
+  "syJob_step_restore": "Putting the engine back as it was",
+  "syJob_step_run": "Running the steps on the host",
+  "syJob_step_searxng_check": "Checking that it answers",
+  "syJob_step_searxng_image": "Downloading SearXNG (only once)",
+  "syJob_step_searxng_start": "Starting it",
+  "syJob_step_start": "Starting the engine",
+  "syJob_step_switch": "Starting the model on Windows",
+  "syJob_step_tool_download": "Downloading",
+  "syJob_step_tool_unpack": "Unpacking",
+  "syJob_step_try": "Trying an answer",
+  "syJob_step_tune": "Measuring this computer to pick the fastest setting",
+  "syJob_step_verify": "Reading the backup back",
+  "syJob_step_video_derive": "Making the file",
+  "syJob_step_video_probe": "Reading the file",
+  "syJob_step_video_render": "Rendering with ffmpeg",
+  "syJob_step_video_save": "Saving it in the project",
+  "syJob_step_video_silences": "Finding the silences",
+  "syJob_step_video_sound": "Taking the sound",
+  "syJob_step_video_transcribe": "Writing down the words",
+  "syJob_step_video_wait": "Waiting for the render before it",
+  "syKcImported": "{n} credentials added to the keychain.",
+  "@syKcImported": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syKcPassphrase": "Passphrase",
+  "syKcPassphraseHelp": "At least 8 characters. Keep it somewhere safe: it cannot be recovered.",
+  "syLmRecommended": "recommended",
+  "syLoginCode": "Code from the app (6 digits)",
+  "syMcAdd": "Add",
+  "syMcAuthKey": "Key",
+  "syMcAuthPassword": "Password",
+  "syMcChangedNow": "Now",
+  "syMcChangedText": "Another computer may be in the place of «{name}». Nothing was sent and the connection was refused. Trust the new key only if you know why it changed (the system was reinstalled, the machine was replaced).",
+  "@syMcChangedText": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syMcChangedTitle": "Danger: the machine answered with another key",
+  "syMcChangedWas": "Trusted",
+  "syMcCopied": "Copied",
+  "syMcCopy": "Copy",
+  "syMcCopyKey": "Copy the public key",
+  "syMcEdit": "Change",
+  "syMcEditorLead": "Where the machine is and who logs in. The key or the password goes straight into the keychain.",
+  "syMcEmpty": "No machine yet. Add one: Rasgeth makes a key for it, you copy its public half onto the machine.",
+  "syMcFolder": "Working folder",
+  "syMcFolderHelp": "Where commands start; deleting outside it always asks you. A full path (/srv/app, ~/app, or on Windows E:\\coding\\site). Leave empty for the home.",
+  "syMcFolderNone": "the home (every deletion asks you)",
+  "syMcHost": "Address",
+  "syMcHostHelp": "Its name or IP address on the network.",
+  "syMcHostKey": "Machine's key",
+  "syMcKeyGenerate": "Make a new key",
+  "syMcKeyGenerateHelp": "Rasgeth makes an ed25519 key: you will copy its public half into ~/.ssh/authorized_keys on the machine.",
+  "syMcKeyKeep": "Keep the key",
+  "syMcKeyKeepHelp": "The key kept in the keychain stays as it is.",
+  "syMcKeyPaste": "Paste a private key",
+  "syMcLead": "Other computers your agents reach over SSH: a server, a Raspberry Pi, a computer at the office. Keys and passwords stay in the keychain; the agents choose a machine by its name and never see them.",
+  "syMcLogin": "Login",
+  "syMcLoginGenerated": "key made by Rasgeth, in the keychain",
+  "syMcLoginImported": "your key, in the keychain",
+  "syMcLoginPassword": "password in the keychain",
+  "syMcName": "Name",
+  "syMcNameHelp": "How agents call it: letters, digits, dot, dash, no spaces (web, pi, office).",
+  "syMcNew": "Add a machine",
+  "syMcNewKey": "Make a new key",
+  "syMcNewKeyQ": "Make a new key for this machine?",
+  "syMcNewKeyText": "The old key stops working here: copy the new public key onto the machine and remove the old one.",
+  "syMcPassphrase": "Its passphrase (if it has one)",
+  "syMcPassword": "Password",
+  "syMcPasswordHelp": "Kept in the keychain. A key is safer: a password travels at every login.",
+  "syMcPasswordKept": "The password in the keychain stays unless you write a new one.",
+  "syMcPort": "Port",
+  "syMcPrivateKey": "Private key",
+  "syMcPrivateKeyHelp": "OpenSSH or PEM. It goes into the keychain and is never shown again.",
+  "syMcPrivateKeyPlaceholder": "-----BEGIN OPENSSH PRIVATE KEY-----",
+  "syMcProject": "project",
+  "syMcPublicKey": "Public key",
+  "syMcPublicKeyHelp": "Copy it into ~/.ssh/authorized_keys of the user on the machine (one line), then test the connection.",
+  "syMcRemoveQ": "Remove «{name}»?",
+  "@syMcRemoveQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syMcRemoveText": "Its key or password leaves the keychain; agents can no longer use it. Remove the public key from the machine too.",
+  "syMcReplaceQ": "Trust the new key of «{name}»?",
+  "@syMcReplaceQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syMcReplaceText": "Do it only if you know why the machine's key changed: otherwise someone could be reading what Rasgeth sends.",
+  "syMcReplaceYes": "Trust the new key",
+  "syMcSafety": "What happens there follows the same rules as here: sudo, switching the machine off, installing system programs, changing its system files and deleting outside its working folder always ask you, also with «Don't ask me anything».",
+  "syMcSave": "Save",
+  "syMcSection": "Machines",
+  "syMcStateFailed": "Last test failed",
+  "syMcStateNew": "Not checked yet",
+  "syMcStateTrusted": "Key trusted",
+  "syMcTest": "Test the connection",
+  "syMcTestAuth": "The machine refused the login: is the public key in ~/.ssh/authorized_keys (or the password right)?",
+  "syMcTestError": "It did not work: {message}",
+  "@syMcTestError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "syMcTestNoSecret": "There is no key or password in the keychain for this machine: change it and set one.",
+  "syMcTestOk": "Connected: {system}",
+  "@syMcTestOk": {
+    "placeholders": {
+      "system": {
+        "type": "String"
+      }
+    }
+  },
+  "syMcTestTimeout": "The machine did not answer in time.",
+  "syMcTestUnreachable": "The machine cannot be reached: check the address and that it is on.",
+  "syMcTesting": "Connecting…",
+  "syMcTitle": "Your machines",
+  "syMcTofuHow": "To see it on the machine: ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub",
+  "syMcTofuText": "Nothing was sent yet. If the fingerprint is the machine's, trust it: from now on Rasgeth connects only to a machine with this key.",
+  "syMcTofuTitle": "First connection: is this the machine's key?",
+  "syMcTrust": "Trust this key",
+  "syMcUser": "User",
+  "syMcWho": "Who may use it",
+  "syMcWhoAgents": "Agents",
+  "syMcWhoEveryone": "Every agent",
+  "syMcWhoEveryoneHelp": "God, the assistants and every project's agents.",
+  "syMcWhoLead": "The agents not chosen do not even see it.",
+  "syMcWhoNoAgents": "There are no agents yet.",
+  "syMcWhoNobody": "nobody yet",
+  "syMcWhoProjects": "Every agent of these projects",
+  "syNdAddButton": "Show a pairing code",
+  "syNdAddLead": "On the other machine, in its first start (role «Node of another Rasgeth») or in its Settings › Nodes, write this machine's address and the code below.",
+  "syNdAddTitle": "Add a node",
+  "syNdAddress": "The other Rasgeth's address",
+  "syNdAddressPh": "https://rasgeth.local or 192.168.1.10:3000",
+  "syNdAdmin": "uses and manages",
+  "syNdBackupDone": "Copied to the node: {name}",
+  "@syNdBackupDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdBackupNow": "Copy now",
+  "syNdBackupsOn": "Backups",
+  "syNdCode": "Pairing code",
+  "syNdCodeAddress": "This machine's address, as the other one reaches it (in the local network, through Tailscale or a proxy): {address}",
+  "@syNdCodeAddress": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdCodeExpires": "Valid once, for {min} more minutes.",
+  "@syNdCodeExpires": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdCodeField": "Its code",
+  "syNdCodePh": "ABCD-EFGH",
+  "syNdCodeStop": "Stop showing it",
+  "syNdCommandsOn": "Commands",
+  "syNdConfirm": "They match: confirm",
+  "syNdConnecting": "Connecting",
+  "syNdControl": "Control",
+  "syNdControlLead": "Never implicit: a machine commands another only with this grant, which the commanded machine keeps and can take away.",
+  "syNdControlTitle": "Who may command {name}",
+  "@syNdControlTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdController": "Which machine",
+  "syNdCpu": "{n} CPU",
+  "@syNdCpu": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdFingerprint": "Its key's fingerprint",
+  "syNdFree": "{n} GB free",
+  "@syNdFree": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdGive": "Give",
+  "syNdGrantsHere": "Who may command this machine",
+  "syNdGrantsLead": "Only these machines may use this one, each with what the person gave it. Taking it away works at once.",
+  "syNdHere": "Here",
+  "syNdJoinLead": "Pair this machine as a node of another Rasgeth: on that one, Settings › Nodes › «Add a node» shows its address and a code.",
+  "syNdJoinTitle": "Work for another Rasgeth",
+  "syNdLastSeen": "Last seen {when}",
+  "@syNdLastSeen": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdLead": "Other Rasgeth machines that work with this one: they lend commands, local models and room for projects and backups. Who may command whom is decided here, machine by machine.",
+  "syNdLoad": "load {n}%",
+  "@syNdLoad": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdModels": "{n} models",
+  "@syNdModels": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdName": "Name",
+  "syNdNameHelp": "How the other machines and the agents call it.",
+  "syNdNoContainer": "commands only for who manages it",
+  "syNdNoContainerHelp": "There is no container there (no Docker): it runs commands only for a machine that manages it, on the machine itself. With «use» alone, files, storage and models only.",
+  "syNdNoNodes": "No node yet.",
+  "syNdNoProjects": "No project yet.",
+  "syNdNoRights": "No permissions",
+  "syNdNoSandbox": "no commands",
+  "syNdNodeName": "Name of the node",
+  "syNdNodeNameHelp": "How you, the agents and the requests call it here. Empty: the name it gives itself.",
+  "syNdNotReady": "Nodes need the keychain: this machine's key lives only there. Open it in Settings › Keychain.",
+  "syNdOffline": "Offline",
+  "syNdOnline": "Online",
+  "syNdPair": "Pair",
+  "syNdPairing": "Pairing…",
+  "syNdParent": "Works for",
+  "syNdPending": "Waiting for the yes on the other machine",
+  "syNdPendingFromNode": "{name} wants to be a node of this machine",
+  "@syNdPendingFromNode": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdPendingFromPrincipal": "This machine will work for {name}",
+  "@syNdPendingFromPrincipal": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdPendingLead": "Both machines show the same six digits and each other's fingerprint. If they match on both screens, confirm on both: nothing is used before.",
+  "syNdPendingTitle": "Compare and confirm",
+  "syNdPlaces": "Where things run",
+  "syNdPlacesLead": "For each project: by default everything stays here. A node pinned for commands is where its agents' node_run goes; one for backups keeps copies of its files.",
+  "syNdQ": "Nodes",
+  "syNdRam": "{n} GB RAM",
+  "@syNdRam": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdReason": "Why",
+  "syNdRefused": "Refused: its key changed",
+  "syNdReject": "They do not match",
+  "syNdRename": "Rename",
+  "syNdRenameQ": "A name for {name}",
+  "@syNdRenameQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdRenderOn": "Videos",
+  "syNdRevoke": "Take away",
+  "syNdRevokeQ": "Take away what {name} may do here?",
+  "@syNdRevokeQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdRightAdmin": "Manage it",
+  "syNdRightAdminHelp": "Give and take away the control of this machine to other machines, and write outside the sandbox.",
+  "syNdRightUse": "Use it",
+  "syNdRightUseHelp": "Run its agents' commands in a sandbox here, use its models and keep files here.",
+  "syNdRights": "What it may do",
+  "syNdRightsTitle": "What {name} may do on this machine",
+  "@syNdRightsTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdSas": "The six digits",
+  "syNdSection": "Nodes",
+  "syNdTheirFp": "The other machine's fingerprint",
+  "syNdThis": "This machine",
+  "syNdTree": "The tree",
+  "syNdTreeLead": "This machine, its nodes and theirs. Control is separate: it is shown under each machine.",
+  "syNdUnpair": "Unpair",
+  "syNdUnpairQ": "Unpair {name}?",
+  "@syNdUnpairQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdUnpairText": "The two machines forget each other: links, grants and placements with it go. Its files stay where they are. To pair again, a new code.",
+  "syNdUse": "uses",
+  "syNdWho": "Who may command it",
+  "syNdWhoNobody": "Nobody but itself",
+  "syOiAddress": "Rasgeth's address in the network",
+  "syOiAddressHelp": "Where the proxy or the VPN finds Rasgeth; its port is {port}.",
+  "@syOiAddressHelp": {
+    "placeholders": {
+      "port": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiAuthCaddy": "Caddyfile with forward auth (Authelia), leaving out the app's paths",
+  "syOiAuthIf": "If you want it anyway, leave /api/ and /ws out of it: forward auth then guards the page, and Rasgeth's password everything else.",
+  "syOiAuthTitle": "Authelia, Authentik or another forward auth in front?",
+  "syOiAuthWhy": "Better not: Rasgeth has its own password, with limited tries and the optional code from an authenticator app, and a sign-in in front of it blocks the app, the command line, ACP agents, the browser extension and the webhooks (Telegram, WhatsApp, automations), which come in with their own tokens.",
+  "syOiCaddy": "Caddyfile: a site of its own",
+  "syOiCaddyReload": "Then reload Caddy (caddy reload, or restart its container).",
+  "syOiCaddyWildcard": "Caddyfile: inside a wildcard site you already have (*.{domain})",
+  "@syOiCaddyWildcard": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiCheck": "Check that it answers",
+  "syOiCheckAnswers": "Something answers at this address (the browser does not let the page read who): open it to see Rasgeth.",
+  "syOiCheckGo": "Check {url} from here",
+  "@syOiCheckGo": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiCheckLead": "From any computer: Rasgeth answers {lb}\"ok\":true,…{rb}.",
+  "syOiCheckNo": "No answer from this browser: check the name in the DNS, the proxy's block and, from outside, the VPN.",
+  "syOiCheckRedgiant": "Rasgeth answers at this address.",
+  "syOiClose": "Hide the guide",
+  "syOiCopied": "Copied",
+  "syOiCopy": "Copy",
+  "syOiDnsAdguard": "AdGuard Home: Filters › DNS rewrites: *.{domain} or the single name → {address}.",
+  "@syOiDnsAdguard": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiDnsLead": "A name instead of an address: point it to the proxy when there is one, otherwise to Rasgeth's address.",
+  "syOiDnsPihole": "Pi-hole: Settings › Local DNS › DNS Records: {name} → {address}.",
+  "@syOiDnsPihole": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiDnsRouter": "The router: its «static DNS», «local names» or DHCP reservation page (the name varies by router).",
+  "syOiDnsTs": "Away from home with Tailscale: add the home DNS in Tailscale's DNS › Nameservers, restricted to your domain, so the same names work outside too.",
+  "syOiDnsWildcard": "Pi-hole or dnsmasq, every name of *.{domain} at once (a file in /etc/dnsmasq.d/)",
+  "@syOiDnsWildcard": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiHomeAdguard": "AdGuard Home: Filters › DNS rewrites: {name} → {address}.",
+  "@syOiHomeAdguard": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiHomeDnsmasq": "dnsmasq (or a file in Pi-hole's /etc/dnsmasq.d/)",
+  "syOiHomeHosts": "Pi-hole's records or /etc/hosts, by hand",
+  "syOiHomeLookup": "On Rasgeth OS, what its DNS answers for the name",
+  "syOiHomePihole": "Pi-hole: Settings › Local DNS › DNS Records: {name} → {address}.",
+  "@syOiHomePihole": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiHomeRouter": "The router: its «static DNS» or «local names» page: {name} → {address}.",
+  "@syOiHomeRouter": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiHomeSeen": "Rasgeth asks the name server {dns}.",
+  "@syOiHomeSeen": {
+    "placeholders": {
+      "dns": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiHomeTitle": "Your home services (Gitea, NAS…) seen by Rasgeth",
+  "syOiHomeTs": "If your Pi-hole answers with Tailscale addresses (100.…), those work only for devices in Tailscale: add a local record with the address in your network as above, or let Rasgeth's machine use the router as DNS with the name there.",
+  "syOiHomeV6": "A router that answers «does not exist» to the IPv6 (AAAA) question for names added by hand: Rasgeth OS handles it already; on other systems with systemd-resolved, put Cache=no-negative in a file of /etc/systemd/resolved.conf.d/, or the name seems missing for a while.",
+  "syOiHomeWhat": "In the DNS Rasgeth uses, give the name that local address:",
+  "syOiHomeWhich": "Which DNS Rasgeth uses: on Rasgeth OS the console (or SSH) shows it with the command below, under «Current DNS Server»; on another computer it is that computer's DNS (its network settings, /etc/resolv.conf on Linux). «Try a name» asks the very DNS Rasgeth uses.",
+  "syOiHomeWhichCmd": "On Rasgeth OS, which DNS it uses",
+  "syOiHomeWhy": "Rasgeth reaches your Gitea, NAS or other services by name, through the DNS of the machine it runs on (often the router). A name your phone opens may be unknown there, or point to an address Rasgeth cannot reach: then «A Gitea you already have» fails even though the service works.",
+  "syOiLead": "A reverse proxy, a VPN, a home DNS: if you already reach your machines that way, Rasgeth goes behind them like any other service. Here are the blocks to copy.",
+  "syOiName": "Rasgeth's name",
+  "syOiNameHelp": "The name you will open, e.g. rasgeth.home.example.com.",
+  "syOiNpm1": "Hosts › Proxy Hosts › Add Proxy Host; Domain Names: {name}.",
+  "@syOiNpm1": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiNpm2": "Scheme http, Forward Hostname / IP {address}, Forward Port {port}.",
+  "@syOiNpm2": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "port": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiNpm3": "Switch on «Websockets Support» (Rasgeth's page lives on a WebSocket) and «Block Common Exploits».",
+  "syOiNpm4": "SSL: «Request a new SSL Certificate», «Force SSL», «HTTP/2 Support». Save.",
+  "syOiOpen": "Show the guide",
+  "syOiOtherVpn": "WireGuard, ZeroTier and the others",
+  "syOiOtherVpnLead": "The same idea: with the home network {subnet} in the peer's AllowedIPs (WireGuard) or as a managed route (ZeroTier), Rasgeth opens at its home address.",
+  "@syOiOtherVpnLead": {
+    "placeholders": {
+      "subnet": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiPart": "What you have",
+  "syOiPartDns": "Home DNS",
+  "syOiPartHome": "Your home services",
+  "syOiPartProxy": "Reverse proxy",
+  "syOiPartVpn": "Tailscale or another VPN",
+  "syOiProbe": "Try a name",
+  "syOiProbeBad": "That is not a name (for instance git.home.example.com).",
+  "syOiProbeDnsFailed": "The DNS Rasgeth uses did not answer for {name}. Check that it works, then try again.",
+  "@syOiProbeDnsFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeGo": "Try {name}",
+  "@syOiProbeGo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeLead": "Rasgeth looks the name up and opens https://{name} from where it runs, as it does for your Gitea. Nothing of the answer is kept or shown but its code.",
+  "@syOiProbeLead": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeNotFound": "The DNS Rasgeth uses does not know {name}. Add the name there (router, Pi-hole or AdGuard) with the proxy's local address, then try again.",
+  "@syOiProbeNotFound": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeOk": "Fine: here {name} is {address}, and https://{name} answered (HTTP {status}).",
+  "@syOiProbeOk": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeTailscale": "Here {name} is {address}: a Tailscale address, which Rasgeth cannot reach. In the DNS Rasgeth uses, give the name the proxy's local address.",
+  "@syOiProbeTailscale": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeTimeout": "Here {name} is {address}, but it did not answer in time: probably an address Rasgeth cannot reach (another network, a VPN).",
+  "@syOiProbeTimeout": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeTls": "Here {name} is {address} and answers, but with a certificate Rasgeth does not trust (made by hand?). Give the proxy a certificate from a public authority (Let's Encrypt).",
+  "@syOiProbeTls": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeUnreachable": "Here {name} is {address}, but nothing answers on https from Rasgeth. Check that it is the proxy's local address and that the proxy is running.",
+  "@syOiProbeUnreachable": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProxyAddr": "The proxy's local address",
+  "syOiProxyAddrHelp": "The address in your network (192.168.…) of the proxy in front of the service, or of the service itself. Not a Tailscale address (100.…): Rasgeth reaches it only if it is in Tailscale too.",
+  "syOiProxyLead": "The proxy can be on another machine: it only needs to reach Rasgeth's address. It gets the certificate (HTTPS) and sends everything on, the WebSocket included.",
+  "syOiReachedAs": "You are reachable already as {host}.",
+  "@syOiReachedAs": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiReachedName": "This page came with a name of your network: at home it works already; from outside one of the ways below is needed (Tailscale, for instance).",
+  "syOiReachedProxy": "This page came through a reverse proxy of your network: the guide below is filled with what Rasgeth saw.",
+  "syOiSaid": "You said Rasgeth is reachable already your own way: it does not ask again to set up its ways.",
+  "syOiSaidUndo": "Ask again",
+  "syOiSaidUrl": "You said Rasgeth is reachable already at {url}: it does not ask again to set up its ways, and its links (Telegram…) use that address.",
+  "@syOiSaidUrl": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiService": "The service's name",
+  "syOiServiceHelp": "As you open it, e.g. git.home.example.com.",
+  "syOiSkip": "Skip: I am reachable already",
+  "syOiSkipNote": "Rasgeth stops asking to set up its own ways out (Tailscale, Cloudflare, its own domain); they stay here if you want one later.",
+  "syOiTitle": "Already have your own infrastructure",
+  "syOiTraefik": "Traefik: file provider (dynamic configuration)",
+  "syOiTraefikNote": "With Docker labels instead: the same rule and the URL as a service with loadbalancer.server.url. Use your entry point and certificate resolver names.",
+  "syOiTsHere": "Tailscale on Rasgeth's machine",
+  "syOiTsHereLead": "Install Tailscale on the machine and sign in (tailscale up): from your devices in the tailnet Rasgeth opens at http://<machine>:7600. For HTTPS with a real certificate:",
+  "syOiTsRunning": "Tailscale runs here already as {name}: from your devices in the tailnet Rasgeth opens with that name. For HTTPS with a real certificate:",
+  "@syOiTsRunning": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiTsServe": "On the machine",
+  "syOiTsSubnet": "Tailscale as a subnet router",
+  "syOiTsSubnetLead": "Tailscale on another device of the house (the router, a Pi, the proxy's machine) that shares the network {subnet}:",
+  "@syOiTsSubnetLead": {
+    "placeholders": {
+      "subnet": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiTsSubnetThen": "Approve the route in Tailscale's admin console (Machines › Edit route settings). Your phone then opens http://{address}:{port} from anywhere, and the names of your home DNS too if you add it in DNS › Nameservers (restricted to your domain).",
+  "@syOiTsSubnetThen": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "port": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiWs": "Rasgeth keeps the page live through a WebSocket at /ws: Caddy and Traefik pass it on by themselves; Nginx needs the Upgrade headers (Websockets Support in Nginx Proxy Manager).",
+  "syOnline": "connected",
+  "syOpen": "open",
+  "syOsErr_bad_password": "A Wi-Fi password has 8 to 63 characters.",
+  "syOsErr_bad_ssid": "A network's name has 1 to 32 characters.",
+  "syOsErr_busy": "The machine is already joining a network: wait a moment.",
+  "syOsErr_cannot_https": "HTTPS is not managed by this installation.",
+  "syOsErr_cannot_reboot": "Restarts are not managed by this installation.",
+  "syOsErr_cannot_update": "Updates are not managed by this installation.",
+  "syOsErr_cannot_wifi": "Wi-Fi is not managed by this installation.",
+  "syOsErr_clean_install": "This version needs a clean install.",
+  "syOsErr_connect_failed": "The network refused to connect: check the password and try again.",
+  "syOsErr_failed": "That did not work. Try again in a moment.",
+  "syOsErr_https_failed": "Local HTTPS did not start.",
+  "syOsErr_https_off": "Local HTTPS is off: switch it on first.",
+  "syOsErr_manual": "This installation cannot update by itself.",
+  "syOsErr_no_wifi": "This machine has no Wi-Fi card.",
+  "syOsErr_not_found": "That network is not in reach now.",
+  "syOsErr_not_installed": "This system cannot do that.",
+  "syOsErr_not_trusted": "This device does not trust the certificate yet.",
+  "syOsErr_reboot_failed": "The restart could not be scheduled.",
+  "syOsErr_start_failed": "The update could not start.",
+  "syOsErr_timeout": "The machine took too long to answer.",
+  "syOsErr_tls_failed": "The certificate could not be made.",
+  "syOsErr_unreachable": "The machine's helper did not answer.",
+  "syOsErr_wifi_off": "Wi-Fi is not running on this machine.",
+  "syOsHttpsAddress": "Address",
+  "syOsHttpsCheck": "Check this device",
+  "syOsHttpsDevice": "Your device",
+  "syOsHttpsDownload": "Download the certificate",
+  "syOsHttpsFingerprint": "Certificate's fingerprint (SHA-256)",
+  "syOsHttpsFirefox": "Firefox on any system: Settings › Privacy & Security › Certificates › View Certificates › Authorities › Import, tick «Trust this CA to identify websites».",
+  "syOsHttpsHow_android": "Settings › Security (or Security & privacy) › More › Encryption & credentials › Install a certificate › CA certificate: «Install anyway», choose Rasgeth-CA.crt.",
+  "syOsHttpsHow_iphone": "Open the download in Safari, «Allow». Settings › General › VPN & Device Management: install the profile. Then Settings › General › About › Certificate Trust Settings: switch on «Rasgeth on …».",
+  "syOsHttpsHow_linux": "Debian/Ubuntu: sudo cp Rasgeth-CA.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates. Chrome and Firefox keep their own list: add it under the browser's certificate settings (Authorities, «Import»).",
+  "syOsHttpsHow_mac": "Open Rasgeth-CA.crt: Keychain Access adds it. Double-click «Rasgeth on …» in the login keychain, open «Trust», set «When using this certificate» to «Always Trust», close and type your password.",
+  "syOsHttpsHow_windows": "Open Rasgeth-CA.crt, «Install certificate…», «Current user», «Place all certificates in the following store», «Trusted Root Certification Authorities», Finish, Yes. Restart the browser.",
+  "syOsHttpsInFront": "You already reach Rasgeth over HTTPS through {name}: the local certificate is not needed for that address.",
+  "@syOsHttpsInFront": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsHttpsLocal": "HTTPS in the local network",
+  "syOsHttpsLocalOff": "Off: Rasgeth answers on http only (or through the HTTPS you set up yourself).",
+  "syOsHttpsLocalOn": "https://{name} and the machine's addresses answer with a certificate of this machine. http keeps working until you say it is trusted.",
+  "@syOsHttpsLocalOn": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsHttpsNotYet": "This device does not trust the certificate yet (or https://… does not answer): nothing has changed, http keeps working.",
+  "syOsHttpsNowOnly": "This device trusts it. From now on http goes to https for the machine's local name and addresses.",
+  "syOsHttpsOffQ": "Switch local HTTPS off?",
+  "syOsHttpsOffText": "Browsers that already went to https://rasgeth.local keep asking for https for up to 30 days: in those, open the machine by its address (http://192.168…:7600) until then.",
+  "syOsHttpsOffYes": "Switch off",
+  "syOsHttpsQ": "Should the browser show the padlock on your home network?",
+  "syOsHttpsQr": "QR code to download the certificate",
+  "syOsHttpsQrHelp": "On a phone on the same network, scan the code to download it.",
+  "syOsHttpsRedirect": "Always send to HTTPS",
+  "syOsHttpsRedirectOn": "http requests in your network go to https; browsers remember it (HSTS, 30 days). Devices without the certificate show a warning: install it there too.",
+  "syOsHttpsTitle": "HTTPS in your network",
+  "syOsHttpsTrustLead": "Download it on the device (phone: scan the code), install it as below, then press «Check this device». The certificate works only for this machine's local names and addresses, never for any website.",
+  "syOsHttpsTrustTitle": "Trust the certificate on each device",
+  "syOsHttpsUntil": "The machine's certificate renews itself before",
+  "syOsNetSub": "Network",
+  "syOsNetSubLead": "How the machine joins the network, and HTTPS for the pages of your home network.",
+  "syOsRebootNow": "Restart now",
+  "syOsRebootQ": "Restart the machine now?",
+  "syOsRebootText": "Rasgeth stops for two or three minutes while the machine restarts; agents working now are interrupted and pick up again from what was saved. This page comes back by itself.",
+  "syOsRebootYes": "Restart",
+  "syOsRebooting": "The machine restarts in a few seconds. This page comes back by itself.",
+  "syOsSecLast": "Last time",
+  "syOsSecLastAt": "{when}",
+  "@syOsSecLastAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsSecLastN": "{when}, {n} packages",
+  "@syOsSecLastN": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsSecNever": "Not yet (it runs once a day)",
+  "syOsSecNoReboot": "Nothing waits for a restart.",
+  "syOsSecQ": "The system installs Debian's security updates by itself, every day.",
+  "syOsSecReboot": "An update asks for a restart to finish",
+  "syOsSecTitle": "System security updates",
+  "syOsUpdApply": "Update to {version}",
+  "@syOsUpdApply": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsUpdApplyQ": "Update Rasgeth to {version}?",
+  "@syOsUpdApplyQ": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsUpdApplyText": "The machine downloads the new version while this one keeps working, then restarts Rasgeth: the page stops for a few minutes and comes back by itself. Nothing is lost, and if the new version does not start the previous one comes back.",
+  "syOsUpdApplyYes": "Update now",
+  "syOsUpdBreaking": "This version cannot be installed over the current one: Rasgeth guides you (backup on a USB disk, reinstall Rasgeth OS, restore).",
+  "syOsUpdChecked": "Last look",
+  "syOsUpdInstalled": "Installed",
+  "syOsUpdQ": "Is Rasgeth up to date on this machine?",
+  "syOsUpdState": "State",
+  "syOsUpdSub": "Updates",
+  "syOsUpdSubLead": "Rasgeth and the system it runs on, kept up to date.",
+  "syOsUpdTitle": "Rasgeth",
+  "syOsUpd_applying": "Updating to {version}",
+  "@syOsUpd_applying": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsUpd_available": "Rasgeth {version} is ready to install",
+  "@syOsUpd_available": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsUpd_breaking": "Rasgeth {version} needs a clean install",
+  "@syOsUpd_breaking": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsUpd_error": "The last update did not finish (the previous version is running)",
+  "syOsUpd_latest": "Up to date",
+  "syOsUpd_unknown": "Not looked yet",
+  "syOsUpd_unreachable": "Could not reach GitHub to look",
+  "syOsUpd_unsigned": "Rasgeth {version} is out, but without a signed package for Rasgeth OS yet: it comes with a later release",
+  "@syOsUpd_unsigned": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsWifi8021x": "company network (not from here)",
+  "syOsWifiConnectedTo": "Connected to «{name}» ({ip})",
+  "@syOsWifiConnectedTo": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsWifiForget": "Forget",
+  "syOsWifiForgetQ": "Forget «{name}»?",
+  "@syOsWifiForgetQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsWifiForgetText": "The machine stops joining this network and its password is erased. If it is the network in use and there is no cable, the page stops answering until the machine has another network.",
+  "syOsWifiGood": "good signal",
+  "syOsWifiHidden": "Hidden network…",
+  "syOsWifiHiddenName": "The network's name",
+  "syOsWifiInReach": "Networks in reach",
+  "syOsWifiInUse": "in use",
+  "syOsWifiJoin": "Join",
+  "syOsWifiJoined": "Connected to «{name}». If you are using this page over that network, it keeps working.",
+  "@syOsWifiJoined": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsWifiJoining": "Joining…",
+  "syOsWifiKnown": "saved",
+  "syOsWifiKnownAway": "Saved, not in reach now: {names}",
+  "@syOsWifiKnownAway": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsWifiLooking": "Looking…",
+  "syOsWifiNone": "No network found. Look again, or join a hidden network by its name.",
+  "syOsWifiNotConnected": "Not connected to a Wi-Fi network",
+  "syOsWifiNow": "Now",
+  "syOsWifiPassword": "Password of «{name}»",
+  "@syOsWifiPassword": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsWifiPasswordHelp": "8 to 63 characters. It is kept only on the machine, readable by the system alone; Rasgeth never stores or shows it.",
+  "syOsWifiQ": "Which wireless network does the machine join?",
+  "syOsWifiSaved": "«{name}» is saved: the machine joins it as soon as it is in reach.",
+  "@syOsWifiSaved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsWifiScan": "Look again",
+  "syOsWifiStrong": "strong signal",
+  "syOsWifiTitle": "Wi-Fi",
+  "syOsWifiWeak": "weak signal",
+  "syOsWifiWhy_failed": "Wi-Fi could not be read now. Try again in a moment.",
+  "syOsWifiWhy_no_helper": "Wi-Fi is managed by the system of this machine.",
+  "syOsWifiWhy_no_wifi": "This machine has no Wi-Fi card (or the system does not recognise it).",
+  "syOsWifiWhy_not_installed": "This system has no Wi-Fi tools.",
+  "syOsWifiWhy_wifi_off": "Wi-Fi is not running on this machine. Restart it, or connect a cable.",
+  "syOsWifiWired": "A cable is connected: the machine uses the cable, Wi-Fi stays as a spare.",
+  "syPiholeAdmin": "Pi-hole's own page, to see what it blocks and allow a site:",
+  "syPiholeAds": "About blocking ads",
+  "syPiholeAdsText": "Pi-hole blocks the names of well-known advertising and tracking services, for every device that uses it, phones and TVs included. Now and then a site or an app needs one of those names to work (some shop links, some streaming apps): it then looks broken.",
+  "syPiholeAllow": "If a site stops working: open the Pi-hole page, Query Log, find the blocked name and press Allow. To pause all blocking for a few minutes, use Disable blocking in the same page.",
+  "syPiholeAnswers": "At home, {domain} now leads to {ip}.",
+  "@syPiholeAnswers": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      },
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "syPiholeChanges": "What changes at home, and how to go back",
+  "syPiholeDevice": "If your router does not let you change the DNS (some providers' routers do not), set it on each device instead: in the Wi-Fi network's details on phones, in the network adapter's settings on computers.",
+  "syPiholeDomain": "Your domain (optional)",
+  "syPiholeDomainHelp": "The address you use from outside, like rasgeth.yourdomain.com: Pi-hole answers for it with the address above. Leave it empty to use Pi-hole only to block ads.",
+  "syPiholeDomainWrong": "It must be a name like rasgeth.yourdomain.com.",
+  "syPiholeIp": "This computer's address at home",
+  "syPiholeIpHelp": "Four numbers like 192.168.1.50. Find it on the router's page among the connected devices, or on this computer: \"ip a\" on Linux, \"ipconfig\" on Windows, System Settings, Network on Mac. Better if the router always gives this computer the same address (address reservation).",
+  "syPiholeIpWrong": "It must be four numbers from 0 to 255 separated by dots, like 192.168.1.50.",
+  "syPiholeNeed": "you reach Rasgeth from outside with your own domain, and at home the same link does not open. Many routers cannot send you back to your own house through the internet (the feature is called NAT loopback or hairpin, and theirs lacks it).",
+  "syPiholeNeedTitle": "You need it if",
+  "syPiholeNoNeed": "you use Tailscale or Cloudflare Tunnel: those links work the same at home and outside. You can still turn it on just to block ads, if you like.",
+  "syPiholeNoNeedTitle": "You do not need it if",
+  "syPiholeNowRouter": "Last step, yours: on your router (or on each device) set the DNS server to {ip}. Until then nothing at home uses Pi-hole.",
+  "@syPiholeNowRouter": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "syPiholeOff": "To go back: put the router's DNS back as it was (often \"automatic\") and turn Pi-hole off here. Nothing else on your computers changes.",
+  "syPiholeOn": "Pi-hole is on, at {ip}.",
+  "@syPiholeOn": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "syPiholeOpenAdmin": "Open Pi-hole",
+  "syPiholePort": "Technical details: port 53",
+  "syPiholePortText": "Pi-hole answers on port 53 (the DNS port) of this computer's home address only, not on the internet, and its own page on port 8053. If something on this computer already answers on port 53 (another DNS, or the system's own on some Linux systems), Pi-hole cannot start: Rasgeth says so and nothing changes.",
+  "syPiholeRouter": "For every device at once: open your router's page (its address is usually written under the router, like 192.168.1.1), find the DHCP or LAN settings and set the DNS server to this computer's home address. Devices pick it up the next time they connect (or restart them).",
+  "syPiholeSecond": "A second DNS: if this computer is off, devices that only know Pi-hole cannot open any site. As a second DNS you can put your router's address or a public one (1.1.1.1): everything keeps working when this computer is off, but devices may sometimes ask the second one and then see ads, or not find your domain at home.",
+  "syPiholeShowPassword": "Show its password",
+  "syPiholeStart": "Turn on Pi-hole",
+  "syPiholeStop": "Turn off Pi-hole",
+  "syPiholeTest": "How to check: connect your phone to the home Wi-Fi and open your Rasgeth link. If it opens, you do not need Pi-hole for this (you may still want it to block ads). If it does not, but works on mobile data, Pi-hole fixes it.",
+  "syPiholeTitle": "The home's own DNS, with Pi-hole (optional)",
+  "syPiholeWhat": "Every device at home asks a DNS server which number is behind a name (for example rasgeth.yourdomain.com). Usually your router or your internet provider answers. Pi-hole is a small DNS that Rasgeth can run on this computer: it answers for your domain with this computer's home address, so the link works at home too, and it also blocks advertising and tracking for every device that uses it.",
+  "syPwSignOutOthersQ": "Sign out your other devices too?",
+  "syPwSignOutOthersText": "The other browsers and the apps signed in with the old password stay in if you keep them. Sign them out if you changed it because someone else might know it.",
+  "syPwSignOutOthersYes": "Sign them out",
+  "syRemoteCaddy": "For experts: your domain pointing at home, ports 80 and 443 opened on the router. Anyone on the internet can reach the sign-in page.",
+  "syRemoteCloudflare": "An address on your own domain (about 10 euros a year), nothing opened on the router. A few more steps on Cloudflare's site.",
+  "syRemoteCode": "Second check (recommended)",
+  "syRemoteCodeConfirm": "Confirm",
+  "syRemoteCodeHint": "Besides the password, a 6-digit code from an app on your phone (Google Authenticator, Microsoft Authenticator, 2FAS…): someone who learns the password still cannot get in.",
+  "syRemoteCodeOff": "Second check off.",
+  "syRemoteCodeOn": "Second check on",
+  "syRemoteCodeQr": "Scan with the authenticator app",
+  "syRemoteCodeScan": "Scan the code with the app (or type the key below in it), then write here the 6 digits it shows.",
+  "syRemoteCodeStart": "Switch on the second check",
+  "syRemoteConnect": "Connect",
+  "syRemoteHow": "How to reach it",
+  "syRemoteNeedsPassword": "Set the password above first.",
+  "syRemoteNewPassword": "New password",
+  "syRemoteOff": "Switch off access from outside",
+  "syRemoteOn": "Rasgeth can be reached from outside at this address:",
+  "syRemoteOwnDomain": "Your domain, open router",
+  "syRemotePassword": "Your password",
+  "syRemotePasswordChange": "Change it",
+  "syRemotePasswordHint": "From outside, Rasgeth asks for this password (the link with the token stays for this computer). Choose one you use nowhere else.",
+  "syRemotePasswordRule": "At least 10 characters. A short sentence is easy to remember and hard to guess.",
+  "syRemotePasswordSaved": "Password saved.",
+  "syRemotePasswordSet": "A password is set",
+  "syRemotePurpose": "Use Rasgeth from your phone or another computer when you are away. First a password, then one of three ways; nothing is reachable from outside until you finish. Optional.",
+  "syRemoteSessions": "Signed-in browsers",
+  "syRemoteSessionsHint": "Each sign-in lasts 30 days. If you lost a phone, or think someone else got in (the Rasgeth apps are signed out too):",
+  "syRemoteSignOutAll": "Sign out everywhere",
+  "syRemoteSignedOut": "Signed out everywhere.",
+  "syRemoteTailscale": "A private network between your own devices: nothing opened on the router, free for personal use. You install Tailscale on your phone too.",
+  "syRemoteWaysFolded": "Rasgeth's own ways out",
+  "syRemove": "Remove",
+  "sySave": "Save",
+  "sySaved": "Saved",
+  "sySbBackupQ": "All of Rasgeth in one file",
+  "sySettings": "Settings",
+  "sySnCable": "I use the cable",
+  "sySnCableDone": "The cable works: Rasgeth is at {address}. Join your home network with this device and open http://{address}:7600 (or http://rasgeth.local:7600).",
+  "@sySnCableDone": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      }
+    }
+  },
+  "sySnFailed": "Rasgeth could not join «{name}»: {why}",
+  "@sySnFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "sySnHidden": "A hidden network",
+  "sySnHiddenName": "Network name",
+  "sySnJoin": "Use this network",
+  "sySnMaintQ": "Rasgeth could not find your home network, so it opened {ssid} again: choose the network it should use.",
+  "@sySnMaintQ": {
+    "placeholders": {
+      "ssid": {
+        "type": "String"
+      }
+    }
+  },
+  "sySnNone": "No network was seen around: use the cable, or type the name of a hidden network.",
+  "sySnPassword": "Password of «{name}»",
+  "@sySnPassword": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sySnQ": "You are on {ssid}, Rasgeth's temporary network: which network should Rasgeth use at home?",
+  "@sySnQ": {
+    "placeholders": {
+      "ssid": {
+        "type": "String"
+      }
+    }
+  },
+  "sySnTitle": "Your home network",
+  "sySnTrying": "Rasgeth is joining «{name}»: this temporary network closes now. Join your home network with this device and open http://rasgeth.local:7600. If it does not work, {ssid} comes back in a minute with the reason.",
+  "@sySnTrying": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "ssid": {
+        "type": "String"
+      }
+    }
+  },
+  "syStRemoteQ": "Rasgeth away from home",
+  "syStopped": "stopped",
+  "syTgQr": "Scan with your phone's camera",
+  "syTsApps": "Tailscale apps",
+  "syTsDns": "Tailscale DNS settings",
+  "syTsOpenSignIn": "Open Tailscale's sign-in page",
+  "syTsSignIn": "Tailscale wants you to sign in, to add Rasgeth to your network:",
+  "syTsSignUp": "Sign up on Tailscale",
+  "syTsStep1": "Make a free Tailscale account (with Google, Microsoft or GitHub is fine):",
+  "syTsStep2": "In Tailscale's DNS page switch on MagicDNS and HTTPS Certificates (they give Rasgeth a safe address):",
+  "syTsStep3": "Then here:",
+  "syTsStep4": "Install Tailscale on your phone and the other computers, signed in with the same account:",
+  "syUiAdvanced": "Advanced",
+  "syUiDone": "Done.",
+  "syUiNotNeeded": "not needed",
+  "syUpdBrkChecked": "{file} · {size} · {projects} projects, {conversations} conversations, memories and settings",
+  "@syUpdBrkChecked": {
+    "placeholders": {
+      "conversations": {
+        "type": "String"
+      },
+      "file": {
+        "type": "String"
+      },
+      "projects": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdBrkDockerCopy": "The folder is inside Rasgeth's data volume, which a clean install removes: copy the file out first, from Rasgeth's folder:",
+  "syUpdBrkDone": "Got it",
+  "syUpdBrkKeys": "Your keychain ({n} keys, the models', chats' and mailboxes' ones too) is not in the backup: it goes in only protected by a passphrase of yours.",
+  "@syUpdBrkKeys": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdBrkKeysAdd": "Add the keychain too",
+  "syUpdBrkKeysAgain": "Make the backup again with the keychain",
+  "syUpdBrkKeysIn": "The keychain is in the backup too, protected by your passphrase.",
+  "syUpdBrkLead": "Rasgeth {version} changed too much inside to update the usual way: installed over the old one it could break.",
+  "@syUpdBrkLead": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdBrkNext": "Go on",
+  "syUpdBrkRetry": "Try the backup again",
+  "syUpdBrkSaved": "Backup made and read back: it is in this folder",
+  "syUpdBrkStep1": "Remove the old Rasgeth",
+  "syUpdBrkStep1Docker": "In Rasgeth's folder remove the containers and their volumes:",
+  "syUpdBrkStep1Mac": "From the menu bar icon choose «Uninstall…» (or drag Rasgeth from Applications to the Bin).",
+  "syUpdBrkStep1Os": "Copy the backup to a USB disk (Settings › System › Backups): reinstalling Rasgeth OS erases this machine's disk.",
+  "syUpdBrkStep1Source": "Stop Rasgeth and move its data folder away.",
+  "syUpdBrkStep1Win": "Uninstall Rasgeth. When it asks whether to keep the data, you can answer No: everything is in the backup.",
+  "syUpdBrkStep2": "Install Rasgeth {version}",
+  "@syUpdBrkStep2": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdBrkStep3": "Restore",
+  "syUpdBrkStep3Docker": "Open Rasgeth, finish the setup and import the copied file in Settings › Backup › Import a backup.",
+  "syUpdBrkStep3Os": "Write the new Rasgeth OS (USB stick or image) and start the machine: the first start offers «Restore from the backup» and finds it on the USB disk.",
+  "syUpdBrkStep3Text": "At its first start the new Rasgeth offers «Restore from the backup»: it finds it in that folder by itself.",
+  "syUpdBrkSub": "Rasgeth {version} cannot be installed over the {installed}",
+  "@syUpdBrkSub": {
+    "placeholders": {
+      "installed": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdBrkSure": "Rasgeth closes and its uninstaller starts. The backup stays in {folder}.",
+  "@syUpdBrkSure": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdBrkTitle": "This version needs a clean install",
+  "syUpdBrkUninstall": "Uninstall Rasgeth",
+  "syUpdBrkUninstallYes": "Yes, uninstall",
+  "syUpdBrkUninstalling": "The uninstaller is starting on your desktop.",
+  "syUpdBrkWhy": "So it goes in three short steps: first a backup of everything (I am making it now, by myself), then you remove the old Rasgeth and install the new one, which puts everything back from the backup.",
+  "syUpdCopied": "Copied",
+  "syUpdCopy": "Copy",
+  "syUpdDownloadNew": "Download the new version",
+  "syUpdFoundDone": "Everything is back. Go on with the next steps to set up the models.",
+  "syUpdFoundKeys": "The passphrase you chose for the keychain. Without it everything else is restored, and the keys of models and chats are put in again from their pages.",
+  "syUpdFoundLead": "There is a backup of {date} (Rasgeth {version}): {projects} projects and {conversations} conversations. Put everything back now?",
+  "@syUpdFoundLead": {
+    "placeholders": {
+      "conversations": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "projects": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdFoundRestore": "Restore from the backup",
+  "syUpdFoundTitle": "Restore from the backup",
+  "syUpdLater": "Later",
+  "syUpdLook": "Look for updates",
+  "syUpdLooking": "Looking…",
+  "syUpdReqAgain": "Look again",
+  "syUpdReqClose": "Close Rasgeth",
+  "syUpdReqClosing": "Rasgeth is closing. You can close this page.",
+  "syUpdReqDocker": "On the computer where Rasgeth runs, in its folder, run:",
+  "syUpdReqInstaller": "If the update does not start, the whole installer is here:",
+  "syUpdReqInstallerLink": "Rasgeth-Setup.exe",
+  "syUpdReqLead": "This update cannot wait: Rasgeth {version} fixes something that the {installed} cannot keep doing safely.",
+  "@syUpdReqLead": {
+    "placeholders": {
+      "installed": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdReqMac": "Open the downloaded file and drag Rasgeth into Applications, replacing the old one; then open it again.",
+  "syUpdReqNow": "Update now",
+  "syUpdReqSafe": "Until you update, agents and automations wait. Your conversations, projects and settings are safe: nothing is lost.",
+  "syUpdReqSource": "Bring the code up to date (git pull), build it and start Rasgeth again.",
+  "syUpdReqSub": "Version {version} is needed (you have {installed})",
+  "@syUpdReqSub": {
+    "placeholders": {
+      "installed": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdReqTitle": "Rasgeth must be updated",
+  "syUpdReqUpdating": "Rasgeth is downloading the update: follow the window on your desktop. It restarts by itself.",
+  "syUpdReqUpdatingOs": "Rasgeth OS is updating Rasgeth: the page stops for a few minutes and comes back by itself.",
+  "syWzBack": "Back",
+  "syWzCpu": "Processor",
+  "syWzFree": "free",
+  "syWzGpu": "Graphics card",
+  "syWzMemory": "Memory",
+  "syWzNoGpu": "None",
+  "syWzRecommended": "recommended",
+  "syWzRemote": "Access from outside home",
+  "syWzStorage": "Data and backups",
+  "syWzThreads": "{n} threads",
+  "@syWzThreads": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syHubTitle": "System and access",
+  "syHubRemote": "Password, second check, Tailscale, Cloudflare, your own domain, Pi-hole",
+  "syHubSystem": "The machine, its role, data and backups, Wi-Fi, HTTPS, SSH, updates",
+  "syHubMachines": "Your computers the agents reach over SSH",
+  "syHubNodes": "Other machines working with this one",
+  "syHubBackup": "Everything in one file, and a file brought back",
+  "syGateOpen": "What to do",
+  "@syOiCheckLead": {
+    "placeholders": {
+      "lb": {
+        "type": "String"
+      },
+      "rb": {
+        "type": "String"
+      }
+    }
+  },
   "hfServiceTitle": "Hands-free voice is on",
   "hfServiceBody": "The microphone stays open for the conversation by voice.",
   "hfServiceChannel": "Hands-free voice",
