@@ -67,7 +67,10 @@ const dubious = (s: string) => /dubious ownership|safe\.directory/i.test(s);
  * is left as it is. Never throws: the outcome says what happened.
  */
 export async function initProjectRepo(path: string, run: RunGit = runGit): Promise<RepoState> {
-  if (await hasOwnRepo(path)) return { git: "present" };
+  if (await hasOwnRepo(path)) {
+    await setIdentity(path, run).catch(() => {});
+    return { git: "present" };
+  }
   const git = async (args: string[]) => {
     const r = await run(args, path);
     if (r.code !== 0)
@@ -100,6 +103,7 @@ export async function initProjectRepo(path: string, run: RunGit = runGit): Promi
     await git(["symbolic-ref", "HEAD", "refs/heads/main"]);
     // Files stay exactly as agents write them (Windows git converts line endings by default).
     await git(["config", "core.autocrlf", "false"]);
+    await setIdentity(path, run);
     const exclude = join(path, ".git", "info", "exclude");
     const current = await readFile(exclude, "utf8").catch(() => "");
     const missing = [".worktrees/", ".redgiant/"].filter(
@@ -121,6 +125,21 @@ export async function initProjectRepo(path: string, run: RunGit = runGit): Promi
   } catch (err) {
     return { git: "failed", error: (err as Error).message };
   }
+}
+
+/**
+ * The repository's own identity when git finds none (3.9.9, Coder: «Author identity unknown» at
+ * an orchestrator's commit): ours, in `.git/config` only. One the person set wins.
+ */
+async function setIdentity(path: string, run: RunGit): Promise<void> {
+  for (const [key, value] of [
+    ["user.name", PRODUCT_NAME],
+    ["user.email", "rasgeth@localhost"],
+  ] as const)
+    if ((await run(["config", "--get", key], path)).code !== 0) {
+      const r = await run(["config", "--local", key, value], path);
+      if (r.code !== 0) throw new Error(`git config: ${(r.stderr || r.stdout).trim()}`);
+    }
 }
 
 /** For an agent: what a project's repository is, in one sentence (no claim git cannot back). */

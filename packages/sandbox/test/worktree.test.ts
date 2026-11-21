@@ -22,6 +22,46 @@ beforeEach(async () => {
 });
 afterEach(() => rm(dir, { recursive: true, force: true }));
 
+/** git as on Coder's server: no identity in any configuration (the global one is empty). */
+class Bare extends LocalWorkspace {
+  constructor(
+    root: string,
+    private readonly global: string,
+  ) {
+    super(root);
+  }
+  override execFile(...[file, args, o]: Parameters<LocalWorkspace["execFile"]>) {
+    return super.execFile(file, args, {
+      ...o,
+      env: { ...o.env, GIT_CONFIG_GLOBAL: this.global, GIT_CONFIG_NOSYSTEM: "1" },
+    });
+  }
+}
+
+describe("a repository's identity (3.9.9)", () => {
+  it("is set in the repository when git has none, and an agent's worktree can commit", async () => {
+    const repo = await mkdtemp(join(tmpdir(), "rg-wt-id-"));
+    const empty = `${repo}.gitconfig`;
+    await writeFile(empty, "");
+    try {
+      const root = new Bare(repo, empty);
+      const t = { timeoutMs: 10_000 };
+      await ensureRepo(root);
+      const r = await root.execFile("git", ["config", "--local", "--get", "user.email"], t);
+      expect(r.stdout.trim()).toBe("rasgeth@localhost");
+      const a = new Bare(join(repo, await createWorktree(root, "agent-A")), empty);
+      await a.writeText("a.txt", "a\n");
+      await a.execFile("git", ["add", "-A"], t);
+      expect((await a.execFile("git", ["commit", "-q", "-m", "a"], t)).exitCode).toBe(0);
+      // Never the global configuration.
+      expect(await readFile(empty, "utf8")).toBe("");
+    } finally {
+      await rm(repo, { recursive: true, force: true });
+      await rm(empty, { force: true });
+    }
+  });
+});
+
 describe("git worktrees per agent", () => {
   it("gives each agent its own copy and merges their work", async () => {
     const a = new LocalWorkspace(join(dir, await createWorktree(ws, "agent-A")));

@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { canonicalTools, type Tool } from "@redgiant/agent";
+import { canonicalTools, type Engine, type Tool } from "@redgiant/agent";
 import type { SqlClient } from "@redgiant/events";
 import type { PersistentBudget } from "@redgiant/hierarchy";
 import {
@@ -32,6 +32,8 @@ export async function migrateChat(db: SqlClient): Promise<void> {
   );
   await db.query("ALTER TABLE rg_chats ADD COLUMN IF NOT EXISTS project_id text");
   await db.query("ALTER TABLE rg_chats ADD COLUMN IF NOT EXISTS folder text");
+  // The engine's own conversation (3.9.9): a chat on a flat subscription continues it.
+  await db.query("ALTER TABLE rg_chats ADD COLUMN IF NOT EXISTS engine_session jsonb");
   await db.query(`
     CREATE TABLE IF NOT EXISTS rg_chat_messages (
       id         bigserial PRIMARY KEY,
@@ -159,7 +161,7 @@ export type ChatEvent =
 
 export class ChatError extends Error {}
 
-/** Said to a chat on a flat subscription (3.9.8): it has no tools there. */
+/** Said to a chat on a flat subscription whose engine is not there: it has no tools then. */
 export const SUBSCRIPTION_CHAT_NOTE =
   "In this chat you run on the person's flat subscription, which answers here without tools: no web search, no page fetching, no files. Answer from what you know; when an answer needs something you would have looked up (today's news, prices, weather, a page), say plainly that this chat cannot look it up on a subscription and that a conversation with an agent, or a chat model with an API key, can.";
 
@@ -168,6 +170,26 @@ const MAX_STEPS = 10;
 const parse = <T>(v: unknown): T => (typeof v === "string" ? JSON.parse(v) : v) as T;
 
 /** Streams the deltas to the listener and returns the finished completion. */
+/** A flat subscription's agent loop (G21), if the model's provider has one. */
+function engineOf(providers: ProviderRegistry, model: ModelSpec): Engine | undefined {
+  if (!providers.has(model.provider)) return undefined;
+  const found = (providers.get(model.provider) as { engine?: Partial<Engine> }).engine;
+  return typeof found?.turn === "function" ? (found as Engine) : undefined;
+}
+
+/** The earlier messages as one text, for an engine that has not seen them. */
+function transcript(messages: ChatMessage[]): string {
+  return messages
+    .flatMap((m) => {
+      const words = m.parts
+        .flatMap((p) => (p.type === "text" && p.text ? [p.text] : []))
+        .join("\n")
+        .trim();
+      return words ? [`${m.role === "user" ? "User" : "Assistant"}: ${words}`] : [];
+    })
+    .join("\n\n");
+}
+
 async function relay(
   onEvent: (e: ChatEvent) => void,
   events: ReturnType<typeof streamWithFallback>,
@@ -382,21 +404,28 @@ export class DailyChat {
     onEvent({ type: "entry", entry: await this.store(chatId, user, { shown: text }) });
     history.push(user);
 
-    // A flat subscription answers here only without tools (3.9.8): its engine runs tool loops
-    // only inside a conversation's session. The chat then answers from what the model knows, and
-    // says so when asked for something it would have looked up.
+    // A flat subscription streams only without tools: its tool loops run in its engine. The
+    // chat (and the project inspector, 3.9.9: «without tools: no project_summary, files, git…»)
+    // then takes an engine turn with its own tools. Only without the engine does it answer from
+    // what the model knows, and say so.
     const subscription = model.provider.endsWith("-subscription");
-    const tools = subscription ? [] : (profile?.tools ?? this.tools());
+    const engine = subscription ? engineOf(this.o.providers, model) : undefined;
+    const tools = subscription && !engine ? [] : (profile?.tools ?? this.tools());
     const own =
       settings.systemPrompt &&
       (this.o.expand?.(ownerId, settings.systemPrompt) ?? settings.systemPrompt);
     const system = [
       profile?.system ?? own ?? DEFAULT_CHAT_PROMPT,
-      subscription && SUBSCRIPTION_CHAT_NOTE,
+      subscription && !engine && SUBSCRIPTION_CHAT_NOTE,
       this.o.language?.(ownerId),
     ]
       .filter(Boolean)
       .join("\n\n");
+    const ctx = { ownerId, projectId: chat.project_id, chatId, signal };
+    if (engine) {
+      await this.sendToEngine(engine, model, system, tools, history, images, onEvent, ctx);
+      return;
+    }
     for (let step = 0; step < MAX_STEPS; step++) {
       const completion = await relay(
         onEvent,
@@ -439,40 +468,137 @@ export class DailyChat {
       const calls = completion.message.parts.flatMap((p) => (p.type === "tool_call" ? [p] : []));
       if (calls.length === 0 || completion.stopReason !== "tool_use") return;
       const results = await Promise.all(
-        calls.map(async (c) => {
+        calls.map((c) => {
           onEvent({ type: "tool", name: c.name, input: c.input });
-          const tool = tools.find((t) => t.def.name === c.name);
-          try {
-            if (!tool) throw new Error(`Unknown tool "${c.name}"`);
-            const input = tool.schema ? tool.schema.parse(c.input) : c.input;
-            const out = await tool.run(input, {
-              ownerId,
-              projectId: chat.project_id,
-              agentId: null,
-              sessionId: chatId,
-              signal,
-            });
-            return typeof out === "string"
-              ? { type: "tool_result" as const, callId: c.callId, content: out }
-              : {
-                  type: "tool_result" as const,
-                  callId: c.callId,
-                  content: out.content,
-                  ...(out.isError && { isError: true }),
-                };
-          } catch (err) {
-            return {
-              type: "tool_result" as const,
-              callId: c.callId,
-              content: `Error: ${(err as Error).message}`,
-              isError: true,
-            };
-          }
+          return this.runTool(tools, c, ctx);
         }),
       );
       const toolMessage: ChatMessage = { role: "user", parts: results };
       history.push(toolMessage);
       onEvent({ type: "entry", entry: await this.store(chatId, toolMessage) });
     }
+  }
+
+  /** One of the chat's tools; a failure is the model's to read, never the chat's end. */
+  private async runTool(
+    tools: Tool[],
+    c: { callId: string; name: string; input: unknown },
+    ctx: {
+      ownerId: string;
+      projectId: string | null;
+      chatId: string;
+      signal?: AbortSignal | undefined;
+    },
+  ): Promise<{ type: "tool_result"; callId: string; content: string; isError?: true }> {
+    const tool = tools.find((t) => t.def.name === c.name);
+    try {
+      if (!tool) throw new Error(`Unknown tool "${c.name}"`);
+      const input = tool.schema ? tool.schema.parse(c.input) : c.input;
+      const out = await tool.run(input, {
+        ownerId: ctx.ownerId,
+        projectId: ctx.projectId,
+        agentId: null,
+        sessionId: ctx.chatId,
+        signal: ctx.signal,
+      });
+      return typeof out === "string"
+        ? { type: "tool_result", callId: c.callId, content: out }
+        : {
+            type: "tool_result",
+            callId: c.callId,
+            content: out.content,
+            ...(out.isError && { isError: true as const }),
+          };
+    } catch (err) {
+      return {
+        type: "tool_result",
+        callId: c.callId,
+        content: `Error: ${(err as Error).message}`,
+        isError: true,
+      };
+    }
+  }
+
+  /**
+   * A chat on a flat subscription (3.9.9): one turn of its engine, with the chat's tools run
+   * here (the inspector's only read). Messages and results are stored as they come, as on an
+   * API model; the engine's conversation id is kept with the chat, so the next message continues
+   * it (its cached prefix with it). A chat the engine has not seen yet (begun on another model)
+   * reaches it once as a transcript.
+   */
+  private async sendToEngine(
+    engine: Engine,
+    model: ModelSpec,
+    system: string,
+    tools: Tool[],
+    history: ChatMessage[],
+    images: ImagePart[],
+    onEvent: (e: ChatEvent) => void,
+    ctx: {
+      ownerId: string;
+      projectId: string | null;
+      chatId: string;
+      signal?: AbortSignal | undefined;
+    },
+  ): Promise<void> {
+    const [row] = await this.o.db.query<{ engine_session: unknown }>(
+      "SELECT engine_session FROM rg_chats WHERE id = $1",
+      [ctx.chatId],
+    );
+    const raw = row?.engine_session;
+    const saved = (typeof raw === "string" ? JSON.parse(raw) : raw) as
+      | { engine: string; id: string }
+      | null
+      | undefined;
+    const resume = saved?.engine === engine.id ? saved.id : undefined;
+    const user = history.at(-1) as ChatMessage;
+    const said = user.parts.flatMap((p) => (p.type === "text" ? [p.text] : [])).join("\n");
+    const earlier = resume ? "" : transcript(history.slice(0, -1));
+    const text = earlier
+      ? `The conversation so far:\n\n${earlier}\n\nThe new message:\n\n${said}`
+      : said;
+    const r = await engine.turn({
+      text,
+      images,
+      system,
+      tools: tools.map((t) => t.def),
+      model,
+      resume,
+      signal: ctx.signal,
+      live: (e) => {
+        if (e.type === "text_delta" || e.type === "thinking_delta")
+          onEvent({
+            type: "delta",
+            kind: e.type === "text_delta" ? "text" : "thinking",
+            text: e.text,
+          });
+      },
+      onMessage: async (m) => {
+        const assistant: ChatMessage = { role: "assistant", parts: m.parts };
+        history.push(assistant);
+        onEvent({
+          type: "entry",
+          // A flat subscription: nothing is paid per token.
+          entry: await this.store(ctx.chatId, assistant, {
+            metrics: m.metrics,
+            costUsd: 0,
+            model: `${model.provider}/${m.model}`,
+          }),
+        });
+      },
+      runTool: async (call) => {
+        onEvent({ type: "tool", name: call.name, input: call.input });
+        const result = await this.runTool(tools, call, ctx);
+        const toolMessage: ChatMessage = { role: "user", parts: [result] };
+        history.push(toolMessage);
+        onEvent({ type: "entry", entry: await this.store(ctx.chatId, toolMessage) });
+        return { content: result.content, isError: result.isError === true };
+      },
+    });
+    if (r.resume && r.resume !== resume)
+      await this.o.db.query("UPDATE rg_chats SET engine_session = $2 WHERE id = $1", [
+        ctx.chatId,
+        JSON.stringify({ engine: engine.id, id: r.resume }),
+      ]);
   }
 }

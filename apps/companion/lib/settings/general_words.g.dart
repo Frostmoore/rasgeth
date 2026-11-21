@@ -4,10 +4,11 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.9.8';
+const newsVersion = '3.9.9';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.9.9', 'news399Inspector', 'news399InspectorText'),
   NewsRow('3.9.8', 'news398Passwords', 'news398PasswordsText'),
   NewsRow('3.9.8', 'news398Requests', 'news398RequestsText'),
   NewsRow('3.9.8', 'news398Subscriptions', 'news398SubscriptionsText'),
@@ -657,6 +658,8 @@ const generalWords = <String, Map<String, String>>{
     'news398RequestsText': 'I comandi che leggono soltanto, anche su container e macchine, non chiedono più; le parole dentro un comando (un messaggio di commit) non sembrano più pericoli. «Consenti sempre per questo lavoro» vale per lo stesso tipo di comando per il resto del lavoro, anche dopo un riavvio.',
     'news398Subscriptions': 'Abbonamenti che funzionano ovunque',
     'news398SubscriptionsText': 'Con un abbonamento Claude o ChatGPT il tuo classificatore, i genitori degli agenti, l\'ispettore e il ritratto rispondono di nuovo invece di rifiutare tutto; gli strumenti accesi si usano subito e i limiti del piano si vedono in alto.',
+    'news399Inspector': 'L\'ispettore torna a leggere con l\'abbonamento',
+    'news399InspectorText': 'Con un abbonamento Claude o ChatGPT l\'ispettore dei progetti e la Chat usano di nuovo i loro strumenti (file, git, compiti, bacheca, ricerca): chiedi com\'è messo un progetto e hai una risposta vera. I repository dei progetti hanno anche un autore git di serie, così il commit di un agente non fallisce più.',
     'searchCard_brave': 'Ha un indice suo, indipendente da Google e Bing; rispetta la privacy. Credito gratuito ogni mese, poi a consumo.',
     'searchCard_exa': 'Cerca per significato: forte su documentazione, articoli scientifici e tecnici. Credito gratuito all\'inizio.',
     'searchCard_searxng': 'Gratis, senza chiave né account: un motore di ricerca che gira a casa tua (lo avvia Rasgeth, dove può, oppure usi il tuo).',
@@ -955,6 +958,8 @@ const generalWords = <String, Map<String, String>>{
     'news398RequestsText': 'Commands that only read, on containers and machines too, no longer ask; words inside a command (a commit message) no longer look like dangers. «Always allow for this job» covers the same kind of command for the rest of the work, also after a restart.',
     'news398Subscriptions': 'Subscriptions that work everywhere',
     'news398SubscriptionsText': 'With a Claude or ChatGPT subscription your classifier, the agents\' parents, the inspector and the portrait answer again instead of refusing everything; tools switched on are usable at once, and the plan\'s limits show in the header.',
+    'news399Inspector': 'The inspector reads again on a subscription',
+    'news399InspectorText': 'With a Claude or ChatGPT subscription the project inspector and the Chat use their tools again (files, git, tasks, the board, search): ask how a project is going and you get a real answer. Project repositories also get a git author of their own, so an agent\'s commit no longer fails.',
     'searchCard_brave': 'Its own index, independent of Google and Bing; private. Free monthly credit, then pay as you go.',
     'searchCard_exa': 'Searches by meaning: strong on documentation, papers and technical articles. Free credit to start.',
     'searchCard_searxng': 'Free, no key, no account: a search engine that runs at your place (Rasgeth starts it, where it can, or you use yours).',

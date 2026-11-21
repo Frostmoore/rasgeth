@@ -2478,6 +2478,9 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news399Inspector: "The inspector reads again on a subscription",
+  news399InspectorText:
+    "With a Claude or ChatGPT subscription the project inspector and the Chat use their tools again (files, git, tasks, the board, search): ask how a project is going and you get a real answer. Project repositories also get a git author of their own, so an agent's commit no longer fails.",
   news398Passwords: "Passwords stay out of the chat",
   news398PasswordsText:
     "A password export pasted or attached by mistake (Bitwarden, Avira, Chrome, 1Password, KeePass…) is held back: «Put them in the keychain» imports them without the model ever seeing them. «Erase for good» removes one message from the conversation, the search and the engine's own copy.",
@@ -10073,6 +10076,9 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news399Inspector: "L'ispettore torna a leggere con l'abbonamento",
+  news399InspectorText:
+    "Con un abbonamento Claude o ChatGPT l'ispettore dei progetti e la Chat usano di nuovo i loro strumenti (file, git, compiti, bacheca, ricerca): chiedi com'è messo un progetto e hai una risposta vera. I repository dei progetti hanno anche un autore git di serie, così il commit di un agente non fallisce più.",
   news398Passwords: "Le password restano fuori dalla chat",
   news398PasswordsText:
     "Un'esportazione di password incollata o allegata per sbaglio (Bitwarden, Avira, Chrome, 1Password, KeePass…) viene trattenuta: «Mettile nel Portachiavi» le importa senza che il modello le veda mai. «Cancella per sempre» toglie un messaggio dalla conversazione, dalla ricerca e dalla copia del motore.",

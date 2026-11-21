@@ -24,7 +24,25 @@ async function git(ws: Workspace, args: string[]): Promise<string> {
   return r.stdout.trim();
 }
 
-/** Makes sure the workspace is a git repository with at least one commit. */
+/** The identity of commits made where git has none: ours, never the person's email. */
+export const DEFAULT_GIT_IDENTITY = { name: "Rasgeth", email: "rasgeth@localhost" } as const;
+
+/**
+ * A repository-level identity when git finds none (3.9.9, Coder: an orchestrator's `git commit`
+ * failed with «Author identity unknown»). Read where the agents run their commands (this
+ * workspace: the host or the container), so an identity the person set in their own git
+ * configuration wins; only the repository's `.git/config` is ever written, never the global one.
+ */
+export async function ensureIdentity(ws: Workspace): Promise<void> {
+  for (const [key, value] of [
+    ["user.name", DEFAULT_GIT_IDENTITY.name],
+    ["user.email", DEFAULT_GIT_IDENTITY.email],
+  ] as const)
+    if ((await run(ws, ["config", "--get", key])).exitCode !== 0)
+      await git(ws, ["config", "--local", key, value]);
+}
+
+/** Makes sure the workspace is a git repository with at least one commit and an identity. */
 export async function ensureRepo(ws: Workspace): Promise<void> {
   if ((await run(ws, ["rev-parse", "--is-inside-work-tree"])).exitCode !== 0) {
     await git(ws, ["init", "-q"]);
@@ -32,6 +50,7 @@ export async function ensureRepo(ws: Workspace): Promise<void> {
     // Only for repositories RedGiant creates: existing ones keep their own configuration.
     await git(ws, ["config", "core.autocrlf", "false"]);
   }
+  await ensureIdentity(ws);
   const exclude = ".git/info/exclude";
   const current = (await ws.exists(exclude)) ? await ws.readText(exclude) : "";
   // Agents' worktrees and RedGiant's own files (custom tools' copies) never show up in git.
