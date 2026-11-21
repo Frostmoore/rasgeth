@@ -18974,6 +18974,2826 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Devices removed: {count}.'**
   String devForgetUnusedDone(int count);
+
+  /// No description provided for @chAxCat_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get chAxCat_other;
+
+  /// No description provided for @chAxCat_personal.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal'**
+  String get chAxCat_personal;
+
+  /// No description provided for @chAxCat_social.
+  ///
+  /// In en, this message translates to:
+  /// **'Social'**
+  String get chAxCat_social;
+
+  /// No description provided for @chAxCat_work.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get chAxCat_work;
+
+  /// No description provided for @chAxMailboxAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a mailbox'**
+  String get chAxMailboxAdd;
+
+  /// No description provided for @chAxMailboxAddText.
+  ///
+  /// In en, this message translates to:
+  /// **'As many as you like, each in its category.'**
+  String get chAxMailboxAddText;
+
+  /// No description provided for @chAxMailboxAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents may use it'**
+  String get chAxMailboxAgents;
+
+  /// No description provided for @chAxMailboxAgentsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'They search, read and write drafts here; every email they send asks you first and shows it whole.'**
+  String get chAxMailboxAgentsHelp;
+
+  /// No description provided for @chAxMailboxCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get chAxMailboxCategory;
+
+  /// No description provided for @chAxMailboxName.
+  ///
+  /// In en, this message translates to:
+  /// **'Its name'**
+  String get chAxMailboxName;
+
+  /// No description provided for @chAxMailboxNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For example Work or Gmail; empty: the address.'**
+  String get chAxMailboxNameHelp;
+
+  /// No description provided for @chAxMailboxNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New mailbox'**
+  String get chAxMailboxNew;
+
+  /// No description provided for @chAxMailboxNewCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Or a new category'**
+  String get chAxMailboxNewCategory;
+
+  /// No description provided for @chAxMailboxNewCategoryPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Family, Club, Shop…'**
+  String get chAxMailboxNewCategoryPlaceholder;
+
+  /// No description provided for @chAxMailboxPasswordKept.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave it empty to keep the one you gave.'**
+  String get chAxMailboxPasswordKept;
+
+  /// No description provided for @chAxMailboxPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'A mailbox for the automations: only new mail is read, nothing is marked or moved.'**
+  String get chAxMailboxPurpose;
+
+  /// No description provided for @chAxMailboxesWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} mailboxes connected: {names}.'**
+  String chAxMailboxesWatching(String n, String names);
+
+  /// No description provided for @chAxSmtpHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending server (SMTP)'**
+  String get chAxSmtpHost;
+
+  /// No description provided for @chAxSmtpHostHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Only to get messages by email; empty: the usual one.'**
+  String get chAxSmtpHostHelp;
+
+  /// No description provided for @chAxSmtpPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending port'**
+  String get chAxSmtpPort;
+
+  /// No description provided for @chChatChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the settings'**
+  String get chChatChange;
+
+  /// No description provided for @chChatDiscordHow.
+  ///
+  /// In en, this message translates to:
+  /// **'In the Discord Developer Portal create an application, add a bot, turn on Message Content Intent, copy its token, and invite the bot to a server of yours (or write to it directly).'**
+  String get chChatDiscordHow;
+
+  /// No description provided for @chChatDiscordToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Bot token'**
+  String get chChatDiscordToken;
+
+  /// No description provided for @chChatImHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple has no iMessage service for programs: it takes a Mac that stays on, signed in to Messages, with the free BlueBubbles server. The Mac answers with its Apple ID: use one made for Rasgeth, not your own.'**
+  String get chChatImHow;
+
+  /// No description provided for @chChatImLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'Without the Private API answers cannot be edited and nobody shows as typing; approvals and questions are answered with numbers. While the Mac sleeps or is off, messages wait and arrive when it wakes.'**
+  String get chChatImLimits;
+
+  /// No description provided for @chChatImPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'BlueBubbles server password'**
+  String get chChatImPassword;
+
+  /// No description provided for @chChatImPrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'BlueBubbles\' Private API is set up (edits and “typing...”)'**
+  String get chChatImPrivate;
+
+  /// No description provided for @chChatImStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'On the Mac make (or use) an Apple ID just for Rasgeth and sign in with it in Messages.'**
+  String get chChatImStep1;
+
+  /// No description provided for @chChatImStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Download BlueBubbles Server from bluebubbles.app, open it and choose a server password.'**
+  String get chChatImStep2;
+
+  /// No description provided for @chChatImStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'When it asks, allow Full Disk Access and Accessibility in System Settings, Privacy & Security: it needs them to read and send messages.'**
+  String get chChatImStep3;
+
+  /// No description provided for @chChatImStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'In BlueBubbles keep the Mac from sleeping and note its address: http://<the Mac\'s address>:1234 at home, or the address of its own tunnel from outside.'**
+  String get chChatImStep4;
+
+  /// No description provided for @chChatImStep5.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the address and the password here and press Connect. From your iPhone write to the Apple ID of step 1 and send the code.'**
+  String get chChatImStep5;
+
+  /// No description provided for @chChatImUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Address of the BlueBubbles server (http://...:1234)'**
+  String get chChatImUrl;
+
+  /// No description provided for @chChatLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked: {who}'**
+  String chChatLinked(String who);
+
+  /// No description provided for @chChatMatrixE2ee.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypted chats: direct chats in Element are encrypted and the bot cannot read them. To keep encryption, run Pantalaimon (Matrix\'s free encryption helper) next to Rasgeth and write its address instead of the server\'s.'**
+  String get chChatMatrixE2ee;
+
+  /// No description provided for @chChatMatrixHomeserver.
+  ///
+  /// In en, this message translates to:
+  /// **'Server address (for example https://matrix.org)'**
+  String get chChatMatrixHomeserver;
+
+  /// No description provided for @chChatMatrixHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth needs a Matrix account of its own, not yours: it is the one you will write to.'**
+  String get chChatMatrixHow;
+
+  /// No description provided for @chChatMatrixStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a new account for the bot, for example at app.element.io (or on your own server).'**
+  String get chChatMatrixStep1;
+
+  /// No description provided for @chChatMatrixStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in as the bot, open Settings, Help & About, Advanced, Access token, and copy it. Then close that tab without signing out: signing out cancels the token.'**
+  String get chChatMatrixStep2;
+
+  /// No description provided for @chChatMatrixStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the server address and paste the token here, then press Connect.'**
+  String get chChatMatrixStep3;
+
+  /// No description provided for @chChatMatrixStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'From your own account make a new room without encryption (switch off “Enable end-to-end encryption”), invite the bot (it joins by itself) and send the code that appears.'**
+  String get chChatMatrixStep4;
+
+  /// No description provided for @chChatMatrixToken.
+  ///
+  /// In en, this message translates to:
+  /// **'The bot account\'s access token'**
+  String get chChatMatrixToken;
+
+  /// No description provided for @chChatSendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Send this from the chat to link it:'**
+  String get chChatSendCode;
+
+  /// No description provided for @chChatSignalHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Signal needs signal-cli-rest-api running with a number of its own linked (a second SIM or a linked device); write its address and the number here.'**
+  String get chChatSignalHow;
+
+  /// No description provided for @chChatSignalNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'The bot\'s number (+39...)'**
+  String get chChatSignalNumber;
+
+  /// No description provided for @chChatSignalUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Address of signal-cli-rest-api'**
+  String get chChatSignalUrl;
+
+  /// No description provided for @chChatSlackApp.
+  ///
+  /// In en, this message translates to:
+  /// **'App-level token (xapp-..., connections:write)'**
+  String get chChatSlackApp;
+
+  /// No description provided for @chChatSlackBot.
+  ///
+  /// In en, this message translates to:
+  /// **'Bot token (xoxb-...)'**
+  String get chChatSlackBot;
+
+  /// No description provided for @chChatSlackHow.
+  ///
+  /// In en, this message translates to:
+  /// **'At api.slack.com/apps create an app, turn on Socket Mode (no public address needed), add the scopes chat:write, im:history, app_mentions:read, files:read, files:write, subscribe to message.im and app_mention, install it and copy the two tokens.'**
+  String get chChatSlackHow;
+
+  /// No description provided for @chChatSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Step by step'**
+  String get chChatSteps;
+
+  /// No description provided for @chChatTeamsAppId.
+  ///
+  /// In en, this message translates to:
+  /// **'Microsoft App ID'**
+  String get chChatTeamsAppId;
+
+  /// No description provided for @chChatTeamsDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the app for Teams'**
+  String get chChatTeamsDownload;
+
+  /// No description provided for @chChatTeamsEndpoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Messaging endpoint for Azure: {url}'**
+  String chChatTeamsEndpoint(String url);
+
+  /// No description provided for @chChatTeamsFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files from Rasgeth arrive as a card to accept: once accepted they are saved in your OneDrive. Voice messages cannot be sent to a bot in Teams.'**
+  String get chChatTeamsFiles;
+
+  /// No description provided for @chChatTeamsHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Teams talks to bots only through Microsoft Azure. You need a Microsoft 365 work or school account that may add custom apps (the free personal Teams does not allow bots), and Rasgeth reachable from outside (Settings, Remote access).'**
+  String get chChatTeamsHow;
+
+  /// No description provided for @chChatTeamsSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'Client secret (its Value)'**
+  String get chChatTeamsSecret;
+
+  /// No description provided for @chChatTeamsStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Open portal.azure.com (a free account is enough), choose Create a resource, search for Azure Bot and press Create.'**
+  String get chChatTeamsStep1;
+
+  /// No description provided for @chChatTeamsStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Give it a name, choose the Free plan (F0), Type of App: Single Tenant, Creation type: Create new Microsoft App ID. Press Create, then Go to resource.'**
+  String get chChatTeamsStep2;
+
+  /// No description provided for @chChatTeamsStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'In Configuration write this Messaging endpoint and Save: {url}. Copy the Microsoft App ID and the App Tenant ID.'**
+  String chChatTeamsStep3(String url);
+
+  /// No description provided for @chChatTeamsStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'Next to Microsoft App ID press Manage Password, then New client secret, Add, and copy its Value (it is shown only once).'**
+  String get chChatTeamsStep4;
+
+  /// No description provided for @chChatTeamsStep5.
+  ///
+  /// In en, this message translates to:
+  /// **'In Channels add Microsoft Teams, accept the terms and press Apply.'**
+  String get chChatTeamsStep5;
+
+  /// No description provided for @chChatTeamsStep6.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the three values here and press Connect. Then download the app for Teams with the button that appears.'**
+  String get chChatTeamsStep6;
+
+  /// No description provided for @chChatTeamsTenant.
+  ///
+  /// In en, this message translates to:
+  /// **'App Tenant ID'**
+  String get chChatTeamsTenant;
+
+  /// No description provided for @chChatTeamsUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'In Teams open Apps, Manage your apps, Upload an app, Upload a custom app, choose the file you downloaded and press Add. Then open the chat with Rasgeth and send the code.'**
+  String get chChatTeamsUpload;
+
+  /// No description provided for @chChatTurnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get chChatTurnOff;
+
+  /// No description provided for @chChatWaHow.
+  ///
+  /// In en, this message translates to:
+  /// **'In Meta for Developers create a WhatsApp app, copy the access token, the phone number ID and the app secret, and choose a verify token. WhatsApp sends messages to a public address: Rasgeth must be reachable from outside (Settings, Remote access).'**
+  String get chChatWaHow;
+
+  /// No description provided for @chChatWaPhoneId.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number ID'**
+  String get chChatWaPhoneId;
+
+  /// No description provided for @chChatWaSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'App secret'**
+  String get chChatWaSecret;
+
+  /// No description provided for @chChatWaToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Access token'**
+  String get chChatWaToken;
+
+  /// No description provided for @chChatWaVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify token (choose one)'**
+  String get chChatWaVerify;
+
+  /// No description provided for @chChatWaWebhook.
+  ///
+  /// In en, this message translates to:
+  /// **'Webhook for Meta: {url} with the verify token you chose; subscribe to messages.'**
+  String chChatWaWebhook(String url);
+
+  /// No description provided for @chChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Other chats'**
+  String get chChats;
+
+  /// No description provided for @chChatsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Talk to Demi-God from Discord, Slack, Signal, WhatsApp, Matrix, Teams or iMessage too. It is one conversation: begun on Telegram or here, it goes on wherever you write. Approvals and questions arrive with buttons (on Signal, Matrix and iMessage, with numbers to reply).'**
+  String get chChatsHint;
+
+  /// No description provided for @chEmailChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get chEmailChange;
+
+  /// No description provided for @chEmailConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect the mailbox'**
+  String get chEmailConnect;
+
+  /// No description provided for @chEmailConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading {user} on {host}.'**
+  String chEmailConnected(String host, String user);
+
+  /// No description provided for @chEmailHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Mail server (IMAP)'**
+  String get chEmailHost;
+
+  /// No description provided for @chEmailHostHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For example imap.gmail.com, outlook.office365.com, imap.mail.me.com.'**
+  String get chEmailHostHelp;
+
+  /// No description provided for @chEmailNeedFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect the mailbox first: until then this automation never starts.'**
+  String get chEmailNeedFirst;
+
+  /// No description provided for @chEmailNotConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected'**
+  String get chEmailNotConnected;
+
+  /// No description provided for @chEmailPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password for apps'**
+  String get chEmailPassword;
+
+  /// No description provided for @chEmailPasswordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Better an app password (Gmail, Outlook and iCloud make one in the account\'s security settings) than your own: you can revoke it at any time. It stays in a private file on your server.'**
+  String get chEmailPasswordHelp;
+
+  /// No description provided for @chEmailPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get chEmailPort;
+
+  /// No description provided for @chEmailPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'A routine can start when an email arrives (an invoice, an alert). Rasgeth looks only at new mail, every two minutes, and changes nothing in your mailbox; the email reaches the agent as information, never as instructions.'**
+  String get chEmailPurpose;
+
+  /// No description provided for @chEmailSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect the mailbox'**
+  String get chEmailSave;
+
+  /// No description provided for @chEmailSecure.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypted from the start (port 993)'**
+  String get chEmailSecure;
+
+  /// No description provided for @chEmailTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'Trying the mailbox…'**
+  String get chEmailTesting;
+
+  /// No description provided for @chEmailTileText.
+  ///
+  /// In en, this message translates to:
+  /// **'For the automations that start when an email arrives.'**
+  String get chEmailTileText;
+
+  /// No description provided for @chEmailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mailbox'**
+  String get chEmailTitle;
+
+  /// No description provided for @chEmailUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Address or username'**
+  String get chEmailUser;
+
+  /// No description provided for @chEmailWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Watching {user} on {host}.'**
+  String chEmailWatching(String host, String user);
+
+  /// No description provided for @chInput.
+  ///
+  /// In en, this message translates to:
+  /// **'in'**
+  String get chInput;
+
+  /// No description provided for @chRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get chRemove;
+
+  /// No description provided for @chSbChatAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked accounts'**
+  String get chSbChatAccounts;
+
+  /// No description provided for @chSbChatDiscordText.
+  ///
+  /// In en, this message translates to:
+  /// **'A bot in your Discord server, in private messages or in a channel.'**
+  String get chSbChatDiscordText;
+
+  /// No description provided for @chSbChatImText.
+  ///
+  /// In en, this message translates to:
+  /// **'Through a Mac that stays on, with BlueBubbles: the Mac\'s Messages app answers.'**
+  String get chSbChatImText;
+
+  /// No description provided for @chSbChatMatrixText.
+  ///
+  /// In en, this message translates to:
+  /// **'A bot account on any Matrix server (matrix.org or your own), in a chat or a room.'**
+  String get chSbChatMatrixText;
+
+  /// No description provided for @chSbChatNoAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'No account linked yet: send the code below from the chat.'**
+  String get chSbChatNoAccount;
+
+  /// No description provided for @chSbChatOnWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'On: send the code from the chat'**
+  String get chSbChatOnWaiting;
+
+  /// No description provided for @chSbChatSignalText.
+  ///
+  /// In en, this message translates to:
+  /// **'A Signal number of its own, through signal-cli-rest-api.'**
+  String get chSbChatSignalText;
+
+  /// No description provided for @chSbChatSlackText.
+  ///
+  /// In en, this message translates to:
+  /// **'An app in your Slack workspace, in Socket Mode: no public address needed.'**
+  String get chSbChatSlackText;
+
+  /// No description provided for @chSbChatTeamsText.
+  ///
+  /// In en, this message translates to:
+  /// **'A bot in Microsoft Teams, for work or school accounts, through a free Azure Bot.'**
+  String get chSbChatTeamsText;
+
+  /// No description provided for @chSbChatWaText.
+  ///
+  /// In en, this message translates to:
+  /// **'Your WhatsApp Business number, through Meta\'s Cloud API.'**
+  String get chSbChatWaText;
+
+  /// No description provided for @chSbChatWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the code… this window notices by itself.'**
+  String get chSbChatWaiting;
+
+  /// No description provided for @chSbChatsQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Talk to Demi-God from other apps too'**
+  String get chSbChatsQ;
+
+  /// No description provided for @chStTgAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked accounts'**
+  String get chStTgAccounts;
+
+  /// No description provided for @chTelegram.
+  ///
+  /// In en, this message translates to:
+  /// **'Telegram'**
+  String get chTelegram;
+
+  /// No description provided for @chTgChangeBot.
+  ///
+  /// In en, this message translates to:
+  /// **'Use another bot'**
+  String get chTgChangeBot;
+
+  /// No description provided for @chTgLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked to {who}'**
+  String chTgLinked(String who);
+
+  /// No description provided for @chTgLinkedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write to your bot whenever you like: Demi-God passes it on to God and brings back the answer.'**
+  String get chTgLinkedHint;
+
+  /// No description provided for @chTgOpenBot.
+  ///
+  /// In en, this message translates to:
+  /// **'Open @{bot}'**
+  String chTgOpenBot(String bot);
+
+  /// No description provided for @chTgQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan with your phone\'s camera'**
+  String get chTgQr;
+
+  /// No description provided for @chTgWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you to press Start… this page notices by itself.'**
+  String get chTgWaiting;
+
+  /// No description provided for @chUnlink.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink'**
+  String get chUnlink;
+
+  /// No description provided for @chWzConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get chWzConnect;
+
+  /// No description provided for @chWzDoneBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get chWzDoneBtn;
+
+  /// No description provided for @chWzLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'set by the environment'**
+  String get chWzLocked;
+
+  /// No description provided for @chWzTgAsks.
+  ///
+  /// In en, this message translates to:
+  /// **'Here I also tell you when a yes of yours is needed.'**
+  String get chWzTgAsks;
+
+  /// No description provided for @chWzTgBf1.
+  ///
+  /// In en, this message translates to:
+  /// **'Alright. What shall we call it?'**
+  String get chWzTgBf1;
+
+  /// No description provided for @chWzTgBf2.
+  ///
+  /// In en, this message translates to:
+  /// **'Now a username, ending in «bot».'**
+  String get chWzTgBf2;
+
+  /// No description provided for @chWzTgBf3.
+  ///
+  /// In en, this message translates to:
+  /// **'Done! Here is the token: 123456789:AAH…'**
+  String get chWzTgBf3;
+
+  /// No description provided for @chWzTgBfName.
+  ///
+  /// In en, this message translates to:
+  /// **'My Rasgeth'**
+  String get chWzTgBfName;
+
+  /// No description provided for @chWzTgCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check'**
+  String get chWzTgCheck;
+
+  /// No description provided for @chWzTgChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking…'**
+  String get chWzTgChecking;
+
+  /// No description provided for @chWzTgDone.
+  ///
+  /// In en, this message translates to:
+  /// **'done'**
+  String get chWzTgDone;
+
+  /// No description provided for @chWzTgExampleBot.
+  ///
+  /// In en, this message translates to:
+  /// **'my_rasgeth_bot'**
+  String get chWzTgExampleBot;
+
+  /// No description provided for @chWzTgHaveToken.
+  ///
+  /// In en, this message translates to:
+  /// **'I already have a token'**
+  String get chWzTgHaveToken;
+
+  /// No description provided for @chWzTgHello.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi, I\'m {demigod}. Write to me whenever you like: I pass everything to {god} and bring you the answer.'**
+  String chWzTgHello(String demigod, String god);
+
+  /// No description provided for @chWzTgLater.
+  ///
+  /// In en, this message translates to:
+  /// **'later'**
+  String get chWzTgLater;
+
+  /// No description provided for @chWzTgLead.
+  ///
+  /// In en, this message translates to:
+  /// **'With Telegram you write to {demigod} from wherever you are and get the notices there: approvals, questions, long jobs, budget. Three steps, a couple of minutes.'**
+  String chWzTgLead(String demigod);
+
+  /// No description provided for @chWzTgLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked to {who}. Write to {demigod} whenever you like.'**
+  String chWzTgLinked(String demigod, String who);
+
+  /// No description provided for @chWzTgLinkedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked. Write to your bot whenever you like.'**
+  String get chWzTgLinkedShort;
+
+  /// No description provided for @chWzTgMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get chWzTgMessage;
+
+  /// No description provided for @chWzTgNow.
+  ///
+  /// In en, this message translates to:
+  /// **'now'**
+  String get chWzTgNow;
+
+  /// No description provided for @chWzTgOfficial.
+  ///
+  /// In en, this message translates to:
+  /// **'Telegram\'s official bot'**
+  String get chWzTgOfficial;
+
+  /// No description provided for @chWzTgOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'bot · online'**
+  String get chWzTgOnline;
+
+  /// No description provided for @chWzTgOpenBf.
+  ///
+  /// In en, this message translates to:
+  /// **'Open BotFather'**
+  String get chWzTgOpenBf;
+
+  /// No description provided for @chWzTgPressStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Press Start to begin talking with this bot.'**
+  String get chWzTgPressStart;
+
+  /// No description provided for @chWzTgQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth on your phone'**
+  String get chWzTgQ;
+
+  /// No description provided for @chWzTgStart.
+  ///
+  /// In en, this message translates to:
+  /// **'START'**
+  String get chWzTgStart;
+
+  /// No description provided for @chWzTgStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Make the bot with @BotFather'**
+  String get chWzTgStep1;
+
+  /// No description provided for @chWzTgStep1Text.
+  ///
+  /// In en, this message translates to:
+  /// **'BotFather is Telegram\'s official bot that makes bots. Write /newbot to it, give it a name and a username that ends in «bot».'**
+  String get chWzTgStep1Text;
+
+  /// No description provided for @chWzTgStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the token'**
+  String get chWzTgStep2;
+
+  /// No description provided for @chWzTgStep2Text.
+  ///
+  /// In en, this message translates to:
+  /// **'BotFather answers with a long line, like 123456789:AAH… It is the bot\'s key: keep it to yourself.'**
+  String get chWzTgStep2Text;
+
+  /// No description provided for @chWzTgStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair the phone'**
+  String get chWzTgStep3;
+
+  /// No description provided for @chWzTgStep3Text.
+  ///
+  /// In en, this message translates to:
+  /// **'Open {bot} and press Start: Telegram sends it this code by itself, nothing to type.'**
+  String chWzTgStep3Text(String bot);
+
+  /// No description provided for @chWzTgToken.
+  ///
+  /// In en, this message translates to:
+  /// **'The bot\'s token'**
+  String get chWzTgToken;
+
+  /// No description provided for @chWzTgYouWillSee.
+  ///
+  /// In en, this message translates to:
+  /// **'What you will see in Telegram'**
+  String get chWzTgYouWillSee;
+
+  /// No description provided for @chWzTgYourBot.
+  ///
+  /// In en, this message translates to:
+  /// **'Your bot'**
+  String get chWzTgYourBot;
+
+  /// No description provided for @chWzTgYourBotName.
+  ///
+  /// In en, this message translates to:
+  /// **'your bot'**
+  String get chWzTgYourBotName;
+
+  /// No description provided for @chWzTrying.
+  ///
+  /// In en, this message translates to:
+  /// **'Trying the model…'**
+  String get chWzTrying;
+
+  /// No description provided for @moActive.
+  ///
+  /// In en, this message translates to:
+  /// **'active'**
+  String get moActive;
+
+  /// No description provided for @moAgentModelDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'The default model'**
+  String get moAgentModelDefault;
+
+  /// No description provided for @moAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get moAgents;
+
+  /// No description provided for @moAgentsModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent\'s model'**
+  String get moAgentsModel;
+
+  /// No description provided for @moBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get moBackup;
+
+  /// No description provided for @moBackupModelNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None: a task given up on stays so'**
+  String get moBackupModelNone;
+
+  /// No description provided for @moBackupModelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup model for tasks'**
+  String get moBackupModelTitle;
+
+  /// No description provided for @moBrainChatgpt.
+  ///
+  /// In en, this message translates to:
+  /// **'ChatGPT subscription'**
+  String get moBrainChatgpt;
+
+  /// No description provided for @moBrainChatgptDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'If OpenAI says sign-in with a device code is not allowed: on chatgpt.com open Settings, Security, and turn on device code authorization, then try again.'**
+  String get moBrainChatgptDevice;
+
+  /// No description provided for @moBrainChatgptHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth uses ChatGPT through OpenAI\'s official Codex program, signed in with your account. What you use counts against your plan\'s limits.'**
+  String get moBrainChatgptHint;
+
+  /// No description provided for @moBrainChatgptStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect ChatGPT'**
+  String get moBrainChatgptStart;
+
+  /// No description provided for @moBrainChatgptStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Open this page and sign in:'**
+  String get moBrainChatgptStep1;
+
+  /// No description provided for @moBrainChatgptStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Type this code there:'**
+  String get moBrainChatgptStep2;
+
+  /// No description provided for @moBrainClaude.
+  ///
+  /// In en, this message translates to:
+  /// **'Claude subscription'**
+  String get moBrainClaude;
+
+  /// No description provided for @moBrainClaudeCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the code here'**
+  String get moBrainClaudeCode;
+
+  /// No description provided for @moBrainClaudeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth uses Claude through Anthropic\'s official program, signed in with your account. What you use counts against your plan\'s limits, not money.'**
+  String get moBrainClaudeHint;
+
+  /// No description provided for @moBrainClaudeOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Anthropic\'s sign-in page'**
+  String get moBrainClaudeOpen;
+
+  /// No description provided for @moBrainClaudeStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with your Claude account. At the end Anthropic shows a code: copy it.'**
+  String get moBrainClaudeStep2;
+
+  /// No description provided for @moBrainConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get moBrainConnect;
+
+  /// No description provided for @moBrainDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'The model agents use'**
+  String get moBrainDefault;
+
+  /// No description provided for @moBrainDefaultHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents use this model unless you choose another one for them. It is tried with a real question before it is saved.'**
+  String get moBrainDefaultHint;
+
+  /// No description provided for @moBrainDefaultSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: agents will use it.'**
+  String get moBrainDefaultSaved;
+
+  /// No description provided for @moBrainDefaultTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try and use this one'**
+  String get moBrainDefaultTry;
+
+  /// No description provided for @moBrainDisconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get moBrainDisconnect;
+
+  /// No description provided for @moBrainEffortHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'How much it reasons before answering: low is quick and cheap, high is slower but more careful.'**
+  String get moBrainEffortHelp;
+
+  /// No description provided for @moBrainKeyExample.
+  ///
+  /// In en, this message translates to:
+  /// **'It looks like this: {example}'**
+  String moBrainKeyExample(String example);
+
+  /// No description provided for @moBrainKeyMake.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a key on {name}\'s page'**
+  String moBrainKeyMake(String name);
+
+  /// No description provided for @moBrainKeyTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try and save'**
+  String get moBrainKeyTry;
+
+  /// No description provided for @moBrainKeyWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'It works: {n} models available.'**
+  String moBrainKeyWorks(String n);
+
+  /// No description provided for @moBrainLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'A model on this computer'**
+  String get moBrainLocal;
+
+  /// No description provided for @moBrainNoModel.
+  ///
+  /// In en, this message translates to:
+  /// **'No model is connected yet, so agents cannot answer. Connect one above (a subscription, a key or a local model in the next step), or later in Settings, Models and subscriptions.'**
+  String get moBrainNoModel;
+
+  /// No description provided for @moBrainNotOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'Did nothing open?'**
+  String get moBrainNotOpened;
+
+  /// No description provided for @moBrainOpenHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Open it here'**
+  String get moBrainOpenHere;
+
+  /// No description provided for @moBrainServer.
+  ///
+  /// In en, this message translates to:
+  /// **'A server of yours'**
+  String get moBrainServer;
+
+  /// No description provided for @moBrainServerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If you already run models with Ollama, LM Studio or vLLM, give Rasgeth its address.'**
+  String get moBrainServerHint;
+
+  /// No description provided for @moBrainServerKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Its key'**
+  String get moBrainServerKey;
+
+  /// No description provided for @moBrainServerKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Only if the server asks for one; most do not.'**
+  String get moBrainServerKeyHelp;
+
+  /// No description provided for @moBrainServerUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Server address'**
+  String get moBrainServerUrl;
+
+  /// No description provided for @moBrainServerUrlHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'With /v1 at the end. Ollama: http://localhost:11434/v1, LM Studio: http://localhost:1234/v1.'**
+  String get moBrainServerUrlHelp;
+
+  /// No description provided for @moBrainWhyText.
+  ///
+  /// In en, this message translates to:
+  /// **'If you already pay for Claude or ChatGPT, start with that: nothing more to pay. With a key you pay for what you use, and you can pick among many providers. A model on this computer costs nothing and keeps everything private, but it is slower and less capable than the big online ones. You can combine them: for example a subscription for hard work and a local model for small jobs.'**
+  String get moBrainWhyText;
+
+  /// No description provided for @moCatalogBuiltin.
+  ///
+  /// In en, this message translates to:
+  /// **'the one built into Rasgeth'**
+  String get moCatalogBuiltin;
+
+  /// No description provided for @moCatalogChecked.
+  ///
+  /// In en, this message translates to:
+  /// **'checked {when}'**
+  String moCatalogChecked(String when);
+
+  /// No description provided for @moCatalogDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'downloaded and signed'**
+  String get moCatalogDownloaded;
+
+  /// No description provided for @moCatalogRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Update now'**
+  String get moCatalogRefresh;
+
+  /// No description provided for @moCatalogRefreshing.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating…'**
+  String get moCatalogRefreshing;
+
+  /// No description provided for @moCatalogRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Models catalog: updated on {date}'**
+  String moCatalogRow(String date);
+
+  /// No description provided for @moCatalogUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'GitHub did not answer: the catalog in use stays.'**
+  String get moCatalogUnreachable;
+
+  /// No description provided for @moCatalogUnsigned.
+  ///
+  /// In en, this message translates to:
+  /// **'The downloaded catalog has no valid signature: it was not used.'**
+  String get moCatalogUnsigned;
+
+  /// No description provided for @moCatalogVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'version {n}'**
+  String moCatalogVersion(String n);
+
+  /// No description provided for @moChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get moChat;
+
+  /// No description provided for @moDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'downloaded'**
+  String get moDownloaded;
+
+  /// No description provided for @moDownloads.
+  ///
+  /// In en, this message translates to:
+  /// **'downloads'**
+  String get moDownloads;
+
+  /// No description provided for @moEffort.
+  ///
+  /// In en, this message translates to:
+  /// **'Effort'**
+  String get moEffort;
+
+  /// No description provided for @moEffortHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Reasoning effort: higher thinks more, is slower and costs more. From the next message.'**
+  String get moEffortHint;
+
+  /// No description provided for @moEffort_high.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get moEffort_high;
+
+  /// No description provided for @moEffort_low.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get moEffort_low;
+
+  /// No description provided for @moEffort_max.
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get moEffort_max;
+
+  /// No description provided for @moEffort_medium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get moEffort_medium;
+
+  /// No description provided for @moError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get moError;
+
+  /// No description provided for @moFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'failed'**
+  String get moFailed;
+
+  /// No description provided for @moJob_step_model_download.
+  ///
+  /// In en, this message translates to:
+  /// **'The model'**
+  String get moJob_step_model_download;
+
+  /// No description provided for @moLmBeyondMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'bigger than RAM and card together: part of it is read from the SSD at each token, slower'**
+  String get moLmBeyondMemory;
+
+  /// No description provided for @moLmBigChunks.
+  ///
+  /// In en, this message translates to:
+  /// **'Big chunks'**
+  String get moLmBigChunks;
+
+  /// No description provided for @moLmBigChunksHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Reads long messages in passes of 8,192 or 16,384 tokens instead of 4,096, when the graphics card has room for them, and loads the model in RAM when it fits with a margin: the experts go through the card once a pass, so fewer passes read faster. The first start measures them on a long message (a few minutes more) and keeps the fastest. Only for mixture-of-experts models.'**
+  String get moLmBigChunksHelp;
+
+  /// No description provided for @moLmCardDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'downloading, {pct}%'**
+  String moLmCardDownloading(String pct);
+
+  /// No description provided for @moLmCardGet.
+  ///
+  /// In en, this message translates to:
+  /// **'to download, {size}'**
+  String moLmCardGet(String size);
+
+  /// No description provided for @moLmCardOff.
+  ///
+  /// In en, this message translates to:
+  /// **'chosen, turned off'**
+  String get moLmCardOff;
+
+  /// No description provided for @moLmCardPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'download paused'**
+  String get moLmCardPaused;
+
+  /// No description provided for @moLmCardReady.
+  ///
+  /// In en, this message translates to:
+  /// **'downloaded'**
+  String get moLmCardReady;
+
+  /// No description provided for @moLmCardTooBig.
+  ///
+  /// In en, this message translates to:
+  /// **'too big for this computer'**
+  String get moLmCardTooBig;
+
+  /// No description provided for @moLmContextTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'tokens of context'**
+  String get moLmContextTokens;
+
+  /// No description provided for @moLmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get moLmDelete;
+
+  /// No description provided for @moLmDeleteActiveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This model is in use: the engine stops and the file is deleted. Go on?'**
+  String get moLmDeleteActiveConfirm;
+
+  /// No description provided for @moLmDiscard.
+  ///
+  /// In en, this message translates to:
+  /// **'Throw away the download'**
+  String get moLmDiscard;
+
+  /// No description provided for @moLmDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download · {size}'**
+  String moLmDownload(String size);
+
+  /// No description provided for @moLmDownloadedBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'downloading'**
+  String get moLmDownloadedBusy;
+
+  /// No description provided for @moLmDownloadedConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}? It frees {size}.'**
+  String moLmDownloadedConfirm(String name, String size);
+
+  /// No description provided for @moLmDownloadedConfirmActive.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is the model in use: the engine stops and the file is deleted ({size}). Go on?'**
+  String moLmDownloadedConfirmActive(String name, String size);
+
+  /// No description provided for @moLmDownloadedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No model downloaded yet.'**
+  String get moLmDownloadedEmpty;
+
+  /// No description provided for @moLmDownloadedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Every model file in the folder ({size} in all), the biggest first. Deleting one frees its room at once; the suggested ones can be downloaded again.'**
+  String moLmDownloadedHelp(String size);
+
+  /// No description provided for @moLmDownloadedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} on the disk · {size}'**
+  String moLmDownloadedNote(String n, String size);
+
+  /// No description provided for @moLmDownloadedPartial.
+  ///
+  /// In en, this message translates to:
+  /// **'incomplete'**
+  String get moLmDownloadedPartial;
+
+  /// No description provided for @moLmDownloadedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded models'**
+  String get moLmDownloadedTitle;
+
+  /// No description provided for @moLmEngine.
+  ///
+  /// In en, this message translates to:
+  /// **'Engine'**
+  String get moLmEngine;
+
+  /// No description provided for @moLmEngineHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth picks the one that suits this computer. Change it only if starting fails.'**
+  String get moLmEngineHelp;
+
+  /// No description provided for @moLmEngine_cpu.
+  ///
+  /// In en, this message translates to:
+  /// **'Processor'**
+  String get moLmEngine_cpu;
+
+  /// No description provided for @moLmEngine_cuda.
+  ///
+  /// In en, this message translates to:
+  /// **'NVIDIA graphics card (CUDA)'**
+  String get moLmEngine_cuda;
+
+  /// No description provided for @moLmEngine_mac.
+  ///
+  /// In en, this message translates to:
+  /// **'The Mac\'s graphics chip (Metal), next to Rasgeth'**
+  String get moLmEngine_mac;
+
+  /// No description provided for @moLmEngine_vulkan.
+  ///
+  /// In en, this message translates to:
+  /// **'AMD, Intel or built-in graphics (Vulkan)'**
+  String get moLmEngine_vulkan;
+
+  /// No description provided for @moLmEngine_windows.
+  ///
+  /// In en, this message translates to:
+  /// **'Graphics card, with Windows\' own engine (Vulkan)'**
+  String get moLmEngine_windows;
+
+  /// No description provided for @moLmExperimental.
+  ///
+  /// In en, this message translates to:
+  /// **'experimental'**
+  String get moLmExperimental;
+
+  /// No description provided for @moLmFactCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Experts\' cache in the card'**
+  String get moLmFactCache;
+
+  /// No description provided for @moLmFactRam.
+  ///
+  /// In en, this message translates to:
+  /// **'Free RAM counted'**
+  String get moLmFactRam;
+
+  /// No description provided for @moLmFactSsd.
+  ///
+  /// In en, this message translates to:
+  /// **'From the SSD at each token'**
+  String get moLmFactSsd;
+
+  /// No description provided for @moLmFactSsdGb.
+  ///
+  /// In en, this message translates to:
+  /// **'about {gb} GB'**
+  String moLmFactSsdGb(String gb);
+
+  /// No description provided for @moLmFactSsdNone.
+  ///
+  /// In en, this message translates to:
+  /// **'nothing: it fits in RAM'**
+  String get moLmFactSsdNone;
+
+  /// No description provided for @moLmGbPerSec.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} GB/s'**
+  String moLmGbPerSec(String n);
+
+  /// No description provided for @moLmHwCpu.
+  ///
+  /// In en, this message translates to:
+  /// **'No graphics card to use: models run on the processor, slower; small ones, up to about {max} GB.'**
+  String moLmHwCpu(String max);
+
+  /// No description provided for @moLmHwGpu.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} with {vram} GB of video memory: models up to about {max} GB run on it, fast.'**
+  String moLmHwGpu(String max, String name, String vram);
+
+  /// No description provided for @moLmHwGpuUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'An NVIDIA graphics card is available, but its memory is unknown: start with a small model.'**
+  String get moLmHwGpuUnknown;
+
+  /// No description provided for @moLmHwIgpu.
+  ///
+  /// In en, this message translates to:
+  /// **'A graphics chip built into the processor: a little faster than the processor alone; models up to about {max} GB.'**
+  String moLmHwIgpu(String max);
+
+  /// No description provided for @moLmHwUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'The engine cannot reach the graphics card here: models run on the processor, slower; up to about {max} GB.'**
+  String moLmHwUnreachable(String max);
+
+  /// No description provided for @moLmInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'in use'**
+  String get moLmInUse;
+
+  /// No description provided for @moLmLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking up the models…'**
+  String get moLmLoading;
+
+  /// No description provided for @moLmMoePrefetch.
+  ///
+  /// In en, this message translates to:
+  /// **'Next layer ahead'**
+  String get moLmMoePrefetch;
+
+  /// No description provided for @moLmOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get moLmOff;
+
+  /// No description provided for @moLmOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get moLmOn;
+
+  /// No description provided for @moLmOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other models in the folder'**
+  String get moLmOther;
+
+  /// No description provided for @moLmOtherHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A model file in the folder, not among the suggested ones ({size}).'**
+  String moLmOtherHelp(String size);
+
+  /// No description provided for @moLmPartRamSub.
+  ///
+  /// In en, this message translates to:
+  /// **'{free} free now'**
+  String moLmPartRamSub(String free);
+
+  /// No description provided for @moLmPartSsd.
+  ///
+  /// In en, this message translates to:
+  /// **'Models\' SSD'**
+  String get moLmPartSsd;
+
+  /// No description provided for @moLmPartSsdSub.
+  ///
+  /// In en, this message translates to:
+  /// **'{free} free'**
+  String moLmPartSsdSub(String free);
+
+  /// No description provided for @moLmPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get moLmPause;
+
+  /// No description provided for @moLmPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused: {done} of {total}'**
+  String moLmPaused(String done, String total);
+
+  /// No description provided for @moLmPausedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused at {done}'**
+  String moLmPausedAt(String done);
+
+  /// No description provided for @moLmPreloadSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Model read from the disk'**
+  String get moLmPreloadSpeed;
+
+  /// No description provided for @moLmRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'recommended'**
+  String get moLmRecommended;
+
+  /// No description provided for @moLmResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Go on'**
+  String get moLmResume;
+
+  /// No description provided for @moLmRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Room'**
+  String get moLmRoom;
+
+  /// No description provided for @moLmScoresHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The bars compare these models with each other (five is the best of them). Speed is an estimate for this computer.'**
+  String get moLmScoresHint;
+
+  /// No description provided for @moLmSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Other models from Hugging Face'**
+  String get moLmSearch;
+
+  /// No description provided for @moLmSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, choose a repository and a file. Files that are not models are hidden.'**
+  String get moLmSearchHint;
+
+  /// No description provided for @moLmSearchPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. gemma, qwen, mistral'**
+  String get moLmSearchPlaceholder;
+
+  /// No description provided for @moLmShowActivation.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the activation'**
+  String get moLmShowActivation;
+
+  /// No description provided for @moLmSpecDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'With a small model of the family'**
+  String get moLmSpecDraft;
+
+  /// No description provided for @moLmSpecDraftGet.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the small model · {size}'**
+  String moLmSpecDraftGet(String size);
+
+  /// No description provided for @moLmSpecDraftHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} ({size}) proposes up to 8 tokens; it stays all in the card with its own context, so the big model gets a little less room there. It only works with a model of the same family (same vocabulary): Rasgeth picks it.'**
+  String moLmSpecDraftHelp(String name, String size);
+
+  /// No description provided for @moLmSpecDraftReady.
+  ///
+  /// In en, this message translates to:
+  /// **'small model ready'**
+  String get moLmSpecDraftReady;
+
+  /// No description provided for @moLmSpecHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Writes faster without changing the answers: something cheap proposes the next tokens and the model checks them all in one pass, reading its weights once for several tokens. It helps most where the text is predictable (code being rewritten, long dense models outside the card); on new prose it gains little. Measured on an RTX 4080 Super: Llama 3.3 70B (mostly in RAM) from 1.1 to 2.6 tokens/s on new prose and to 7.4 on code rewritten; Qwen3 14B (in the card) from 59 to 155 on code, about even on prose. The speed is shown under each answer.'**
+  String get moLmSpecHelp;
+
+  /// No description provided for @moLmSpecNgram.
+  ///
+  /// In en, this message translates to:
+  /// **'From the text already written'**
+  String get moLmSpecNgram;
+
+  /// No description provided for @moLmSpecNgramHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The proposals come from pieces of the conversation that repeat (code being edited, documents quoted back): no second model, no memory used. It helps only there: on new prose nothing, and on a large dense model little even on code (measured: Llama 3.3 70B 1.1 -> 1.3). Prefer the small model when the family has one.'**
+  String get moLmSpecNgramHelp;
+
+  /// No description provided for @moLmSpecNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get moLmSpecNone;
+
+  /// No description provided for @moLmSpecTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Speculative decoding (for experts)'**
+  String get moLmSpecTitle;
+
+  /// No description provided for @moLmSpeedEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'tokens/s, estimate'**
+  String get moLmSpeedEstimate;
+
+  /// No description provided for @moLmSpeedMeasured.
+  ///
+  /// In en, this message translates to:
+  /// **'tokens/s, measured'**
+  String get moLmSpeedMeasured;
+
+  /// No description provided for @moLmSpeedTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure the gain'**
+  String get moLmSpeedTest;
+
+  /// No description provided for @moLmSpeedTestCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code rewritten (tokens/s)'**
+  String get moLmSpeedTestCode;
+
+  /// No description provided for @moLmSpeedTestCost.
+  ///
+  /// In en, this message translates to:
+  /// **'It takes a good while and a lot of compute: the model is loaded several times, minutes for a large one. Meanwhile the local model does not answer the agents.'**
+  String get moLmSpeedTestCost;
+
+  /// No description provided for @moLmSpeedTestDone.
+  ///
+  /// In en, this message translates to:
+  /// **'The engine is back as it was. Choose the way above and start the model again to use it.'**
+  String get moLmSpeedTestDone;
+
+  /// No description provided for @moLmSpeedTestIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth starts this model once for each way of writing (alone, with the small model, with the n-grams), has it write a short new text and rewrite a piece of code, and shows the tokens a second of each. In the end the engine goes back to how it was.'**
+  String get moLmSpeedTestIntro;
+
+  /// No description provided for @moLmSpeedTestMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Way'**
+  String get moLmSpeedTestMode;
+
+  /// No description provided for @moLmSpeedTestProse.
+  ///
+  /// In en, this message translates to:
+  /// **'New text (tokens/s)'**
+  String get moLmSpeedTestProse;
+
+  /// No description provided for @moLmSpeedTestStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the test'**
+  String get moLmSpeedTestStart;
+
+  /// No description provided for @moLmSpeedTestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How much faster here'**
+  String get moLmSpeedTestTitle;
+
+  /// No description provided for @moLmStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get moLmStart;
+
+  /// No description provided for @moLmStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting…'**
+  String get moLmStarting;
+
+  /// No description provided for @moLmStream.
+  ///
+  /// In en, this message translates to:
+  /// **'SSD stream'**
+  String get moLmStream;
+
+  /// No description provided for @moLmStreamCache.
+  ///
+  /// In en, this message translates to:
+  /// **', {gb} of the card for the experts'**
+  String moLmStreamCache(String gb);
+
+  /// No description provided for @moLmStreamFromCard.
+  ///
+  /// In en, this message translates to:
+  /// **'the model fits in the card'**
+  String get moLmStreamFromCard;
+
+  /// No description provided for @moLmStreamFromRam.
+  ///
+  /// In en, this message translates to:
+  /// **'the model fits in RAM: the SSD is only read at the start'**
+  String get moLmStreamFromRam;
+
+  /// No description provided for @moLmStreamFromSsd.
+  ///
+  /// In en, this message translates to:
+  /// **'about {gb} GB read from the SSD at each token'**
+  String moLmStreamFromSsd(String gb);
+
+  /// No description provided for @moLmStreamHdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available: {disk} is a spinning disk, too slow to read a model from at each token.'**
+  String moLmStreamHdd(String disk);
+
+  /// No description provided for @moLmStreamMaybeSsd.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows does not say whether {disk} is an SSD: use it only if it is.'**
+  String moLmStreamMaybeSsd(String disk);
+
+  /// No description provided for @moLmStreamNoRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available: {disk} has only {free} free; it needs at least 20 GB.'**
+  String moLmStreamNoRoom(String disk, String free);
+
+  /// No description provided for @moLmStreamPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'In use: context up to {ctx} tokens{cache}, {source} (counting {ram} of free RAM).'**
+  String moLmStreamPlan(String cache, String ctx, String ram, String source);
+
+  /// No description provided for @moLmStreamThisDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'the models\' disk'**
+  String get moLmStreamThisDisk;
+
+  /// No description provided for @moLmStreamUnknownDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth does not know yet which disk holds the models (it learns at the next start of Rasgeth): use it only if it is an SSD.'**
+  String get moLmStreamUnknownDisk;
+
+  /// No description provided for @moLmSysmemClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get moLmSysmemClose;
+
+  /// No description provided for @moLmSysmemStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the NVIDIA Control Panel (right click on the desktop).'**
+  String get moLmSysmemStep1;
+
+  /// No description provided for @moLmSysmemStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage 3D settings, then Global Settings (or Program Settings with llama-server.exe, for the engine only).'**
+  String get moLmSysmemStep2;
+
+  /// No description provided for @moLmSysmemStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'CUDA - Sysmem Fallback Policy: choose «Prefer No Sysmem Fallback» and Apply.'**
+  String get moLmSysmemStep3;
+
+  /// No description provided for @moLmSysmemStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the model again: the engine reads the setting when it starts.'**
+  String get moLmSysmemStep4;
+
+  /// No description provided for @moLmSysmemText.
+  ///
+  /// In en, this message translates to:
+  /// **'When the card\'s memory runs out, NVIDIA\'s driver on Windows uses the computer\'s RAM instead of failing: reading messages becomes 2 to 3.5 times slower. Rasgeth cannot read this setting, so check it once:'**
+  String get moLmSysmemText;
+
+  /// No description provided for @moLmSysmemTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'NVIDIA card: turn off «CUDA Sysmem Fallback»'**
+  String get moLmSysmemTitle;
+
+  /// No description provided for @moLmThisPc.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer'**
+  String get moLmThisPc;
+
+  /// No description provided for @moLmTokensPerSec.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} tokens/s'**
+  String moLmTokensPerSec(String n);
+
+  /// No description provided for @moLmTokensUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'tokens/s'**
+  String get moLmTokensUnit;
+
+  /// No description provided for @moLmTooBig.
+  ///
+  /// In en, this message translates to:
+  /// **'It needs at least {need}: this computer has room for {max}.'**
+  String moLmTooBig(String max, String need);
+
+  /// No description provided for @moLmTuneBatch.
+  ///
+  /// In en, this message translates to:
+  /// **'passes of {n} tokens'**
+  String moLmTuneBatch(String n);
+
+  /// No description provided for @moLmTuneCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Card for the experts'**
+  String get moLmTuneCache;
+
+  /// No description provided for @moLmTuneChosen.
+  ///
+  /// In en, this message translates to:
+  /// **'kept'**
+  String get moLmTuneChosen;
+
+  /// No description provided for @moLmTuneCtx.
+  ///
+  /// In en, this message translates to:
+  /// **'Context'**
+  String get moLmTuneCtx;
+
+  /// No description provided for @moLmTuneFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'did not start'**
+  String get moLmTuneFailed;
+
+  /// No description provided for @moLmTuneHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Each row is a real try: the model reads a context of about 2,000 tokens and writes 64. A typical turn is an agent reading 1,500 tokens of tool results and writing 300: the fastest one is kept for this model, and you can pick another.'**
+  String get moLmTuneHelp;
+
+  /// No description provided for @moLmTuneLongRead.
+  ///
+  /// In en, this message translates to:
+  /// **'a message of {n} tokens'**
+  String moLmTuneLongRead(String n);
+
+  /// No description provided for @moLmTuneNoCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'experts computed on the processor when reading'**
+  String get moLmTuneNoCopy;
+
+  /// No description provided for @moLmTuneRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading (tok/s)'**
+  String get moLmTuneRead;
+
+  /// No description provided for @moLmTuneRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'measuring…'**
+  String get moLmTuneRunning;
+
+  /// No description provided for @moLmTuneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuning on this computer'**
+  String get moLmTuneTitle;
+
+  /// No description provided for @moLmTuneTurn.
+  ///
+  /// In en, this message translates to:
+  /// **'Typical turn (s)'**
+  String get moLmTuneTurn;
+
+  /// No description provided for @moLmTuneUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use'**
+  String get moLmTuneUse;
+
+  /// No description provided for @moLmTuneWrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Writing (tok/s)'**
+  String get moLmTuneWrite;
+
+  /// No description provided for @moLmUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Hugging Face does not answer: try again later.'**
+  String get moLmUnavailable;
+
+  /// No description provided for @moLmUseForAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Use it for the agents'**
+  String get moLmUseForAgents;
+
+  /// No description provided for @moLmUsedForAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents will use this model.'**
+  String get moLmUsedForAgents;
+
+  /// No description provided for @moLmVersionSuggested.
+  ///
+  /// In en, this message translates to:
+  /// **'suggested'**
+  String get moLmVersionSuggested;
+
+  /// No description provided for @moLmVersions.
+  ///
+  /// In en, this message translates to:
+  /// **'Version of the file'**
+  String get moLmVersions;
+
+  /// No description provided for @moLmWarmHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The model reads its first context and writes a few words. The first time on a new graphics card this takes minutes: the card prepares its programs once, and then it is fast.'**
+  String get moLmWarmHelp;
+
+  /// No description provided for @moLmWarmSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Context read (as a first message)'**
+  String get moLmWarmSpeed;
+
+  /// No description provided for @moLmWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the model goes'**
+  String get moLmWhere;
+
+  /// No description provided for @moLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get moLoading;
+
+  /// No description provided for @moModelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The model of this conversation (agents\' models: Settings, Agents)'**
+  String get moModelHint;
+
+  /// No description provided for @moModelNew.
+  ///
+  /// In en, this message translates to:
+  /// **'new'**
+  String get moModelNew;
+
+  /// No description provided for @moModelPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a model'**
+  String get moModelPick;
+
+  /// No description provided for @moModelSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search a model'**
+  String get moModelSearch;
+
+  /// No description provided for @moModelUnconfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'data to be confirmed'**
+  String get moModelUnconfirmed;
+
+  /// No description provided for @moModelWay.
+  ///
+  /// In en, this message translates to:
+  /// **'How it goes'**
+  String get moModelWay;
+
+  /// No description provided for @moMpChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get moMpChange;
+
+  /// No description provided for @moMpLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick one or more ways: combine them as you like. Each square opens its window; the lit ones are connected.'**
+  String get moMpLead;
+
+  /// No description provided for @moMpLocalLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Free, and nothing leaves here: the computer, where the models are, the models to download and the ones already on the disk.'**
+  String get moMpLocalLead;
+
+  /// No description provided for @moMpNoDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'No model chosen'**
+  String get moMpNoDefault;
+
+  /// No description provided for @moMpNoDefaultText.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect a way above, then choose the one agents use.'**
+  String get moMpNoDefaultText;
+
+  /// No description provided for @moMpSearchLead.
+  ///
+  /// In en, this message translates to:
+  /// **'How agents look things up on the internet. One provider at a time: the lit one is in use.'**
+  String get moMpSearchLead;
+
+  /// No description provided for @moMpSearchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Web search'**
+  String get moMpSearchTitle;
+
+  /// No description provided for @moSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get moSearch;
+
+  /// No description provided for @moSearchInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'in use'**
+  String get moSearchInUse;
+
+  /// No description provided for @moSubsDeviceWait.
+  ///
+  /// In en, this message translates to:
+  /// **'This page notices by itself when you are done.'**
+  String get moSubsDeviceWait;
+
+  /// No description provided for @moSubsLoggedAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in: {who} {plan}'**
+  String moSubsLoggedAs(String plan, String who);
+
+  /// No description provided for @moSubsProgramDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is downloaded when you switch this on (once, a few hundred MB, with its bar in the corner).'**
+  String moSubsProgramDownload(String name);
+
+  /// No description provided for @moSubsProgramSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is already installed on this computer: Rasgeth uses it.'**
+  String moSubsProgramSystem(String name);
+
+  /// No description provided for @moSubsSharedLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is already signed in on this computer: Rasgeth uses that sign-in as it is, no need to sign in again.'**
+  String moSubsSharedLogin(String name);
+
+  /// No description provided for @moSubsUseShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the sign-in already here'**
+  String get moSubsUseShared;
+
+  /// No description provided for @moSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Models and subscriptions'**
+  String get moSubscriptions;
+
+  /// No description provided for @moTermsOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\'s terms'**
+  String moTermsOf(String name);
+
+  /// No description provided for @moUiAboutHours.
+  ///
+  /// In en, this message translates to:
+  /// **'about {h} h {min} min left'**
+  String moUiAboutHours(String h, String min);
+
+  /// No description provided for @moUiAboutMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'about {min} min left'**
+  String moUiAboutMinutes(String min);
+
+  /// No description provided for @moUiDropNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches.'**
+  String get moUiDropNone;
+
+  /// No description provided for @moUiLessThanMinute.
+  ///
+  /// In en, this message translates to:
+  /// **'less than a minute left'**
+  String get moUiLessThanMinute;
+
+  /// No description provided for @moUiNotNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'not needed'**
+  String get moUiNotNeeded;
+
+  /// No description provided for @moUiOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total}'**
+  String moUiOf(String done, String total);
+
+  /// No description provided for @moViaLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'local'**
+  String get moViaLocal;
+
+  /// No description provided for @moViaSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'subscription'**
+  String get moViaSubscription;
+
+  /// No description provided for @moWzAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get moWzAgents;
+
+  /// No description provided for @moWzAgentsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'they do the work'**
+  String get moWzAgentsSub;
+
+  /// No description provided for @moWzAgentsText.
+  ///
+  /// In en, this message translates to:
+  /// **'They get their tasks from the orchestrators: they write code, test, search.'**
+  String get moWzAgentsText;
+
+  /// No description provided for @moWzAlreadySet.
+  ///
+  /// In en, this message translates to:
+  /// **'already set'**
+  String get moWzAlreadySet;
+
+  /// No description provided for @moWzAssign.
+  ///
+  /// In en, this message translates to:
+  /// **'Who uses which model'**
+  String get moWzAssign;
+
+  /// No description provided for @moWzAssignChat.
+  ///
+  /// In en, this message translates to:
+  /// **'The everyday chat, with web search: questions, texts, ideas.'**
+  String get moWzAssignChat;
+
+  /// No description provided for @moWzAssignConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect a model'**
+  String get moWzAssignConnect;
+
+  /// No description provided for @moWzAssignDemigod2.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers you on Telegram and in the chats, and passes the work on: a fast model is enough.'**
+  String get moWzAssignDemigod2;
+
+  /// No description provided for @moWzAssignEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not connected any model yet, so there is nothing to choose here. Connect one in «How should Rasgeth think?» or start a local model.'**
+  String get moWzAssignEmpty;
+
+  /// No description provided for @moWzAssignGod.
+  ///
+  /// In en, this message translates to:
+  /// **'The one who runs everything: plans, projects, other agents. The strongest model pays off here.'**
+  String get moWzAssignGod;
+
+  /// No description provided for @moWzAssignLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Each one works with its own model: the strongest for who decides, a fast one for who answers. Touch a model to change it.'**
+  String get moWzAssignLead;
+
+  /// No description provided for @moWzAssignLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a local model'**
+  String get moWzAssignLocal;
+
+  /// No description provided for @moWzAssignOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents you create later'**
+  String get moWzAssignOthers;
+
+  /// No description provided for @moWzAssignOthersHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'And the board\'s summaries, unless you choose one for them. It is tried with a real question before it is saved.'**
+  String get moWzAssignOthersHelp;
+
+  /// No description provided for @moWzAssistants.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal assistants'**
+  String get moWzAssistants;
+
+  /// No description provided for @moWzAssistantsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'they work for you'**
+  String get moWzAssistantsSub;
+
+  /// No description provided for @moWzBackupText.
+  ///
+  /// In en, this message translates to:
+  /// **'If an agent gives up on a task (an error, the budget, no check passed), this model tries it once more, knowing what the first one did. Best from another provider.'**
+  String get moWzBackupText;
+
+  /// No description provided for @moWzBackupWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tries the tasks given up on once more, in a new conversation.'**
+  String get moWzBackupWindow;
+
+  /// No description provided for @moWzBrain.
+  ///
+  /// In en, this message translates to:
+  /// **'How should Rasgeth think?'**
+  String get moWzBrain;
+
+  /// No description provided for @moWzBrainChatgpt.
+  ///
+  /// In en, this message translates to:
+  /// **'Your ChatGPT Plus or Pro plan. You type a short code on OpenAI\'s page.'**
+  String get moWzBrainChatgpt;
+
+  /// No description provided for @moWzBrainClaude.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Claude Pro or Max plan. You sign in on Anthropic\'s page.'**
+  String get moWzBrainClaude;
+
+  /// No description provided for @moWzBrainKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Anthropic, OpenAI, Gemini, Mistral, DeepSeek, Grok and more. You pay for what you use.'**
+  String get moWzBrainKeys;
+
+  /// No description provided for @moWzBrainKeysTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'An API key'**
+  String get moWzBrainKeysTitle;
+
+  /// No description provided for @moWzBrainLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Free and private: nothing leaves this computer. You choose it in the next step.'**
+  String get moWzBrainLocal;
+
+  /// No description provided for @moWzBrainQ.
+  ///
+  /// In en, this message translates to:
+  /// **'How should Rasgeth think?'**
+  String get moWzBrainQ;
+
+  /// No description provided for @moWzBrainServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Ollama, LM Studio, vLLM or another server that speaks OpenAI\'s language.'**
+  String get moWzBrainServer;
+
+  /// No description provided for @moWzChosen.
+  ///
+  /// In en, this message translates to:
+  /// **'chosen'**
+  String get moWzChosen;
+
+  /// No description provided for @moWzDefaultModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Default model'**
+  String get moWzDefaultModel;
+
+  /// No description provided for @moWzDemiRole.
+  ///
+  /// In en, this message translates to:
+  /// **'The spokesperson'**
+  String get moWzDemiRole;
+
+  /// No description provided for @moWzDense.
+  ///
+  /// In en, this message translates to:
+  /// **'{b} billion · dense'**
+  String moWzDense(String b);
+
+  /// No description provided for @moWzDiskHdd.
+  ///
+  /// In en, this message translates to:
+  /// **'A spinning disk: too slow for the models.'**
+  String get moWzDiskHdd;
+
+  /// No description provided for @moWzDisksLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A model takes from 3 to 80 GB. A fast SSD is best: SSD stream reads from there.'**
+  String get moWzDisksLead;
+
+  /// No description provided for @moWzDisksNoMove.
+  ///
+  /// In en, this message translates to:
+  /// **'The models can be moved to another disk only in Rasgeth\'s Windows installation.'**
+  String get moWzDisksNoMove;
+
+  /// No description provided for @moWzDisksOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Here the models stay in Rasgeth\'s data folder. In Rasgeth\'s Windows installation you can move them to another SSD.'**
+  String get moWzDisksOne;
+
+  /// No description provided for @moWzDisksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the models stay'**
+  String get moWzDisksTitle;
+
+  /// No description provided for @moWzDoneBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get moWzDoneBtn;
+
+  /// No description provided for @moWzEffortHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A little is fast and cheap, deeply is slower but more careful. It stays fixed for each conversation.'**
+  String get moWzEffortHelp;
+
+  /// No description provided for @moWzEffortTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How much it thinks before answering'**
+  String get moWzEffortTitle;
+
+  /// No description provided for @moWzEffort_high.
+  ///
+  /// In en, this message translates to:
+  /// **'Deeply'**
+  String get moWzEffort_high;
+
+  /// No description provided for @moWzEffort_low.
+  ///
+  /// In en, this message translates to:
+  /// **'A little'**
+  String get moWzEffort_low;
+
+  /// No description provided for @moWzEffort_max.
+  ///
+  /// In en, this message translates to:
+  /// **'The most'**
+  String get moWzEffort_max;
+
+  /// No description provided for @moWzEffort_medium.
+  ///
+  /// In en, this message translates to:
+  /// **'Just right'**
+  String get moWzEffort_medium;
+
+  /// No description provided for @moWzFitNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None runs fast enough here: the ones below work, slowly.'**
+  String get moWzFitNone;
+
+  /// No description provided for @moWzFitTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Suited'**
+  String get moWzFitTab;
+
+  /// No description provided for @moWzFitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Suited to this computer'**
+  String get moWzFitTitle;
+
+  /// No description provided for @moWzFitsUpTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Models up to about {max} run fast here; bigger ones use the RAM too.'**
+  String moWzFitsUpTo(String max);
+
+  /// No description provided for @moWzFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get moWzFolder;
+
+  /// No description provided for @moWzFolderHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A folder of this disk; it is created if it is not there.'**
+  String get moWzFolderHelp;
+
+  /// No description provided for @moWzFolderLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Where Rasgeth keeps the models\' files on this disk. The ones already downloaded are copied there.'**
+  String get moWzFolderLead;
+
+  /// No description provided for @moWzFolderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The models\' folder on {disk}'**
+  String moWzFolderTitle(String disk);
+
+  /// No description provided for @moWzFree.
+  ///
+  /// In en, this message translates to:
+  /// **'free'**
+  String get moWzFree;
+
+  /// No description provided for @moWzFreeOf.
+  ///
+  /// In en, this message translates to:
+  /// **'free of {total} GB'**
+  String moWzFreeOf(String total);
+
+  /// No description provided for @moWzGodRole.
+  ///
+  /// In en, this message translates to:
+  /// **'The boss'**
+  String get moWzGodRole;
+
+  /// No description provided for @moWzHereNow.
+  ///
+  /// In en, this message translates to:
+  /// **'here now'**
+  String get moWzHereNow;
+
+  /// No description provided for @moWzHowItWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'How it works'**
+  String get moWzHowItWorks;
+
+  /// No description provided for @moWzKeyOf.
+  ///
+  /// In en, this message translates to:
+  /// **'The key of {name}'**
+  String moWzKeyOf(String name);
+
+  /// No description provided for @moWzKeysLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A key is like a password that lets Rasgeth use the provider\'s models on your account. You pay the provider for what you use. Add as many as you like: each one is tried at once.'**
+  String get moWzKeysLead;
+
+  /// No description provided for @moWzLegend.
+  ///
+  /// In en, this message translates to:
+  /// **'Green outline: it runs on this computer between the graphics card and the RAM, at least {n} tokens a second. The others work, but slowly.'**
+  String moWzLegend(String n);
+
+  /// No description provided for @moWzLikeAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'The same as {who}'**
+  String moWzLikeAbove(String who);
+
+  /// No description provided for @moWzLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Local model'**
+  String get moWzLocal;
+
+  /// No description provided for @moWzLocalQ.
+  ///
+  /// In en, this message translates to:
+  /// **'A model on this computer'**
+  String get moWzLocalQ;
+
+  /// No description provided for @moWzLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'set by the environment'**
+  String get moWzLocked;
+
+  /// No description provided for @moWzMoe.
+  ///
+  /// In en, this message translates to:
+  /// **'{b} billion · mixture of experts'**
+  String moWzMoe(String b);
+
+  /// No description provided for @moWzMoreModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Other files and searches'**
+  String get moWzMoreModels;
+
+  /// No description provided for @moWzMoveHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Move them here'**
+  String get moWzMoveHere;
+
+  /// No description provided for @moWzMoveLead.
+  ///
+  /// In en, this message translates to:
+  /// **'{kind}, {free} free. The models already downloaded are copied to {folder}; the model in use starts again afterwards.'**
+  String moWzMoveLead(String folder, String free, String kind);
+
+  /// No description provided for @moWzMoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Move the models to {disk}?'**
+  String moWzMoveTitle(String disk);
+
+  /// No description provided for @moWzNModels.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} models'**
+  String moWzNModels(String n);
+
+  /// No description provided for @moWzNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get moWzNone;
+
+  /// No description provided for @moWzOfRamLong.
+  ///
+  /// In en, this message translates to:
+  /// **'of RAM'**
+  String get moWzOfRamLong;
+
+  /// No description provided for @moWzOrchestrators.
+  ///
+  /// In en, this message translates to:
+  /// **'Orchestrators'**
+  String get moWzOrchestrators;
+
+  /// No description provided for @moWzOrchestratorsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'the heads of the projects'**
+  String get moWzOrchestratorsSub;
+
+  /// No description provided for @moWzOrchestratorsText.
+  ///
+  /// In en, this message translates to:
+  /// **'One per project: splits the work and hands it to the agents.'**
+  String get moWzOrchestratorsText;
+
+  /// No description provided for @moWzPickFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose folder'**
+  String get moWzPickFolder;
+
+  /// No description provided for @moWzPickModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the model'**
+  String get moWzPickModel;
+
+  /// No description provided for @moWzPickRepo.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a repository'**
+  String get moWzPickRepo;
+
+  /// No description provided for @moWzProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get moWzProvider;
+
+  /// No description provided for @moWzRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get moWzRemove;
+
+  /// No description provided for @moWzSlowTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Slow here'**
+  String get moWzSlowTab;
+
+  /// No description provided for @moWzSlowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'They work, but slowly'**
+  String get moWzSlowTitle;
+
+  /// No description provided for @moWzStateKey.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: connected'**
+  String moWzStateKey(String name);
+
+  /// No description provided for @moWzStateKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} keys connected'**
+  String moWzStateKeys(String n);
+
+  /// No description provided for @moWzStateLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'connected'**
+  String get moWzStateLinked;
+
+  /// No description provided for @moWzStateLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'{model}, in use'**
+  String moWzStateLocal(String model);
+
+  /// No description provided for @moWzStateLocalNext.
+  ///
+  /// In en, this message translates to:
+  /// **'you choose it in the next step'**
+  String get moWzStateLocalNext;
+
+  /// No description provided for @moWzStateServer.
+  ///
+  /// In en, this message translates to:
+  /// **'connected: {url}'**
+  String moWzStateServer(String url);
+
+  /// No description provided for @moWzStreamInfo1.
+  ///
+  /// In en, this message translates to:
+  /// **'For models bigger than the graphics card, and for a much longer context.'**
+  String get moWzStreamInfo1;
+
+  /// No description provided for @moWzStreamInfo2.
+  ///
+  /// In en, this message translates to:
+  /// **'The parts of the model used most stay in the card and in RAM; the rest is read from the SSD when needed. It works best with mixture-of-experts models; dense ones work, but slower.'**
+  String get moWzStreamInfo2;
+
+  /// No description provided for @moWzStreamInfo3.
+  ///
+  /// In en, this message translates to:
+  /// **'At the first start Rasgeth measures this computer and keeps the fastest tuning. It needs an SSD with at least 20 GB free: a spinning disk is too slow.'**
+  String get moWzStreamInfo3;
+
+  /// No description provided for @moWzStreamOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: only the models that fit in the card and the RAM run.'**
+  String get moWzStreamOff;
+
+  /// No description provided for @moWzStreamOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On: models bigger than the card and the RAM read the rest from the SSD ({disk}) when needed. Slower, but they run.'**
+  String moWzStreamOn(String disk);
+
+  /// No description provided for @moWzSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'I know that using a personal subscription (instead of an API key) in a third-party tool may not be allowed by the provider\'s terms.'**
+  String get moWzSubscription;
+
+  /// No description provided for @moWzTrying.
+  ///
+  /// In en, this message translates to:
+  /// **'Trying the model…'**
+  String get moWzTrying;
+
+  /// No description provided for @moWzUnderstood.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get moWzUnderstood;
+
+  /// No description provided for @moWzUseFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this folder'**
+  String get moWzUseFolder;
+
+  /// No description provided for @moWzVram.
+  ///
+  /// In en, this message translates to:
+  /// **'{gb} of video memory'**
+  String moWzVram(String gb);
+
+  /// No description provided for @moWzWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'Which one should I pick?'**
+  String get moWzWhich;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

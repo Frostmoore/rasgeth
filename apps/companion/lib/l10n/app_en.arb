@@ -8441,5 +8441,1059 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chAxCat_other": "Other",
+  "chAxCat_personal": "Personal",
+  "chAxCat_social": "Social",
+  "chAxCat_work": "Work",
+  "chAxMailboxAdd": "Add a mailbox",
+  "chAxMailboxAddText": "As many as you like, each in its category.",
+  "chAxMailboxAgents": "Agents may use it",
+  "chAxMailboxAgentsHelp": "They search, read and write drafts here; every email they send asks you first and shows it whole.",
+  "chAxMailboxCategory": "Category",
+  "chAxMailboxName": "Its name",
+  "chAxMailboxNameHelp": "For example Work or Gmail; empty: the address.",
+  "chAxMailboxNew": "New mailbox",
+  "chAxMailboxNewCategory": "Or a new category",
+  "chAxMailboxNewCategoryPlaceholder": "Family, Club, Shop…",
+  "chAxMailboxPasswordKept": "Leave it empty to keep the one you gave.",
+  "chAxMailboxPurpose": "A mailbox for the automations: only new mail is read, nothing is marked or moved.",
+  "chAxMailboxesWatching": "{n} mailboxes connected: {names}.",
+  "@chAxMailboxesWatching": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "chAxSmtpHost": "Sending server (SMTP)",
+  "chAxSmtpHostHelp": "Only to get messages by email; empty: the usual one.",
+  "chAxSmtpPort": "Sending port",
+  "chChatChange": "Change the settings",
+  "chChatDiscordHow": "In the Discord Developer Portal create an application, add a bot, turn on Message Content Intent, copy its token, and invite the bot to a server of yours (or write to it directly).",
+  "chChatDiscordToken": "Bot token",
+  "chChatImHow": "Apple has no iMessage service for programs: it takes a Mac that stays on, signed in to Messages, with the free BlueBubbles server. The Mac answers with its Apple ID: use one made for Rasgeth, not your own.",
+  "chChatImLimits": "Without the Private API answers cannot be edited and nobody shows as typing; approvals and questions are answered with numbers. While the Mac sleeps or is off, messages wait and arrive when it wakes.",
+  "chChatImPassword": "BlueBubbles server password",
+  "chChatImPrivate": "BlueBubbles' Private API is set up (edits and “typing...”)",
+  "chChatImStep1": "On the Mac make (or use) an Apple ID just for Rasgeth and sign in with it in Messages.",
+  "chChatImStep2": "Download BlueBubbles Server from bluebubbles.app, open it and choose a server password.",
+  "chChatImStep3": "When it asks, allow Full Disk Access and Accessibility in System Settings, Privacy & Security: it needs them to read and send messages.",
+  "chChatImStep4": "In BlueBubbles keep the Mac from sleeping and note its address: http://<the Mac's address>:1234 at home, or the address of its own tunnel from outside.",
+  "chChatImStep5": "Write the address and the password here and press Connect. From your iPhone write to the Apple ID of step 1 and send the code.",
+  "chChatImUrl": "Address of the BlueBubbles server (http://...:1234)",
+  "chChatLinked": "Linked: {who}",
+  "@chChatLinked": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "chChatMatrixE2ee": "Encrypted chats: direct chats in Element are encrypted and the bot cannot read them. To keep encryption, run Pantalaimon (Matrix's free encryption helper) next to Rasgeth and write its address instead of the server's.",
+  "chChatMatrixHomeserver": "Server address (for example https://matrix.org)",
+  "chChatMatrixHow": "Rasgeth needs a Matrix account of its own, not yours: it is the one you will write to.",
+  "chChatMatrixStep1": "Make a new account for the bot, for example at app.element.io (or on your own server).",
+  "chChatMatrixStep2": "Signed in as the bot, open Settings, Help & About, Advanced, Access token, and copy it. Then close that tab without signing out: signing out cancels the token.",
+  "chChatMatrixStep3": "Write the server address and paste the token here, then press Connect.",
+  "chChatMatrixStep4": "From your own account make a new room without encryption (switch off “Enable end-to-end encryption”), invite the bot (it joins by itself) and send the code that appears.",
+  "chChatMatrixToken": "The bot account's access token",
+  "chChatSendCode": "Send this from the chat to link it:",
+  "chChatSignalHow": "Signal needs signal-cli-rest-api running with a number of its own linked (a second SIM or a linked device); write its address and the number here.",
+  "chChatSignalNumber": "The bot's number (+39...)",
+  "chChatSignalUrl": "Address of signal-cli-rest-api",
+  "chChatSlackApp": "App-level token (xapp-..., connections:write)",
+  "chChatSlackBot": "Bot token (xoxb-...)",
+  "chChatSlackHow": "At api.slack.com/apps create an app, turn on Socket Mode (no public address needed), add the scopes chat:write, im:history, app_mentions:read, files:read, files:write, subscribe to message.im and app_mention, install it and copy the two tokens.",
+  "chChatSteps": "Step by step",
+  "chChatTeamsAppId": "Microsoft App ID",
+  "chChatTeamsDownload": "Download the app for Teams",
+  "chChatTeamsEndpoint": "Messaging endpoint for Azure: {url}",
+  "@chChatTeamsEndpoint": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "chChatTeamsFiles": "Files from Rasgeth arrive as a card to accept: once accepted they are saved in your OneDrive. Voice messages cannot be sent to a bot in Teams.",
+  "chChatTeamsHow": "Teams talks to bots only through Microsoft Azure. You need a Microsoft 365 work or school account that may add custom apps (the free personal Teams does not allow bots), and Rasgeth reachable from outside (Settings, Remote access).",
+  "chChatTeamsSecret": "Client secret (its Value)",
+  "chChatTeamsStep1": "Open portal.azure.com (a free account is enough), choose Create a resource, search for Azure Bot and press Create.",
+  "chChatTeamsStep2": "Give it a name, choose the Free plan (F0), Type of App: Single Tenant, Creation type: Create new Microsoft App ID. Press Create, then Go to resource.",
+  "chChatTeamsStep3": "In Configuration write this Messaging endpoint and Save: {url}. Copy the Microsoft App ID and the App Tenant ID.",
+  "@chChatTeamsStep3": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "chChatTeamsStep4": "Next to Microsoft App ID press Manage Password, then New client secret, Add, and copy its Value (it is shown only once).",
+  "chChatTeamsStep5": "In Channels add Microsoft Teams, accept the terms and press Apply.",
+  "chChatTeamsStep6": "Paste the three values here and press Connect. Then download the app for Teams with the button that appears.",
+  "chChatTeamsTenant": "App Tenant ID",
+  "chChatTeamsUpload": "In Teams open Apps, Manage your apps, Upload an app, Upload a custom app, choose the file you downloaded and press Add. Then open the chat with Rasgeth and send the code.",
+  "chChatTurnOff": "Turn off",
+  "chChatWaHow": "In Meta for Developers create a WhatsApp app, copy the access token, the phone number ID and the app secret, and choose a verify token. WhatsApp sends messages to a public address: Rasgeth must be reachable from outside (Settings, Remote access).",
+  "chChatWaPhoneId": "Phone number ID",
+  "chChatWaSecret": "App secret",
+  "chChatWaToken": "Access token",
+  "chChatWaVerify": "Verify token (choose one)",
+  "chChatWaWebhook": "Webhook for Meta: {url} with the verify token you chose; subscribe to messages.",
+  "@chChatWaWebhook": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "chChats": "Other chats",
+  "chChatsHint": "Talk to Demi-God from Discord, Slack, Signal, WhatsApp, Matrix, Teams or iMessage too. It is one conversation: begun on Telegram or here, it goes on wherever you write. Approvals and questions arrive with buttons (on Signal, Matrix and iMessage, with numbers to reply).",
+  "chEmailChange": "Change",
+  "chEmailConnect": "Connect the mailbox",
+  "chEmailConnected": "Reading {user} on {host}.",
+  "@chEmailConnected": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "chEmailHost": "Mail server (IMAP)",
+  "chEmailHostHelp": "For example imap.gmail.com, outlook.office365.com, imap.mail.me.com.",
+  "chEmailNeedFirst": "Connect the mailbox first: until then this automation never starts.",
+  "chEmailNotConnected": "Not connected",
+  "chEmailPassword": "Password for apps",
+  "chEmailPasswordHelp": "Better an app password (Gmail, Outlook and iCloud make one in the account's security settings) than your own: you can revoke it at any time. It stays in a private file on your server.",
+  "chEmailPort": "Port",
+  "chEmailPurpose": "A routine can start when an email arrives (an invoice, an alert). Rasgeth looks only at new mail, every two minutes, and changes nothing in your mailbox; the email reaches the agent as information, never as instructions.",
+  "chEmailSave": "Connect the mailbox",
+  "chEmailSecure": "Encrypted from the start (port 993)",
+  "chEmailTesting": "Trying the mailbox…",
+  "chEmailTileText": "For the automations that start when an email arrives.",
+  "chEmailTitle": "Mailbox",
+  "chEmailUser": "Address or username",
+  "chEmailWatching": "Watching {user} on {host}.",
+  "@chEmailWatching": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "chInput": "in",
+  "chRemove": "Remove",
+  "chSbChatAccounts": "Linked accounts",
+  "chSbChatDiscordText": "A bot in your Discord server, in private messages or in a channel.",
+  "chSbChatImText": "Through a Mac that stays on, with BlueBubbles: the Mac's Messages app answers.",
+  "chSbChatMatrixText": "A bot account on any Matrix server (matrix.org or your own), in a chat or a room.",
+  "chSbChatNoAccount": "No account linked yet: send the code below from the chat.",
+  "chSbChatOnWaiting": "On: send the code from the chat",
+  "chSbChatSignalText": "A Signal number of its own, through signal-cli-rest-api.",
+  "chSbChatSlackText": "An app in your Slack workspace, in Socket Mode: no public address needed.",
+  "chSbChatTeamsText": "A bot in Microsoft Teams, for work or school accounts, through a free Azure Bot.",
+  "chSbChatWaText": "Your WhatsApp Business number, through Meta's Cloud API.",
+  "chSbChatWaiting": "Waiting for the code… this window notices by itself.",
+  "chSbChatsQ": "Talk to Demi-God from other apps too",
+  "chStTgAccounts": "Linked accounts",
+  "chTelegram": "Telegram",
+  "chTgChangeBot": "Use another bot",
+  "chTgLinked": "Linked to {who}",
+  "@chTgLinked": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "chTgLinkedHint": "Write to your bot whenever you like: Demi-God passes it on to God and brings back the answer.",
+  "chTgOpenBot": "Open @{bot}",
+  "@chTgOpenBot": {
+    "placeholders": {
+      "bot": {
+        "type": "String"
+      }
+    }
+  },
+  "chTgQr": "Scan with your phone's camera",
+  "chTgWaiting": "Waiting for you to press Start… this page notices by itself.",
+  "chUnlink": "Unlink",
+  "chWzConnect": "Connect",
+  "chWzDoneBtn": "Done",
+  "chWzLocked": "set by the environment",
+  "chWzTgAsks": "Here I also tell you when a yes of yours is needed.",
+  "chWzTgBf1": "Alright. What shall we call it?",
+  "chWzTgBf2": "Now a username, ending in «bot».",
+  "chWzTgBf3": "Done! Here is the token: 123456789:AAH…",
+  "chWzTgBfName": "My Rasgeth",
+  "chWzTgCheck": "Check",
+  "chWzTgChecking": "Checking…",
+  "chWzTgDone": "done",
+  "chWzTgExampleBot": "my_rasgeth_bot",
+  "chWzTgHaveToken": "I already have a token",
+  "chWzTgHello": "Hi, I'm {demigod}. Write to me whenever you like: I pass everything to {god} and bring you the answer.",
+  "@chWzTgHello": {
+    "placeholders": {
+      "demigod": {
+        "type": "String"
+      },
+      "god": {
+        "type": "String"
+      }
+    }
+  },
+  "chWzTgLater": "later",
+  "chWzTgLead": "With Telegram you write to {demigod} from wherever you are and get the notices there: approvals, questions, long jobs, budget. Three steps, a couple of minutes.",
+  "@chWzTgLead": {
+    "placeholders": {
+      "demigod": {
+        "type": "String"
+      }
+    }
+  },
+  "chWzTgLinked": "Linked to {who}. Write to {demigod} whenever you like.",
+  "@chWzTgLinked": {
+    "placeholders": {
+      "demigod": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "chWzTgLinkedShort": "Linked. Write to your bot whenever you like.",
+  "chWzTgMessage": "Message",
+  "chWzTgNow": "now",
+  "chWzTgOfficial": "Telegram's official bot",
+  "chWzTgOnline": "bot · online",
+  "chWzTgOpenBf": "Open BotFather",
+  "chWzTgPressStart": "Press Start to begin talking with this bot.",
+  "chWzTgQ": "Rasgeth on your phone",
+  "chWzTgStart": "START",
+  "chWzTgStep1": "Make the bot with @BotFather",
+  "chWzTgStep1Text": "BotFather is Telegram's official bot that makes bots. Write /newbot to it, give it a name and a username that ends in «bot».",
+  "chWzTgStep2": "Paste the token",
+  "chWzTgStep2Text": "BotFather answers with a long line, like 123456789:AAH… It is the bot's key: keep it to yourself.",
+  "chWzTgStep3": "Pair the phone",
+  "chWzTgStep3Text": "Open {bot} and press Start: Telegram sends it this code by itself, nothing to type.",
+  "@chWzTgStep3Text": {
+    "placeholders": {
+      "bot": {
+        "type": "String"
+      }
+    }
+  },
+  "chWzTgToken": "The bot's token",
+  "chWzTgYouWillSee": "What you will see in Telegram",
+  "chWzTgYourBot": "Your bot",
+  "chWzTgYourBotName": "your bot",
+  "chWzTrying": "Trying the model…",
+  "moActive": "active",
+  "moAgentModelDefault": "The default model",
+  "moAgents": "Agents",
+  "moAgentsModel": "Agent's model",
+  "moBackup": "Backup",
+  "moBackupModelNone": "None: a task given up on stays so",
+  "moBackupModelTitle": "Backup model for tasks",
+  "moBrainChatgpt": "ChatGPT subscription",
+  "moBrainChatgptDevice": "If OpenAI says sign-in with a device code is not allowed: on chatgpt.com open Settings, Security, and turn on device code authorization, then try again.",
+  "moBrainChatgptHint": "Rasgeth uses ChatGPT through OpenAI's official Codex program, signed in with your account. What you use counts against your plan's limits.",
+  "moBrainChatgptStart": "Connect ChatGPT",
+  "moBrainChatgptStep1": "Open this page and sign in:",
+  "moBrainChatgptStep2": "Type this code there:",
+  "moBrainClaude": "Claude subscription",
+  "moBrainClaudeCode": "Paste the code here",
+  "moBrainClaudeHint": "Rasgeth uses Claude through Anthropic's official program, signed in with your account. What you use counts against your plan's limits, not money.",
+  "moBrainClaudeOpen": "Open Anthropic's sign-in page",
+  "moBrainClaudeStep2": "Sign in with your Claude account. At the end Anthropic shows a code: copy it.",
+  "moBrainConnect": "Connect",
+  "moBrainDefault": "The model agents use",
+  "moBrainDefaultHint": "Agents use this model unless you choose another one for them. It is tried with a real question before it is saved.",
+  "moBrainDefaultSaved": "Saved: agents will use it.",
+  "moBrainDefaultTry": "Try and use this one",
+  "moBrainDisconnect": "Disconnect",
+  "moBrainEffortHelp": "How much it reasons before answering: low is quick and cheap, high is slower but more careful.",
+  "moBrainKeyExample": "It looks like this: {example}",
+  "@moBrainKeyExample": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "moBrainKeyMake": "Create a key on {name}'s page",
+  "@moBrainKeyMake": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moBrainKeyTry": "Try and save",
+  "moBrainKeyWorks": "It works: {n} models available.",
+  "@moBrainKeyWorks": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moBrainLocal": "A model on this computer",
+  "moBrainNoModel": "No model is connected yet, so agents cannot answer. Connect one above (a subscription, a key or a local model in the next step), or later in Settings, Models and subscriptions.",
+  "moBrainNotOpened": "Did nothing open?",
+  "moBrainOpenHere": "Open it here",
+  "moBrainServer": "A server of yours",
+  "moBrainServerHint": "If you already run models with Ollama, LM Studio or vLLM, give Rasgeth its address.",
+  "moBrainServerKey": "Its key",
+  "moBrainServerKeyHelp": "Only if the server asks for one; most do not.",
+  "moBrainServerUrl": "Server address",
+  "moBrainServerUrlHelp": "With /v1 at the end. Ollama: http://localhost:11434/v1, LM Studio: http://localhost:1234/v1.",
+  "moBrainWhyText": "If you already pay for Claude or ChatGPT, start with that: nothing more to pay. With a key you pay for what you use, and you can pick among many providers. A model on this computer costs nothing and keeps everything private, but it is slower and less capable than the big online ones. You can combine them: for example a subscription for hard work and a local model for small jobs.",
+  "moCatalogBuiltin": "the one built into Rasgeth",
+  "moCatalogChecked": "checked {when}",
+  "@moCatalogChecked": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "moCatalogDownloaded": "downloaded and signed",
+  "moCatalogRefresh": "Update now",
+  "moCatalogRefreshing": "Updating…",
+  "moCatalogRow": "Models catalog: updated on {date}",
+  "@moCatalogRow": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "moCatalogUnreachable": "GitHub did not answer: the catalog in use stays.",
+  "moCatalogUnsigned": "The downloaded catalog has no valid signature: it was not used.",
+  "moCatalogVersion": "version {n}",
+  "@moCatalogVersion": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moChat": "Chat",
+  "moDownloaded": "downloaded",
+  "moDownloads": "downloads",
+  "moEffort": "Effort",
+  "moEffortHint": "Reasoning effort: higher thinks more, is slower and costs more. From the next message.",
+  "moEffort_high": "High",
+  "moEffort_low": "Low",
+  "moEffort_max": "Max",
+  "moEffort_medium": "Medium",
+  "moError": "Error",
+  "moFailed": "failed",
+  "moJob_step_model_download": "The model",
+  "moLmBeyondMemory": "bigger than RAM and card together: part of it is read from the SSD at each token, slower",
+  "moLmBigChunks": "Big chunks",
+  "moLmBigChunksHelp": "Reads long messages in passes of 8,192 or 16,384 tokens instead of 4,096, when the graphics card has room for them, and loads the model in RAM when it fits with a margin: the experts go through the card once a pass, so fewer passes read faster. The first start measures them on a long message (a few minutes more) and keeps the fastest. Only for mixture-of-experts models.",
+  "moLmCardDownloading": "downloading, {pct}%",
+  "@moLmCardDownloading": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmCardGet": "to download, {size}",
+  "@moLmCardGet": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmCardOff": "chosen, turned off",
+  "moLmCardPaused": "download paused",
+  "moLmCardReady": "downloaded",
+  "moLmCardTooBig": "too big for this computer",
+  "moLmContextTokens": "tokens of context",
+  "moLmDelete": "Delete",
+  "moLmDeleteActiveConfirm": "This model is in use: the engine stops and the file is deleted. Go on?",
+  "moLmDiscard": "Throw away the download",
+  "moLmDownload": "Download · {size}",
+  "@moLmDownload": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmDownloadedBusy": "downloading",
+  "moLmDownloadedConfirm": "Delete {name}? It frees {size}.",
+  "@moLmDownloadedConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmDownloadedConfirmActive": "{name} is the model in use: the engine stops and the file is deleted ({size}). Go on?",
+  "@moLmDownloadedConfirmActive": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmDownloadedEmpty": "No model downloaded yet.",
+  "moLmDownloadedHelp": "Every model file in the folder ({size} in all), the biggest first. Deleting one frees its room at once; the suggested ones can be downloaded again.",
+  "@moLmDownloadedHelp": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmDownloadedNote": "{n} on the disk · {size}",
+  "@moLmDownloadedNote": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmDownloadedPartial": "incomplete",
+  "moLmDownloadedTitle": "Downloaded models",
+  "moLmEngine": "Engine",
+  "moLmEngineHelp": "Rasgeth picks the one that suits this computer. Change it only if starting fails.",
+  "moLmEngine_cpu": "Processor",
+  "moLmEngine_cuda": "NVIDIA graphics card (CUDA)",
+  "moLmEngine_mac": "The Mac's graphics chip (Metal), next to Rasgeth",
+  "moLmEngine_vulkan": "AMD, Intel or built-in graphics (Vulkan)",
+  "moLmEngine_windows": "Graphics card, with Windows' own engine (Vulkan)",
+  "moLmExperimental": "experimental",
+  "moLmFactCache": "Experts' cache in the card",
+  "moLmFactRam": "Free RAM counted",
+  "moLmFactSsd": "From the SSD at each token",
+  "moLmFactSsdGb": "about {gb} GB",
+  "@moLmFactSsdGb": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmFactSsdNone": "nothing: it fits in RAM",
+  "moLmGbPerSec": "{n} GB/s",
+  "@moLmGbPerSec": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmHwCpu": "No graphics card to use: models run on the processor, slower; small ones, up to about {max} GB.",
+  "@moLmHwCpu": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmHwGpu": "{name} with {vram} GB of video memory: models up to about {max} GB run on it, fast.",
+  "@moLmHwGpu": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "vram": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmHwGpuUnknown": "An NVIDIA graphics card is available, but its memory is unknown: start with a small model.",
+  "moLmHwIgpu": "A graphics chip built into the processor: a little faster than the processor alone; models up to about {max} GB.",
+  "@moLmHwIgpu": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmHwUnreachable": "The engine cannot reach the graphics card here: models run on the processor, slower; up to about {max} GB.",
+  "@moLmHwUnreachable": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmInUse": "in use",
+  "moLmLoading": "Looking up the models…",
+  "moLmMoePrefetch": "Next layer ahead",
+  "moLmOff": "Off",
+  "moLmOn": "On",
+  "moLmOther": "Other models in the folder",
+  "moLmOtherHelp": "A model file in the folder, not among the suggested ones ({size}).",
+  "@moLmOtherHelp": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmPartRamSub": "{free} free now",
+  "@moLmPartRamSub": {
+    "placeholders": {
+      "free": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmPartSsd": "Models' SSD",
+  "moLmPartSsdSub": "{free} free",
+  "@moLmPartSsdSub": {
+    "placeholders": {
+      "free": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmPause": "Pause",
+  "moLmPaused": "Paused: {done} of {total}",
+  "@moLmPaused": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmPausedAt": "Paused at {done}",
+  "@moLmPausedAt": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmPreloadSpeed": "Model read from the disk",
+  "moLmRecommended": "recommended",
+  "moLmResume": "Go on",
+  "moLmRoom": "Room",
+  "moLmScoresHint": "The bars compare these models with each other (five is the best of them). Speed is an estimate for this computer.",
+  "moLmSearch": "Other models from Hugging Face",
+  "moLmSearchHint": "Search by name, choose a repository and a file. Files that are not models are hidden.",
+  "moLmSearchPlaceholder": "e.g. gemma, qwen, mistral",
+  "moLmShowActivation": "Show the activation",
+  "moLmSpecDraft": "With a small model of the family",
+  "moLmSpecDraftGet": "Download the small model · {size}",
+  "@moLmSpecDraftGet": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmSpecDraftHelp": "{name} ({size}) proposes up to 8 tokens; it stays all in the card with its own context, so the big model gets a little less room there. It only works with a model of the same family (same vocabulary): Rasgeth picks it.",
+  "@moLmSpecDraftHelp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmSpecDraftReady": "small model ready",
+  "moLmSpecHelp": "Writes faster without changing the answers: something cheap proposes the next tokens and the model checks them all in one pass, reading its weights once for several tokens. It helps most where the text is predictable (code being rewritten, long dense models outside the card); on new prose it gains little. Measured on an RTX 4080 Super: Llama 3.3 70B (mostly in RAM) from 1.1 to 2.6 tokens/s on new prose and to 7.4 on code rewritten; Qwen3 14B (in the card) from 59 to 155 on code, about even on prose. The speed is shown under each answer.",
+  "moLmSpecNgram": "From the text already written",
+  "moLmSpecNgramHelp": "The proposals come from pieces of the conversation that repeat (code being edited, documents quoted back): no second model, no memory used. It helps only there: on new prose nothing, and on a large dense model little even on code (measured: Llama 3.3 70B 1.1 -> 1.3). Prefer the small model when the family has one.",
+  "moLmSpecNone": "Off",
+  "moLmSpecTitle": "Speculative decoding (for experts)",
+  "moLmSpeedEstimate": "tokens/s, estimate",
+  "moLmSpeedMeasured": "tokens/s, measured",
+  "moLmSpeedTest": "Measure the gain",
+  "moLmSpeedTestCode": "Code rewritten (tokens/s)",
+  "moLmSpeedTestCost": "It takes a good while and a lot of compute: the model is loaded several times, minutes for a large one. Meanwhile the local model does not answer the agents.",
+  "moLmSpeedTestDone": "The engine is back as it was. Choose the way above and start the model again to use it.",
+  "moLmSpeedTestIntro": "Rasgeth starts this model once for each way of writing (alone, with the small model, with the n-grams), has it write a short new text and rewrite a piece of code, and shows the tokens a second of each. In the end the engine goes back to how it was.",
+  "moLmSpeedTestMode": "Way",
+  "moLmSpeedTestProse": "New text (tokens/s)",
+  "moLmSpeedTestStart": "Start the test",
+  "moLmSpeedTestTitle": "How much faster here",
+  "moLmStart": "Start",
+  "moLmStarting": "Starting…",
+  "moLmStream": "SSD stream",
+  "moLmStreamCache": ", {gb} of the card for the experts",
+  "@moLmStreamCache": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmStreamFromCard": "the model fits in the card",
+  "moLmStreamFromRam": "the model fits in RAM: the SSD is only read at the start",
+  "moLmStreamFromSsd": "about {gb} GB read from the SSD at each token",
+  "@moLmStreamFromSsd": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmStreamHdd": "Not available: {disk} is a spinning disk, too slow to read a model from at each token.",
+  "@moLmStreamHdd": {
+    "placeholders": {
+      "disk": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmStreamMaybeSsd": "Windows does not say whether {disk} is an SSD: use it only if it is.",
+  "@moLmStreamMaybeSsd": {
+    "placeholders": {
+      "disk": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmStreamNoRoom": "Not available: {disk} has only {free} free; it needs at least 20 GB.",
+  "@moLmStreamNoRoom": {
+    "placeholders": {
+      "disk": {
+        "type": "String"
+      },
+      "free": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmStreamPlan": "In use: context up to {ctx} tokens{cache}, {source} (counting {ram} of free RAM).",
+  "@moLmStreamPlan": {
+    "placeholders": {
+      "cache": {
+        "type": "String"
+      },
+      "ctx": {
+        "type": "String"
+      },
+      "ram": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmStreamThisDisk": "the models' disk",
+  "moLmStreamUnknownDisk": "Rasgeth does not know yet which disk holds the models (it learns at the next start of Rasgeth): use it only if it is an SSD.",
+  "moLmSysmemClose": "Got it",
+  "moLmSysmemStep1": "Open the NVIDIA Control Panel (right click on the desktop).",
+  "moLmSysmemStep2": "Manage 3D settings, then Global Settings (or Program Settings with llama-server.exe, for the engine only).",
+  "moLmSysmemStep3": "CUDA - Sysmem Fallback Policy: choose «Prefer No Sysmem Fallback» and Apply.",
+  "moLmSysmemStep4": "Start the model again: the engine reads the setting when it starts.",
+  "moLmSysmemText": "When the card's memory runs out, NVIDIA's driver on Windows uses the computer's RAM instead of failing: reading messages becomes 2 to 3.5 times slower. Rasgeth cannot read this setting, so check it once:",
+  "moLmSysmemTitle": "NVIDIA card: turn off «CUDA Sysmem Fallback»",
+  "moLmThisPc": "This computer",
+  "moLmTokensPerSec": "{n} tokens/s",
+  "@moLmTokensPerSec": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmTokensUnit": "tokens/s",
+  "moLmTooBig": "It needs at least {need}: this computer has room for {max}.",
+  "@moLmTooBig": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      },
+      "need": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmTuneBatch": "passes of {n} tokens",
+  "@moLmTuneBatch": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmTuneCache": "Card for the experts",
+  "moLmTuneChosen": "kept",
+  "moLmTuneCtx": "Context",
+  "moLmTuneFailed": "did not start",
+  "moLmTuneHelp": "Each row is a real try: the model reads a context of about 2,000 tokens and writes 64. A typical turn is an agent reading 1,500 tokens of tool results and writing 300: the fastest one is kept for this model, and you can pick another.",
+  "moLmTuneLongRead": "a message of {n} tokens",
+  "@moLmTuneLongRead": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmTuneNoCopy": "experts computed on the processor when reading",
+  "moLmTuneRead": "Reading (tok/s)",
+  "moLmTuneRunning": "measuring…",
+  "moLmTuneTitle": "Tuning on this computer",
+  "moLmTuneTurn": "Typical turn (s)",
+  "moLmTuneUse": "Use",
+  "moLmTuneWrite": "Writing (tok/s)",
+  "moLmUnavailable": "Hugging Face does not answer: try again later.",
+  "moLmUseForAgents": "Use it for the agents",
+  "moLmUsedForAgents": "The agents will use this model.",
+  "moLmVersionSuggested": "suggested",
+  "moLmVersions": "Version of the file",
+  "moLmWarmHelp": "The model reads its first context and writes a few words. The first time on a new graphics card this takes minutes: the card prepares its programs once, and then it is fast.",
+  "moLmWarmSpeed": "Context read (as a first message)",
+  "moLmWhere": "Where the model goes",
+  "moLoading": "Loading…",
+  "moModelHint": "The model of this conversation (agents' models: Settings, Agents)",
+  "moModelNew": "new",
+  "moModelPick": "Choose a model",
+  "moModelSearch": "Search a model",
+  "moModelUnconfirmed": "data to be confirmed",
+  "moModelWay": "How it goes",
+  "moMpChange": "Change",
+  "moMpLead": "Pick one or more ways: combine them as you like. Each square opens its window; the lit ones are connected.",
+  "moMpLocalLead": "Free, and nothing leaves here: the computer, where the models are, the models to download and the ones already on the disk.",
+  "moMpNoDefault": "No model chosen",
+  "moMpNoDefaultText": "Connect a way above, then choose the one agents use.",
+  "moMpSearchLead": "How agents look things up on the internet. One provider at a time: the lit one is in use.",
+  "moMpSearchTitle": "Web search",
+  "moSearch": "Search",
+  "moSearchInUse": "in use",
+  "moSubsDeviceWait": "This page notices by itself when you are done.",
+  "moSubsLoggedAs": "Signed in: {who} {plan}",
+  "@moSubsLoggedAs": {
+    "placeholders": {
+      "plan": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "moSubsProgramDownload": "{name} is downloaded when you switch this on (once, a few hundred MB, with its bar in the corner).",
+  "@moSubsProgramDownload": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moSubsProgramSystem": "{name} is already installed on this computer: Rasgeth uses it.",
+  "@moSubsProgramSystem": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moSubsSharedLogin": "{name} is already signed in on this computer: Rasgeth uses that sign-in as it is, no need to sign in again.",
+  "@moSubsSharedLogin": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moSubsUseShared": "Use the sign-in already here",
+  "moSubscriptions": "Models and subscriptions",
+  "moTermsOf": "{name}'s terms",
+  "@moTermsOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moUiAboutHours": "about {h} h {min} min left",
+  "@moUiAboutHours": {
+    "placeholders": {
+      "h": {
+        "type": "String"
+      },
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "moUiAboutMinutes": "about {min} min left",
+  "@moUiAboutMinutes": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "moUiDropNone": "Nothing matches.",
+  "moUiLessThanMinute": "less than a minute left",
+  "moUiNotNeeded": "not needed",
+  "moUiOf": "{done} of {total}",
+  "@moUiOf": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "moViaLocal": "local",
+  "moViaSubscription": "subscription",
+  "moWzAgents": "Agents",
+  "moWzAgentsSub": "they do the work",
+  "moWzAgentsText": "They get their tasks from the orchestrators: they write code, test, search.",
+  "moWzAlreadySet": "already set",
+  "moWzAssign": "Who uses which model",
+  "moWzAssignChat": "The everyday chat, with web search: questions, texts, ideas.",
+  "moWzAssignConnect": "Connect a model",
+  "moWzAssignDemigod2": "Answers you on Telegram and in the chats, and passes the work on: a fast model is enough.",
+  "moWzAssignEmpty": "You have not connected any model yet, so there is nothing to choose here. Connect one in «How should Rasgeth think?» or start a local model.",
+  "moWzAssignGod": "The one who runs everything: plans, projects, other agents. The strongest model pays off here.",
+  "moWzAssignLead": "Each one works with its own model: the strongest for who decides, a fast one for who answers. Touch a model to change it.",
+  "moWzAssignLocal": "Choose a local model",
+  "moWzAssignOthers": "The agents you create later",
+  "moWzAssignOthersHelp": "And the board's summaries, unless you choose one for them. It is tried with a real question before it is saved.",
+  "moWzAssistants": "Personal assistants",
+  "moWzAssistantsSub": "they work for you",
+  "moWzBackupText": "If an agent gives up on a task (an error, the budget, no check passed), this model tries it once more, knowing what the first one did. Best from another provider.",
+  "moWzBackupWindow": "Tries the tasks given up on once more, in a new conversation.",
+  "moWzBrain": "How should Rasgeth think?",
+  "moWzBrainChatgpt": "Your ChatGPT Plus or Pro plan. You type a short code on OpenAI's page.",
+  "moWzBrainClaude": "Your Claude Pro or Max plan. You sign in on Anthropic's page.",
+  "moWzBrainKeys": "Anthropic, OpenAI, Gemini, Mistral, DeepSeek, Grok and more. You pay for what you use.",
+  "moWzBrainKeysTitle": "An API key",
+  "moWzBrainLocal": "Free and private: nothing leaves this computer. You choose it in the next step.",
+  "moWzBrainQ": "How should Rasgeth think?",
+  "moWzBrainServer": "Ollama, LM Studio, vLLM or another server that speaks OpenAI's language.",
+  "moWzChosen": "chosen",
+  "moWzDefaultModel": "Default model",
+  "moWzDemiRole": "The spokesperson",
+  "moWzDense": "{b} billion · dense",
+  "@moWzDense": {
+    "placeholders": {
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzDiskHdd": "A spinning disk: too slow for the models.",
+  "moWzDisksLead": "A model takes from 3 to 80 GB. A fast SSD is best: SSD stream reads from there.",
+  "moWzDisksNoMove": "The models can be moved to another disk only in Rasgeth's Windows installation.",
+  "moWzDisksOne": "Here the models stay in Rasgeth's data folder. In Rasgeth's Windows installation you can move them to another SSD.",
+  "moWzDisksTitle": "Where the models stay",
+  "moWzDoneBtn": "Done",
+  "moWzEffortHelp": "A little is fast and cheap, deeply is slower but more careful. It stays fixed for each conversation.",
+  "moWzEffortTitle": "How much it thinks before answering",
+  "moWzEffort_high": "Deeply",
+  "moWzEffort_low": "A little",
+  "moWzEffort_max": "The most",
+  "moWzEffort_medium": "Just right",
+  "moWzFitNone": "None runs fast enough here: the ones below work, slowly.",
+  "moWzFitTab": "Suited",
+  "moWzFitTitle": "Suited to this computer",
+  "moWzFitsUpTo": "Models up to about {max} run fast here; bigger ones use the RAM too.",
+  "@moWzFitsUpTo": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzFolder": "Folder",
+  "moWzFolderHelp": "A folder of this disk; it is created if it is not there.",
+  "moWzFolderLead": "Where Rasgeth keeps the models' files on this disk. The ones already downloaded are copied there.",
+  "moWzFolderTitle": "The models' folder on {disk}",
+  "@moWzFolderTitle": {
+    "placeholders": {
+      "disk": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzFree": "free",
+  "moWzFreeOf": "free of {total} GB",
+  "@moWzFreeOf": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzGodRole": "The boss",
+  "moWzHereNow": "here now",
+  "moWzHowItWorks": "How it works",
+  "moWzKeyOf": "The key of {name}",
+  "@moWzKeyOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzKeysLead": "A key is like a password that lets Rasgeth use the provider's models on your account. You pay the provider for what you use. Add as many as you like: each one is tried at once.",
+  "moWzLegend": "Green outline: it runs on this computer between the graphics card and the RAM, at least {n} tokens a second. The others work, but slowly.",
+  "@moWzLegend": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzLikeAbove": "The same as {who}",
+  "@moWzLikeAbove": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzLocal": "Local model",
+  "moWzLocalQ": "A model on this computer",
+  "moWzLocked": "set by the environment",
+  "moWzMoe": "{b} billion · mixture of experts",
+  "@moWzMoe": {
+    "placeholders": {
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzMoreModels": "Other files and searches",
+  "moWzMoveHere": "Move them here",
+  "moWzMoveLead": "{kind}, {free} free. The models already downloaded are copied to {folder}; the model in use starts again afterwards.",
+  "@moWzMoveLead": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      },
+      "free": {
+        "type": "String"
+      },
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzMoveTitle": "Move the models to {disk}?",
+  "@moWzMoveTitle": {
+    "placeholders": {
+      "disk": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzNModels": "{n} models",
+  "@moWzNModels": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzNone": "None",
+  "moWzOfRamLong": "of RAM",
+  "moWzOrchestrators": "Orchestrators",
+  "moWzOrchestratorsSub": "the heads of the projects",
+  "moWzOrchestratorsText": "One per project: splits the work and hands it to the agents.",
+  "moWzPickFolder": "Choose folder",
+  "moWzPickModel": "Choose the model",
+  "moWzPickRepo": "Choose a repository",
+  "moWzProvider": "Provider",
+  "moWzRemove": "Remove",
+  "moWzSlowTab": "Slow here",
+  "moWzSlowTitle": "They work, but slowly",
+  "moWzStateKey": "{name}: connected",
+  "@moWzStateKey": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzStateKeys": "{n} keys connected",
+  "@moWzStateKeys": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzStateLinked": "connected",
+  "moWzStateLocal": "{model}, in use",
+  "@moWzStateLocal": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzStateLocalNext": "you choose it in the next step",
+  "moWzStateServer": "connected: {url}",
+  "@moWzStateServer": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzStreamInfo1": "For models bigger than the graphics card, and for a much longer context.",
+  "moWzStreamInfo2": "The parts of the model used most stay in the card and in RAM; the rest is read from the SSD when needed. It works best with mixture-of-experts models; dense ones work, but slower.",
+  "moWzStreamInfo3": "At the first start Rasgeth measures this computer and keeps the fastest tuning. It needs an SSD with at least 20 GB free: a spinning disk is too slow.",
+  "moWzStreamOff": "Off: only the models that fit in the card and the RAM run.",
+  "moWzStreamOn": "On: models bigger than the card and the RAM read the rest from the SSD ({disk}) when needed. Slower, but they run.",
+  "@moWzStreamOn": {
+    "placeholders": {
+      "disk": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzSubscription": "I know that using a personal subscription (instead of an API key) in a third-party tool may not be allowed by the provider's terms.",
+  "moWzTrying": "Trying the model…",
+  "moWzUnderstood": "Got it",
+  "moWzUseFolder": "Use this folder",
+  "moWzVram": "{gb} of video memory",
+  "@moWzVram": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "moWzWhich": "Which one should I pick?"
 }

@@ -114,11 +114,11 @@ void main() {
     expect(find.byKey(const Key('new-agent-mascot')), findsOneWidget);
     expect(server.previews.last, 'agent Collaudatore a2');
     await next(tester);
-    // The model: the families with the way.
+    // The model: by provider and way (G42.15).
     expect(find.text('Che modello usa? (facoltativo)'), findsOneWidget);
     await tester.tap(find.byKey(const Key('new-agent-model')));
     await _settle(tester);
-    await tester.tap(find.byKey(const Key('model-anthropic/claude-sonnet-5')));
+    await tester.tap(find.byKey(const Key('model-claude-subscription/claude-sonnet-5')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('model-use')));
     await _settle(tester);
