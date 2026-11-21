@@ -4,10 +4,12 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.10.0';
+const newsVersion = '3.10.1';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.10.1', 'news3101Unlock', 'news3101UnlockText'),
+  NewsRow('3.10.1', 'news3101Faster', 'news3101FasterText'),
   NewsRow('3.10.0', 'news3100Video', 'news3100VideoText'),
   NewsRow('3.10.0', 'news3100App', 'news3100AppText'),
   NewsRow('3.10.0', 'news3100Questions', 'news3100QuestionsText'),
@@ -386,6 +388,10 @@ const generalWords = <String, Map<String, String>>{
     'news3100QuietText': 'Rimuovere un agente non chiede più niente a nessuno (si può ripristinare; se vuoi la richiesta la riaccendi in Sicurezza). La prova di una porta e /dev/null dentro un comando non sono più «file di sistema», e una parola come «dall\'» dopo «password:» non viene più presa per una password. Sul computer, God nella barra laterale apre l\'ultima conversazione.',
     'news3100Video': 'Montaggio video, seconda parte',
     'news3100VideoText': 'Chiavi di volume, posizione e dimensione (immagine nell\'immagine), correzione del colore semplice e LUT .cube, tagli a ritmo della musica, slip, slide e roll, velocità 0,5× e 2×, fermo immagine, e timeline di Resolve (FCP7 XML) aperte dagli agenti.',
+    'news3101Faster': 'Un ispettore più veloce, progetti più ordinati',
+    'news3101FasterText': 'Il primo sguardo dell\'ispettore a un progetto lungo richiede uno o due passaggi invece di una dozzina. Rimuovere un agente toglie anche il suo ramo e la sua cartella quando è tutto unito, e dice cosa resta quando non lo è.',
+    'news3101Unlock': 'L\'impronta prima di una password',
+    'news3101UnlockText': 'Nell\'app, mostrare o copiare una password del Portachiavi chiede prima l\'impronta, il volto o il PIN. Ogni scelta nella pagina usa ora i nostri menu, con la ricerca quando l\'elenco è lungo.',
     'news321Linux': 'Strato dopo in anticipo anche su Linux',
     'news321LinuxText': 'L\'interruttore sperimentale «Strato dopo in anticipo» di SSD stream ora funziona anche su Linux con una scheda NVIDIA, con un\'immagine del motore tutta sua scaricata solo quando lo accendi.',
     'news321Settings': 'Le Impostazioni nello stile della configurazione',
@@ -694,6 +700,10 @@ const generalWords = <String, Map<String, String>>{
     'news3100QuietText': 'Removing an agent no longer asks anyone (it can be restored; switch it back on in Safety if you want). Port probes and /dev/null inside a command are no longer «system files», and a word like «dall\'» after «password:» is no longer taken for one. On the computer, God in the side bar opens the latest conversation.',
     'news3100Video': 'Video editing, part two',
     'news3100VideoText': 'Keyframes for volume, position and size (picture in picture), simple colour correction and .cube LUTs, cuts on the music\'s beats, slip, slide and roll, 0.5× and 2× speed, still frames, and Resolve timelines (FCP7 XML) opened by the agents.',
+    'news3101Faster': 'A quicker inspector, tidier projects',
+    'news3101FasterText': 'The inspector\'s first look at a long project takes one or two steps instead of a dozen. Removing an agent also removes its branch and folder when everything is merged, and says what\'s left when it isn\'t.',
+    'news3101Unlock': 'Your fingerprint before a password',
+    'news3101UnlockText': 'In the app, showing or copying a password from the keychain first asks for your fingerprint, face or PIN. Every choice on the page now uses our own menus, with search where the list is long.',
     'news321Linux': 'Next layer ahead on Linux too',
     'news321LinuxText': 'The experimental «Next layer ahead» switch of SSD stream now works on Linux with an NVIDIA card too, with an engine image of its own downloaded only when you turn it on.',
     'news321Settings': 'Settings in the setup\'s style',

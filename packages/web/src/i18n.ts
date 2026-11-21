@@ -2478,6 +2478,12 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news3101Unlock: "Your fingerprint before a password",
+  news3101UnlockText:
+    "In the app, showing or copying a password from the keychain first asks for your fingerprint, face or PIN. Every choice on the page now uses our own menus, with search where the list is long.",
+  news3101Faster: "A quicker inspector, tidier projects",
+  news3101FasterText:
+    "The inspector's first look at a long project takes one or two steps instead of a dozen. Removing an agent also removes its branch and folder when everything is merged, and says what's left when it isn't.",
   news3100Video: "Video editing, part two",
   news3100VideoText:
     "Keyframes for volume, position and size (picture in picture), simple colour correction and .cube LUTs, cuts on the music's beats, slip, slide and roll, 0.5× and 2× speed, still frames, and Resolve timelines (FCP7 XML) opened by the agents.",
@@ -10088,6 +10094,12 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news3101Unlock: "L'impronta prima di una password",
+  news3101UnlockText:
+    "Nell'app, mostrare o copiare una password del Portachiavi chiede prima l'impronta, il volto o il PIN. Ogni scelta nella pagina usa ora i nostri menu, con la ricerca quando l'elenco è lungo.",
+  news3101Faster: "Un ispettore più veloce, progetti più ordinati",
+  news3101FasterText:
+    "Il primo sguardo dell'ispettore a un progetto lungo richiede uno o due passaggi invece di una dozzina. Rimuovere un agente toglie anche il suo ramo e la sua cartella quando è tutto unito, e dice cosa resta quando non lo è.",
   news3100Video: "Montaggio video, seconda parte",
   news3100VideoText:
     "Chiavi di volume, posizione e dimensione (immagine nell'immagine), correzione del colore semplice e LUT .cube, tagli a ritmo della musica, slip, slide e roll, velocità 0,5× e 2×, fermo immagine, e timeline di Resolve (FCP7 XML) aperte dagli agenti.",
