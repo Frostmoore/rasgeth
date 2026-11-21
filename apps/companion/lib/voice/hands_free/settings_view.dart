@@ -11,6 +11,7 @@ import '../../api/client.dart';
 import '../../app_state.dart';
 import '../../l10n/app_localizations.dart';
 import '../../screens/new_agent_screen.dart' show RgSwitch;
+import '../../screens/server_settings_screen.dart' show progressText;
 import '../../settings/general_screen.dart' show openTranscriptionPanel;
 import '../../theme/colors.dart';
 import '../../ui/icons.dart';
@@ -20,6 +21,7 @@ import 'indicator.dart';
 import 'runtime.dart';
 import 'settings.dart';
 import 'wake.dart';
+import 'wake_model.dart';
 
 /// The top of Settings › Voice: hands-free on this device, the wake word, the language, the
 /// transcription.
@@ -165,10 +167,15 @@ class _HandsFreeSectionState extends State<HandsFreeSection> {
                 _SwitchLine(
                   key: const Key('hf-wake'),
                   title: w('vcWake', {'wake': s.currentWake}),
-                  help: r.wakeHeard ? w('vcWakeWordHelp') : l.hfWakeNotHere,
+                  help: r.wakeHeard
+                      ? w('vcWakeWordHelp')
+                      : r.wakeSupported
+                      ? l.hfWakeNeedsModel
+                      : l.hfWakeNotHere,
                   on: s.wake,
                   onChanged: (on) => _set(s.copyWith(wake: on)),
                 ),
+                if (s.wake && r.wakeSupported) WakeModelPanel(runtime: r),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
                   child: Column(
@@ -497,6 +504,143 @@ class _Steps extends StatelessWidget {
           child: Text(help, style: TextStyle(color: c.dim, fontSize: 12.5)),
         ),
       ],
+    );
+  }
+}
+
+/// The wake word's files on this device (G42.16): what they weigh before, a real bar while they
+/// come down (bytes, speed, time left), ready, or why not with «Try again».
+class WakeModelPanel extends StatefulWidget {
+  const WakeModelPanel({super.key, required this.runtime});
+
+  final HandsFreeRuntime runtime;
+
+  @override
+  State<WakeModelPanel> createState() => _WakeModelPanelState();
+}
+
+class _WakeModelPanelState extends State<WakeModelPanel> {
+  int? _bytes;
+  bool _have = false;
+  WakeLang? _sizedFor;
+
+  HandsFreeRuntime get r => widget.runtime;
+
+  Future<void> _size(WakeLang lang) async {
+    _sizedFor = lang;
+    final have = await r.wakeModel.have(lang) != null;
+    int? model;
+    try {
+      final st = await r.app.client?.getJson('/api/voice/wake-model', {'lang': lang.name});
+      if (st is Map && st['size'] is num) model = (st['size'] as num).toInt();
+    } on Object {
+      // The size stays the usual one.
+    }
+    // The small models are 40-48 MB.
+    final bytes = await r.wakeModel.sizeToGet(lang, model ?? 45 * 1024 * 1024);
+    if (mounted && _sizedFor == lang) {
+      setState(() {
+        _have = have;
+        _bytes = bytes;
+      });
+    }
+  }
+
+  String _error(AppLocalizations l, String? code) => switch (code) {
+    'server' => l.hfWakeErrServer,
+    'checksum' => l.hfWakeErrChecksum,
+    'broken' => l.hfWakeErrBroken,
+    _ => l.hfWakeErrFailed,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final m = r.wakeModel;
+    return ListenableBuilder(
+      listenable: m,
+      builder: (context, _) {
+        final lang = r.settings.lang;
+        if (_sizedFor != lang) unawaited(_size(lang));
+        final help = TextStyle(color: c.dim, fontSize: 12.5);
+        final body = <Widget>[];
+        if (r.wakeHeard) {
+          body.add(
+            Text(
+              hfWord(context, 'voiceModelReady', {'wake': r.settings.currentWake}),
+              key: const Key('hf-wake-ready'),
+              style: TextStyle(color: c.ok),
+            ),
+          );
+        } else if (m.stage == WakeStage.server ||
+            m.stage == WakeStage.engine ||
+            m.stage == WakeStage.model) {
+          final p = m.progress;
+          body
+            ..add(
+              Text(switch (m.stage) {
+                WakeStage.server => l.hfWakeStageServer,
+                WakeStage.engine => l.hfWakeStageEngine,
+                _ => l.hfWakeStageModel,
+              }, key: const Key('hf-wake-stage')),
+            )
+            ..add(
+              ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: LinearProgressIndicator(
+                  key: const Key('hf-wake-bar'),
+                  value: p?.fraction,
+                  minHeight: 8,
+                  backgroundColor: c.line,
+                  color: c.accent,
+                ),
+              ),
+            );
+          if (p != null) {
+            body.add(Text(progressText(l, p), key: const Key('hf-wake-progress'), style: help));
+          }
+        } else if (m.stage == WakeStage.loading ||
+            (_have && r.settings.enabled && m.stage != WakeStage.error)) {
+          body.add(Text(l.hfWakeLoading, style: help));
+        } else {
+          if (m.stage == WakeStage.error) {
+            body.add(
+              Text(
+                hfWord(context, 'voiceModelError', {'error': _error(l, m.error)}),
+                key: const Key('hf-wake-error'),
+                style: TextStyle(color: c.err),
+              ),
+            );
+          }
+          final mb = _bytes == null ? null : (_bytes! / (1024 * 1024)).round();
+          body
+            ..add(
+              Text(
+                mb == null ? l.hfWakeModelAboutSoon : l.hfWakeModelAbout('$mb'),
+                key: const Key('hf-wake-about'),
+                style: help,
+              ),
+            )
+            ..add(
+              FilledButton(
+                key: const Key('hf-wake-get'),
+                onPressed: m.busy || !r.settings.enabled
+                    ? null
+                    : () => unawaited(r.prepareWake(download: true)),
+                child: Text(
+                  m.stage == WakeStage.error ? l.hfWakeRetry : hfWord(context, 'voiceModelGet'),
+                ),
+              ),
+            );
+          if (!r.settings.enabled) body.add(Text(l.hfWakeOnFirst, style: help));
+        }
+        return Padding(
+          key: const Key('hf-wake-model'),
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 8, children: body),
+        );
+      },
     );
   }
 }

@@ -5,11 +5,12 @@
 // the turn's final answer, read it with the voice chosen (G40.10) and keep time. On Android the
 // microphone is kept by a foreground service with its notification while it runs.
 //
-// The wake word: the page listens for it with Vosk in the browser; the app has no recogniser yet
-// ([WakeSpotter] is the place for one), so on this device a turn starts from «Speak» in the
-// indicator, and the indicator says so: never silently.
+// The wake word: the page listens for it with Vosk in the browser; the app with the same Vosk on
+// the device (vosk.dart), once its model is here (wake_model.dart: downloaded only when the person
+// asks, with its bar). Where there is no recogniser (macOS, iOS) or no model yet, a turn starts
+// from «Speak» in the indicator, and the indicator says so: never silently.
 import 'dart:async';
-import 'dart:io' show Platform;
+import 'dart:io' show Directory, Platform;
 import 'dart:math' as math;
 import 'dart:ui' show Locale, PlatformDispatcher;
 
@@ -28,7 +29,9 @@ import 'machine.dart';
 import 'settings.dart';
 import 'speakable.dart';
 import 'vad.dart';
+import 'vosk.dart';
 import 'wake.dart';
+import 'wake_model.dart';
 
 /// The microphone as a stream of 16 kHz mono 16-bit PCM.
 abstract class MicStream {
@@ -143,7 +146,16 @@ Uint8List chimeWav() {
 }
 
 class HandsFreeRuntime extends ChangeNotifier implements VoicePorts {
-  HandsFreeRuntime(this.app, {MicStream? mic, MicKeeper? keeper}) : _mic = mic, _keeper = keeper;
+  HandsFreeRuntime(
+    this.app, {
+    MicStream? mic,
+    MicKeeper? keeper,
+    WakeEngine? wake,
+    Future<Directory> Function()? wakeDir,
+    WebFetch? wakeFetch,
+  }) : _mic = mic,
+       _keeper = keeper,
+       wakeModel = WakeModelStore(engine: wake ?? VoskWakeEngine(), dir: wakeDir, fetch: wakeFetch);
 
   final AppController app;
   MicStream? _mic;
@@ -157,11 +169,79 @@ class HandsFreeRuntime extends ChangeNotifier implements VoicePorts {
   StreamSubscription<Uint8List>? _sub;
   int _odd = -1;
 
-  /// A recogniser for the wake word; none in the app yet (see the head of this file).
+  /// The wake word's files on this device, and their download.
+  final WakeModelStore wakeModel;
+
+  /// The recogniser for the wake word, once its files are here and it started.
   WakeSpotter? spotter;
+  String? _spotterKey;
+  int _wakeRun = 0;
 
   /// The wake word can be heard on this device.
   bool get wakeHeard => spotter != null;
+
+  /// This device has a recogniser for the wake word (not macOS nor iOS).
+  bool get wakeSupported => wakeModel.engine.source != null;
+
+  String _wakeKey(HandsFreeSettings s) => '${s.lang.name}|${s.wakeWords[s.lang] ?? ''}';
+
+  /// Starts the wake word's recogniser when its files are here; [download]: brings them first
+  /// (the person asked: Settings › Voice, or the wake word switched on).
+  Future<void> prepareWake({bool download = false}) async {
+    final s = settings;
+    if (!s.enabled || !s.wake || !wakeSupported) return;
+    final key = _wakeKey(s);
+    if (spotter != null && _spotterKey == key) return;
+    _dropWake();
+    final run = ++_wakeRun;
+    final lang = s.lang;
+    var files = await wakeModel.have(lang);
+    if (files == null && download) {
+      final c = app.client;
+      if (c == null) return;
+      files = await wakeModel.fetch(c, lang);
+    }
+    if (files == null || run != _wakeRun) return;
+    final now = settings;
+    if (!now.enabled || !now.wake || _wakeKey(now) != key) return;
+    wakeModel.loading();
+    final own = now.wakeWords[lang];
+    final filter = HeardFilter(
+      lang: lang,
+      own: own,
+      sensitivity: () => settings.sensitivity,
+      onHeard: (what) {
+        spotter?.reset();
+        controller.heard(what);
+      },
+    );
+    try {
+      final started = await wakeModel.engine.start(
+        libs: files.libs,
+        modelDir: files.modelDir,
+        grammar: wakeGrammar(lang, own),
+        onResult: filter.result,
+      );
+      if (run != _wakeRun) {
+        started.dispose();
+        return;
+      }
+      spotter = started;
+      _spotterKey = key;
+      wakeModel.ready();
+      if (controller.phase != VoicePhase.off) controller.dispatch(VoiceStart(wake: settings.wake));
+    } on Object {
+      wakeModel.failed('broken');
+    }
+    notifyListeners();
+  }
+
+  void _dropWake() {
+    _wakeRun++;
+    spotter?.dispose();
+    spotter = null;
+    _spotterKey = null;
+  }
 
   late final HandsFreeController controller = HandsFreeController(
     this,
@@ -207,9 +287,12 @@ class HandsFreeRuntime extends ChangeNotifier implements VoicePorts {
     await app.prefs.set(_key, next.toJson());
     if (next.enabled && !was.enabled) await start();
     if (!next.enabled && was.enabled) await switchOff(save: false);
+    if (!next.wake || _wakeKey(next) != _wakeKey(was)) _dropWake();
     if (next.enabled && was.wake != next.wake) {
       controller.dispatch(VoiceStart(wake: next.wake && wakeHeard));
     }
+    // Switched on by the person: the files come down now if they are not here yet.
+    if (next.enabled && next.wake) unawaited(prepareWake(download: !was.wake));
   }
 
   /// Hands-free on: the microphone opens and the machine waits.
@@ -218,6 +301,7 @@ class HandsFreeRuntime extends ChangeNotifier implements VoicePorts {
     if (micState != MicState.open) return;
     controller.dispatch(VoiceStart(wake: settings.wake && wakeHeard));
     unawaited(keeper.keep(_l, settings.currentWake));
+    unawaited(prepareWake());
   }
 
   /// «Speak»: a turn starts as if the wake word had been heard.
@@ -237,6 +321,7 @@ class HandsFreeRuntime extends ChangeNotifier implements VoicePorts {
   /// Hands-free off: the microphone closes, the service ends.
   Future<void> switchOff({bool save = true}) async {
     controller.dispatch(const VoiceOff());
+    _dropWake();
     await _closeMic();
     await keeper.release();
     if (save && settings.enabled) {
@@ -405,6 +490,8 @@ class HandsFreeRuntime extends ChangeNotifier implements VoicePorts {
 
   @override
   void dispose() {
+    _dropWake();
+    wakeModel.dispose();
     unawaited(_closeMic());
     controller.dispose();
     super.dispose();

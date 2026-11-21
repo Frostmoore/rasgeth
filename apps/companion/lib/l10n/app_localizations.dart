@@ -30360,7 +30360,7 @@ abstract class AppLocalizations {
   /// No description provided for @hfWakeNotHere.
   ///
   /// In en, this message translates to:
-  /// **'On this device the wake word is not heard yet: tap the indicator, then «Talk now».'**
+  /// **'On Mac, iPhone and iPad the wake word is not heard yet: tap the indicator, then «Talk now».'**
   String get hfWakeNotHere;
 
   /// No description provided for @hfWakeHelp.
@@ -30710,6 +30710,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign in with the password'**
   String get g7SetupCodeNo;
+
+  /// No description provided for @trayOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get trayOpen;
+
+  /// No description provided for @trayQuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit'**
+  String get trayQuit;
+
+  /// No description provided for @trayStay.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay in the system tray when you close the window'**
+  String get trayStay;
+
+  /// No description provided for @trayStayHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests, questions and task reports keep arriving as notifications; the icon\'s menu opens the app again or quits it.'**
+  String get trayStayHelp;
+
+  /// No description provided for @trayNone.
+  ///
+  /// In en, this message translates to:
+  /// **'This desktop has no system tray: closing the window quits the app.'**
+  String get trayNone;
+
+  /// No description provided for @pushDesktopInTray.
+  ///
+  /// In en, this message translates to:
+  /// **'With the window closed the app stays in the system tray and notifications still arrive. After «Quit» this computer gets nothing: Rasgeth\'s page and the linked chats still do.'**
+  String get pushDesktopInTray;
+
+  /// No description provided for @hfWakeNeedsModel.
+  ///
+  /// In en, this message translates to:
+  /// **'The wake word needs its speech model on this device (Settings, Voice); until then tap the indicator, then «Talk now».'**
+  String get hfWakeNeedsModel;
+
+  /// No description provided for @hfWakeModelAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'The wake word is heard on this device with a small speech model (Vosk, Apache-2.0): {mb} MB to download once, kept here. Nothing you say leaves the device before the wake word.'**
+  String hfWakeModelAbout(String mb);
+
+  /// No description provided for @hfWakeModelAboutSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'The wake word is heard on this device with a small speech model (Vosk, Apache-2.0), downloaded once and kept here.'**
+  String get hfWakeModelAboutSoon;
+
+  /// No description provided for @hfWakeStageServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth is downloading the speech model (only the first time)'**
+  String get hfWakeStageServer;
+
+  /// No description provided for @hfWakeStageEngine.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading the recogniser for this computer (only the first time)'**
+  String get hfWakeStageEngine;
+
+  /// No description provided for @hfWakeStageModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bringing the speech model to this device (only the first time)'**
+  String get hfWakeStageModel;
+
+  /// No description provided for @hfWakeLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting the wake word…'**
+  String get hfWakeLoading;
+
+  /// No description provided for @hfWakeRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get hfWakeRetry;
+
+  /// No description provided for @hfWakeOnFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch hands-free voice on first.'**
+  String get hfWakeOnFirst;
+
+  /// No description provided for @hfWakeErrFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'the download stopped; check the connection and try again'**
+  String get hfWakeErrFailed;
+
+  /// No description provided for @hfWakeErrServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth could not download the speech model'**
+  String get hfWakeErrServer;
+
+  /// No description provided for @hfWakeErrChecksum.
+  ///
+  /// In en, this message translates to:
+  /// **'the recogniser that arrived is not the expected one, so it was not kept'**
+  String get hfWakeErrChecksum;
+
+  /// No description provided for @hfWakeErrBroken.
+  ///
+  /// In en, this message translates to:
+  /// **'the speech model did not start on this device; download it again'**
+  String get hfWakeErrBroken;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

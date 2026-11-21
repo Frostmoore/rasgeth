@@ -32,6 +32,13 @@ android {
         versionName = flutter.versionName
     }
 
+    // 32-bit x86 runs only on old emulators: its copy of Vosk (10 MB) stays out of the APK.
+    packaging {
+        jniLibs {
+            excludes += "lib/x86/libvosk.so"
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
@@ -53,6 +60,9 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    // The wake word on the phone (G42.16): Vosk's own libvosk.so for each ABI (Apache-2.0), called
+    // through dart:ffi (lib/voice/hands_free/vosk.dart); only the AAR, never its JNA bindings.
+    implementation("com.alphacephei:vosk-android:0.3.47@aar")
 }
 
 // UnifiedPush's connector (G40.10) brings Tink for the JVM, flutter_secure_storage Tink for
