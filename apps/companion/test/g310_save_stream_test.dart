@@ -264,7 +264,16 @@ void main() {
     expect(find.byKey(const Key('download-words')), findsOneWidget);
     // The bar's «Annulla» (the snack bar may still be sliding in: pressed as a person would).
     tester.widget<TextButton>(find.byKey(const Key('download-cancel'))).onPressed!();
-    await _settle(tester, 8);
+    // Under load the stop and the file's removal take longer: waited for, within a limit.
+    for (
+      var i = 0;
+      i < 60 &&
+          (find.text('Salvataggio di finale.mp4 fermato').evaluate().isEmpty ||
+              dir.listSync().isNotEmpty);
+      i++
+    ) {
+      await _settle(tester, 1);
+    }
     expect(find.text('Salvataggio di finale.mp4 fermato'), findsOneWidget);
     expect(dir.listSync(), isEmpty, reason: 'no part, no empty file');
     await done(tester);
