@@ -12678,4 +12678,131 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get moWzWhich => 'Which one should I pick?';
+
+  @override
+  String get chUiAdvanced => 'Advanced';
+
+  @override
+  String moJob_engine(String model) {
+    return 'Starting $model';
+  }
+
+  @override
+  String moJob_engine_load(String model) {
+    return 'Loading $model';
+  }
+
+  @override
+  String get moJob_error_bad_file => 'This is not a model file of Hugging Face.';
+
+  @override
+  String get moJob_error_checksum =>
+      'The download arrived damaged (its fingerprint does not match): try again.';
+
+  @override
+  String get moJob_error_engine_stopped =>
+      'The engine stopped by itself. The details below say why.';
+
+  @override
+  String get moJob_error_incomplete =>
+      'The download stopped before the end: press Go on to continue from where it stopped.';
+
+  @override
+  String get moJob_error_load_timeout =>
+      'The model did not load within 15 minutes. Try a smaller one.';
+
+  @override
+  String get moJob_error_model_missing =>
+      'The model file is not in the folder any more. Download it again.';
+
+  @override
+  String get moJob_error_no_gpu =>
+      'The engine cannot see the graphics card. Update the card\'s drivers and restart the computer, or choose the processor under Advanced.';
+
+  @override
+  String get moJob_error_out_of_memory =>
+      'There is not enough memory for this model. Choose a smaller model, or the same one in a lower quality.';
+
+  @override
+  String moJob_model_download(String model) {
+    return 'Downloading $model';
+  }
+
+  @override
+  String moJob_speed_test(String model) {
+    return 'Measuring $model';
+  }
+
+  @override
+  String get moJob_step_draft => 'With the small model';
+
+  @override
+  String get moJob_step_image => 'Downloading the engine (only once)';
+
+  @override
+  String get moJob_step_load => 'Loading the model into memory';
+
+  @override
+  String get moJob_step_ngram => 'With the n-grams';
+
+  @override
+  String get moJob_step_none => 'The model alone';
+
+  @override
+  String get moJob_step_preload =>
+      'Reading the model once, so the first message does not wait for the disk';
+
+  @override
+  String get moJob_step_start => 'Starting the engine';
+
+  @override
+  String get moJob_step_try => 'Trying an answer';
+
+  @override
+  String get moJob_step_tune => 'Measuring this computer to pick the fastest setting';
+
+  @override
+  String get moLmQuality_good => 'good quality';
+
+  @override
+  String get moLmQuality_high => 'high quality';
+
+  @override
+  String get moLmQuality_reduced => 'reduced quality, to fit';
+
+  @override
+  String get moLmScore_code => 'Programming';
+
+  @override
+  String get moLmScore_languages => 'Other languages';
+
+  @override
+  String get moLmScore_smart => 'Intelligence';
+
+  @override
+  String get moLmScore_speed => 'Speed here';
+
+  @override
+  String get moLmScore_tools => 'Tools';
+
+  @override
+  String get moLmSpeedMode_draft => 'With the small model';
+
+  @override
+  String get moLmSpeedMode_ngram => 'N-grams';
+
+  @override
+  String get moLmSpeedMode_none => 'Model alone';
+
+  @override
+  String get chHubTelegram =>
+      'Demi-God on Telegram: the bot, its token and the accounts that talk to it';
+
+  @override
+  String get chHubChats =>
+      'Demi-God on Discord, Slack, Signal, WhatsApp, Matrix, Teams and iMessage';
+
+  @override
+  String get moHubModels =>
+      'Subscriptions, API keys, your own server, the model on this computer and who uses which';
 }

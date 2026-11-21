@@ -41,6 +41,10 @@ import '../settings/knowledge_screen.dart' show openKnowledgeSettings;
 import '../settings/memory_screen.dart' show openSharedMemory;
 import '../settings/portrait_screen.dart' show openPortrait;
 import '../settings/skills_screen.dart' show openSkills;
+// G42.13 and G42.15: Telegram, Chats, Models and subscriptions, native.
+import '../settings/channels/chats_screen.dart' show openChatPlatforms;
+import '../settings/channels/telegram_screen.dart' show openTelegramSettings;
+import '../settings/models/models_screen.dart' show openModelsSettings;
 
 /// «12 MB of 340 MB · 2.1 MB/s · 2 min left», as the page says a download.
 String progressText(AppLocalizations l, Progress p) {
@@ -595,6 +599,32 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       l.g4SfTitle,
                       l.g4HubSafety,
                       () => openSafetySettings(context),
+                    ),
+                    // G42.13 and G42.15: the page's «Where» group (Telegram, Chats) and
+                    // Models and subscriptions, before the budgets as on the page.
+                    _hub(
+                      c,
+                      'telegram',
+                      RgIcons.send,
+                      l.chTelegram,
+                      l.chHubTelegram,
+                      () => openTelegramSettings(context),
+                    ),
+                    _hub(
+                      c,
+                      'chats',
+                      RgIcons.chat,
+                      l.chChats,
+                      l.chHubChats,
+                      () => openChatPlatforms(context),
+                    ),
+                    _hub(
+                      c,
+                      'models',
+                      RgIcons.cpu,
+                      l.moSubscriptions,
+                      l.moHubModels,
+                      () => openModelsSettings(context),
                     ),
                     _hub(
                       c,

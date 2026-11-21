@@ -21794,6 +21794,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Which one should I pick?'**
   String get moWzWhich;
+
+  /// No description provided for @chUiAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get chUiAdvanced;
+
+  /// No description provided for @moJob_engine.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting {model}'**
+  String moJob_engine(String model);
+
+  /// No description provided for @moJob_engine_load.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading {model}'**
+  String moJob_engine_load(String model);
+
+  /// No description provided for @moJob_error_bad_file.
+  ///
+  /// In en, this message translates to:
+  /// **'This is not a model file of Hugging Face.'**
+  String get moJob_error_bad_file;
+
+  /// No description provided for @moJob_error_checksum.
+  ///
+  /// In en, this message translates to:
+  /// **'The download arrived damaged (its fingerprint does not match): try again.'**
+  String get moJob_error_checksum;
+
+  /// No description provided for @moJob_error_engine_stopped.
+  ///
+  /// In en, this message translates to:
+  /// **'The engine stopped by itself. The details below say why.'**
+  String get moJob_error_engine_stopped;
+
+  /// No description provided for @moJob_error_incomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'The download stopped before the end: press Go on to continue from where it stopped.'**
+  String get moJob_error_incomplete;
+
+  /// No description provided for @moJob_error_load_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The model did not load within 15 minutes. Try a smaller one.'**
+  String get moJob_error_load_timeout;
+
+  /// No description provided for @moJob_error_model_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'The model file is not in the folder any more. Download it again.'**
+  String get moJob_error_model_missing;
+
+  /// No description provided for @moJob_error_no_gpu.
+  ///
+  /// In en, this message translates to:
+  /// **'The engine cannot see the graphics card. Update the card\'s drivers and restart the computer, or choose the processor under Advanced.'**
+  String get moJob_error_no_gpu;
+
+  /// No description provided for @moJob_error_out_of_memory.
+  ///
+  /// In en, this message translates to:
+  /// **'There is not enough memory for this model. Choose a smaller model, or the same one in a lower quality.'**
+  String get moJob_error_out_of_memory;
+
+  /// No description provided for @moJob_model_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading {model}'**
+  String moJob_model_download(String model);
+
+  /// No description provided for @moJob_speed_test.
+  ///
+  /// In en, this message translates to:
+  /// **'Measuring {model}'**
+  String moJob_speed_test(String model);
+
+  /// No description provided for @moJob_step_draft.
+  ///
+  /// In en, this message translates to:
+  /// **'With the small model'**
+  String get moJob_step_draft;
+
+  /// No description provided for @moJob_step_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading the engine (only once)'**
+  String get moJob_step_image;
+
+  /// No description provided for @moJob_step_load.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading the model into memory'**
+  String get moJob_step_load;
+
+  /// No description provided for @moJob_step_ngram.
+  ///
+  /// In en, this message translates to:
+  /// **'With the n-grams'**
+  String get moJob_step_ngram;
+
+  /// No description provided for @moJob_step_none.
+  ///
+  /// In en, this message translates to:
+  /// **'The model alone'**
+  String get moJob_step_none;
+
+  /// No description provided for @moJob_step_preload.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the model once, so the first message does not wait for the disk'**
+  String get moJob_step_preload;
+
+  /// No description provided for @moJob_step_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting the engine'**
+  String get moJob_step_start;
+
+  /// No description provided for @moJob_step_try.
+  ///
+  /// In en, this message translates to:
+  /// **'Trying an answer'**
+  String get moJob_step_try;
+
+  /// No description provided for @moJob_step_tune.
+  ///
+  /// In en, this message translates to:
+  /// **'Measuring this computer to pick the fastest setting'**
+  String get moJob_step_tune;
+
+  /// No description provided for @moLmQuality_good.
+  ///
+  /// In en, this message translates to:
+  /// **'good quality'**
+  String get moLmQuality_good;
+
+  /// No description provided for @moLmQuality_high.
+  ///
+  /// In en, this message translates to:
+  /// **'high quality'**
+  String get moLmQuality_high;
+
+  /// No description provided for @moLmQuality_reduced.
+  ///
+  /// In en, this message translates to:
+  /// **'reduced quality, to fit'**
+  String get moLmQuality_reduced;
+
+  /// No description provided for @moLmScore_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Programming'**
+  String get moLmScore_code;
+
+  /// No description provided for @moLmScore_languages.
+  ///
+  /// In en, this message translates to:
+  /// **'Other languages'**
+  String get moLmScore_languages;
+
+  /// No description provided for @moLmScore_smart.
+  ///
+  /// In en, this message translates to:
+  /// **'Intelligence'**
+  String get moLmScore_smart;
+
+  /// No description provided for @moLmScore_speed.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed here'**
+  String get moLmScore_speed;
+
+  /// No description provided for @moLmScore_tools.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get moLmScore_tools;
+
+  /// No description provided for @moLmSpeedMode_draft.
+  ///
+  /// In en, this message translates to:
+  /// **'With the small model'**
+  String get moLmSpeedMode_draft;
+
+  /// No description provided for @moLmSpeedMode_ngram.
+  ///
+  /// In en, this message translates to:
+  /// **'N-grams'**
+  String get moLmSpeedMode_ngram;
+
+  /// No description provided for @moLmSpeedMode_none.
+  ///
+  /// In en, this message translates to:
+  /// **'Model alone'**
+  String get moLmSpeedMode_none;
+
+  /// No description provided for @chHubTelegram.
+  ///
+  /// In en, this message translates to:
+  /// **'Demi-God on Telegram: the bot, its token and the accounts that talk to it'**
+  String get chHubTelegram;
+
+  /// No description provided for @chHubChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Demi-God on Discord, Slack, Signal, WhatsApp, Matrix, Teams and iMessage'**
+  String get chHubChats;
+
+  /// No description provided for @moHubModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions, API keys, your own server, the model on this computer and who uses which'**
+  String get moHubModels;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

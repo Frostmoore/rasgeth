@@ -12718,4 +12718,130 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get moWzWhich => 'Quale scelgo?';
+
+  @override
+  String get chUiAdvanced => 'Avanzate';
+
+  @override
+  String moJob_engine(String model) {
+    return 'Avvio di $model';
+  }
+
+  @override
+  String moJob_engine_load(String model) {
+    return 'Carico $model';
+  }
+
+  @override
+  String get moJob_error_bad_file => 'Questo non è un file di modello di Hugging Face.';
+
+  @override
+  String get moJob_error_checksum =>
+      'Il download è arrivato rovinato (l\'impronta non coincide): riprova.';
+
+  @override
+  String get moJob_error_engine_stopped =>
+      'Il motore si è fermato da solo. I dettagli qui sotto dicono perché.';
+
+  @override
+  String get moJob_error_incomplete =>
+      'Il download si è fermato prima della fine: premi Riprendi per continuare da dove era.';
+
+  @override
+  String get moJob_error_load_timeout =>
+      'Il modello non si è caricato in 15 minuti. Prova con uno più piccolo.';
+
+  @override
+  String get moJob_error_model_missing =>
+      'Il file del modello non è più nella cartella. Scaricalo di nuovo.';
+
+  @override
+  String get moJob_error_no_gpu =>
+      'Il motore non vede la scheda video. Aggiorna i driver della scheda e riavvia il computer, oppure scegli il processore in Avanzate.';
+
+  @override
+  String get moJob_error_out_of_memory =>
+      'Non c\'è abbastanza memoria per questo modello. Scegline uno più piccolo, o lo stesso con una qualità più bassa.';
+
+  @override
+  String moJob_model_download(String model) {
+    return 'Download di $model';
+  }
+
+  @override
+  String moJob_speed_test(String model) {
+    return 'Misuro $model';
+  }
+
+  @override
+  String get moJob_step_draft => 'Con il modello piccolo';
+
+  @override
+  String get moJob_step_image => 'Scarico il motore (una volta sola)';
+
+  @override
+  String get moJob_step_load => 'Carico il modello in memoria';
+
+  @override
+  String get moJob_step_ngram => 'Con gli n-gram';
+
+  @override
+  String get moJob_step_none => 'Il modello da solo';
+
+  @override
+  String get moJob_step_preload =>
+      'Leggo il modello una volta, così il primo messaggio non aspetta il disco';
+
+  @override
+  String get moJob_step_start => 'Avvio il motore';
+
+  @override
+  String get moJob_step_try => 'Provo una risposta';
+
+  @override
+  String get moJob_step_tune => 'Misuro questo computer per scegliere la regolazione più veloce';
+
+  @override
+  String get moLmQuality_good => 'qualità buona';
+
+  @override
+  String get moLmQuality_high => 'qualità alta';
+
+  @override
+  String get moLmQuality_reduced => 'qualità ridotta, per starci';
+
+  @override
+  String get moLmScore_code => 'Programmazione';
+
+  @override
+  String get moLmScore_languages => 'Altre lingue';
+
+  @override
+  String get moLmScore_smart => 'Intelligenza';
+
+  @override
+  String get moLmScore_speed => 'Velocità qui';
+
+  @override
+  String get moLmScore_tools => 'Strumenti';
+
+  @override
+  String get moLmSpeedMode_draft => 'Con il modello piccolo';
+
+  @override
+  String get moLmSpeedMode_ngram => 'N-gram';
+
+  @override
+  String get moLmSpeedMode_none => 'Modello da solo';
+
+  @override
+  String get chHubTelegram =>
+      'Demi-God su Telegram: il bot, il suo token e gli account che gli scrivono';
+
+  @override
+  String get chHubChats => 'Demi-God su Discord, Slack, Signal, WhatsApp, Matrix, Teams e iMessage';
+
+  @override
+  String get moHubModels =>
+      'Abbonamenti, chiavi API, il tuo server, il modello su questo computer e chi usa quale';
 }

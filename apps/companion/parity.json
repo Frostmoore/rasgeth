@@ -203,27 +203,33 @@
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native keychain in G42.12."
     },
     "telegram": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/channels/telegram_screen.dart",
+        "lib/settings/channels/channels_kit.dart",
+        "lib/settings/api/channels_api.dart"
       ],
       "phase": "G42.13",
       "rows": [
         231
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native Telegram setup in G42.13."
+      "note": "Native (G42.13): the three steps on a path (BotFather, the token tried by the server, the bot opened with the pairing code) with the chat Telegram will show (beside them on a computer, inside the step on a phone), the linked accounts with Unlink, «Change bot», set by the administrator. The QR of the bot's link is not drawn in the app (the link opens Telegram directly)."
     },
     "chats": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/channels/chats_screen.dart",
+        "lib/settings/channels/mailboxes.dart",
+        "lib/settings/channels/channels_kit.dart",
+        "lib/settings/api/channels_api.dart",
+        "lib/settings/automations/automations_screen.dart"
       ],
       "phase": "G42.13",
       "rows": [
         232,
         233
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native chat platforms and mailboxes in G42.13."
+      "note": "Native (G42.13): Discord, Slack, Signal, WhatsApp, Matrix, Microsoft Teams and iMessage as squares lit when on, each window with what it needs and the numbered steps, the code to send, the accounts with Unlink, Teams' app saved to the device, Turn off and Change; the mailboxes in Settings › Automations as on the page: the single one of before, then many by category, added, changed (the password stays unless a new one is written) and removed, tried by the server."
     },
     "budgets": {
       "app": "native",
@@ -241,10 +247,13 @@
       "note": "Native (G42.4): this month's total with its days, everything, each project and agent with their limit; the limit's window with the wizard's amounts, another amount or no limit."
     },
     "subscriptions": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart",
-        "lib/screens/server_settings_screen.dart",
+        "lib/settings/models/models_screen.dart",
+        "lib/settings/models/local_models.dart",
+        "lib/settings/models/local_speed.dart",
+        "lib/settings/models/key_providers.dart",
+        "lib/settings/api/models_api.dart",
         "lib/ui/model_sheet.dart",
         "lib/api/model_routes.dart"
       ],
@@ -257,7 +266,7 @@
         273,
         289
       ],
-      "note": "Default model and model routes are native; subscriptions, keys, own server and local models only in «All settings»."
+      "note": "Native (G42.15): the ways of thinking as squares (Claude signed in from the browser with the code pasted back, ChatGPT with the device code, an API key per provider tried by the server, the own server), the default model with its effort, who uses which model (God, Demi-God, the assistants, the others, the backup) in the one model sheet by provider and way with the newest first and a search (2026-11-20), the model on this computer (the machine, the engine, the models that run well and the slower ones with the estimated speed, the download with its bar, pause and go on, start, on and off, use for the agents, the speed test, delete, the other files and Downloaded models). Not yet in the app: SSD stream and its options, moving the models to another disk, Hugging Face search, speculative decoding, the tuning table, the catalog row; web search stays in General (G42.4). The request inspector (row 273) is not a page feature: n/a."
     },
     "code": {
       "app": "native",

@@ -9495,5 +9495,69 @@
       }
     }
   },
-  "moWzWhich": "Which one should I pick?"
+  "moWzWhich": "Which one should I pick?",
+  "chUiAdvanced": "Advanced",
+  "moJob_engine": "Starting {model}",
+  "@moJob_engine": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "moJob_engine_load": "Loading {model}",
+  "@moJob_engine_load": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "moJob_error_bad_file": "This is not a model file of Hugging Face.",
+  "moJob_error_checksum": "The download arrived damaged (its fingerprint does not match): try again.",
+  "moJob_error_engine_stopped": "The engine stopped by itself. The details below say why.",
+  "moJob_error_incomplete": "The download stopped before the end: press Go on to continue from where it stopped.",
+  "moJob_error_load_timeout": "The model did not load within 15 minutes. Try a smaller one.",
+  "moJob_error_model_missing": "The model file is not in the folder any more. Download it again.",
+  "moJob_error_no_gpu": "The engine cannot see the graphics card. Update the card's drivers and restart the computer, or choose the processor under Advanced.",
+  "moJob_error_out_of_memory": "There is not enough memory for this model. Choose a smaller model, or the same one in a lower quality.",
+  "moJob_model_download": "Downloading {model}",
+  "@moJob_model_download": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "moJob_speed_test": "Measuring {model}",
+  "@moJob_speed_test": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "moJob_step_draft": "With the small model",
+  "moJob_step_image": "Downloading the engine (only once)",
+  "moJob_step_load": "Loading the model into memory",
+  "moJob_step_ngram": "With the n-grams",
+  "moJob_step_none": "The model alone",
+  "moJob_step_preload": "Reading the model once, so the first message does not wait for the disk",
+  "moJob_step_start": "Starting the engine",
+  "moJob_step_try": "Trying an answer",
+  "moJob_step_tune": "Measuring this computer to pick the fastest setting",
+  "moLmQuality_good": "good quality",
+  "moLmQuality_high": "high quality",
+  "moLmQuality_reduced": "reduced quality, to fit",
+  "moLmScore_code": "Programming",
+  "moLmScore_languages": "Other languages",
+  "moLmScore_smart": "Intelligence",
+  "moLmScore_speed": "Speed here",
+  "moLmScore_tools": "Tools",
+  "moLmSpeedMode_draft": "With the small model",
+  "moLmSpeedMode_ngram": "N-grams",
+  "moLmSpeedMode_none": "Model alone",
+  "chHubTelegram": "Demi-God on Telegram: the bot, its token and the accounts that talk to it",
+  "chHubChats": "Demi-God on Discord, Slack, Signal, WhatsApp, Matrix, Teams and iMessage",
+  "moHubModels": "Subscriptions, API keys, your own server, the model on this computer and who uses which"
 }
