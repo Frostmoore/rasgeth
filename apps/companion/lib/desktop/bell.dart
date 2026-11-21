@@ -5,6 +5,7 @@
 // a drop-down under it: the permissions with the page's quick answers (a truly dangerous one only
 // from its own screen), the questions, the conversations at work, «See all» (the list in the
 // panel). Esc or a click outside closes it.
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -14,6 +15,8 @@ import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../mascot/mascot_view.dart';
 import '../screens/inbox_screen.dart';
+import '../settings/extensions/extensions_screen.dart' show openExtensionsSettings;
+import '../settings/extensions/proposals_block.dart';
 import '../theme/colors.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
@@ -258,6 +261,14 @@ class BellPanel extends StatelessWidget {
                           onDismiss: () => app.live.dismissNotice(n.runId),
                         ),
                     ],
+                    // G42.11: the agents' proposals, as the page's bell.
+                    ProposalsBlock(
+                      onOpen: () {
+                        final nav = Navigator.of(context, rootNavigator: true);
+                        close();
+                        unawaited(openExtensionsSettings(nav.context));
+                      },
+                    ),
                     _Head(l.bellPermissions(asks.length)),
                     if (asks.isEmpty) _Dim(l.bellNoApprovals),
                     for (final r in asks) _AskRow(request: r, close: close),
