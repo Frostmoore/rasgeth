@@ -9,6 +9,7 @@ import {
   ensureRepo,
   mergeWorktree,
   removeWorktree,
+  tidyWorktree,
 } from "../src/index.js";
 
 let dir: string;
@@ -109,5 +110,55 @@ describe("git worktrees per agent", () => {
     const first = await createWorktree(ws, "Agent X!");
     expect(first).toBe(".worktrees/agent-x-");
     expect(await createWorktree(ws, "Agent X!")).toBe(first);
+  });
+});
+
+describe("tidyWorktree (3.10.1: a removed agent's worktree)", () => {
+  const branches = async () =>
+    (
+      await ws.execFile("git", ["branch", "--format=%(refname:short)"], { timeoutMs: 10_000 })
+    ).stdout
+      .split("\n")
+      .filter(Boolean);
+
+  it("removes the worktree and the branch when everything is in the project", async () => {
+    expect(await tidyWorktree(ws, "agent_a")).toEqual({ state: "none" });
+    const wt = new LocalWorkspace(join(dir, await createWorktree(ws, "agent_a")));
+    await writeFile(join(wt.root, "a.txt"), "a\n");
+    await commitAll(wt, "Add a");
+    expect(await mergeWorktree(ws, "agent_a")).toEqual({ ok: true, merged: true });
+    expect(await tidyWorktree(ws, "agent_a")).toEqual({ state: "removed" });
+    expect(await ws.exists(".worktrees/agent_a")).toBe(false);
+    expect(await branches()).not.toContain("rg/agent_a");
+    // Back in the team: a fresh worktree from the project's branch.
+    const again = await createWorktree(ws, "agent_a");
+    expect(await readFile(join(dir, again, "a.txt"), "utf8")).toBe("a\n");
+  });
+
+  it("keeps both and says what is not merged: commits, uncommitted and untracked files", async () => {
+    const wt = new LocalWorkspace(join(dir, await createWorktree(ws, "agent_b")));
+    await writeFile(join(wt.root, "b.txt"), "b\n");
+    await commitAll(wt, "Add b");
+    const kept = await tidyWorktree(ws, "agent_b");
+    expect(kept).toMatchObject({ state: "kept", branch: "rg/agent_b", changes: [] });
+    expect(kept.state === "kept" && kept.commits).toEqual([
+      expect.stringMatching(/^[0-9a-f]+ Add b$/),
+    ]);
+    expect(await branches()).toContain("rg/agent_b");
+
+    await createWorktree(ws, "agent_c");
+    await writeFile(join(dir, ".worktrees/agent_c/new.txt"), "draft\n");
+    await writeFile(join(dir, ".worktrees/agent_c/shared.txt"), "changed\n");
+    const dirty = await tidyWorktree(ws, "agent_c");
+    expect(dirty).toMatchObject({ state: "kept", commits: [] });
+    expect(dirty.state === "kept" && dirty.changes.sort()).toEqual(["?? new.txt", "M shared.txt"]);
+    expect(await ws.exists(".worktrees/agent_c/new.txt")).toBe(true);
+  });
+
+  it("a branch left without its folder goes too, when merged", async () => {
+    await createWorktree(ws, "agent_d");
+    await rm(join(dir, ".worktrees/agent_d"), { recursive: true, force: true });
+    expect(await tidyWorktree(ws, "agent_d")).toEqual({ state: "removed" });
+    expect(await branches()).not.toContain("rg/agent_d");
   });
 });

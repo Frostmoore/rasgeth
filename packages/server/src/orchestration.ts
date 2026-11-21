@@ -57,7 +57,17 @@ export interface OrchestrationHost {
     id: string,
     reason: string,
     by: string,
-  ): Promise<{ removed: string[]; tasks: string[] }>;
+  ): Promise<{
+    removed: string[];
+    tasks: string[];
+    kept?: {
+      name: string;
+      branch: string;
+      commits: string[];
+      changes: string[];
+      error?: string;
+    }[];
+  }>;
   restoreAgent?(actor: Actor, id: string, by: string): Promise<{ restored: string[] }>;
   projects: ProjectStore;
   store: EventStore;
@@ -1268,7 +1278,7 @@ export function orchestrationTools(
           const a = target(agent_id);
           if (!host.removeAgent) throw new Error("Removing agents is not available here");
           const r = await host.removeAgent(me, a.id, reason, self.name);
-          return `Removed from the team: ${names(r.removed)}.${r.tasks.length ? ` Closed as «agent removed»: ${r.tasks.join(", ")}.` : ""} Its history stays; restore_agent brings it back.`;
+          return `Removed from the team: ${names(r.removed)}.${r.tasks.length ? ` Closed as «agent removed»: ${r.tasks.join(", ")}.` : ""} Its history stays; restore_agent brings it back.${keptNote(r.kept ?? [])}`;
         },
       } as Tool,
       {
@@ -1568,4 +1578,24 @@ export function modelApprover(o: {
     const word = text.match(/\b(ALLOW|DENY|ESCALATE)\b/)?.[1];
     return word === "ALLOW" ? "allow" : word === "DENY" ? "deny" : "escalate";
   };
+}
+
+/** What remove_agent left in the project (3.10.1): the worktrees whose work is not merged yet. */
+export function keptNote(
+  kept: { name: string; branch: string; commits: string[]; changes: string[]; error?: string }[],
+): string {
+  if (kept.length === 0) return "";
+  const one = (k: (typeof kept)[number]) => {
+    if (k.error) return `${k.name}: branch ${k.branch} kept, it could not be checked (${k.error})`;
+    const parts = [
+      ...(k.commits.length
+        ? [`${k.commits.length} commit(s) not in the project: ${k.commits.slice(0, 5).join("; ")}`]
+        : []),
+      ...(k.changes.length
+        ? [`${k.changes.length} uncommitted change(s): ${k.changes.slice(0, 5).join("; ")}`]
+        : []),
+    ];
+    return `${k.name}: branch ${k.branch} and its worktree kept, ${parts.join(", and ")}`;
+  };
+  return ` Not merged, so kept: ${kept.map(one).join(" | ")}. Merge or drop that work yourself; worktrees with nothing new were removed.`;
 }

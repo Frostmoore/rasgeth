@@ -148,6 +148,7 @@ import {
   type Sandbox,
   type SandboxProvider,
   type SandboxSpec,
+  tidyWorktree,
   worktreeBranch,
 } from "@redgiant/sandbox";
 import { readRelease } from "@redgiant/supervisor";
@@ -763,6 +764,19 @@ export function yourFolder(ws: Workspace, findFiles = true): string {
 }
 
 /** One model in the menus (`GET /api/models`). */
+/** A removed agent's worktree left in place (3.10.1): what on it is not in the project yet. */
+export interface KeptWorktree {
+  agentId: string;
+  name: string;
+  branch: string;
+  /** Its commits not in the project's checked-out branch (`%h %s`, at most 20). */
+  commits: string[];
+  /** Uncommitted changes in its worktree (`git status --porcelain`). */
+  changes: string[];
+  /** Why it could not be checked (then it is kept as it is). */
+  error?: string;
+}
+
 export interface ModelChoice {
   provider: string;
   model: string;
@@ -7977,7 +7991,13 @@ export class RedGiantCore implements OrchestrationHost {
     id: string,
     reason: string,
     by: string,
-  ): Promise<{ removed: string[]; tasks: string[]; interrupted: string[] }> {
+  ): Promise<{
+    removed: string[];
+    tasks: string[];
+    interrupted: string[];
+    /** Worktrees left in place: their branch or folder holds work not in the project yet. */
+    kept: KeptWorktree[];
+  }> {
     const { removed } = await this.registry.remove(actor, id, reason, by);
     const ids = removed.map((a) => a.id);
     const closed: Task[] = [];
@@ -8002,7 +8022,50 @@ export class RedGiantCore implements OrchestrationHost {
     const ownerId = removed[0]?.ownerId;
     // Out of the team and its conversations out of the lists, on every page and app.
     if (ownerId) this.listsChanged(ownerId, "agents", "sessions");
-    return { removed: ids, tasks: closed.map((t) => t.id), interrupted };
+    const kept = await this.tidyWorktrees(removed);
+    return { removed: ids, tasks: closed.map((t) => t.id), interrupted, kept };
+  }
+
+  /**
+   * The removed agents' worktrees and branches (3.10.1): gone when everything on them is in the
+   * project already, kept (and listed) otherwise. A failure keeps them too: never a loss. A
+   * restored agent gets a fresh worktree at its next turn (`createWorktree`).
+   */
+  private async tidyWorktrees(agents: AgentRecord[]): Promise<KeptWorktree[]> {
+    const kept: KeptWorktree[] = [];
+    for (const a of agents) {
+      if (!a.projectId || (a.kind !== "agent" && a.kind !== "subagent")) continue;
+      try {
+        // An archived project's sandbox stays paused: its worktrees wait for it to be restored.
+        this.assertActive(a.ownerId, a.projectId);
+        const project = await this.projects.get(a.ownerId, a.projectId);
+        if (!project) continue;
+        const sb = await this.sandboxFor({
+          id: `${a.ownerId}-${project.id}`,
+          localPath: project.path,
+          mount: { type: "bind", source: project.path },
+        });
+        const r = await tidyWorktree(sb.workspace(), a.id);
+        if (r.state === "kept")
+          kept.push({
+            agentId: a.id,
+            name: a.name,
+            branch: r.branch,
+            commits: r.commits,
+            changes: r.changes,
+          });
+      } catch (err) {
+        kept.push({
+          agentId: a.id,
+          name: a.name,
+          branch: worktreeBranch(a.id),
+          commits: [],
+          changes: [],
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
+    }
+    return kept;
   }
 
   /** A removed agent back in the team with those removed with it (p3.8.9), as they were. */

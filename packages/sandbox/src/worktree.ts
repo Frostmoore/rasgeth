@@ -136,3 +136,40 @@ export async function removeWorktree(
   await git(ws, ["worktree", "remove", "--force", worktreeDir(agentId)]);
   if (deleteBranch) await git(ws, ["branch", "-D", worktreeBranch(agentId)]);
 }
+
+/** What `tidyWorktree` did with an agent's worktree and branch. */
+export type TidyResult =
+  | { state: "none" }
+  | { state: "removed" }
+  | { state: "kept"; branch: string; commits: string[]; changes: string[] };
+
+/**
+ * An agent's worktree and branch once it leaves the team (3.10.1, Coder: removed agents left
+ * `rg/<agent>` and `.worktrees/<agent>` behind). Both go only when the branch has no commit the
+ * branch checked out in `ws` lacks and the worktree has no uncommitted change (untracked files
+ * count); otherwise both stay and the result says what is not merged. Nothing is ever lost here.
+ */
+export async function tidyWorktree(ws: Workspace, agentId: string): Promise<TidyResult> {
+  const dir = worktreeDir(agentId);
+  const branch = worktreeBranch(agentId);
+  const hasBranch =
+    (await run(ws, ["rev-parse", "--verify", "-q", `refs/heads/${branch}`])).exitCode === 0;
+  const hasDir = await ws.exists(`${dir}/.git`);
+  if (!hasBranch && !hasDir) return { state: "none" };
+  const commits = hasBranch
+    ? (await git(ws, ["log", "--format=%h %s", "-n", "20", `HEAD..refs/heads/${branch}`]))
+        .split(/\r?\n/)
+        .filter(Boolean)
+    : [];
+  const changes = hasDir
+    ? (await git(ws, ["-C", dir, "status", "--porcelain", "--untracked-files=all"]))
+        .split(/\r?\n/)
+        .map((l) => l.trim())
+        .filter(Boolean)
+    : [];
+  if (commits.length > 0 || changes.length > 0) return { state: "kept", branch, commits, changes };
+  if (hasDir) await git(ws, ["worktree", "remove", "--force", dir]);
+  await run(ws, ["worktree", "prune"]);
+  if (hasBranch) await git(ws, ["branch", "-D", branch]);
+  return { state: "removed" };
+}

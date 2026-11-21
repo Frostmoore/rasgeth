@@ -1507,7 +1507,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       return c.json({ error: `${a.name} is never removed` }, 403);
     try {
       const r = await core.removeAgent(human(c), a.id, reason, "person");
-      return c.json({ removed: r.removed, tasks: r.tasks }, 200);
+      return c.json({ removed: r.removed, tasks: r.tasks, kept: r.kept }, 200);
     } catch (err) {
       const { status, ...r } = refused(err, 409);
       return c.json(r, status);

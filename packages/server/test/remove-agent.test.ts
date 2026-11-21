@@ -8,8 +8,14 @@
 // altro se gli serve»): the danger remove-agent is off unless the person switches it on in
 // Settings > Safety (`enabledDanger`); then it is an ordinary request only they answer, never a
 // critical one.
+
+import { existsSync } from "node:fs";
+import { writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import type { Event, PermissionRequestInfo } from "@redgiant/protocol";
 import type { CompletionRequest, FakeTurn } from "@redgiant/providers";
+import { commitAll, worktreeBranch, worktreeDir } from "@redgiant/sandbox";
+import { LocalWorkspace } from "@redgiant/tools";
 import { afterEach, describe, expect, it } from "vitest";
 import { pausedNote } from "../src/resume-work.js";
 import { startServer } from "./helpers.js";
@@ -396,5 +402,57 @@ describe("removing an agent from the team (p3.8.9)", () => {
     const back = await srv.api<{ restored: string[] }>("POST", `/api/agents/${t.orch}/restore`);
     expect(back.body.restored).toEqual([t.orch, t.dev]);
     expect(srv.core.registry.get(t.dev)?.status).toBe("active");
+  });
+});
+
+describe("a removed agent's worktree and branch (3.10.1)", () => {
+  const branches = async (path: string) =>
+    (
+      await new LocalWorkspace(path).execFile("git", ["branch", "--format=%(refname:short)"], {
+        timeoutMs: 10_000,
+      })
+    ).stdout;
+
+  it("go when nothing on them is new; a restored agent gets a fresh worktree", async () => {
+    const srv = await start();
+    const t = await team(srv);
+    const path = (await srv.core.projects.get("me", "shop"))?.path ?? "";
+    const wt = join(path, worktreeDir(t.dev));
+    await until(() => existsSync(join(wt, ".git")));
+    const said = await say(
+      srv,
+      t.godSid,
+      call("remove_agent", { agent_id: t.dev, reason: "not needed any more" }),
+    );
+    expect(said).toContain("Removed from the team: Dev");
+    expect(said).not.toContain("kept");
+    expect(existsSync(wt)).toBe(false);
+    expect(await branches(path)).not.toContain(worktreeBranch(t.dev));
+
+    await srv.api("POST", `/api/agents/${t.dev}/restore`);
+    await (await srv.core.send("me", t.devSid, "hello")).done;
+    expect(existsSync(join(wt, ".git"))).toBe(true);
+    expect(await branches(path)).toContain(worktreeBranch(t.dev));
+  });
+
+  it("stay when they hold work not in the project, and the parent hears what", async () => {
+    const srv = await start();
+    const t = await team(srv);
+    const path = (await srv.core.projects.get("me", "shop"))?.path ?? "";
+    const wt = join(path, worktreeDir(t.dev));
+    await until(() => existsSync(join(wt, ".git")));
+    await writeFile(join(wt, "pay.ts"), "export const pay = 1;\n");
+    await commitAll(new LocalWorkspace(wt), "Add payments");
+    await writeFile(join(wt, "draft.md"), "half done\n");
+    const said = await say(
+      srv,
+      t.godSid,
+      call("remove_agent", { agent_id: t.dev, reason: "not needed any more" }),
+    );
+    expect(said).toContain(`Not merged, so kept: Dev: branch ${worktreeBranch(t.dev)}`);
+    expect(said).toMatch(/1 commit\(s\) not in the project: [0-9a-f]+ Add payments/);
+    expect(said).toContain("1 uncommitted change(s): ?? draft.md");
+    expect(existsSync(join(wt, "draft.md"))).toBe(true);
+    expect(await branches(path)).toContain(worktreeBranch(t.dev));
   });
 });
