@@ -805,7 +805,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get fsBrainLater =>
-      'I modelli su questa macchina, un tuo server e il resto sono nelle Impostazioni, dal computer o da «Tutte le impostazioni».';
+      'I modelli su questa macchina, un tuo server e il resto sono in Impostazioni › Modelli e abbonamenti, quando vuoi.';
 
   @override
   String get fsNamesTitle => 'I nomi';
@@ -878,7 +878,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get outsideNone =>
-      'Solo dalla rete di casa. Tailscale, Cloudflare o un tuo nome: in «Tutte le impostazioni».';
+      'Solo dalla rete di casa. Tailscale, Cloudflare o un tuo nome: in «Accesso da fuori casa».';
 
   @override
   String get outsideOwn => 'Il tuo modo di arrivarci';
@@ -17873,4 +17873,13 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get g7HubTitle => 'Configurazione, importazioni e storia';
+
+  @override
+  String get g7SetupCode => 'Il codice di setup mostrato dalla macchina';
+
+  @override
+  String get g7SetupCodeYes => 'Ancora nessuna password? Usa il codice di setup';
+
+  @override
+  String get g7SetupCodeNo => 'Accedi con la password';
 }

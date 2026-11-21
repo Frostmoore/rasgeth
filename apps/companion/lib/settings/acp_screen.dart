@@ -377,6 +377,7 @@ class _AcpEditorState extends State<_AcpEditor> {
             decoration: InputDecoration(
               labelText: w('acpCommand'),
               helperText: w('acpCommandHelp'),
+              helperMaxLines: 4,
             ),
           ),
           const SizedBox(height: 8),
@@ -385,7 +386,11 @@ class _AcpEditorState extends State<_AcpEditor> {
             controller: _args,
             minLines: 1,
             maxLines: 5,
-            decoration: InputDecoration(labelText: w('acpArgs'), helperText: w('acpArgsHelp')),
+            decoration: InputDecoration(
+              labelText: w('acpArgs'),
+              helperText: w('acpArgsHelp'),
+              helperMaxLines: 4,
+            ),
           ),
           const SizedBox(height: 8),
           TextField(
@@ -393,7 +398,11 @@ class _AcpEditorState extends State<_AcpEditor> {
             controller: _env,
             minLines: 1,
             maxLines: 5,
-            decoration: InputDecoration(labelText: w('acpEnv'), helperText: w('acpEnvHelp')),
+            decoration: InputDecoration(
+              labelText: w('acpEnv'),
+              helperText: w('acpEnvHelp'),
+              helperMaxLines: 4,
+            ),
           ),
           if (_said != null)
             Padding(

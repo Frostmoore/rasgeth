@@ -1644,8 +1644,11 @@
       ]
     },
     "platform.changed": {
-      "app": "no",
-      "files": [],
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/settings/platform_screen.dart"
+      ],
       "phase": "G42.17",
       "rows": [
         201

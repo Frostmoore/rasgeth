@@ -172,7 +172,7 @@ class _ImportScreenState extends State<ImportScreen> {
       for (final i in (p['items'] as List).whereType<Map<dynamic, dynamic>>())
         if (_on['${i['id']}'] == true) {'id': '${i['id']}', 'on': true},
     ];
-    setState(() => _working = w('impDo'));
+    setState(() => _working = w('impDo', {'n': '${choices.length}'}));
     try {
       final job = await _c.importApply('${p['id']}', choices);
       for (;;) {
@@ -507,7 +507,7 @@ class _ImportScreenState extends State<ImportScreen> {
             FilledButton(
               key: const Key('imp-do'),
               onPressed: _working != null || chosen == 0 ? null : () => unawaited(_apply()),
-              child: Text('${w('impDo')} ($chosen)'),
+              child: Text(w('impDo', {'n': '$chosen'})),
             ),
             TextButton(
               key: const Key('imp-cancel'),

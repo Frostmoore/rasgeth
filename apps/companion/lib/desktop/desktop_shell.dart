@@ -863,7 +863,11 @@ class _TopBar extends StatelessWidget {
           // G42.16: hands-free voice's indicator, as the page's top bar (nothing when it is off).
           if (app.connected) ...[
             const SizedBox(width: 6),
-            HandsFreeIndicator(compact: compact, onSettings: () => openVoiceSettings(context)),
+            // Words only where the bar has room (the menus come first).
+            HandsFreeIndicator(
+              compact: compact || MediaQuery.sizeOf(context).width < 1600,
+              onSettings: () => openVoiceSettings(context),
+            ),
           ],
         ],
       ),

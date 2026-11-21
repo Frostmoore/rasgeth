@@ -55,6 +55,14 @@ Future<void> openGeneralSettings(BuildContext context) {
       .push(MaterialPageRoute<void>(builder: (_) => const GeneralSettingsScreen()));
 }
 
+/// G42.17: «What's new» on its own (after an update, as the page's WhatsNew opens by itself).
+Future<void> openNews(BuildContext context) => _openPanel<void>(
+  context,
+  title: AppLocalizations.of(context).g4GenNewsTitle(newsVersion),
+  key: const Key('general-news'),
+  body: (_) => const NewsList(),
+);
+
 /// G42.16: «Who writes down what you say» from Settings › Voice: General's voice-messages panel
 /// (the same choice: the server's transcription), read fresh; false when it could not be read.
 Future<bool> openTranscriptionPanel(BuildContext context) async {

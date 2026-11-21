@@ -267,6 +267,9 @@ class LiveModel extends ChangeNotifier {
   /// the number goes up, Settings › Automations reads its list again.
   final automationsChanged = ValueNotifier<int>(0);
 
+  /// G42.17: the history of changes moved (`platform.changed`): Settings › Platform reads it again.
+  final platformChanged = ValueNotifier<int>(0);
+
   /// The automations' messages for the person (`automation.notice`, `notify.to: [web]`), newest
   /// first, the latest 50 (the page's bell keeps the same).
   List<AutomationNotice> notices = const [];
@@ -394,6 +397,9 @@ class LiveModel extends ChangeNotifier {
         return;
       case 'automations.changed':
         automationsChanged.value++;
+        return;
+      case 'platform.changed':
+        platformChanged.value++;
         return;
       case 'automation.notice':
         final n = AutomationNotice.fromWire(m);

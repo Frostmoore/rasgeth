@@ -237,7 +237,7 @@
   "fsKeyOf": "Chiave di {name}",
   "fsKeySaved": "{name}: la chiave funziona.",
   "fsTerms": "Ho letto le condizioni del provider: l'abbonamento lo uso io, sul mio Rasgeth.",
-  "fsBrainLater": "I modelli su questa macchina, un tuo server e il resto sono nelle Impostazioni, dal computer o da «Tutte le impostazioni».",
+  "fsBrainLater": "I modelli su questa macchina, un tuo server e il resto sono in Impostazioni › Modelli e abbonamenti, quando vuoi.",
   "fsNamesTitle": "I nomi",
   "fsNamesLead": "Chi guida il tuo Rasgeth, e chi parla per lui nelle chat. Puoi cambiarli dopo.",
   "fsGodName": "Il capo",
@@ -259,7 +259,7 @@
   "homeErrWifiOff": "Il Wi-Fi non è attivo su Rasgeth.",
   "homeErrNoCable": "Nessun cavo con un indirizzo: collegalo al router, oppure scegli una rete Wi-Fi.",
   "homeErrFailed": "Non ha funzionato. Riprova tra un momento.",
-  "outsideNone": "Solo dalla rete di casa. Tailscale, Cloudflare o un tuo nome: in «Tutte le impostazioni».",
+  "outsideNone": "Solo dalla rete di casa. Tailscale, Cloudflare o un tuo nome: in «Accesso da fuori casa».",
   "outsideOwn": "Il tuo modo di arrivarci",
   "outsideOwnName": "Un tuo nome (Caddy)",
   "pushOff": "Non ancora attive per questo dispositivo: attivale in Tu, Notifiche.",
@@ -5093,5 +5093,8 @@
   "g7AcpRow": "Claude Code, Codex, Gemini CLI come agenti di un progetto",
   "g7PlRow": "Ogni modifica alle impostazioni e al codice, annullabile",
   "g7NewsRow": "Le novità di questa versione",
-  "g7HubTitle": "Configurazione, importazioni e storia"
+  "g7HubTitle": "Configurazione, importazioni e storia",
+  "g7SetupCode": "Il codice di setup mostrato dalla macchina",
+  "g7SetupCodeYes": "Ancora nessuna password? Usa il codice di setup",
+  "g7SetupCodeNo": "Accedi con la password"
 }

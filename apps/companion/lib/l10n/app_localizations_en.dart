@@ -802,7 +802,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fsBrainLater =>
-      'Models on this machine, your own server and the rest are in Settings, from the computer or from «All settings».';
+      'Models on this machine, your own server and the rest are in Settings › Models and subscriptions, whenever you want.';
 
   @override
   String get fsNamesTitle => 'The names';
@@ -875,7 +875,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get outsideNone =>
-      'Only from the home network. Tailscale, Cloudflare or your own name: in «All settings».';
+      'Only from the home network. Tailscale, Cloudflare or a name of your own: in «Access from outside home».';
 
   @override
   String get outsideOwn => 'Your own way in';
@@ -17825,4 +17825,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get g7HubTitle => 'Setup, imports and history';
+
+  @override
+  String get g7SetupCode => 'The setup code shown by the machine';
+
+  @override
+  String get g7SetupCodeYes => 'No password yet? Use the setup code';
+
+  @override
+  String get g7SetupCodeNo => 'Sign in with the password';
 }

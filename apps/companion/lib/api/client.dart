@@ -185,6 +185,26 @@ class RedGiantClient {
     }
   }
 
+  /// G42.17: the one-time code of a first start (`POST /api/auth/setup-code`) for a session.
+  Future<String> setupCodeSession(String code) async {
+    final t = _object(await _post('/api/auth/setup-code', {'code': code}))['token'];
+    if (t is! String) throw const ApiException(0, 'Not a $kProductName answer');
+    return t;
+  }
+
+  /// G42.17: `POST /api/devices` with that session: this device's own token.
+  Future<DeviceCreated> createDevice({
+    required String name,
+    required DevicePlatform platform,
+  }) async {
+    final r = await _post('/api/devices', {'name': name, 'platform': platform.name});
+    try {
+      return DeviceCreated.fromJson(_object(r));
+    } on FormatException {
+      throw const ApiException(0, 'Not a $kProductName answer');
+    }
+  }
+
   /// `GET /api/agents`, each with its mascot's spec.
   Future<List<Agent>> agents({String? projectId}) async => [
     for (final a in _array(

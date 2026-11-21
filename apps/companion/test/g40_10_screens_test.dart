@@ -268,6 +268,8 @@ void main() {
       },
     };
     final app = await start(tester);
+    // G42.16: hands-free comes first on the page, as the page's Settings › Voice.
+    tester.view.physicalSize = const Size(1290, 9000);
     await push(tester, const VoiceScreen());
     expect(find.text('OpenAI'), findsOneWidget);
     expect(find.text('ElevenLabs'), findsOneWidget);
@@ -291,6 +293,7 @@ void main() {
 
   testWidgets('Tu › Voce without a voice in Rasgeth: said, with where to add one', (tester) async {
     await start(tester, locale: const Locale('en'));
+    tester.view.physicalSize = const Size(1290, 9000);
     await push(tester, const VoiceScreen());
     expect(find.byKey(const Key('voice-no-reader')), findsOneWidget);
     expect(find.text('Rasgeth has no voice to read with yet.'), findsOneWidget);

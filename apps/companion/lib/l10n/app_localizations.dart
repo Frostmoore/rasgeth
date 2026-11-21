@@ -1518,7 +1518,7 @@ abstract class AppLocalizations {
   /// No description provided for @fsBrainLater.
   ///
   /// In en, this message translates to:
-  /// **'Models on this machine, your own server and the rest are in Settings, from the computer or from «All settings».'**
+  /// **'Models on this machine, your own server and the rest are in Settings › Models and subscriptions, whenever you want.'**
   String get fsBrainLater;
 
   /// No description provided for @fsNamesTitle.
@@ -1650,7 +1650,7 @@ abstract class AppLocalizations {
   /// No description provided for @outsideNone.
   ///
   /// In en, this message translates to:
-  /// **'Only from the home network. Tailscale, Cloudflare or your own name: in «All settings».'**
+  /// **'Only from the home network. Tailscale, Cloudflare or a name of your own: in «Access from outside home».'**
   String get outsideNone;
 
   /// No description provided for @outsideOwn.
@@ -30656,6 +30656,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Setup, imports and history'**
   String get g7HubTitle;
+
+  /// No description provided for @g7SetupCode.
+  ///
+  /// In en, this message translates to:
+  /// **'The setup code shown by the machine'**
+  String get g7SetupCode;
+
+  /// No description provided for @g7SetupCodeYes.
+  ///
+  /// In en, this message translates to:
+  /// **'No password yet? Use the setup code'**
+  String get g7SetupCodeYes;
+
+  /// No description provided for @g7SetupCodeNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with the password'**
+  String get g7SetupCodeNo;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

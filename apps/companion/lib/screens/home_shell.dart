@@ -24,6 +24,7 @@ import 'share_screen.dart';
 import 'team_screen.dart';
 import 'update_screen.dart';
 import 'voice_screen.dart' show openVoiceSettings;
+import '../settings/general_screen.dart' show openNews;
 import 'you_screen.dart';
 
 class HomeShell extends StatefulWidget {
@@ -94,6 +95,8 @@ class _HomeShellState extends State<HomeShell> {
             const NoInternetNotice(),
             // G42.16: hands-free voice's indicator, always there while it is on.
             const _HandsFreeBand(),
+            // G42.17: what's new after an update, once.
+            if (app.newsPending) const _NewsBand(),
             Expanded(
               child: IndexedStack(
                 index: app.tab.index,
@@ -300,6 +303,54 @@ class _HandsFreeBand extends StatelessWidget {
                 child: HandsFreeIndicator(onSettings: () => openVoiceSettings(context)),
               ),
             ),
+    );
+  }
+}
+
+/// G42.17: «What's new in this version», once after an update.
+class _NewsBand extends StatelessWidget {
+  const _NewsBand();
+
+  @override
+  Widget build(BuildContext context) {
+    final app = AppScope.of(context);
+    final c = RgColors.of(context);
+    final l = AppLocalizations.of(context);
+    return Container(
+      key: const Key('news-band'),
+      margin: const EdgeInsets.fromLTRB(12, 6, 12, 0),
+      padding: const EdgeInsets.only(left: 12),
+      decoration: BoxDecoration(
+        color: c.accentSoft,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: c.accent.withValues(alpha: .4)),
+      ),
+      child: Row(
+        children: [
+          RgIcon(RgIcons.spark, size: 16, color: c.accent),
+          const SizedBox(width: 8),
+          Expanded(
+            child: TextButton(
+              key: const Key('news-open'),
+              style: TextButton.styleFrom(alignment: Alignment.centerLeft),
+              onPressed: () {
+                app.newsSeen();
+                unawaited(openNews(context));
+              },
+              child: Text(
+                l.g7NewsRow,
+                style: TextStyle(color: c.text, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+          IconButton(
+            key: const Key('news-dismiss'),
+            tooltip: l.close,
+            onPressed: app.newsSeen,
+            icon: RgIcon(RgIcons.x, size: 16, color: c.dim),
+          ),
+        ],
+      ),
     );
   }
 }

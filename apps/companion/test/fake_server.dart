@@ -639,6 +639,9 @@ class FakeRedGiant {
     }
   }
 
+  /// G42.17: routes a test answers itself without a sign-in (`/api/auth/setup-code`).
+  final openRoutes = <String, Future<void> Function(HttpRequest r)>{};
+
   /// G42.2: routes a test answers itself, by «METHOD /path», before every other (signed in).
   final routes = <String, Future<void> Function(HttpRequest r)>{};
 
@@ -989,6 +992,9 @@ class FakeRedGiant {
     }
     if (path == '/ws' && WebSocketTransformer.isUpgradeRequest(r)) return _socket(r);
     if (path == '/term' && WebSocketTransformer.isUpgradeRequest(r)) return _term(r);
+    // G42.17: routes open without a token (the setup code's), answered by a test.
+    final open = openRoutes['${r.method} $path'];
+    if (open != null) return open(r);
     if (!tokens.contains(token)) return _json(r, 401, {'error': 'Unauthorized'});
     if (files case final fs? when await fs.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (knowledge case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;

@@ -333,6 +333,15 @@ class _PlatformScreenState extends State<PlatformScreen> {
   void initState() {
     super.initState();
     unawaited(_load());
+    app.live.platformChanged.addListener(_pushed);
+  }
+
+  void _pushed() => unawaited(_load());
+
+  @override
+  void dispose() {
+    app.live.platformChanged.removeListener(_pushed);
+    super.dispose();
   }
 
   Future<void> _load() async {

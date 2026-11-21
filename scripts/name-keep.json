@@ -53,6 +53,18 @@
     "why": "a wake word of one's own written with the old name keeps working (plan 3.9.0 N2: «chi aveva scritto a mano una parola sua la tiene»); the models spell it «red giant»"
   },
   {
+    "path": "apps/companion/lib/voice/hands_free/wake.dart",
+    "pattern": "red giant",
+    "group": "wake-word",
+    "why": "the app's copy of wake.ts (G42.16): a wake word of one's own written with the old name keeps working"
+  },
+  {
+    "path": "apps/companion/tool/voice_vectors.mjs",
+    "pattern": "RedGiant",
+    "group": "wake-word",
+    "why": "the vectors check that a wake word of one's own written with the old name keeps working"
+  },
+  {
     "path": "packages/web/test/voice.test.ts",
     "pattern": "RedGiant|red giant",
     "group": "wake-word",

@@ -214,4 +214,47 @@ void main() {
     expect(find.byKey(const Key('wz')), findsOneWidget);
     await done(tester);
   });
+
+  testWidgets('what is new after an update: once, then gone; never on a first install', (
+    tester,
+  ) async {
+    final prefs = MemoryAppPrefs()..values['newsSeen'] = '3.0.0';
+    final app = AppController(
+      tokens: MemoryTokenStore(),
+      prefs: prefs,
+      platform: DevicePlatform.android,
+      liveEnabled: false,
+    )..locale = const Locale('it');
+    await tester.runAsync(() => app.connect(server.base.toString(), 'secret'));
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(RGCompanionApp(controller: app));
+    await settle(tester);
+    expect(find.byKey(const Key('news-band')), findsOneWidget);
+    await tap(tester, 'news-dismiss');
+    expect(find.byKey(const Key('news-band')), findsNothing);
+    expect(prefs.values['newsSeen'], isNot('3.0.0'));
+    await done(tester);
+  });
+
+  testWidgets('signed in with a setup code: a device of its own, then the wizard', (tester) async {
+    final app = AppController(
+      tokens: MemoryTokenStore(),
+      prefs: MemoryAppPrefs(),
+      platform: DevicePlatform.android,
+      liveEnabled: false,
+    )..locale = const Locale('it');
+    late bool wrong;
+    late bool right;
+    await tester.runAsync(() async {
+      wrong = await app.connectWithSetupCode(server.base.toString(), '000000');
+      right = await app.connectWithSetupCode(server.base.toString(), '482913');
+    });
+    expect(wrong, isFalse);
+    expect(right, isTrue, reason: '${app.error} ${app.errorMessage}');
+    expect(app.viaSetupCode, isTrue);
+    expect(fake.saved, contains('device android'));
+    expect(app.connected, isTrue);
+  });
 }

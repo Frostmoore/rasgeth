@@ -63,6 +63,31 @@ class FakeSetup {
       saved.add('complete');
       return ok(q);
     };
+    // ---- the setup code (a first start, no password yet) ----
+    server.tokens.addAll(['rgs_session', 'rgd_setup']);
+    server.openRoutes['POST /api/auth/setup-code'] = (q) async {
+      final b = await body(q);
+      if (b['code'] != '482913')
+        return server.answer(q, 401, {'error': 'Wrong code', 'code': 'wrong'});
+      return ok(q, {'token': 'rgs_session'});
+    };
+    r['POST /api/devices'] = (q) async {
+      if (q.headers.value('authorization') != 'Bearer rgs_session') {
+        return server.answer(q, 403, {'error': 'A device cannot make another', 'code': 'device'});
+      }
+      final b = await body(q);
+      saved.add('device ${b['platform']}');
+      return ok(q, {
+        'token': 'rgd_setup',
+        'device': {
+          'id': 'd9',
+          'name': b['name'],
+          'platform': b['platform'],
+          'createdAt': '2026-11-21T10:00:00.000Z',
+          'lastUsedAt': null,
+        },
+      });
+    };
     // ---- search ----
     r['GET /api/search'] = (q) => ok(q, [
       if ((q.uri.queryParameters['q'] ?? '').contains('lavatrice'))

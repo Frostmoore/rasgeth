@@ -421,7 +421,7 @@
     }
   },
   "fsTerms": "I read the provider's terms: a subscription is used by me, on my own Rasgeth.",
-  "fsBrainLater": "Models on this machine, your own server and the rest are in Settings, from the computer or from «All settings».",
+  "fsBrainLater": "Models on this machine, your own server and the rest are in Settings › Models and subscriptions, whenever you want.",
   "fsNamesTitle": "The names",
   "fsNamesLead": "Who runs your Rasgeth, and who speaks for it in the chats. You can change them later.",
   "fsGodName": "The chief",
@@ -443,7 +443,7 @@
   "homeErrWifiOff": "Wi-Fi is not running on Rasgeth.",
   "homeErrNoCable": "No cable with an address: connect it to the router, or choose a Wi-Fi network.",
   "homeErrFailed": "That did not work. Try again in a moment.",
-  "outsideNone": "Only from the home network. Tailscale, Cloudflare or your own name: in «All settings».",
+  "outsideNone": "Only from the home network. Tailscale, Cloudflare or a name of your own: in «Access from outside home».",
   "outsideOwn": "Your own way in",
   "outsideOwnName": "Your own name (Caddy)",
   "pushOff": "Not on yet for this device: turn them on in You, Notifications.",
@@ -12637,5 +12637,8 @@
   "g7AcpRow": "Claude Code, Codex, Gemini CLI as agents of a project",
   "g7PlRow": "Every change to the settings and to the code, undoable",
   "g7NewsRow": "What's new in this version",
-  "g7HubTitle": "Setup, imports and history"
+  "g7HubTitle": "Setup, imports and history",
+  "g7SetupCode": "The setup code shown by the machine",
+  "g7SetupCodeYes": "No password yet? Use the setup code",
+  "g7SetupCodeNo": "Sign in with the password"
 }

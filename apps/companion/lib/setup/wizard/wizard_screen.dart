@@ -69,6 +69,9 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
 
   RedGiantClient? get _c => app.client;
 
+  /// Signed in with a setup code and no password yet: the password step stays (the page's rule).
+  bool get _must => app.viaSetupCode && !_hadPassword;
+
   @override
   void initState() {
     super.initState();
@@ -318,7 +321,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
                       label: Text(wzWord(context, 'wzBack'), style: TextStyle(color: c.text)),
                     ),
                   const Spacer(),
-                  if (skippable(_key) && _key != 'wzDone')
+                  if (skippable(_key, mustSetPassword: _must) && _key != 'wzDone')
                     TextButton(
                       key: const Key('wz-skip'),
                       onPressed: _busy ? null : () => unawaited(_move('next', save: false)),
@@ -326,6 +329,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
                     ),
                   const SizedBox(width: 8),
                   Flexible(
+                    flex: 4,
                     child: FilledButton.icon(
                       key: const Key('wz-next'),
                       onPressed: _busy || s == null
@@ -373,7 +377,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
           },
         );
       case 'wzAccount':
-        return _AccountStep(register: (f) => _save = f);
+        return _AccountStep(register: (f) => _save = f, must: _must);
       case 'wzMachine':
         return _MachineStep(s: s);
       case 'wzMode':
@@ -641,9 +645,10 @@ class _PickStepState extends State<_PickStep> {
 }
 
 class _AccountStep extends StatefulWidget {
-  const _AccountStep({required this.register});
+  const _AccountStep({required this.register, this.must = false});
 
   final void Function(_Save) register;
+  final bool must;
 
   @override
   State<_AccountStep> createState() => _AccountStepState();
@@ -666,7 +671,7 @@ class _AccountStepState extends State<_AccountStep> {
     final c = RgColors.of(context);
     final app = AppScope.read(context);
     widget.register(() async {
-      final p = passwordProblem(_a.text, _b.text, needed: false);
+      final p = passwordProblem(_a.text, _b.text, needed: widget.must);
       if (p != null) {
         setState(() => _problem = wzWord(context, p));
         return false;

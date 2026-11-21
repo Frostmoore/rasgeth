@@ -20,6 +20,7 @@ import 'new_agent_screen.dart' show RgSwitch;
 import 'notifications_screen.dart';
 import 'server_settings_screen.dart';
 import 'voice_screen.dart';
+import '../setup/wizard/wizard_screen.dart' show openSetupWizard;
 
 class YouScreen extends StatelessWidget {
   const YouScreen({super.key});
@@ -546,9 +547,16 @@ class _AddServerState extends State<AddServer> {
     _ => l.errGeneric(app.errorMessage ?? ''),
   };
 
+  /// G42.17: a first start's setup code instead of a password (none chosen yet).
+  bool _setupCode = false;
+
   Future<void> _connect(AppController app) async {
     final p = _picked;
-    final ok = p != null
+    final address =
+        p?.base.toString() ?? (_address.text.isEmpty ? (app.server?.address ?? '') : _address.text);
+    final ok = _setupCode
+        ? await app.connectWithSetupCode(address, _password.text)
+        : p != null
         ? await app.connectFound(p, _password.text, code: _code.text)
         : await app.connect(
             _address.text.isEmpty ? (app.server?.address ?? '') : _address.text,
@@ -556,6 +564,8 @@ class _AddServerState extends State<AddServer> {
             code: _code.text,
           );
     if (!mounted) return;
+    // G42.17: in with the setup code, the wizard goes on (its password step cannot be skipped).
+    if (ok && _setupCode) unawaited(openSetupWizard(context));
     if (ok) {
       _password.clear();
       _code.clear();
@@ -620,10 +630,18 @@ class _AddServerState extends State<AddServer> {
             TextField(
               key: const Key('server-password'),
               controller: _password,
-              obscureText: true,
               autofillHints: const [AutofillHints.password],
-              decoration: InputDecoration(labelText: l.serverPassword),
+              obscureText: !_setupCode,
+              decoration: InputDecoration(labelText: _setupCode ? l.g7SetupCode : l.serverPassword),
               onSubmitted: (_) => _connect(app),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                key: const Key('server-setup-code'),
+                onPressed: () => setState(() => _setupCode = !_setupCode),
+                child: Text(_setupCode ? l.g7SetupCodeNo : l.g7SetupCodeYes),
+              ),
             ),
             if (needsCode) ...[
               const SizedBox(height: 8),

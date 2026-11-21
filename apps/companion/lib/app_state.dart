@@ -43,6 +43,7 @@ import 'ui/no_internet_notice.dart';
 import 'voice/audio.dart';
 import 'voice/voice_controller.dart';
 import 'voice/hands_free/runtime.dart';
+import 'settings/general_words.g.dart' show newsVersion;
 
 /// The computers' layout from this width (G40.17): a 1024-pixel window still gets it, a window
 /// made as narrow as a phone gets the phone's.
@@ -176,6 +177,25 @@ class AppController extends ChangeNotifier {
   final MicKeeper? _micKeeper;
   late final HandsFreeRuntime handsFree = HandsFreeRuntime(this, mic: _mic, keeper: _micKeeper);
   final List<String> _front = [];
+
+  /// G42.17: the news of a version not seen yet on this device (after an update; never on the
+  /// first start, as the page's WhatsNew), shown once at the top until opened or dismissed.
+  bool newsPending = false;
+
+  Future<void> _lookForNews() async {
+    final seen = await prefs.get('newsSeen');
+    await prefs.set('newsSeen', newsVersion);
+    if (seen != null && seen != newsVersion) {
+      newsPending = true;
+      notifyListeners();
+    }
+  }
+
+  void newsSeen() {
+    if (!newsPending) return;
+    newsPending = false;
+    notifyListeners();
+  }
 
   /// The conversation shown in front, the latest opened.
   String? get frontSession => _front.isEmpty ? null : _front.last;
@@ -556,6 +576,42 @@ class AppController extends ChangeNotifier {
     return _pairDirect(base, password, code: code);
   }
 
+  /// G42.17: signed in with the setup code a first start shows (no password yet): a session from
+  /// the code, then this device's own token with it; the password is asked by the wizard after.
+  Future<bool> connectWithSetupCode(String address, String setupCode) async {
+    final typed = address.trim();
+    if (typed.isEmpty || setupCode.trim().isEmpty) return false;
+    final base = RedGiantClient.normalizeBase(Uri.parse(typed));
+    _begin();
+    final draft = SavedServer(id: _newId(), label: base.host, address: base.toString());
+    try {
+      final h = await _clientFor(draft, null).hello();
+      final session = await _clientFor(draft, null).setupCodeSession(setupCode.trim());
+      final c = _clientFor(draft, session);
+      final created = await c.createDevice(name: deviceName, platform: platform);
+      final saved = draft.copyWith(
+        label: h.machine,
+        fingerprint: h.nodeFingerprint,
+        deviceId: created.device.id,
+      );
+      final mine = _clientFor(saved, created.token);
+      await _keep(saved, created.token, undo: () => mine.revokeDevice(created.device.id));
+      await _use(mine, checked: true);
+      viaSetupCode = true;
+      return connected;
+    } on KeystoreWriteFailed catch (e) {
+      return _fail(ConnectError.keystore, e.detail);
+    } on ApiException catch (e) {
+      return _fail(_errorOf(e), e.message);
+    } finally {
+      connecting = false;
+      notifyListeners();
+    }
+  }
+
+  /// Signed in with a setup code in this run: the wizard's password step cannot be skipped.
+  bool viaSetupCode = false;
+
   /// A RedGiant found on the network: always through its setup channel.
   Future<bool> connectFound(FoundServer f, String password, {String? code}) =>
       pairViaChannel(f.base, password, code: code, label: f.machine);
@@ -820,6 +876,7 @@ class AppController extends ChangeNotifier {
     _startLive();
     unawaited(voice.attach(c, s?.id));
     unawaited(handsFree.attach(s?.id));
+    unawaited(_lookForNews());
     unawaited(_renewPush());
     await _lookForUpdate();
   }
