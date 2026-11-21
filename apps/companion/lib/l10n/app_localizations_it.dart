@@ -2578,7 +2578,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get metricsEnd => 'fine';
 
   @override
-  String get metricsRestoredFromDisk => 'KV cache ripristinata dall\'SSD prima di questa richiesta';
+  String get metricsRestoredFromDisk =>
+      'Persistar: il contesto di questa conversazione è tornato dal disco prima di questa richiesta';
 
   @override
   String get metricsCostUnknown => 'costo non noto';
@@ -5608,7 +5609,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get sideTabFiles => 'File';
 
   @override
-  String get sideTabCanvas => 'Canvas';
+  String get sideTabCanvas => 'Nebula';
 
   @override
   String get sideTabsLabel => 'Cosa mostra la colonna a destra';
@@ -12500,7 +12501,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get moWzDisksLead =>
-      'Un modello occupa da 3 a 80 GB. Meglio un SSD veloce: lo SSD stream legge da lì.';
+      'Un modello occupa da 3 a 80 GB. Meglio un SSD veloce: Deep Field legge da lì.';
 
   @override
   String get moWzDisksNoMove =>
@@ -17986,4 +17987,8 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get hfWakeErrBroken =>
       'il modello vocale non è partito su questo dispositivo; scaricalo di nuovo';
+
+  @override
+  String get moSysPersistarLine =>
+      'Il contesto di ogni conversazione con un modello locale è salvato su disco: tornandoci, anche dopo un riavvio, non si rilegge tutto da capo.';
 }

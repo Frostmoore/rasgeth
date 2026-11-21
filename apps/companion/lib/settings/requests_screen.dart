@@ -19,6 +19,7 @@ import '../ui/icons.dart';
 import '../ui/model_sheet.dart';
 import 'api/rules_api.dart';
 import 'rules_kit.dart';
+import '../ui/systems.dart';
 
 Future<void> openRequestsSettings(BuildContext context) =>
     openRulesPage(context, (panel) => RequestsScreen(panel: panel));
@@ -164,6 +165,7 @@ class _RequestsScreenState extends State<RequestsScreen> {
     if (s == null || loaded == null) {
       return RulesPage(
         pageKey: const Key('requests-settings'),
+        system: RgSystem.eventHorizon,
         title: l.g4RqSection,
         question: l.g4RqPageQ,
         lead: l.g4RqPageLead,
@@ -187,6 +189,7 @@ class _RequestsScreenState extends State<RequestsScreen> {
     final times = [...requestTimes, if (!requestTimes.contains(timeout)) timeout];
     return RulesPage(
       pageKey: const Key('requests-settings'),
+      system: RgSystem.eventHorizon,
       title: l.g4RqSection,
       question: l.g4RqPageQ,
       lead: l.g4RqPageLead,

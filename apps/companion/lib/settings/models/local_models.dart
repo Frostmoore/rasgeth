@@ -21,6 +21,7 @@ import '../automations/automation_kit.dart' show AutoChips;
 import '../knowledge_kit.dart';
 import '../rules_kit.dart';
 import 'local_speed.dart';
+import '../../ui/systems.dart';
 
 String _gb(double n) => '${n.toStringAsFixed(1)} GB';
 
@@ -340,6 +341,8 @@ class _LocalModelsSectionState extends State<LocalModelsSection> {
               padding: const EdgeInsets.only(top: 6),
               child: Text(l.moLmEngineHelp, style: TextStyle(color: c.dim, fontSize: 12.5)),
             ),
+            SysExplain(RgSystem.deepField, sysWord(context, 'wzStreamInfo1')),
+            SysExplain(RgSystem.persistar, l.moSysPersistarLine),
           ],
         ),
         if (s.lockedOf('engine')) KbLine(l.moWzLocked, dim: true),

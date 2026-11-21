@@ -134,7 +134,8 @@ const vectors = events.map((e) => {
       generation: `${duration(m.decodeMs)}${m.tokPerSec ? ` · ${Math.round(m.tokPerSec)} tok/s` : ""}`,
       ssd:
         m.kvRestoredTokens !== undefined
-          ? `SSD ${kTokens(m.kvRestoredTokens)} (${duration(m.kvRestoreMs)})`
+          ? // Persistar (3.10.3): the page's name for the context restored from the disk.
+            `Persistar ${kTokens(m.kvRestoredTokens)} (${duration(m.kvRestoreMs)})`
           : null,
       cost: e.costUnknown ? "unknown" : e.costUsd > 0 ? usd(e.costUsd) : null,
       model: localModelName(e.model),

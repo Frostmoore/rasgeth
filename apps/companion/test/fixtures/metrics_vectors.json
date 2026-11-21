@@ -79,7 +79,7 @@
         "context": "15.3% / 131k",
         "prefill": "1.8s",
         "generation": "31.3s · 41 tok/s",
-        "ssd": "SSD 17k (412ms)",
+        "ssd": "Persistar 17k (412ms)",
         "cost": null,
         "model": "GLM-4.5 Air Q4_K_S",
         "clockIt": "13:02:41",

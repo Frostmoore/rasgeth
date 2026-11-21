@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import '../api/metrics.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
+import 'systems.dart';
 import 'highlight.dart' show monoFallback, monoFamily;
 
 /// The page's `.metrics-bar` colours: the track and the cached piece (the same in both themes).
@@ -130,7 +131,7 @@ class _MetricsLineState extends State<MetricsLine> {
         Tooltip(
           message: l.metricsRestoredFromDisk,
           child: Text(
-            'SSD ${kTokens(m.kvRestoredTokens!)} (${duration(m.kvRestoreMs)})',
+            '${sysName(context, RgSystem.persistar)} ${kTokens(m.kvRestoredTokens!)} (${duration(m.kvRestoreMs)})',
             style: style,
           ),
         ),

@@ -34,6 +34,7 @@ import 'artifacts_screen.dart';
 import 'first_start_screen.dart' show openExternal;
 import '../settings/automations/automations_screen.dart';
 import 'update_screen.dart';
+import '../ui/systems.dart';
 import 'voice_screen.dart' show openVoiceSettings;
 // G42.17: redo the setup, import, external agents, the history of changes.
 import '../setup/wizard/wizard_screen.dart' show openSetupWizard, wzWord;
@@ -518,8 +519,8 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       c,
                       'agents',
                       RgIcons.users,
-                      l.g4AgTreeTitle,
-                      l.g4HubAgents,
+                      sysName(context, RgSystem.constellation),
+                      sysWhat(context, RgSystem.constellation),
                       () => openAgentTree(context),
                     ),
                     // G42.5: Settings › Projects, after the agents as on the page.
@@ -584,8 +585,8 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       c,
                       'requests',
                       RgIcons.bell,
-                      l.g4RqSection,
-                      l.g4HubRequests,
+                      sysName(context, RgSystem.eventHorizon),
+                      sysWhat(context, RgSystem.eventHorizon),
                       () => openRequestsSettings(context),
                     ),
                     // G42.12: Settings › Keychain, native, after the requests as on the page.
@@ -602,7 +603,7 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       'safety',
                       RgIcons.shield,
                       l.g4SfTitle,
-                      l.g4HubSafety,
+                      '${sysName(context, RgSystem.eventHorizon)} · ${l.g4HubSafety}',
                       () => openSafetySettings(context),
                     ),
                     // G42.13 and G42.15: the page's «Where» group (Telegram, Chats) and

@@ -86,7 +86,8 @@ void main() {
         expect(
           m.kvRestoredTokens == null
               ? null
-              : 'SSD ${kTokens(m.kvRestoredTokens!)} (${duration(m.kvRestoreMs)})',
+              // Persistar (3.10.3): the page's name for the context restored from the disk.
+              : 'Persistar ${kTokens(m.kvRestoredTokens!)} (${duration(m.kvRestoreMs)})',
           page['ssd'],
         );
         expect(

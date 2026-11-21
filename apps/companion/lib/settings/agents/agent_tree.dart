@@ -20,6 +20,7 @@ import '../../ui/icons.dart';
 import '../../ui/settings_kit.dart';
 import '../../ui/words.dart';
 import 'add_agent_under.dart';
+import '../../ui/systems.dart';
 
 /// Who may hang under whom (the page's `CHILDREN`).
 const agentChildren = <AgentKind, List<AgentKind>>{
@@ -203,6 +204,10 @@ class _AgentTreeScreenState extends State<AgentTreeScreen> {
           backLabel: l.back,
           listKey: const Key('agent-tree'),
           children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(16, 14, 16, 0),
+              child: SysTitle(RgSystem.constellation),
+            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
               child: Text(

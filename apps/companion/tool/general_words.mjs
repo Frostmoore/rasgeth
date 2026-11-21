@@ -3,7 +3,8 @@
 // the agents' languages (`AGENT_LANGUAGES`), the web search services (`SEARCH_PROVIDERS` with the
 // page's `searchCard_<id>` and `searchHow_<id>` words), who writes down voice messages in the cloud
 // (`VOICE_PROVIDERS` with speech to text), «What's new» (`ITEMS` and `NEWS_VERSION` of
-// WhatsNew.tsx with their `news…` words, it and en), and the refiner's word diff on a few texts
+// WhatsNew.tsx with their `news…` words, it and en), the named systems' words (`sys…`, and
+// `wzStreamInfo1` for Deep Field, 3.10.3), and the refiner's word diff on a few texts
 // (`wordDiff`/`diffCounts` of packages/web/src/word-diff.ts) for the Dart port's test.
 //
 //   pnpm build && node --experimental-strip-types apps/companion/tool/general_words.mjs
@@ -41,6 +42,8 @@ const items = [
 const wanted = new Set();
 for (const i of items) wanted.add(i.title).add(i.text);
 for (const p of SEARCH_PROVIDERS) wanted.add(`searchCard_${p.id}`).add(`searchHow_${p.id}`);
+for (const k of Object.keys(words.en)) if (/^sys[A-Z]/.test(k)) wanted.add(k);
+wanted.add("wzStreamInfo1");
 for (const lang of ["it", "en"])
   for (const k of wanted) if (!(k in words[lang])) throw new Error(`no ${lang} word ${k}`);
 
@@ -101,7 +104,7 @@ const sttProviders = <SttProviderRow>[
 ${stt}
 ];
 
-/// The page's words for the news and the search services.
+/// The page's words for the news, the search services and the named systems.
 const generalWords = <String, Map<String, String>>{
   'it': {
 ${dartWords("it")}

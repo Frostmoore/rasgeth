@@ -4596,7 +4596,7 @@ abstract class AppLocalizations {
   /// No description provided for @metricsRestoredFromDisk.
   ///
   /// In en, this message translates to:
-  /// **'KV cache restored from the SSD before this request'**
+  /// **'Persistar: this conversation\'s context came back from the disk before this request'**
   String get metricsRestoredFromDisk;
 
   /// No description provided for @metricsCostUnknown.
@@ -9588,7 +9588,7 @@ abstract class AppLocalizations {
   /// The right column's tab with the Canvas (3.8.11)
   ///
   /// In en, this message translates to:
-  /// **'Canvas'**
+  /// **'Nebula'**
   String get sideTabCanvas;
 
   /// Screen reader label of the right column tabs
@@ -21432,7 +21432,7 @@ abstract class AppLocalizations {
   /// No description provided for @moWzDisksLead.
   ///
   /// In en, this message translates to:
-  /// **'A model takes from 3 to 80 GB. A fast SSD is best: SSD stream reads from there.'**
+  /// **'A model takes from 3 to 80 GB. A fast SSD is best: Deep Field reads from there.'**
   String get moWzDisksLead;
 
   /// No description provided for @moWzDisksNoMove.
@@ -30848,6 +30848,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'the speech model did not start on this device; download it again'**
   String get hfWakeErrBroken;
+
+  /// No description provided for @moSysPersistarLine.
+  ///
+  /// In en, this message translates to:
+  /// **'The context of every conversation with a local model is saved on disk: coming back to it, even after a restart, does not read it all again.'**
+  String get moSysPersistarLine;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

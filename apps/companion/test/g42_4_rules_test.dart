@@ -291,6 +291,9 @@ void main() {
       };
       await start(tester);
       await push(tester, const SafetyScreen());
+      expect(find.byKey(const Key('sys-eventHorizon')), findsOneWidget);
+      // Under Event Horizon's name (3.10.3), further down the page.
+      await reveal(tester, find.byKey(const Key('sf-nothing-paid')));
       expect(find.byKey(const Key('sf-nothing-paid')), findsOneWidget);
       await tap(tester, 'rules-save');
       expect(puts.single.containsKey('budgetUsd'), isFalse);

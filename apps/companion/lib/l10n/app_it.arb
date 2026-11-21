@@ -750,7 +750,7 @@
   "metricsStart": "inizio",
   "metricsFirstToken": "primo token",
   "metricsEnd": "fine",
-  "metricsRestoredFromDisk": "KV cache ripristinata dall'SSD prima di questa richiesta",
+  "metricsRestoredFromDisk": "Persistar: il contesto di questa conversazione è tornato dal disco prima di questa richiesta",
   "metricsCostUnknown": "costo non noto",
   "metricsCostUnknownHint": "Questo modello non è ancora nel catalogo dei modelli: i prezzi non sono noti, quindi il costo non è contato.",
   "metricsShowAll": "Mostra tutti i dati del messaggio",
@@ -1582,7 +1582,7 @@
   "artifactsRowHint": "Le app fatte dagli agenti: apri, esporta, importa, elimina e i loro permessi",
   "cvVwToChat": "Chat",
   "sideTabFiles": "File",
-  "sideTabCanvas": "Canvas",
+  "sideTabCanvas": "Nebula",
   "sideTabsLabel": "Cosa mostra la colonna a destra",
   "chatFileDownload": "Scarica",
   "chatAttachmentDownload": "Scarica l'allegato",
@@ -3556,7 +3556,7 @@
   "moWzDemiRole": "Il portavoce",
   "moWzDense": "{b} miliardi · denso",
   "moWzDiskHdd": "Disco meccanico: troppo lento per i modelli.",
-  "moWzDisksLead": "Un modello occupa da 3 a 80 GB. Meglio un SSD veloce: lo SSD stream legge da lì.",
+  "moWzDisksLead": "Un modello occupa da 3 a 80 GB. Meglio un SSD veloce: Deep Field legge da lì.",
   "moWzDisksNoMove": "I modelli si spostano su un altro disco solo nell'installazione di Rasgeth per Windows.",
   "moWzDisksOne": "Qui i modelli stanno nella cartella dei dati di Rasgeth. Nell'installazione di Rasgeth per Windows puoi spostarli su un altro SSD.",
   "moWzDisksTitle": "Dove stanno i modelli",
@@ -5125,5 +5125,6 @@
   "hfWakeErrFailed": "lo scaricamento si è interrotto; controlla la connessione e riprova",
   "hfWakeErrServer": "Rasgeth non è riuscito a scaricare il modello vocale",
   "hfWakeErrChecksum": "il riconoscitore arrivato non è quello atteso, quindi non è stato tenuto",
-  "hfWakeErrBroken": "il modello vocale non è partito su questo dispositivo; scaricalo di nuovo"
+  "hfWakeErrBroken": "il modello vocale non è partito su questo dispositivo; scaricalo di nuovo",
+  "moSysPersistarLine": "Il contesto di ogni conversazione con un modello locale è salvato su disco: tornandoci, anche dopo un riavvio, non si rilegge tutto da capo."
 }

@@ -18,6 +18,7 @@ import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import 'api/rules_api.dart';
 import 'rules_kit.dart';
+import '../ui/systems.dart';
 
 Future<void> openSafetySettings(BuildContext context) =>
     openRulesPage(context, (panel) => SafetyScreen(panel: panel));
@@ -321,6 +322,7 @@ class _SafetyScreenState extends State<SafetyScreen> {
     if (_state == null) {
       return RulesPage(
         pageKey: const Key('safety-settings'),
+        system: RgSystem.eventHorizon,
         title: l.g4SfTitle,
         question: l.g4SfTitle,
         lead: l.g4SfLead,
@@ -332,6 +334,7 @@ class _SafetyScreenState extends State<SafetyScreen> {
     final limit = _limit;
     return RulesPage(
       pageKey: const Key('safety-settings'),
+      system: RgSystem.eventHorizon,
       title: l.g4SfTitle,
       question: l.g4SfTitle,
       lead: l.g4SfLead,

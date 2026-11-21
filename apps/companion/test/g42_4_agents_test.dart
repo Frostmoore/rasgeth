@@ -187,6 +187,9 @@ void main() {
       await _settle(tester);
       expect(find.byType(AgentTreeScreen), findsOneWidget);
       expect(find.text('La tua squadra'), findsOneWidget);
+      // Constellation (3.10.3): the name, and what it is beside it.
+      expect(find.text('Constellation'), findsOneWidget);
+      expect(find.text('la squadra di agenti, a livelli'), findsOneWidget);
       expect(find.byKey(const Key('tree-project-demo')), findsOneWidget);
       // The helper, two levels under the lead.
       expect(find.byKey(const Key('tree-node-a7')), findsOneWidget);

@@ -9,6 +9,7 @@ import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
+import '../ui/systems.dart';
 
 /// Opens a settings page: a panel over the window on a computer, a whole screen on a phone.
 Future<void> openRulesPage(BuildContext context, Widget Function(bool panel) page) {
@@ -53,11 +54,15 @@ class RulesPage extends StatelessWidget {
     required this.panel,
     required this.children,
     required this.pageKey,
+    this.system,
   });
 
   final String title;
   final String question;
   final String? lead;
+
+  /// One of Rasgeth's named systems (3.10.3): its name and what it is, above the question.
+  final RgSystem? system;
   final bool panel;
   final List<Widget> children;
   final Key pageKey;
@@ -85,6 +90,8 @@ class RulesPage extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
             children: [
+              if (system != null)
+                Padding(padding: const EdgeInsets.fromLTRB(4, 8, 4, 0), child: SysTitle(system!)),
               Padding(
                 padding: const EdgeInsets.fromLTRB(4, 8, 4, 4),
                 child: Text(

@@ -4,10 +4,11 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.10.2';
+const newsVersion = '3.10.3';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.10.3', 'news3103Names', 'news3103NamesText'),
   NewsRow('3.10.2', 'news3102Tray', 'news3102TrayText'),
   NewsRow('3.10.2', 'news3102Wake', 'news3102WakeText'),
   NewsRow('3.10.2', 'news3102Models', 'news3102ModelsText'),
@@ -380,7 +381,7 @@ const sttProviders = <SttProviderRow>[
   ),
 ];
 
-/// The page's words for the news and the search services.
+/// The page's words for the news, the search services and the named systems.
 const generalWords = <String, Map<String, String>>{
   'it': {
     'news3100App': 'Tutto anche nell\'app',
@@ -401,6 +402,8 @@ const generalWords = <String, Map<String, String>>{
     'news3102TrayText': 'Sul computer, chiudendo la finestra l\'app resta nella barra di sistema, così richieste, domande e resoconti ti arrivano lo stesso; nel suo menu ci sono Apri ed Esci, e puoi spegnerlo in Tu › Notifiche. Riaprendola torna avanti quella già aperta.',
     'news3102Wake': 'La parola di attivazione anche nell\'app',
     'news3102WakeText': 'La voce a mani libere ascolta la sua parola di attivazione anche su Android, Windows e Linux, sul dispositivo stesso; il modello vocale si scarica solo quando la accendi, con la sua barra vera. Su Mac e iPhone per ora resta «Parla ora».',
+    'news3103Names': 'Un nome per i sistemi di Rasgeth',
+    'news3103NamesText': 'Le funzioni che ha solo Rasgeth ora portano il loro nome, con accanto che cosa sono: Constellation (la squadra di agenti a livelli, con i permessi), Event Horizon (le protezioni: le richieste davvero pericolose arrivano sempre a te), Nebula (il Canvas, con editor veri condivisi con l\'agente), Deep Field (modelli locali più grandi della scheda video), Filament (lo stesso prefisso per tutta la conversazione, così la cache regge) e Persistar (il contesto dei modelli locali salvato su disco). Il resto tiene il suo nome di sempre.',
     'news321Linux': 'Strato dopo in anticipo anche su Linux',
     'news321LinuxText': 'L\'interruttore sperimentale «Strato dopo in anticipo» di SSD stream ora funziona anche su Linux con una scheda NVIDIA, con un\'immagine del motore tutta sua scaricata solo quando lo accendi.',
     'news321Settings': 'Le Impostazioni nello stile della configurazione',
@@ -699,6 +702,21 @@ const generalWords = <String, Map<String, String>>{
     'searchHow_searxng': 'La via più semplice: premi «Avvia il motore di ricerca di Rasgeth», in cima a questa finestra, e Rasgeth fa tutto da solo.\nSe invece hai già un tuo SearXNG, scrivi il suo indirizzo nella casella qui sotto (per esempio http://192.168.1.20:8080) e premi «Usa questo».\nNel suo settings.yml, tra i search.formats ci deve essere «json», altrimenti Rasgeth non legge le risposte.',
     'searchHow_serper': 'Apri serper.dev (link qui sotto) e iscriviti: non serve la carta.\nIn API Keys la chiave c\'è già: copiala.\nIncollala qui: 2.500 ricerche gratis per cominciare, poi si comprano pacchetti.',
     'searchHow_tavily': 'Apri Tavily (link qui sotto) ed entra con Google, GitHub o la tua email.\nNella pagina iniziale la chiave c\'è già: comincia con tvly-. Copiala.\nIncollala qui: il piano gratuito dà 1.000 ricerche al mese.',
+    'sysConstellation': 'Constellation',
+    'sysConstellationWhat': 'la squadra di agenti, a livelli',
+    'sysDeepField': 'Deep Field',
+    'sysDeepFieldWhat': 'modelli più grandi della scheda, dall\'SSD',
+    'sysEventHorizon': 'Event Horizon',
+    'sysEventHorizonWhat': 'richieste a te e protezioni',
+    'sysFilament': 'Filament',
+    'sysFilamentWhat': 'lo stesso prefisso per tutta la conversazione, così la cache regge',
+    'sysNebula': 'Nebula',
+    'sysNebulaWhat': 'il Canvas, con editor condivisi con l\'agente',
+    'sysPersistar': 'Persistar',
+    'sysPersistarLine': 'Il contesto di ogni conversazione con un modello locale è salvato su disco: tornandoci, anche dopo un riavvio, non si rilegge tutto da capo.',
+    'sysPersistarWhat': 'il contesto di ogni conversazione salvato su disco',
+    'wzStreamInfo1':
+        'Per modelli più grandi della scheda video, e per un contesto molto più lungo.',
   },
   'en': {
     'news3100App': 'Everything in the app',
@@ -719,6 +737,8 @@ const generalWords = <String, Map<String, String>>{
     'news3102TrayText': 'On the computer, closing the app\'s window keeps it in the system tray, so requests, questions and reports still reach you; Open and Quit are in its menu, and you can switch this off in You › Notifications. Opening it again brings back the one already running.',
     'news3102Wake': 'The wake word in the app too',
     'news3102WakeText': 'Hands-free voice now listens for its wake word on Android, Windows and Linux, on the device itself; the voice model is downloaded only when you turn it on, with a real progress bar. On the Mac and the iPhone «Speak now» stays for now.',
+    'news3103Names': 'Names for Rasgeth\'s own systems',
+    'news3103NamesText': 'The features only Rasgeth has now carry their name, with what they are beside it: Constellation (the team of agents in levels, with permissions), Event Horizon (the protections: truly dangerous requests always reach you), Nebula (the Canvas, with real editors shared with the agent), Deep Field (local models bigger than the graphics card), Filament (the same prefix for the whole conversation, so the cache holds) and Persistar (local models\' context saved on disk). Everything else keeps its plain name.',
     'news321Linux': 'Next layer ahead on Linux too',
     'news321LinuxText': 'The experimental «Next layer ahead» switch of SSD stream now works on Linux with an NVIDIA card too, with an engine image of its own downloaded only when you turn it on.',
     'news321Settings': 'Settings in the setup\'s style',
@@ -1016,5 +1036,19 @@ const generalWords = <String, Map<String, String>>{
     'searchHow_searxng': 'Easiest: press «Start Rasgeth\'s search engine» at the top of this window, and Rasgeth does everything by itself.\nIf you already have your own SearXNG instead, write its address in the box below (for example http://192.168.1.20:8080) and press «Use this».\nIn its settings.yml, «json» must be among search.formats, or Rasgeth cannot read its answers.',
     'searchHow_serper': 'Open serper.dev (link below) and sign up: no card needed.\nUnder API Keys your key is already there: copy it.\nPaste it here: 2,500 free searches to start, then you buy packs.',
     'searchHow_tavily': 'Open Tavily (link below) and sign in with Google, GitHub or your email.\nOn the home page your key is already there: it starts with tvly-. Copy it.\nPaste it here: the free plan gives 1,000 searches a month.',
+    'sysConstellation': 'Constellation',
+    'sysConstellationWhat': 'the team of agents, in levels',
+    'sysDeepField': 'Deep Field',
+    'sysDeepFieldWhat': 'models bigger than the card, from the SSD',
+    'sysEventHorizon': 'Event Horizon',
+    'sysEventHorizonWhat': 'requests to you and protections',
+    'sysFilament': 'Filament',
+    'sysFilamentWhat': 'the same prefix for the whole conversation, so the cache holds',
+    'sysNebula': 'Nebula',
+    'sysNebulaWhat': 'the Canvas, with editors shared with the agent',
+    'sysPersistar': 'Persistar',
+    'sysPersistarLine': 'The context of every conversation with a local model is saved on disk: coming back to it, even after a restart, does not read it all again.',
+    'sysPersistarWhat': 'each conversation\'s context saved on disk',
+    'wzStreamInfo1': 'For models bigger than the graphics card, and for a much longer context.',
   },
 };

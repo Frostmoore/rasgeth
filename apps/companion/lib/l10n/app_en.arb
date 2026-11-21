@@ -1548,7 +1548,7 @@
   "metricsStart": "start",
   "metricsFirstToken": "first token",
   "metricsEnd": "end",
-  "metricsRestoredFromDisk": "KV cache restored from the SSD before this request",
+  "metricsRestoredFromDisk": "Persistar: this conversation's context came back from the disk before this request",
   "metricsCostUnknown": "cost not known",
   "metricsCostUnknownHint": "This model is not in the models catalog yet: its prices are not known, so its cost is not counted.",
   "metricsShowAll": "Show all the message's figures",
@@ -4362,7 +4362,7 @@
   "@sideTabFiles": {
     "description": "The right column's tab with the conversation's files (3.8.11)"
   },
-  "sideTabCanvas": "Canvas",
+  "sideTabCanvas": "Nebula",
   "@sideTabCanvas": {
     "description": "The right column's tab with the Canvas (3.8.11)"
   },
@@ -9334,7 +9334,7 @@
     }
   },
   "moWzDiskHdd": "A spinning disk: too slow for the models.",
-  "moWzDisksLead": "A model takes from 3 to 80 GB. A fast SSD is best: SSD stream reads from there.",
+  "moWzDisksLead": "A model takes from 3 to 80 GB. A fast SSD is best: Deep Field reads from there.",
   "moWzDisksNoMove": "The models can be moved to another disk only in Rasgeth's Windows installation.",
   "moWzDisksOne": "Here the models stay in Rasgeth's data folder. In Rasgeth's Windows installation you can move them to another SSD.",
   "moWzDisksTitle": "Where the models stay",
@@ -12693,5 +12693,6 @@
   "hfWakeErrFailed": "the download stopped; check the connection and try again",
   "hfWakeErrServer": "Rasgeth could not download the speech model",
   "hfWakeErrChecksum": "the recogniser that arrived is not the expected one, so it was not kept",
-  "hfWakeErrBroken": "the speech model did not start on this device; download it again"
+  "hfWakeErrBroken": "the speech model did not start on this device; download it again",
+  "moSysPersistarLine": "The context of every conversation with a local model is saved on disk: coming back to it, even after a restart, does not read it all again."
 }

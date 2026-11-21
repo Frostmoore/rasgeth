@@ -2573,7 +2573,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get metricsEnd => 'end';
 
   @override
-  String get metricsRestoredFromDisk => 'KV cache restored from the SSD before this request';
+  String get metricsRestoredFromDisk =>
+      'Persistar: this conversation\'s context came back from the disk before this request';
 
   @override
   String get metricsCostUnknown => 'cost not known';
@@ -5598,7 +5599,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sideTabFiles => 'Files';
 
   @override
-  String get sideTabCanvas => 'Canvas';
+  String get sideTabCanvas => 'Nebula';
 
   @override
   String get sideTabsLabel => 'What the right column shows';
@@ -12459,7 +12460,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get moWzDisksLead =>
-      'A model takes from 3 to 80 GB. A fast SSD is best: SSD stream reads from there.';
+      'A model takes from 3 to 80 GB. A fast SSD is best: Deep Field reads from there.';
 
   @override
   String get moWzDisksNoMove =>
@@ -17934,4 +17935,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hfWakeErrBroken => 'the speech model did not start on this device; download it again';
+
+  @override
+  String get moSysPersistarLine =>
+      'The context of every conversation with a local model is saved on disk: coming back to it, even after a restart, does not read it all again.';
 }
