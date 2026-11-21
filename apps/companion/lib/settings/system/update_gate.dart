@@ -66,7 +66,12 @@ class UpdateGateScreen extends StatelessWidget {
                   onPressed: () => Navigator.of(context).pop(),
                   icon: RgIcon(RgIcons.x, color: c.text),
                 ),
-          title: Text(mandatory ? l.syUpdReqTitle : l.syUpdBrkTitle, maxLines: 2),
+          toolbarHeight: 64,
+          title: Text(
+            mandatory ? l.syUpdReqTitle : l.syUpdBrkTitle,
+            maxLines: 2,
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: c.text),
+          ),
         ),
         body: Align(
           alignment: Alignment.topCenter,
