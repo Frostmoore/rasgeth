@@ -310,7 +310,8 @@ describe("the composer's «…» (p3.5.4)", () => {
     fireEvent.click(more);
     expect(screen.getByText("Modalità: Piano")).toBeTruthy();
     expect(screen.getByText("Modello: Opus 5.5 · Medio")).toBeTruthy();
-    expect(screen.getByLabelText("Modello")).toBeTruthy();
+    // 3.10: our drawn menu (DropChoice) says the model chosen in its label.
+    expect(screen.getByLabelText(/^Modello: /)).toBeTruthy();
     expect(screen.getByText("Intanto")).toBeTruthy();
     expect(screen.getByText("Riassumi")).toBeTruthy();
     expect(screen.getByText("Aggiungi un agente")).toBeTruthy();
