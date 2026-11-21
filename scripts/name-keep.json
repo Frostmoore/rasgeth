@@ -77,6 +77,30 @@
     "why": "the sealed keychain file's first line (the server's EXPORT_MAGIC): files exported before 3.9.0 must still open; it is a format mark, not a name"
   },
   {
+    "path": "apps/companion/test/fake_vault.dart",
+    "pattern": "REDGIANT-KEYCHAIN",
+    "group": "format",
+    "why": "the app's sealed keychain file: its first line is the server's EXPORT_MAGIC, a format mark (as Keychain.tsx)"
+  },
+  {
+    "path": "apps/companion/test/g42_12_keychain_test.dart",
+    "pattern": "REDGIANT-KEYCHAIN",
+    "group": "format",
+    "why": "the app's sealed keychain file: its first line is the server's EXPORT_MAGIC, a format mark (as Keychain.tsx)"
+  },
+  {
+    "path": "apps/companion/lib/settings/vault/keychain_screen.dart",
+    "pattern": "REDGIANT-KEYCHAIN",
+    "group": "format",
+    "why": "the app's sealed keychain file: its first line is the server's EXPORT_MAGIC, a format mark (as Keychain.tsx)"
+  },
+  {
+    "path": "apps/companion/lib/settings/system/infra_rules.dart",
+    "pattern": "/mnt/redgiant-backups|/var/lib/redgiant/backups|\\$disk/RedGiant\\b|under the redgiant service",
+    "group": "data-folder",
+    "why": "the app's copy of the page's own-infrastructure guide (G42.14): the backups folders and the compose service keep their technical names (choice 5)"
+  },
+  {
     "path": "packages/browser-extension/scripts/e2e.mjs",
     "pattern": "REDGIANT-KEYCHAIN",
     "group": "internal",
