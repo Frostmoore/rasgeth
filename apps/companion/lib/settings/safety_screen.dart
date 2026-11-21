@@ -2,6 +2,8 @@
 // with its question and a drawn choice: the guardian; who says yes to risky actions (three ready
 // choices, a switch per danger in a window: the policy's `humanOnly`); a spending limit only when
 // something is paid per use; the skills the agents write. Then how long conversations are kept.
+// A danger off by default (`offByDefault`, remove-agent since 3.10) has its switch on the danger
+// itself (`enabledDanger`): on, only the person approves it; off, nobody is asked.
 // Saved together with «Save» (`PUT /api/setup/safety`), as the wizard's step saves on «Next».
 import 'dart:async';
 
@@ -60,6 +62,8 @@ class _SafetyScreenState extends State<SafetyScreen> {
   Map<String, dynamic>? _state;
   List<String> _humanOnly = const [];
   List<String> _dangers = const [];
+  List<String> _enabledDanger = const [];
+  Set<String> _offByDefault = const {};
   String _guardian = 'ask';
   String _skills = 'ask';
   String _budget = '';
@@ -100,12 +104,19 @@ class _SafetyScreenState extends State<SafetyScreen> {
         for (final d in (policy['dangers'] as List? ?? const []))
           if (d is Map && d['id'] is String) d['id'] as String,
       ];
+      final offByDefault = {
+        for (final d in (policy['dangers'] as List? ?? const []))
+          if (d is Map && d['id'] is String && d['offByDefault'] == true) d['id'] as String,
+      };
+      final enabledDanger = [for (final x in (policy['enabledDanger'] as List? ?? const [])) '$x'];
       final budget = (s['budgetUsd'] as num?);
       final ret = (config['retentionDays'] as num?)?.toInt();
       setState(() {
         _state = s;
         _humanOnly = humanOnly;
         _dangers = dangers.isEmpty ? dangerIds : dangers;
+        _offByDefault = offByDefault;
+        _enabledDanger = enabledDanger;
         _guardian = policy['guardian'] == 'auto' ? 'auto' : 'ask';
         _skills = policy['skills'] == 'auto' ? 'auto' : 'ask';
         _budget = budget == null ? '' : _num(budget);
@@ -145,6 +156,7 @@ class _SafetyScreenState extends State<SafetyScreen> {
         'guardian': _guardian,
         'skills': _skills,
         'humanOnly': _humanOnly,
+        'enabledDanger': _enabledDanger,
         // Only where something is paid per use, as the page: there is no limit to set otherwise.
         if (_paid) 'budgetUsd': _budget.trim().isNotEmpty && (limit ?? 0) > 0 ? limit : null,
         'retentionDays': _retentionChoice == 'forever' ? null : int.parse(_retentionChoice),
@@ -219,9 +231,15 @@ class _SafetyScreenState extends State<SafetyScreen> {
                             key: Key('sf-danger-$id'),
                             onTap: () {
                               _changed(() {
-                                _humanOnly = _humanOnly.contains(id)
-                                    ? _humanOnly.where((x) => x != id).toList()
-                                    : [..._humanOnly, id];
+                                if (_offByDefault.contains(id)) {
+                                  _enabledDanger = _enabledDanger.contains(id)
+                                      ? _enabledDanger.where((x) => x != id).toList()
+                                      : [..._enabledDanger, id];
+                                } else {
+                                  _humanOnly = _humanOnly.contains(id)
+                                      ? _humanOnly.where((x) => x != id).toList()
+                                      : [..._humanOnly, id];
+                                }
                               });
                               setLocal(() {});
                             },
@@ -251,7 +269,11 @@ class _SafetyScreenState extends State<SafetyScreen> {
                                   const SizedBox(width: 12),
                                   Semantics(
                                     label: l.g4SfCustomOn,
-                                    child: RgSwitch(on: _humanOnly.contains(id)),
+                                    child: RgSwitch(
+                                      on: _offByDefault.contains(id)
+                                          ? _enabledDanger.contains(id)
+                                          : _humanOnly.contains(id),
+                                    ),
                                   ),
                                 ],
                               ),

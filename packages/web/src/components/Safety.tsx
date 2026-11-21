@@ -25,6 +25,9 @@ export function Safety({
   register: (save: () => Promise<boolean>) => void;
 }) {
   const [humanOnly, setHumanOnly] = useState<string[]>(s.policy.humanOnly);
+  // Dangers off by default (remove-agent, 3.10): their switch turns the danger itself on, and then
+  // only the person approves it; off, nobody is asked.
+  const [enabledDanger, setEnabledDanger] = useState<string[]>(s.policy.enabledDanger ?? []);
   const [guardian, setGuardian] = useState<"ask" | "auto">(s.policy.guardian ?? "ask");
   const [skills, setSkills] = useState<"ask" | "auto">(s.policy.skills ?? "ask");
   const [budget, setBudget] = useState(s.budgetUsd?.toString() ?? "");
@@ -45,6 +48,7 @@ export function Safety({
         guardian,
         skills,
         humanOnly,
+        enabledDanger,
         budgetUsd: paid && budget.trim() && limit > 0 ? limit : null,
         retentionDays: retention === "forever" ? null : Number(retention),
       });
@@ -191,7 +195,9 @@ export function Safety({
           <p class="wz-lead2">{t("wzCustomLead", { god: s.names.god ?? "God" })}</p>
           <div class="wz-toggles">
             {dangers.map((d) => {
-              const on = humanOnly.includes(d.id);
+              const list = d.offByDefault ? enabledDanger : humanOnly;
+              const set = d.offByDefault ? setEnabledDanger : setHumanOnly;
+              const on = list.includes(d.id);
               const w = danger(d.id);
               return (
                 <div class="wz-tr" key={d.id}>
@@ -202,9 +208,7 @@ export function Safety({
                   <Switch
                     on={on}
                     label={w.name}
-                    onChange={() =>
-                      setHumanOnly(on ? humanOnly.filter((x) => x !== d.id) : [...humanOnly, d.id])
-                    }
+                    onChange={() => set(on ? list.filter((x) => x !== d.id) : [...list, d.id])}
                   />
                 </div>
               );
