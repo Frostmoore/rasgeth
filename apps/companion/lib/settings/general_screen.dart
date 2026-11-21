@@ -55,6 +55,27 @@ Future<void> openGeneralSettings(BuildContext context) {
       .push(MaterialPageRoute<void>(builder: (_) => const GeneralSettingsScreen()));
 }
 
+/// G42.16: «Who writes down what you say» from Settings › Voice: General's voice-messages panel
+/// (the same choice: the server's transcription), read fresh; false when it could not be read.
+Future<bool> openTranscriptionPanel(BuildContext context) async {
+  final c = AppScope.read(context).client;
+  if (c == null) return false;
+  final GeneralState s;
+  try {
+    s = await c.generalState();
+  } on ApiException {
+    return false;
+  }
+  if (!context.mounted) return false;
+  await _openPanel<void>(
+    context,
+    title: AppLocalizations.of(context).g4GenVoiceTitle,
+    key: const Key('general-voice'),
+    body: (_) => _VoicePanel(initial: s),
+  );
+  return true;
+}
+
 /// One of General's panels: a window on a computer, a whole screen on a phone.
 Future<T?> _openPanel<T>(
   BuildContext context, {

@@ -13,6 +13,7 @@ import '../ui/icons.dart';
 import '../ui/no_internet_notice.dart';
 import '../ui/rename_notice.dart';
 import '../ui/send_keys.dart';
+import '../voice/hands_free/indicator.dart';
 import 'activity_screen.dart';
 import 'chat_screen.dart';
 import 'conversation_screen.dart';
@@ -21,6 +22,7 @@ import 'projects_screen.dart';
 import 'share_screen.dart';
 import 'team_screen.dart';
 import 'update_screen.dart';
+import 'voice_screen.dart' show openVoiceSettings;
 import 'you_screen.dart';
 
 class HomeShell extends StatefulWidget {
@@ -86,6 +88,8 @@ class _HomeShellState extends State<HomeShell> {
           children: [
             const RenameNotice(),
             const NoInternetNotice(),
+            // G42.16: hands-free voice's indicator, always there while it is on.
+            const _HandsFreeBand(),
             Expanded(
               child: IndexedStack(
                 index: app.tab.index,
@@ -270,6 +274,28 @@ class _TabButton extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// G42.16: the phone's band at the top with hands-free voice's indicator (nothing when off).
+class _HandsFreeBand extends StatelessWidget {
+  const _HandsFreeBand();
+
+  @override
+  Widget build(BuildContext context) {
+    final app = AppScope.of(context);
+    return ListenableBuilder(
+      listenable: app.handsFree,
+      builder: (context, _) => !app.handsFree.settings.enabled
+          ? const SizedBox.shrink()
+          : Padding(
+              padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: HandsFreeIndicator(onSettings: () => openVoiceSettings(context)),
+              ),
+            ),
     );
   }
 }

@@ -8441,5 +8441,36 @@
         "type": "int"
       }
     }
-  }
+  },
+  "hfServiceTitle": "Hands-free voice is on",
+  "hfServiceBody": "The microphone stays open for the conversation by voice.",
+  "hfServiceChannel": "Hands-free voice",
+  "hfServiceChannelText": "Shown while the microphone is open for hands-free voice.",
+  "hfPaused": "Paused: the app is not in front",
+  "hfWakeNotHere": "On this device the wake word is not heard yet: tap the indicator, then «Talk now».",
+  "hfWakeHelp": "Your wake word is kept for this device and checked with the speech model of Rasgeth.",
+  "hfLimitPrivacy": "What you say after «Talk now» is sent to Rasgeth to be transcribed; nothing is heard before.",
+  "hfLimitAndroid": "On Android the microphone stays open with the screen off or another app in front, with a notification that says so.",
+  "hfLimitOthers": "On iPhone, iPad and the computers it listens while the app is open; in the background it pauses and the indicator says so.",
+  "hfReaderRow": "Who reads and how loud",
+  "hfSttRow": "Who writes down what you say",
+  "hfSttNone": "No transcription service yet",
+  "hfPickConversation": "Choose the conversation",
+  "hfNoRecent": "No conversation yet",
+  "hfHandsFreeRow": "Hands-free voice",
+  "hfHandsFreeOn": "On: {state}",
+  "@hfHandsFreeOn": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "hfHandsFreeOff": "Off on this device",
+  "fsrTitle": "Search the conversations",
+  "fsrGo": "Search",
+  "fsrHint": "The words in every conversation: the agents', the Chat's and the inspectors'. At least two letters.",
+  "fsrNone": "No results.",
+  "fsrUntitled": "New conversation",
+  "fsrInspector": "Inspector"
 }

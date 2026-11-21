@@ -22,6 +22,7 @@ import '../api/saved.dart';
 import '../api/types.dart';
 import '../api/widgets.dart';
 import '../app_state.dart';
+import '../voice/hands_free/indicator.dart' show HandsFreeIndicator;
 import '../api/servers.dart' show AppPrefs;
 import '../desktop/desk_controller.dart' show DeskScope;
 import '../desktop/drops.dart';
@@ -222,6 +223,8 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
     super.initState();
     app = AppScope.read(context);
     view = app.follow(widget.sessionId);
+    // G42.16: hands-free voice speaks to the conversation in front.
+    app.showingConversation(widget.sessionId);
     _shown = app.live.canvasShown.listen(_canvasShown);
     _canvas.addListener(_canvasChanged);
     _scroll.addListener(() {
@@ -256,6 +259,7 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
     _canvas.dispose();
     _scroll.dispose();
     app.unfollow(widget.sessionId);
+    app.hidingConversation(widget.sessionId);
     // A voice failure belongs to this conversation (told after the tree is unlocked).
     final v = app.voice;
     scheduleMicrotask(() {
@@ -1463,6 +1467,8 @@ class _Header extends StatelessWidget {
                   icon: RgIcon(RgIcons.stop, size: 16, color: c.err),
                   label: Text(l.stop, style: TextStyle(color: c.err)),
                 ),
+              // G42.16: hands-free voice's indicator (nothing when it is off).
+              if (!embedded) const HandsFreeIndicator(compact: true),
               ...actions,
             ],
           );

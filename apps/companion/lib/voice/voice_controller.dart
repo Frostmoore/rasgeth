@@ -17,13 +17,19 @@ import 'voice_words.dart';
 class VoiceController extends ChangeNotifier {
   VoiceController({required this.prefs, VoiceRecorder? recorder, VoicePlayer? player})
     : _recorder = recorder,
-      _player = player;
+      _player = player,
+      _testPlayer = player;
 
   final AppPrefs prefs;
   VoiceRecorder? _recorder;
   VoicePlayer? _player;
   VoiceRecorder get recorder => _recorder ??= SystemRecorder();
   VoicePlayer get player => _player ??= SystemPlayer();
+
+  /// Hands-free's chime (G42.16): its own player, so it never stops an answer being read; the
+  /// test's player when one was given.
+  final VoicePlayer? _testPlayer;
+  late final VoicePlayer chimePlayer = _testPlayer ?? SystemPlayer();
 
   RedGiantClient? _client;
   String? _serverId;
@@ -176,6 +182,36 @@ class VoiceController extends ChangeNotifier {
       await player.play(audio.bytes, audio.mimeType, volume: settings.volume);
     } on Object catch (e) {
       if (speaking == key) problem = voiceErrorText(l, e);
+    } finally {
+      if (speaking == key) speaking = null;
+      notifyListeners();
+    }
+  }
+
+  /// Hands-free (G42.16): reads [said] (already plain) with the voice chosen and completes when
+  /// it ends or is stopped; false when nobody can read here (no provider with a key).
+  Future<bool> say(String said, AppLocalizations l) async {
+    await stopSpeaking();
+    if (keyed == null) await loadKeys();
+    final r = reader;
+    final c = _client;
+    if (r == null || c == null || said.trim().isEmpty) return false;
+    const key = 'hands-free';
+    speaking = key;
+    notifyListeners();
+    try {
+      final audio = await c.speech(
+        provider: r.provider,
+        model: r.model,
+        voice: r.voice,
+        text: textForSpeech(said),
+      );
+      if (speaking != key) return true;
+      await player.play(audio.bytes, audio.mimeType, volume: settings.volume);
+      return true;
+    } on Object catch (e) {
+      if (speaking == key) problem = voiceErrorText(l, e);
+      return false;
     } finally {
       if (speaking == key) speaking = null;
       notifyListeners();

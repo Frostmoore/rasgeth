@@ -11,6 +11,7 @@ import '../theme/colors.dart';
 import '../ui/icons.dart';
 import '../ui/model_sheet.dart' show ChoiceRow;
 import '../ui/settings_kit.dart';
+import '../voice/hands_free/settings_view.dart';
 import '../voice/voice_types.dart';
 
 class VoiceScreen extends StatefulWidget {
@@ -50,6 +51,8 @@ class _VoiceScreenState extends State<VoiceScreen> {
           children: [
             if (v.problem != null)
               NoticeBanner(key: const Key('voice-said'), text: v.problem!, error: true),
+            // G42.16: hands-free voice, as the page's Settings › Voice (its top part).
+            const HandsFreeSection(),
             SectionHead(l.voiceReaderHead),
             if (v.keyed == null)
               NoteLine(icon: RgIcons.spinner, text: l.loading)
@@ -179,9 +182,15 @@ class _VoiceScreenState extends State<VoiceScreen> {
                 NoteLine(icon: RgIcons.settings, text: l.voiceTalkWhere),
               ],
             ),
+            // G42.16: the conversation by voice and how it works on this device.
+            const HandsFreeTalkSection(),
           ],
         );
       },
     );
   }
 }
+
+/// Settings › Voice (G42.16: from hands-free's indicator too).
+Future<void> openVoiceSettings(BuildContext context) =>
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const VoiceScreen()));

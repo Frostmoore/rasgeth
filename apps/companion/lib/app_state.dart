@@ -42,6 +42,7 @@ import 'share/share_intake.dart';
 import 'ui/no_internet_notice.dart';
 import 'voice/audio.dart';
 import 'voice/voice_controller.dart';
+import 'voice/hands_free/runtime.dart';
 
 /// The computers' layout from this width (G40.17): a 1024-pixel window still gets it, a window
 /// made as narrow as a phone gets the phone's.
@@ -123,6 +124,8 @@ class AppController extends ChangeNotifier {
     VoiceRecorder? recorder,
     VoicePlayer? player,
     this.legacy,
+    MicStream? mic,
+    MicKeeper? micKeeper,
   }) : tokens = tokens ?? SecureTokenStore(),
        prefs = prefs ?? MemoryAppPrefs(),
        platform = platform ?? currentPlatform(),
@@ -131,6 +134,8 @@ class AppController extends ChangeNotifier {
        _startDistributors = distributors,
        _recorder = recorder,
        _player = player,
+       _mic = mic,
+       _micKeeper = micKeeper,
        _clientFactory = clientFactory,
        _dial =
            dialChannel ?? ((b, id, expect) => SetupChannel.dial(b, identity: id, expect: expect)) {
@@ -164,6 +169,18 @@ class AppController extends ChangeNotifier {
     recorder: _recorder,
     player: _player,
   );
+
+  // Hands-free voice (G42.16): the conversation by voice, and the conversation open in front
+  // (where what is said goes when no conversation is set in Settings › Voice).
+  final MicStream? _mic;
+  final MicKeeper? _micKeeper;
+  late final HandsFreeRuntime handsFree = HandsFreeRuntime(this, mic: _mic, keeper: _micKeeper);
+  final List<String> _front = [];
+
+  /// The conversation shown in front, the latest opened.
+  String? get frontSession => _front.isEmpty ? null : _front.last;
+  void showingConversation(String sessionId) => _front.add(sessionId);
+  void hidingConversation(String sessionId) => _front.remove(sessionId);
 
   /// The app on its own updating itself (G41.8b): set at start on Windows and Linux (disabled
   /// for RedGiant's own copy and builds from the sources), null on phones and in tests.
@@ -802,6 +819,7 @@ class AppController extends ChangeNotifier {
     await _loadLists();
     _startLive();
     unawaited(voice.attach(c, s?.id));
+    unawaited(handsFree.attach(s?.id));
     unawaited(_renewPush());
     await _lookForUpdate();
   }

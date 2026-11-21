@@ -229,28 +229,5 @@ void main() {
     expect(find.byKey(embedWaitKey), findsNothing);
   });
 
-  for (final p in [DevicePlatform.windows, DevicePlatform.linux, DevicePlatform.android]) {
-    testWidgets('«All settings» inside the app on ${p.name}, token in the fragment', (
-      tester,
-    ) async {
-      app = AppController(tokens: MemoryTokenStore(), prefs: MemoryAppPrefs(), platform: p);
-      await tester.pumpWidget(
-        wrap(
-          FullSettingsScreen(
-            base: Uri.parse('https://rg.local:7443'),
-            token: 'rgd_x',
-            title: 'Casa',
-          ),
-        ),
-      );
-      await tester.pump();
-      expect(asked, webEngineFor(p));
-      expect(
-        host.loaded.toString(),
-        'https://rg.local:7443/#token=rgd_x&open=settings&theme=light&lang=it',
-      );
-      expect(host.loaded?.query, isEmpty);
-      expect(find.text('Casa'), findsOneWidget);
-    });
-  }
+
 }

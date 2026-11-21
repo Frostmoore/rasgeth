@@ -2,7 +2,8 @@
 // connected to that are used most, made for the phone: its name, its state and updates («Update»
 // opens the update's own screen, update_screen.dart), the devices connected (and signing
 // one out), this device's notifications, the default model, the voice, the access from outside
-// (to read, with its link); and «All settings», the page's Settings inside the app.
+// (to read, with its link) and every section of the page's Settings, native (G42.17: «All
+// settings», the page in a web view, is gone).
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -32,8 +33,8 @@ import '../settings/tools_screen.dart';
 import 'artifacts_screen.dart';
 import 'first_start_screen.dart' show openExternal;
 import '../settings/automations/automations_screen.dart';
-import 'full_settings_screen.dart';
 import 'update_screen.dart';
+import 'voice_screen.dart' show openVoiceSettings;
 import 'you_screen.dart' show reachWord;
 // G42.10: Settings › Knowledge and Shared memory, native.
 import '../settings/knowledge_screen.dart' show openKnowledgeSettings;
@@ -282,35 +283,6 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
     if (mounted) setState(() => _setup = s ?? _setup);
   }
 
-  Future<void> _openAll() async {
-    final app = AppScope.read(context);
-    final l = AppLocalizations.of(context);
-    final s = app.server;
-    final c = app.client;
-    final token = c?.token;
-    if (s == null || c == null || token == null) return;
-    switch (fullSettingsMode(app.platform, c.transport.kind)) {
-      case FullSettingsMode.unavailable:
-        setState(() => _said = l.allSettingsNoHttps);
-      case FullSettingsMode.webView:
-        final leaf = s.caPem != null && c.transport.kind == TransportKind.pinnedHttps
-            ? await pinnedLeaf(c.base, s.caPem!)
-            : null;
-        if (!mounted) return;
-        await Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            fullscreenDialog: true,
-            builder: (_) => FullSettingsScreen(
-              base: c.base,
-              token: token,
-              leaf: leaf,
-              title: l.serverSettingsTitle(app.displayName),
-            ),
-          ),
-        );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final app = AppScope.of(context);
@@ -495,6 +467,9 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                         ].join('\n'),
                       ),
                       isThreeLine: true,
+                      // G42.16: Settings › Voice (hands-free, who reads, who writes down).
+                      trailing: RgIcon(RgIcons.chevronRight, color: c.dim),
+                      onTap: () => openVoiceSettings(context),
                     ),
                   ],
                 ),
@@ -646,25 +621,7 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                 // ---- from outside ----
                 _Head(l.sectionOutside),
                 _Card(key: const Key('settings-outside'), children: _outside(l, c)),
-                // ---- everything else ----
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
-                  child: FilledButton.icon(
-                    key: const Key('settings-all'),
-                    onPressed: mode == null || mode == FullSettingsMode.unavailable
-                        ? null
-                        : _openAll,
-                    icon: const RgIcon(RgIcons.settings, size: 18, color: Colors.white),
-                    label: Text(l.allSettings),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                  child: Text(switch (mode) {
-                    FullSettingsMode.webView => l.allSettingsHint,
-                    _ => l.allSettingsNoHttps,
-                  }, style: TextStyle(color: c.dim, fontSize: 12.5)),
-                ),
+                // G42.17: «All settings» (the page in a web view) is gone: every section is native.
                 if (mode == FullSettingsMode.webView)
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),

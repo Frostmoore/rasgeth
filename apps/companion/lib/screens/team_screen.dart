@@ -3,6 +3,7 @@
 // kept up to date by the live connection). A tap opens the agent's conversation; a long press
 // shows what it is doing, with «Stop», «Open the task» and the favourite (G40.9). Favourites come
 // first and have their own filter, as each project does.
+import 'full_search_screen.dart' show openFullSearch;
 import 'browser_screen.dart';
 
 import 'dart:async';
@@ -60,11 +61,23 @@ class TeamScreen extends StatelessWidget {
               title: hello == null ? l.noServer : app.displayName,
               // G42.3: the agents' shared browser (the page's «Schermo» by the assistants).
               trailing: app.connected
-                  ? IconButton(
-                      key: const Key('team-browser'),
-                      tooltip: l.cvScreenTitle,
-                      onPressed: () => openBrowserScreen(context),
-                      icon: RgIcon(RgIcons.monitor, size: 20, color: c.text),
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // G42.17: the words in every conversation (the page's Search).
+                        IconButton(
+                          key: const Key('team-search'),
+                          tooltip: l.fsrTitle,
+                          onPressed: () => openFullSearch(context),
+                          icon: RgIcon(RgIcons.search, size: 20, color: c.text),
+                        ),
+                        IconButton(
+                          key: const Key('team-browser'),
+                          tooltip: l.cvScreenTitle,
+                          onPressed: () => openBrowserScreen(context),
+                          icon: RgIcon(RgIcons.monitor, size: 20, color: c.text),
+                        ),
+                      ],
                     )
                   : null,
               subtitle: Row(

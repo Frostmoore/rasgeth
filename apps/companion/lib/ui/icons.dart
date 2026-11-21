@@ -70,6 +70,9 @@ enum RgIcons {
   mic(
     '<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/>',
   ),
+  // G42.16: hands-free voice's indicator (the page's IconWave and IconSpeaker).
+  wave('<path d="M3 10v4M7.5 7v10M12 4v16M16.5 8v8M21 11v2"/>'),
+  speaker('<path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/>'),
   phone('<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/>'),
   monitor('<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>'),
   external(

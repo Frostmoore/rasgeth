@@ -34,6 +34,9 @@ import 'advanced/git_view.dart';
 import 'advanced/log_view.dart';
 import 'advanced/projects_wall.dart';
 import 'advanced/terminals_view.dart';
+import '../screens/voice_screen.dart' show openVoiceSettings;
+import '../voice/hands_free/indicator.dart' show HandsFreeIndicator;
+import '../screens/full_search_screen.dart' show openFullSearch;
 import 'bell.dart';
 import 'desk_controller.dart';
 import 'desk_menu.dart';
@@ -260,6 +263,14 @@ class _DesktopShellState extends State<DesktopShell> {
           group: l.deskMenuFile,
           icon: RgIcons.search,
           run: () => _desk.show(const PanelPage(PanelScreen.echo)),
+        ),
+        // G42.17: the words in every conversation, as the page's Search in its top bar.
+        DeskCommand(
+          id: 'full-search',
+          label: l.fsrTitle,
+          group: l.deskMenuFile,
+          icon: RgIcons.search,
+          run: () => unawaited(openFullSearch(context)),
         ),
         null,
         DeskCommand(
@@ -849,6 +860,11 @@ class _TopBar extends StatelessWidget {
             ),
           // 3.8.8: where the page has it, right after the search.
           if (app.connected) ...[const SizedBox(width: 6), DeskBell(key: bellKey, onTap: onBell)],
+          // G42.16: hands-free voice's indicator, as the page's top bar (nothing when it is off).
+          if (app.connected) ...[
+            const SizedBox(width: 6),
+            HandsFreeIndicator(compact: compact, onSettings: () => openVoiceSettings(context)),
+          ],
         ],
       ),
     );
