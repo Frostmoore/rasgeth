@@ -16,6 +16,7 @@ import 'app_state.dart';
 import 'app_update/start.dart';
 import 'app_update/swap.dart' show UpdateStart;
 import 'desktop/handoff.dart';
+import 'desktop/tray.dart';
 import 'push/background.dart';
 import 'push/distributors.dart';
 import 'push/system_notifier.dart';
@@ -54,7 +55,11 @@ Future<void> main(List<String> args) async {
   final handoff = await takeLaunchHandoff();
   // The app on its own updates itself (G41.8b): where the person was before an update first.
   final updates = await prepareAppUpdater(controller, args);
+  // The computers (G42.17): the window may close into the system tray, notifications still come.
+  final computer = Platform.isWindows || Platform.isMacOS || Platform.isLinux;
+  if (computer) await SystemDesktopWindow.prepare().catchError((_) {});
   runApp(RGCompanionApp(controller: controller));
+  if (computer) unawaited(TrayKeeper(controller, SystemDesktopWindow()).start());
   // The window is up: the update's helper may stop waiting (or the old version says why it is back).
   await WidgetsBinding.instance.endOfFrame;
   await updates?.started(UpdateStart.parse(args));

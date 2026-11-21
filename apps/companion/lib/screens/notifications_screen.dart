@@ -19,6 +19,7 @@ import '../push/registrar.dart';
 import '../theme/colors.dart';
 import '../ui/icons.dart';
 import '../ui/settings_kit.dart';
+import 'new_agent_screen.dart' show RgSwitch;
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -383,9 +384,50 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           ),
         ],
       ),
+      // G42.17: with the window closed the app may stay in the system tray.
+      SettingsCard(
+        key: const Key('stay-in-tray'),
+        children: [
+          InkWell(
+            onTap: app.trayAvailable ? () => app.setStayInTray(!app.stayInTray) : null,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                spacing: 12,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 2,
+                      children: [
+                        Text(
+                          l.trayStay,
+                          style: TextStyle(color: c.text, fontWeight: FontWeight.w700),
+                        ),
+                        Text(
+                          app.trayAvailable ? l.trayStayHelp : l.trayNone,
+                          style: TextStyle(color: c.dim, fontSize: 12.5),
+                        ),
+                      ],
+                    ),
+                  ),
+                  RgSwitch(
+                    key: const Key('stay-in-tray-switch'),
+                    on: app.trayAvailable && app.stayInTray,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-        child: Text(l.pushDesktopClosed, style: TextStyle(color: c.dim, fontSize: 12.5)),
+        child: Text(
+          app.trayAvailable && app.stayInTray ? l.pushDesktopInTray : l.pushDesktopClosed,
+          key: const Key('desktop-closed-note'),
+          style: TextStyle(color: c.dim, fontSize: 12.5),
+        ),
       ),
     ];
   }
