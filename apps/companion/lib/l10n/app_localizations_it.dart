@@ -4981,6 +4981,19 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String raKept(int commits, int files) {
+    return 'Lavoro non unito: $commits commit, $files file modificati';
+  }
+
+  @override
+  String get raKeptError => 'Lavoro tenuto com\'è: non si è potuto controllare';
+
+  @override
+  String raKeptHow(String branch) {
+    return 'Resta nel ramo $branch: ripristina l\'agente per riprenderlo.';
+  }
+
+  @override
   String raTasks(int count) {
     return 'Compiti aperti che si chiudono («agente rimosso»): $count';
   }
@@ -7362,6 +7375,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String g4GenNewsTitle(String version) {
     return 'Le novità di Rasgeth $version';
   }
+
+  @override
+  String get g4GenNewsOk => 'Ho capito';
 
   @override
   String get g4AgTreeTitle => 'La tua squadra';

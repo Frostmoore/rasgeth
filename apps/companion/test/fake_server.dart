@@ -336,6 +336,9 @@ class FakeRedGiant {
   final removedIds = <String>{};
   final restores = <String>[];
 
+  /// 3.10.2: the worktrees the next removal keeps (work not merged), as the server lists them.
+  final List<Map<String, dynamic>> keptOnRemove = [];
+
   /// Agents resumed (3.8.9, `POST /api/agents/:id/resume`).
   final resumes = <String>[];
 
@@ -1135,6 +1138,7 @@ class FakeRedGiant {
           'reason': body['reason'] ?? '',
           'with': [for (final x in others) brief(x)],
           'sessions': 1,
+          if (keptOnRemove.isNotEmpty) 'kept': [...keptOnRemove],
         };
         final gone = [id, for (final x in others) x['id'] as String];
         removedIds.addAll(gone);

@@ -3657,6 +3657,26 @@
       }
     }
   },
+  "raKept": "Work not merged: {commits} commit(s), {files} changed file(s)",
+  "@raKept": {
+    "placeholders": {
+      "commits": {
+        "type": "int"
+      },
+      "files": {
+        "type": "int"
+      }
+    }
+  },
+  "raKeptError": "Work kept as it is: it could not be checked",
+  "raKeptHow": "It stays on the branch {branch}: restore the agent to pick it up.",
+  "@raKeptHow": {
+    "placeholders": {
+      "branch": {
+        "type": "String"
+      }
+    }
+  },
   "raTasks": "Open tasks that close («agent removed»): {count}",
   "@raTasks": {
     "placeholders": {
@@ -5773,6 +5793,7 @@
       }
     }
   },
+  "g4GenNewsOk": "Got it",
   "g4AgTreeTitle": "Your team",
   "g4AgTreeOf": "The agents of {project}",
   "@g4AgTreeOf": {

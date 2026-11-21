@@ -189,4 +189,56 @@ void main() {
     expect(app.agents.any((a) => a.id == 'a3'), isTrue);
     await done(tester);
   });
+
+  testWidgets('phone: «Removed agents» says what work not merged was kept, and how to get it', (
+    tester,
+  ) async {
+    server.keptOnRemove.add({
+      'id': 'a7',
+      'name': 'Tester',
+      'branch': 'rg/a7',
+      'commits': 2,
+      'changes': 3,
+    });
+    await start(tester, size: const Size(430, 932), platform: DevicePlatform.android);
+    await bringToMiddle(tester, find.byKey(const Key('agent-a3')));
+    await tester.longPress(find.byKey(const Key('agent-a3')));
+    await _settle(tester);
+    final remove = find.byKey(const Key('agent-remove'));
+    await tester.ensureVisible(remove);
+    await tester.pump();
+    await tester.tap(remove);
+    await _settle(tester);
+    await tester.tap(find.byKey(const Key('dialog-yes')));
+    await _settle(tester);
+    final row = find.byKey(const Key('team-removed'));
+    await tester.scrollUntilVisible(row, 300, scrollable: find.byType(Scrollable).first);
+    await tester.tap(row);
+    await _settle(tester);
+    final words = _texts(tester, find.byKey(const Key('removed-a3')));
+    expect(words, contains('Tester · Lavoro non unito: 2 commit, 3 file modificati'));
+    expect(words, contains("Resta nel ramo rg/a7: ripristina l'agente per riprenderlo."));
+    await done(tester);
+  });
+
+  test('the kept work is read from the list, an unchecked one too', () {
+    final r = RemovedAgent.fromJson({
+      'id': 'x',
+      'kind': 'agent',
+      'name': 'X',
+      'status': 'removed',
+      'removed': {
+        'at': '2026-11-21T09:30:00.000Z',
+        'by': 'person',
+        'kept': [
+          {'id': 'x', 'name': 'X', 'branch': 'rg/x', 'commits': 1, 'changes': 0},
+          {'id': 'y', 'name': 'Y', 'branch': 'rg/y', 'commits': 0, 'changes': 0, 'error': true},
+        ],
+      },
+    });
+    expect(r.kept.map((k) => (k.branch, k.commits, k.changes, k.error)), [
+      ('rg/x', 1, 0, false),
+      ('rg/y', 0, 0, true),
+    ]);
+  });
 }

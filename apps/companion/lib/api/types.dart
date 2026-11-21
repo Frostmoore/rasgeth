@@ -453,6 +453,7 @@ class RemovedAgent {
     this.reason = '',
     this.others = const [],
     this.sessions = 0,
+    this.kept = const [],
   });
 
   factory RemovedAgent.fromJson(Map<String, dynamic> j) {
@@ -467,6 +468,10 @@ class RemovedAgent {
           if (w is Map<String, dynamic>) AgentBrief.fromJson(w),
       ],
       sessions: (r['sessions'] as num?)?.toInt() ?? 0,
+      kept: [
+        for (final k in (r['kept'] as List?) ?? const <Object?>[])
+          if (k is Map<String, dynamic>) KeptWork.fromJson(k),
+      ],
     );
   }
 
@@ -483,7 +488,43 @@ class RemovedAgent {
   /// Its conversations, still readable.
   final int sessions;
 
+  /// Worktrees left in place because they hold work not merged (3.10.2): its own and those of the
+  /// agents removed with it. Restoring the agent picks the work up again.
+  final List<KeptWork> kept;
+
   bool get byPerson => by == 'person';
+}
+
+/// A removed agent's worktree kept because its work is not in the project yet (3.10.2).
+class KeptWork {
+  const KeptWork({
+    required this.id,
+    required this.name,
+    required this.branch,
+    this.commits = 0,
+    this.changes = 0,
+    this.error = false,
+  });
+
+  factory KeptWork.fromJson(Map<String, dynamic> j) => KeptWork(
+    id: _str(j['id']) ?? '',
+    name: _str(j['name']) ?? '',
+    branch: _str(j['branch']) ?? '',
+    commits: _int(j['commits']),
+    changes: _int(j['changes']),
+    error: j['error'] == true,
+  );
+
+  final String id;
+  final String name;
+  final String branch;
+
+  /// Commits not in the project (counted up to 20) and files changed but not committed.
+  final int commits;
+  final int changes;
+
+  /// It could not be checked, so it was kept as it is.
+  final bool error;
 }
 
 /// One entry of the tools' catalog (`GET /api/tools`).

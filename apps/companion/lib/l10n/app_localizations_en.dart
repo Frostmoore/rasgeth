@@ -4972,6 +4972,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String raKept(int commits, int files) {
+    return 'Work not merged: $commits commit(s), $files changed file(s)';
+  }
+
+  @override
+  String get raKeptError => 'Work kept as it is: it could not be checked';
+
+  @override
+  String raKeptHow(String branch) {
+    return 'It stays on the branch $branch: restore the agent to pick it up.';
+  }
+
+  @override
   String raTasks(int count) {
     return 'Open tasks that close («agent removed»): $count';
   }
@@ -7343,6 +7356,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String g4GenNewsTitle(String version) {
     return 'What is new in Rasgeth $version';
   }
+
+  @override
+  String get g4GenNewsOk => 'Got it';
 
   @override
   String get g4AgTreeTitle => 'Your team';

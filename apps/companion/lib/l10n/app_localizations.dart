@@ -8589,6 +8589,24 @@ abstract class AppLocalizations {
   /// **'Removed with it: {names}'**
   String raWith(String names);
 
+  /// No description provided for @raKept.
+  ///
+  /// In en, this message translates to:
+  /// **'Work not merged: {commits} commit(s), {files} changed file(s)'**
+  String raKept(int commits, int files);
+
+  /// No description provided for @raKeptError.
+  ///
+  /// In en, this message translates to:
+  /// **'Work kept as it is: it could not be checked'**
+  String get raKeptError;
+
+  /// No description provided for @raKeptHow.
+  ///
+  /// In en, this message translates to:
+  /// **'It stays on the branch {branch}: restore the agent to pick it up.'**
+  String raKeptHow(String branch);
+
   /// No description provided for @raTasks.
   ///
   /// In en, this message translates to:
@@ -12572,6 +12590,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'What is new in Rasgeth {version}'**
   String g4GenNewsTitle(String version);
+
+  /// No description provided for @g4GenNewsOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get g4GenNewsOk;
 
   /// No description provided for @g4AgTreeTitle.
   ///

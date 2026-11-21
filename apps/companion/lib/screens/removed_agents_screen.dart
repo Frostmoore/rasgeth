@@ -179,6 +179,22 @@ class _RemovedCardState extends State<_RemovedCard> {
                           key: const Key('removed-with'),
                           style: TextStyle(color: c.dim, fontSize: 13),
                         ),
+                      for (final k in r.kept) ...[
+                        const SizedBox(height: 6),
+                        Text(
+                          [
+                            if (k.id != a.id) k.name,
+                            k.error ? l.raKeptError : l.raKept(k.commits, k.changes),
+                          ].join(' · '),
+                          key: Key('removed-kept-${k.id}'),
+                          style: TextStyle(
+                            color: c.warnText,
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(l.raKeptHow(k.branch), style: TextStyle(color: c.dim, fontSize: 13)),
+                      ],
                     ],
                   ),
                 ),
