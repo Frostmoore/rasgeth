@@ -86,12 +86,12 @@ void main() {
       await shot(t, '03_claude_$tag');
       back();
       await frames(t, 800);
-      await scrollTo(const Key('role-backup'));
-      await shot(t, '04_chi_usa_$tag');
       await tap(const Key('models-default'), 2000);
       await shot(t, '05_scelta_modello_$tag');
       back();
       await frames(t, 800);
+      await scrollTo(const Key('role-backup'));
+      await shot(t, '04_chi_usa_$tag');
       await scrollTo(const Key('lm-machine'));
       await shot(t, '06_locale_$tag');
       final card = find.byWidgetPredicate(

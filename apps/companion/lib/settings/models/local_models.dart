@@ -82,13 +82,19 @@ String? _recommended(ModelsSetup s, List<LocalChoice> models) {
   return (usable.firstOrNull ?? fitting.lastOrNull)?.id;
 }
 
-String _speedWords(AppLocalizations l, ModelsSetup s, LocalChoice m, double sizeGb) {
+String _speedWords(
+  AppLocalizations l,
+  ModelsSetup s,
+  LocalChoice m,
+  double sizeGb, [
+  String? unit,
+]) {
   final measured = s.measuredTps(targetName(m.file?.file ?? ''));
   if (measured != null) return '${measured.round()} ${l.moLmSpeedMeasured}';
   final sp = _speed(s, m, sizeGb);
   final r = sp.range;
   final n = r != null && r.$1 != r.$2 ? '${r.$1}–${r.$2}' : '${sp.tokensPerSec}';
-  return '$n ${l.moLmTokensUnit}';
+  return '$n ${unit ?? l.moLmTokensUnit}';
 }
 
 class LocalModelsSection extends StatefulWidget {
@@ -338,7 +344,7 @@ class _LocalModelsSectionState extends State<LocalModelsSection> {
         ),
         if (s.lockedOf('engine')) KbLine(l.moWzLocked, dim: true),
         if (_error != null) KbLine(_error!, error: true),
-        RulesSub(title: l.moWzPickModel, lead: l.moWzLegend('$usableTps')),
+        RulesSub(title: l.moWzPickModel),
         KbLine(l.moLmScoresHint, dim: true),
         if (models == null)
           KbLine(l.moLmLoading, dim: true)
@@ -426,7 +432,7 @@ class _Meter extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 110,
+            width: 140,
             child: Text(label, style: TextStyle(color: c.dim, fontSize: 13)),
           ),
           for (var i = 0; i < 5; i++)
@@ -484,7 +490,7 @@ class _ModelPanel extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
-              '${_speedWords(l, s, m, f.sizeGb)} · ${l.moLmSpeedEstimate}',
+              _speedWords(l, s, m, f.sizeGb, l.moLmSpeedEstimate),
               key: const Key('lm-speed'),
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: c.text),
             ),
