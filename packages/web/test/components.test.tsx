@@ -226,6 +226,36 @@ describe("ui pieces", () => {
     expect(paid.getByText(/Arrivato a \$50/)).toBeTruthy();
   });
 
+  it("safety: a danger off by default (remove-agent) switches the danger itself, not who approves", () => {
+    const s = {
+      config: { completed: false },
+      secretsSet: { keys: [], server: false, telegram: false },
+      locked: {},
+      names: { god: null, demigod: null, godPrompt: null },
+      policy: {
+        humanOnly: ["platform", "secrets-files"],
+        disabledDanger: [],
+        enabledDanger: [],
+        dangers: DANGER_IDS.map((id) =>
+          id === "remove-agent" ? { id, offByDefault: true } : { id },
+        ),
+      },
+      budgetUsd: null,
+    } as unknown as SetupState;
+    const r = render(<Safety s={s} register={() => {}} />);
+    const button = [...r.container.querySelectorAll("button")].find(
+      (b) => b.textContent === "Personalizza",
+    );
+    fireEvent.click(button as Element);
+    const sw = r.getByRole("switch", { name: "Rimuovere un agente dalla squadra" });
+    expect(sw.getAttribute("aria-checked")).toBe("false");
+    fireEvent.click(sw);
+    expect(sw.getAttribute("aria-checked")).toBe("true");
+    // Who approves the others did not change: still the ready choice «Libera».
+    expect(r.container.textContent).not.toMatch(/Una scelta tua/);
+    r.unmount();
+  });
+
   it("automations: choices in words become a schedule and come back from it", () => {
     const cases = [
       [{ kind: "daily", time: "08:30" }, "30 8 * * *", "Ogni giorno alle 08:30"],

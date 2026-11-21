@@ -233,8 +233,11 @@ void main() {
           'disabledDanger': [],
           'guardian': 'ask',
           'skills': 'ask',
+          // remove-agent is off by default (3.10): its switch turns the danger itself on.
+          'enabledDanger': <String>[],
           'dangers': [
-            for (final d in dangerIds) {'id': d},
+            for (final d in dangerIds)
+              d == 'remove-agent' ? {'id': d, 'offByDefault': true} : {'id': d},
           ],
         },
         'budgetUsd': 50,
@@ -253,6 +256,7 @@ void main() {
       await tap(tester, 'sf-personalize');
       expect(find.byKey(const Key('sf-custom')), findsOneWidget);
       await tap(tester, 'sf-danger-git-push');
+      await tap(tester, 'sf-danger-remove-agent');
       await tap(tester, 'sf-custom-done');
       expect(
         find.text('Una scelta tua: 3 cose su ${dangerIds.length} le approvi solo tu.'),
@@ -265,6 +269,7 @@ void main() {
         'guardian': 'auto',
         'skills': 'ask',
         'humanOnly': ['platform', 'secrets-files', 'git-push'],
+        'enabledDanger': ['remove-agent'],
         'budgetUsd': 100,
         'retentionDays': 30,
       });

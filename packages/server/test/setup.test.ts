@@ -199,6 +199,8 @@ describe("the setup wizard", () => {
     await api("PUT", "/api/setup/safety", {
       budgetUsd: 25,
       humanOnly: ["git-push", "platform"],
+      // A danger off by default (remove-agent, 3.10) switched on from Settings > Safety.
+      enabledDanger: ["remove-agent"],
       retentionDays: 90,
       subscriptionAck: true,
     });
@@ -228,6 +230,8 @@ describe("the setup wizard", () => {
     });
     expect(state.budgetUsd).toBe(25);
     expect(state.policy.humanOnly).toEqual(["git-push", "platform"]);
+    expect(state.policy.enabledDanger).toEqual(["remove-agent"]);
+    expect(state.policy.dangers).toContainEqual({ id: "remove-agent", offByDefault: true });
     expect(calls).toEqual([
       "key:anthropic:set",
       "server:http://llm.local:8080/v1",

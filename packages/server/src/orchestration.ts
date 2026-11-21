@@ -1256,7 +1256,7 @@ export function orchestrationTools(
         def: {
           name: "remove_agent",
           description:
-            "Remove an agent you manage from the team, with everything below it: it leaves every list, its turns stop and its open tasks close as «agent removed». Nothing of its history is deleted, and the user (or restore_agent) can bring it back. To pause an agent use stop_agent instead. God, Demi-God and the Chat are never removed. The user approves it.",
+            "Remove an agent you manage from the team, with everything below it: it leaves every list, its turns stop and its open tasks close as «agent removed». Nothing of its history is deleted, and the user (or restore_agent) can bring it back. To pause an agent use stop_agent instead. God, Demi-God and the Chat are never removed. By default it asks nobody (the user may switch that on in Settings > Safety).",
           inputSchema: {
             type: "object",
             properties: { agent_id: { type: "string" }, reason: { type: "string" } },

@@ -278,7 +278,9 @@ export interface SetupState {
   policy: {
     humanOnly: string[];
     disabledDanger: string[];
-    dangers: { id: string }[];
+    /** Dangers off by default (`offByDefault`) the person switched on (remove-agent, 3.10). */
+    enabledDanger?: string[];
+    dangers: { id: string; offByDefault?: boolean }[];
     /** The guardian (2026-11-04): ask before writing outside the project, or let it be. */
     guardian?: "ask" | "auto";
     /** Skills written by agents (G29.4): wait for the human, or install once tested. */

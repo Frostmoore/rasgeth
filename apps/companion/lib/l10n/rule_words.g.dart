@@ -99,7 +99,7 @@ const ruleWords = <String, ({Map<String, DangerWords> dangers, Map<String, Criti
       ),
       'remove-agent': (
         name: r"Rimuovere un agente dalla squadra",
-        hint: r"God o un orchestratore rimuove un agente e chi è sotto di lui: i turni si fermano, i compiti si chiudono; la storia resta e si possono ripristinare.",
+        hint: r"God o un orchestratore rimuove un agente e chi è sotto di lui: i turni si fermano, i compiti si chiudono; la storia resta e si possono ripristinare. Spento di serie: non si chiede a nessuno; acceso, lo approvi solo tu.",
       ),
       'outgoing-mail': (
         name: r"Inviare un'email",
@@ -225,7 +225,7 @@ const ruleWords = <String, ({Map<String, DangerWords> dangers, Map<String, Criti
       ),
       'remove-agent': (
         name: r"Removing an agent from the team",
-        hint: r"God or an orchestrator removes an agent and those below it: their turns stop, their tasks close; the history stays and they can be restored.",
+        hint: r"God or an orchestrator removes an agent and those below it: their turns stop, their tasks close; the history stays and they can be restored. Off by default: nobody is asked; on, only you approve it.",
       ),
       'outgoing-mail': (
         name: r"Sending an email",

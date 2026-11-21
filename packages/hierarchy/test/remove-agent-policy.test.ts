@@ -1,8 +1,10 @@
 // Removing an agent from the team (p3.8.9) in the permission policy, as a table. Nothing is deleted
-// (the log stays, the agent can be restored), so it is an ordinary request, never a critical one:
-// the danger `remove-agent`, on the Safety page, human only by default, and the person's rules and
-// modes apply to it as to any other (an allow rule, the danger switched off, «don't ask me
-// anything» with the classifier). Restoring is ordinary work.
+// (the log stays, the agent can be restored), so it is never a critical request, and since 3.10
+// (the person's decision of 2026-11-21) it asks nobody by default: the danger `remove-agent` stays
+// on the Safety page but switched off, so in auto mode it is allowed with no request, no classifier
+// and no parent. Switched back on, it is an ordinary request, human only, and the person's rules
+// and modes apply to it as to any other. Plan and read-only modes still refuse it. Restoring is
+// ordinary work.
 import { describe, expect, it } from "vitest";
 import {
   DEFAULT_DANGER_RULES,
@@ -20,7 +22,7 @@ const settings = (over: Partial<PolicySettings> = {}): PolicySettings => ({
 });
 
 const remove = { agent_id: "agent_1", reason: "not needed any more" };
-const off = DEFAULT_DANGER_RULES.map((r) => (r.id === REMOVE_AGENT ? { ...r, enabled: false } : r));
+const on = DEFAULT_DANGER_RULES.map((r) => (r.id === REMOVE_AGENT ? { ...r, enabled: true } : r));
 
 const TABLE: [
   string,
@@ -30,26 +32,50 @@ const TABLE: [
   string[],
   Partial<PolicySettings>?,
 ][] = [
-  ["remove, auto mode", "remove_agent", "auto", "ask", [REMOVE_AGENT]],
-  ["remove, manual mode", "remove_agent", "manual", "ask", [REMOVE_AGENT]],
-  [
-    "remove, a rule allows it",
-    "remove_agent",
-    "auto",
-    "allow",
-    [REMOVE_AGENT],
-    { rules: [{ tool: "remove_agent", decision: "allow" }] },
-  ],
+  ["remove, auto mode", "remove_agent", "auto", "allow", []],
+  ["remove, manual mode", "remove_agent", "manual", "ask", []],
+  ["remove, plan mode", "remove_agent", "plan", "deny", []],
+  ["remove, read-only mode", "remove_agent", "readonly", "deny", []],
   [
     "remove, a rule denies it",
     "remove_agent",
     "auto",
     "deny",
-    [REMOVE_AGENT],
+    [],
     { rules: [{ tool: "remove_agent", decision: "deny" }] },
   ],
-  ["remove, the danger switched off", "remove_agent", "auto", "allow", [], { danger: off }],
-  ["remove, plan mode", "remove_agent", "plan", "deny", [REMOVE_AGENT]],
+  [
+    "remove, the danger switched on, auto mode",
+    "remove_agent",
+    "auto",
+    "ask",
+    [REMOVE_AGENT],
+    { danger: on },
+  ],
+  [
+    "remove, the danger switched on, manual mode",
+    "remove_agent",
+    "manual",
+    "ask",
+    [REMOVE_AGENT],
+    { danger: on },
+  ],
+  [
+    "remove, the danger switched on, a rule allows it",
+    "remove_agent",
+    "auto",
+    "allow",
+    [REMOVE_AGENT],
+    { danger: on, rules: [{ tool: "remove_agent", decision: "allow" }] },
+  ],
+  [
+    "remove, the danger switched on, plan mode",
+    "remove_agent",
+    "plan",
+    "deny",
+    [REMOVE_AGENT],
+    { danger: on },
+  ],
   ["restore, auto mode", "restore_agent", "auto", "allow", []],
   ["restore, manual mode", "restore_agent", "manual", "ask", []],
   ["restore, read-only mode", "restore_agent", "readonly", "deny", []],
@@ -67,8 +93,9 @@ describe("remove_agent in the policy (p3.8.9): the table", () => {
       expect(e.critical).toEqual([]);
     });
 
-  it("is on the Safety page and human only by default: parent agents never answer it", () => {
-    expect(DEFAULT_DANGER_RULES.map((r) => r.id)).toContain(REMOVE_AGENT);
+  it("is on the Safety page, switched off by default, and human only once switched on", () => {
+    const rule = DEFAULT_DANGER_RULES.find((r) => r.id === REMOVE_AGENT);
+    expect(rule?.enabled).toBe(false);
     expect(DEFAULT_POLICY.humanOnly).toContain(REMOVE_AGENT);
   });
 });
