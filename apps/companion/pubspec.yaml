@@ -9,6 +9,8 @@ environment:
   flutter: ">=3.47.0"
 
 dependencies:
+  # The wake word's model and library unpacked on the device (G42.16; already in the lock).
+  archive: ^4.7.1
   audioplayers: ^6.8.1
   bonsoir: ^7.1.6
   cryptography: ^2.9.0
@@ -56,6 +58,10 @@ dependencies:
   # Pasted images and copied files (Ctrl/Cmd+V in the composer); pinned.
   pasteboard: 0.6.0
   local_auth: ^3.0.2
+  # The computers keep running in the system tray when the window closes (G42.17, notifications
+  # with the window closed): the classic plugins (MIT, leanflutter), before their nativeapi rewrite.
+  tray_manager: ^0.5.3
+  window_manager: ^0.5.2
 
 dev_dependencies:
   flutter_test:
@@ -69,3 +75,5 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
+  assets:
+    - assets/tray/

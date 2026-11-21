@@ -36,6 +36,15 @@ if command -v ldconfig >/dev/null 2>&1 && ! ldconfig -p 2>/dev/null | grep -q 'l
   echo "  Arch:           sudo pacman -S webkit2gtk-4.1" >&2
   exit 1
 fi
+# The icon in the system tray (G42.17, the app stays there when its window closes): Ayatana
+# AppIndicator, which the app is linked with.
+if command -v ldconfig >/dev/null 2>&1 && ! ldconfig -p 2>/dev/null | grep -q 'libayatana-appindicator3'; then
+  echo "Rasgeth App needs Ayatana AppIndicator. Install it first, then run this again:" >&2
+  echo "  Debian, Ubuntu: sudo apt install libayatana-appindicator3-1" >&2
+  echo "  Fedora:         sudo dnf install libayatana-appindicator-gtk3" >&2
+  echo "  Arch:           sudo pacman -S libayatana-appindicator" >&2
+  exit 1
+fi
 rm -rf "$dest.new"
 mkdir -p "$dest.new" "$data/applications" "$(dirname "$icon")"
 cp -R "$here/bundle/." "$dest.new/"

@@ -90,7 +90,14 @@ var
 begin
   Cmd := '-NoProfile -NonInteractive -Command "$p = @(Get-Process ' + Name + ' -ErrorAction SilentlyContinue | ' +
     'Where-Object { $_.Path -like ''' + Dir + '\*'' }); ' +
-    '$p | ForEach-Object { [void]$_.CloseMainWindow() }; ' +
+    { 3.10.2: the app may be hidden in the tray, where its window's close only hides it: it is
+      asked on its own loopback port (instance.json in its folder) to end for real first. }
+    '$i = Join-Path $env:APPDATA ''Rasgeth\Rasgeth\instance.json''; $asked = -1; ' +
+    'if ($p.Count -gt 0 -and (Test-Path -LiteralPath $i)) { try { $j = Get-Content -Raw -LiteralPath $i | ConvertFrom-Json; ' +
+    'if (@($p | ForEach-Object { $_.Id }) -contains [int]$j.pid) { $c = New-Object Net.Sockets.TcpClient(''127.0.0.1'', [int]$j.port); ' +
+    '$s = $c.GetStream(); $s.ReadTimeout = 3000; $b = [Text.Encoding]::ASCII.GetBytes(''rasgeth '' + $j.token + '' quit'' + [char]10); ' +
+    '$s.Write($b, 0, $b.Length); $s.Flush(); if ($s.ReadByte() -eq 111) { $asked = [int]$j.pid }; $c.Close() } } catch { } }; ' +
+    '$p | Where-Object { $_.Id -ne $asked } | ForEach-Object { [void]$_.CloseMainWindow() }; ' +
     '$p | ForEach-Object { if (-not $_.WaitForExit(5000)) { Stop-Process -Id $_.Id -Force } }"';
   Exec(ExpandConstant('{sys}\WindowsPowerShell\v1.0\powershell.exe'), Cmd, '', SW_HIDE, ewWaitUntilTerminated, Code);
 end;

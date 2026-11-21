@@ -248,7 +248,10 @@ class _HandsFreePop extends StatelessWidget {
                 style: TextStyle(color: c.text, fontWeight: FontWeight.w700, fontSize: 15),
               ),
               if (!r.wakeHeard && r.settings.wake && !busy)
-                Text(l.hfWakeNotHere, style: TextStyle(color: c.dim, fontSize: 12.5)),
+                Text(
+                  r.wakeSupported ? l.hfWakeNeedsModel : l.hfWakeNotHere,
+                  style: TextStyle(color: c.dim, fontSize: 12.5),
+                ),
               if (s.heard != null && s.heard!.isNotEmpty)
                 Text(
                   '«${s.heard}»',

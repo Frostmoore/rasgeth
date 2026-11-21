@@ -17674,7 +17674,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hfWakeNotHere =>
-      'On this device the wake word is not heard yet: tap the indicator, then «Talk now».';
+      'On Mac, iPhone and iPad the wake word is not heard yet: tap the indicator, then «Talk now».';
 
   @override
   String get hfWakeHelp =>
@@ -17869,4 +17869,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get g7SetupCodeNo => 'Sign in with the password';
+
+  @override
+  String get trayOpen => 'Open';
+
+  @override
+  String get trayQuit => 'Quit';
+
+  @override
+  String get trayStay => 'Stay in the system tray when you close the window';
+
+  @override
+  String get trayStayHelp =>
+      'Requests, questions and task reports keep arriving as notifications; the icon\'s menu opens the app again or quits it.';
+
+  @override
+  String get trayNone => 'This desktop has no system tray: closing the window quits the app.';
+
+  @override
+  String get pushDesktopInTray =>
+      'With the window closed the app stays in the system tray and notifications still arrive. After «Quit» this computer gets nothing: Rasgeth\'s page and the linked chats still do.';
+
+  @override
+  String get hfWakeNeedsModel =>
+      'The wake word needs its speech model on this device (Settings, Voice); until then tap the indicator, then «Talk now».';
+
+  @override
+  String hfWakeModelAbout(String mb) {
+    return 'The wake word is heard on this device with a small speech model (Vosk, Apache-2.0): $mb MB to download once, kept here. Nothing you say leaves the device before the wake word.';
+  }
+
+  @override
+  String get hfWakeModelAboutSoon =>
+      'The wake word is heard on this device with a small speech model (Vosk, Apache-2.0), downloaded once and kept here.';
+
+  @override
+  String get hfWakeStageServer => 'Rasgeth is downloading the speech model (only the first time)';
+
+  @override
+  String get hfWakeStageEngine =>
+      'Downloading the recogniser for this computer (only the first time)';
+
+  @override
+  String get hfWakeStageModel => 'Bringing the speech model to this device (only the first time)';
+
+  @override
+  String get hfWakeLoading => 'Starting the wake word…';
+
+  @override
+  String get hfWakeRetry => 'Try again';
+
+  @override
+  String get hfWakeOnFirst => 'Switch hands-free voice on first.';
+
+  @override
+  String get hfWakeErrFailed => 'the download stopped; check the connection and try again';
+
+  @override
+  String get hfWakeErrServer => 'Rasgeth could not download the speech model';
+
+  @override
+  String get hfWakeErrChecksum =>
+      'the recogniser that arrived is not the expected one, so it was not kept';
+
+  @override
+  String get hfWakeErrBroken => 'the speech model did not start on this device; download it again';
 }

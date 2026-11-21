@@ -220,9 +220,13 @@ static class AppWindow
             catch (Exception) { }
         }
         if (mine.Count == 0) return 0;
+        // The app may be hidden in the tray (3.10.2): its window's close would only hide it. It
+        // is asked on its own loopback port to end for real; the window's close stays for older
+        // versions.
+        var asked = AskToQuit(mine);
         foreach (var p in mine)
         {
-            try { if (!p.HasExited) p.CloseMainWindow(); } catch (Exception) { }
+            try { if (!p.HasExited && p.Id != asked) p.CloseMainWindow(); } catch (Exception) { }
         }
         var until = DateTime.UtcNow.AddMilliseconds(graceMs);
         foreach (var p in mine)
@@ -240,6 +244,45 @@ static class AppWindow
         return mine.Count;
     }
 
+    /**
+     * Asks the running app (lib/desktop/single_instance.dart) to end for real ([command] quit) or
+     * to come to the front (show, its window hidden in the tray): the port and token
+     * it wrote in its folder (%APPDATA%\\Rasgeth\\Rasgeth\\instance.json), when its pid is one of
+     * [mine]. Returns that pid when it said yes, else -1.
+     */
+    static int AskToQuit(List<Process> mine) { return AskApp(mine, "quit"); }
+
+    static int AskApp(List<Process> mine, string command)
+    {
+        try
+        {
+            string info = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rasgeth", "Rasgeth", "instance.json");
+            if (!File.Exists(info)) return -1;
+            string text = File.ReadAllText(info);
+            var port = System.Text.RegularExpressions.Regex.Match(text, "\"port\"\\s*:\\s*(\\d+)");
+            var token = System.Text.RegularExpressions.Regex.Match(text, "\"token\"\\s*:\\s*\"([0-9a-f]+)\"");
+            var id = System.Text.RegularExpressions.Regex.Match(text, "\"pid\"\\s*:\\s*(\\d+)");
+            if (!port.Success || !token.Success || !id.Success) return -1;
+            int appPid = int.Parse(id.Groups[1].Value);
+            if (!mine.Exists(p => p.Id == appPid)) return -1;
+            using (var c = new System.Net.Sockets.TcpClient())
+            {
+                c.Connect("127.0.0.1", int.Parse(port.Groups[1].Value));
+                c.ReceiveTimeout = 3000;
+                var s = c.GetStream();
+                byte[] line = Encoding.ASCII.GetBytes("rasgeth " + token.Groups[1].Value + " " + command + "\n");
+                s.Write(line, 0, line.Length);
+                s.Flush();
+                byte[] answer = new byte[3];
+                int n = s.Read(answer, 0, 3);
+                bool ok = n >= 2 && answer[0] == (byte)'o' && answer[1] == (byte)'k';
+                if (ok && command == "quit") Log("asked the app to close before the update");
+                return ok ? appPid : -1;
+            }
+        }
+        catch (Exception e) { Log("the app could not be asked to close: " + e.Message); return -1; }
+    }
+
     [DllImport("user32.dll")] static extern bool SetForegroundWindow(IntPtr hWnd);
     [DllImport("user32.dll")] static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
     [DllImport("user32.dll")] static extern bool IsIconic(IntPtr hWnd);
@@ -249,7 +292,8 @@ static class AppWindow
         try
         {
             IntPtr h = p.MainWindowHandle;
-            if (h == IntPtr.Zero) return;
+            // Hidden in the tray (3.10.2): it has no main window; it shows itself when asked.
+            if (h == IntPtr.Zero) { AskApp(new List<Process> { p }, "show"); return; }
             if (IsIconic(h)) ShowWindow(h, 9); // SW_RESTORE
             SetForegroundWindow(h);
         }

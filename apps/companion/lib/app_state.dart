@@ -3,7 +3,7 @@
 // ChangeNotifier, given to the tree by [AppScope]; the screens rebuild from it.
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io' show Platform;
+import 'dart:io' show Directory, Platform;
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -43,6 +43,8 @@ import 'ui/no_internet_notice.dart';
 import 'voice/audio.dart';
 import 'voice/voice_controller.dart';
 import 'voice/hands_free/runtime.dart';
+import 'voice/hands_free/vosk.dart' show WakeEngine;
+import 'voice/hands_free/wake_model.dart' show WebFetch;
 import 'settings/general_words.g.dart' show newsVersion;
 
 /// The computers' layout from this width (G40.17): a 1024-pixel window still gets it, a window
@@ -127,6 +129,9 @@ class AppController extends ChangeNotifier {
     this.legacy,
     MicStream? mic,
     MicKeeper? micKeeper,
+    WakeEngine? wakeEngine,
+    Future<Directory> Function()? wakeDir,
+    WebFetch? wakeFetch,
   }) : tokens = tokens ?? SecureTokenStore(),
        prefs = prefs ?? MemoryAppPrefs(),
        platform = platform ?? currentPlatform(),
@@ -137,6 +142,9 @@ class AppController extends ChangeNotifier {
        _player = player,
        _mic = mic,
        _micKeeper = micKeeper,
+       _wakeEngine = wakeEngine,
+       _wakeDir = wakeDir,
+       _wakeFetch = wakeFetch,
        _clientFactory = clientFactory,
        _dial =
            dialChannel ?? ((b, id, expect) => SetupChannel.dial(b, identity: id, expect: expect)) {
@@ -175,7 +183,17 @@ class AppController extends ChangeNotifier {
   // (where what is said goes when no conversation is set in Settings › Voice).
   final MicStream? _mic;
   final MicKeeper? _micKeeper;
-  late final HandsFreeRuntime handsFree = HandsFreeRuntime(this, mic: _mic, keeper: _micKeeper);
+  final WakeEngine? _wakeEngine;
+  final Future<Directory> Function()? _wakeDir;
+  final WebFetch? _wakeFetch;
+  late final HandsFreeRuntime handsFree = HandsFreeRuntime(
+    this,
+    mic: _mic,
+    keeper: _micKeeper,
+    wake: _wakeEngine,
+    wakeDir: _wakeDir,
+    wakeFetch: _wakeFetch,
+  );
   final List<String> _front = [];
 
   /// G42.17: the news of a version not seen yet on this device (after an update; never on the
@@ -339,6 +357,16 @@ class AppController extends ChangeNotifier {
   /// The computers' notifications while the app is open behind other windows (Tu › Notifiche).
   bool desktopNotify = true;
 
+  /// The computers (G42.17): closing the window keeps the app in the system tray, so
+  /// notifications still arrive (Tu › Notifiche; on by default).
+  bool stayInTray = true;
+
+  /// This computer has a tray icon (set by the tray's keeper; some Linux desktops have none).
+  bool trayAvailable = false;
+
+  /// Brings the window back in front (the tray's keeper: a notification tapped with it hidden).
+  VoidCallback? bringToFront;
+
   /// What another app shared, waiting for the Share screen (G40.10).
   List<SharedItem>? pendingShare;
 
@@ -479,6 +507,7 @@ class AppController extends ChangeNotifier {
       subSeen = {};
     }
     desktopNotify = await prefs.get('desktopNotify') != '0';
+    stayInTray = await prefs.get('stayInTray') != '0';
     desktopFrom = int.tryParse(await prefs.get('desktopFrom') ?? '') ?? kDesktopFrom;
     try {
       await carryLegacyData(source: legacy, prefs: prefs, tokens: tokens);
@@ -2051,6 +2080,12 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setStayInTray(bool v) {
+    stayInTray = v;
+    unawaited(prefs.set('stayInTray', v ? null : '0'));
+    notifyListeners();
+  }
+
   void setDesktopNotify(bool v) {
     desktopNotify = v;
     unawaited(prefs.set('desktopNotify', v ? null : '0'));
@@ -2083,6 +2118,7 @@ class AppController extends ChangeNotifier {
   void _onNoticeResponse(NoticeTap tap, String? action) {
     final a = quickAnswerOf(action);
     if (a == null) {
+      bringToFront?.call();
       unawaited(openTap(tap));
       return;
     }

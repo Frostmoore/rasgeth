@@ -12574,7 +12574,7 @@
   "hfServiceChannel": "Hands-free voice",
   "hfServiceChannelText": "Shown while the microphone is open for hands-free voice.",
   "hfPaused": "Paused: the app is not in front",
-  "hfWakeNotHere": "On this device the wake word is not heard yet: tap the indicator, then «Talk now».",
+  "hfWakeNotHere": "On Mac, iPhone and iPad the wake word is not heard yet: tap the indicator, then «Talk now».",
   "hfWakeHelp": "Your wake word is kept for this device and checked with the speech model of Rasgeth.",
   "hfLimitPrivacy": "What you say after «Talk now» is sent to Rasgeth to be transcribed; nothing is heard before.",
   "hfLimitAndroid": "On Android the microphone stays open with the screen off or another app in front, with a notification that says so.",
@@ -12667,5 +12667,31 @@
   "g7HubTitle": "Setup, imports and history",
   "g7SetupCode": "The setup code shown by the machine",
   "g7SetupCodeYes": "No password yet? Use the setup code",
-  "g7SetupCodeNo": "Sign in with the password"
+  "g7SetupCodeNo": "Sign in with the password",
+  "trayOpen": "Open",
+  "trayQuit": "Quit",
+  "trayStay": "Stay in the system tray when you close the window",
+  "trayStayHelp": "Requests, questions and task reports keep arriving as notifications; the icon's menu opens the app again or quits it.",
+  "trayNone": "This desktop has no system tray: closing the window quits the app.",
+  "pushDesktopInTray": "With the window closed the app stays in the system tray and notifications still arrive. After «Quit» this computer gets nothing: Rasgeth's page and the linked chats still do.",
+  "hfWakeNeedsModel": "The wake word needs its speech model on this device (Settings, Voice); until then tap the indicator, then «Talk now».",
+  "hfWakeModelAbout": "The wake word is heard on this device with a small speech model (Vosk, Apache-2.0): {mb} MB to download once, kept here. Nothing you say leaves the device before the wake word.",
+  "@hfWakeModelAbout": {
+    "placeholders": {
+      "mb": {
+        "type": "String"
+      }
+    }
+  },
+  "hfWakeModelAboutSoon": "The wake word is heard on this device with a small speech model (Vosk, Apache-2.0), downloaded once and kept here.",
+  "hfWakeStageServer": "Rasgeth is downloading the speech model (only the first time)",
+  "hfWakeStageEngine": "Downloading the recogniser for this computer (only the first time)",
+  "hfWakeStageModel": "Bringing the speech model to this device (only the first time)",
+  "hfWakeLoading": "Starting the wake word…",
+  "hfWakeRetry": "Try again",
+  "hfWakeOnFirst": "Switch hands-free voice on first.",
+  "hfWakeErrFailed": "the download stopped; check the connection and try again",
+  "hfWakeErrServer": "Rasgeth could not download the speech model",
+  "hfWakeErrChecksum": "the recogniser that arrived is not the expected one, so it was not kept",
+  "hfWakeErrBroken": "the speech model did not start on this device; download it again"
 }

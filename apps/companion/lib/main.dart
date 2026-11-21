@@ -16,6 +16,8 @@ import 'app_state.dart';
 import 'app_update/start.dart';
 import 'app_update/swap.dart' show UpdateStart;
 import 'desktop/handoff.dart';
+import 'desktop/single_instance.dart';
+import 'desktop/tray.dart';
 import 'push/background.dart';
 import 'push/distributors.dart';
 import 'push/system_notifier.dart';
@@ -25,6 +27,21 @@ Future<void> main(List<String> args) async {
   // Android starts the app's code without its window for a UnifiedPush message (G40.10).
   if (args.contains('--unifiedpush-bg')) return runPushInBackground();
   WidgetsFlutterBinding.ensureInitialized();
+  final computer = Platform.isWindows || Platform.isMacOS || Platform.isLinux;
+  // One copy per person (3.10.2): another one running comes to the front, and this one ends
+  // before it touches the keystore (its launcher's handoff file is still taken and deleted).
+  SingleInstance? instance;
+  if (computer) {
+    try {
+      instance = SingleInstance(Directory((await getApplicationSupportDirectory()).path));
+      if (!await instance.claim()) {
+        await takeLaunchHandoff().catchError((_) => null);
+        exit(0);
+      }
+    } on Object {
+      // Without the app's folder there is nothing to coordinate with.
+    }
+  }
   // Windows (3.9.8): the keystore's file kept aside, and not touched where DPAPI cannot open it.
   TokenStore? tokens;
   if (Platform.isWindows) {
@@ -54,7 +71,15 @@ Future<void> main(List<String> args) async {
   final handoff = await takeLaunchHandoff();
   // The app on its own updates itself (G41.8b): where the person was before an update first.
   final updates = await prepareAppUpdater(controller, args);
+  // The computers (G42.17): the window may close into the system tray, notifications still come.
+  if (computer) await SystemDesktopWindow.prepare().catchError((_) {});
   runApp(RGCompanionApp(controller: controller));
+  if (computer) {
+    final tray = TrayKeeper(controller, SystemDesktopWindow());
+    unawaited(tray.start());
+    // Another copy started (show), or an installer replacing the files (quit: for real).
+    instance?.onCommand = (c) => unawaited(c == 'quit' ? tray.quit() : tray.open());
+  }
   // The window is up: the update's helper may stop waiting (or the old version says why it is back).
   await WidgetsBinding.instance.endOfFrame;
   await updates?.started(UpdateStart.parse(args));

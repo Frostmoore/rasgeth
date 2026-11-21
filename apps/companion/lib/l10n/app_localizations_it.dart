@@ -17722,7 +17722,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get hfWakeNotHere =>
-      'Su questo dispositivo la parola di attivazione non si sente ancora: tocca l\'indicatore, poi «Parla ora».';
+      'Su Mac, iPhone e iPad la parola di attivazione non si sente ancora: tocca l\'indicatore, poi «Parla ora».';
 
   @override
   String get hfWakeHelp =>
@@ -17917,4 +17917,73 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get g7SetupCodeNo => 'Accedi con la password';
+
+  @override
+  String get trayOpen => 'Apri';
+
+  @override
+  String get trayQuit => 'Esci';
+
+  @override
+  String get trayStay => 'Resta nella barra di sistema quando chiudi la finestra';
+
+  @override
+  String get trayStayHelp =>
+      'Richieste, domande e resoconti dei compiti continuano ad arrivare come notifiche; il menu dell\'icona riapre l\'app o la chiude.';
+
+  @override
+  String get trayNone =>
+      'Questo desktop non ha una barra di sistema: chiudere la finestra chiude l\'app.';
+
+  @override
+  String get pushDesktopInTray =>
+      'Con la finestra chiusa l\'app resta nella barra di sistema e le notifiche arrivano lo stesso. Dopo «Esci» questo computer non riceve niente: la pagina di Rasgeth e le chat collegate sì.';
+
+  @override
+  String get hfWakeNeedsModel =>
+      'La parola di attivazione ha bisogno del suo modello vocale su questo dispositivo (Impostazioni, Voce); fino ad allora tocca l\'indicatore, poi «Parla ora».';
+
+  @override
+  String hfWakeModelAbout(String mb) {
+    return 'La parola di attivazione si sente su questo dispositivo con un piccolo modello vocale (Vosk, Apache-2.0): $mb MB da scaricare una volta, poi resta qui. Niente di quello che dici esce dal dispositivo prima della parola.';
+  }
+
+  @override
+  String get hfWakeModelAboutSoon =>
+      'La parola di attivazione si sente su questo dispositivo con un piccolo modello vocale (Vosk, Apache-2.0), scaricato una volta e tenuto qui.';
+
+  @override
+  String get hfWakeStageServer => 'Rasgeth sta scaricando il modello vocale (solo la prima volta)';
+
+  @override
+  String get hfWakeStageEngine =>
+      'Scarico il riconoscitore per questo computer (solo la prima volta)';
+
+  @override
+  String get hfWakeStageModel =>
+      'Porto il modello vocale su questo dispositivo (solo la prima volta)';
+
+  @override
+  String get hfWakeLoading => 'Avvio la parola di attivazione…';
+
+  @override
+  String get hfWakeRetry => 'Riprova';
+
+  @override
+  String get hfWakeOnFirst => 'Prima accendi la voce a mani libere.';
+
+  @override
+  String get hfWakeErrFailed =>
+      'lo scaricamento si è interrotto; controlla la connessione e riprova';
+
+  @override
+  String get hfWakeErrServer => 'Rasgeth non è riuscito a scaricare il modello vocale';
+
+  @override
+  String get hfWakeErrChecksum =>
+      'il riconoscitore arrivato non è quello atteso, quindi non è stato tenuto';
+
+  @override
+  String get hfWakeErrBroken =>
+      'il modello vocale non è partito su questo dispositivo; scaricalo di nuovo';
 }
