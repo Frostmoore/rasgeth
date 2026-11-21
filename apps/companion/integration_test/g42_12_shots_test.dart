@@ -166,7 +166,8 @@ void main() {
       // A credential's window.
       final item = find.byWidgetPredicate(
         (w) =>
-            w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('kc-item-v'),
+            w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('kc-item-') &&
+            !(w.key! as ValueKey<String>).value.startsWith('kc-item-used-by-'),
       );
       if (item.evaluate().isNotEmpty) {
         await t.ensureVisible(item.first);
@@ -177,7 +178,19 @@ void main() {
         back();
         await frames(t, 800);
       }
-      // A new one with the generator.
+      // A new one with the generator, from the top again.
+      t
+          .state<ScrollableState>(
+            find
+                .descendant(
+                  of: find.byKey(const Key('keychain-settings')),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          )
+          .position
+          .jumpTo(0);
+      await frames(t, 600);
       await tap(const Key('kc-add'), 1500);
       await t.enterText(find.byKey(const Key('kc-service')), 'Stripe');
       await frames(t, 300);
