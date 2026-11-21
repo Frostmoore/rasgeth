@@ -63,6 +63,15 @@ Future<void> openNews(BuildContext context) => _openPanel<void>(
   body: (_) => const NewsList(),
 );
 
+/// What's new after an update on a computer (3.10.2, as the page's WhatsNew): a window, once,
+/// with only what came after [since] (the version this device saw last), and «Got it».
+Future<void> openNewsSince(BuildContext context, String? since) => _openPanel<void>(
+  context,
+  title: AppLocalizations.of(context).g4GenNewsTitle(newsVersion),
+  key: const Key('news-window'),
+  body: (ctx) => NewsList(seen: since, onOk: () => Navigator.of(ctx).maybePop()),
+);
+
 /// G42.16: «Who writes down what you say» from Settings › Voice: General's voice-messages panel
 /// (the same choice: the server's transcription), read fresh; false when it could not be read.
 Future<bool> openTranscriptionPanel(BuildContext context) async {
@@ -2118,13 +2127,20 @@ class _DebugPanelState extends State<_DebugPanel> {
 
 /// «What's new», everything, release by release, newest first (the page's NewsWindow).
 class NewsList extends StatelessWidget {
-  const NewsList({super.key});
+  const NewsList({super.key, this.seen, this.onOk});
+
+  /// Only what is newer than this version (none: everything).
+  final String? seen;
+
+  /// «Got it» at the end (the window after an update).
+  final VoidCallback? onOk;
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
-    final groups = newsSince(null, newsRows);
+    final groups = newsSince(seen, newsRows);
+    final ok = onOk;
     return ListView(
       key: const Key('news-list'),
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
@@ -2186,6 +2202,18 @@ class NewsList extends StatelessWidget {
               ),
             ),
         ],
+        if (ok != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: FilledButton(
+                key: const Key('news-ok'),
+                onPressed: ok,
+                child: Text(l.g4GenNewsOk),
+              ),
+            ),
+          ),
       ],
     );
   }

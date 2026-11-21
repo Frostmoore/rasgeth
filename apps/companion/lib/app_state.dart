@@ -182,10 +182,15 @@ class AppController extends ChangeNotifier {
   /// first start, as the page's WhatsNew), shown once at the top until opened or dismissed.
   bool newsPending = false;
 
+  /// The version this device had seen before (3.10.2): the computer's window shows only what is
+  /// newer, as the page's WhatsNew.
+  String? newsSeenBefore;
+
   Future<void> _lookForNews() async {
     final seen = await prefs.get('newsSeen');
     await prefs.set('newsSeen', newsVersion);
     if (seen != null && seen != newsVersion) {
+      newsSeenBefore = seen;
       newsPending = true;
       notifyListeners();
     }

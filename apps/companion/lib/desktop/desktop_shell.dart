@@ -37,6 +37,7 @@ import 'advanced/terminals_view.dart';
 import '../screens/voice_screen.dart' show openVoiceSettings;
 import '../voice/hands_free/indicator.dart' show HandsFreeIndicator;
 import '../screens/full_search_screen.dart' show openFullSearch;
+import '../settings/general_screen.dart' show openNewsSince;
 import 'bell.dart';
 import 'desk_controller.dart';
 import 'desk_menu.dart';
@@ -129,9 +130,17 @@ class _DesktopShellState extends State<DesktopShell> {
     }
   }
 
-  /// What came from outside: a notification's conversation (in the panel), something shared.
+  /// What came from outside: a notification's conversation (in the panel), something shared;
+  /// what's new after an update (3.10.2: the window the page shows, once).
   void _opens() {
     if (!mounted || !_app.connected) return;
+    if (_app.newsPending) {
+      final since = _app.newsSeenBefore;
+      _app.newsSeen();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) unawaited(openNewsSince(context, since));
+      });
+    }
     final sid = _app.takePendingSession();
     if (sid != null) _desk.show(PanelConversation(sid));
     final items = _app.pendingShare;

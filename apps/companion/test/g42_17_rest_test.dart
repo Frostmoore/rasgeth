@@ -17,6 +17,7 @@ import 'package:rgcompanion/screens/server_settings_screen.dart';
 import 'package:rgcompanion/settings/acp_screen.dart';
 import 'package:rgcompanion/settings/import_screen.dart';
 import 'package:rgcompanion/settings/platform_screen.dart';
+import 'package:rgcompanion/settings/general_words.g.dart' show newsVersion;
 import 'package:rgcompanion/setup/wizard/wizard_screen.dart';
 
 import 'fake_server.dart';
@@ -235,6 +236,53 @@ void main() {
     await tap(tester, 'news-dismiss');
     expect(find.byKey(const Key('news-band')), findsNothing);
     expect(prefs.values['newsSeen'], isNot('3.0.0'));
+    await done(tester);
+  });
+
+  testWidgets('what is new on a computer: the window of the page, only what is newer, once', (
+    tester,
+  ) async {
+    final prefs = MemoryAppPrefs()..values['newsSeen'] = '3.9.9';
+    Future<AppController> open() async {
+      final app = AppController(
+        tokens: MemoryTokenStore(),
+        prefs: prefs,
+        platform: DevicePlatform.linux,
+        liveEnabled: false,
+      )..locale = const Locale('it');
+      await tester.runAsync(() => app.connect(server.base.toString(), 'secret'));
+      await tester.pumpWidget(RGCompanionApp(controller: app));
+      await settle(tester);
+      return app;
+    }
+
+    tester.view.physicalSize = const Size(1440, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await open();
+    final window = find.byKey(const Key('news-window'));
+    expect(window, findsOneWidget);
+    expect(find.byKey(const Key('news-band')), findsNothing);
+    // Only the releases after the one this device saw, newest first.
+    expect(find.text('Le novità di Rasgeth $newsVersion'), findsOneWidget);
+    expect(find.text('Versione 3.10.1'), findsOneWidget);
+    expect(find.text('Versione 3.10.0'), findsOneWidget);
+    expect(find.text('Versione 3.9.9'), findsNothing);
+    expect(find.byKey(const Key('news-news3101Unlock')), findsOneWidget);
+    expect(find.byKey(const Key('news-news399Inspector')), findsNothing);
+    final ok = find.byKey(const Key('news-ok'));
+    await tester.scrollUntilVisible(
+      ok,
+      300,
+      scrollable: find.descendant(of: window, matching: find.byType(Scrollable)).first,
+    );
+    await tap(tester, 'news-ok');
+    expect(window, findsNothing);
+    expect(prefs.values['newsSeen'], newsVersion);
+    // Never again on this device.
+    await tester.pumpWidget(const SizedBox());
+    await open();
+    expect(find.byKey(const Key('news-window')), findsNothing);
     await done(tester);
   });
 
