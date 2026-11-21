@@ -18,6 +18,7 @@ import {
   IconTrash,
 } from "../icons.js";
 import { closeSysmemAdvice, getApi, sysmemAdviceClosed } from "../state.js";
+import { SysTitle, sysName } from "../systems.js";
 import {
   bigChunksShown,
   type DiskTile,
@@ -1358,8 +1359,15 @@ function WzMachine({
       </div>
       <div class="wz-machine-r">
         <div class="wz-tog">
-          <h3>{t("lmStream")}</h3>
-          <Switch on={on} label={t("lmStream")} disabled={!available.ok} onChange={onChange} />
+          <h3>
+            <SysTitle id="deepField" />
+          </h3>
+          <Switch
+            on={on}
+            label={sysName("deepField")}
+            disabled={!available.ok}
+            onChange={onChange}
+          />
         </div>
         <p class="dim">{on ? t("wzStreamOn", { disk }) : t("wzStreamOff")}</p>
         {!available.ok && <p class="notice">{available.reason}</p>}
@@ -1379,7 +1387,7 @@ function WzMachine({
         {plan && <p class="dim">{planText(plan)}</p>}
       </div>
       {info && (
-        <Modal title={t("lmStream")} onClose={() => setInfo(false)}>
+        <Modal title={sysName("deepField")} onClose={() => setInfo(false)}>
           <p class="wz-lead2">{t("wzStreamInfo1")}</p>
           <p>{t("wzStreamInfo2")}</p>
           <p>{t("wzStreamInfo3")}</p>

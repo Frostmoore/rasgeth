@@ -26,6 +26,7 @@ import {
   sideWidth,
   sideWidthByKey,
 } from "../state.js";
+import { sysWhat } from "../systems.js";
 import { placeOf, restoreTab } from "../viewers/live.js";
 import { placeDo, touch, warmTabs } from "../viewers/warm.js";
 import { lazy } from "./lazy.js";
@@ -232,7 +233,7 @@ export function SideArea() {
       style={width && !max ? { flexBasis: `${width}px`, maxWidth: "none" } : undefined}
     >
       {/* On a phone the area covers the chat: this brings it back (G34.2). */}
-      <button type="button" class="side-pill" onClick={showSideArea}>
+      <button type="button" class="side-pill" title={sysWhat("nebula")} onClick={showSideArea}>
         <IconCanvas size={16} />
         {t("vwCanvasBack", { n: String(views.length) })}
       </button>

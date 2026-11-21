@@ -37,6 +37,7 @@ import {
   IconUser,
 } from "../icons.js";
 import { openTab, type SettingsSection } from "../state.js";
+import { SysTitle, type SystemId, sysName } from "../systems.js";
 import { Artifacts } from "./Artifacts.js";
 import { Automations } from "./Automations.js";
 import { Backup } from "./Backup.js";
@@ -68,7 +69,20 @@ import { ToolsPage } from "./ToolsPage.js";
 import { Modal } from "./ui.js";
 import { VoiceSettingsPage } from "./VoiceSettings.js";
 
-type Section = { id: SettingsSection; label: () => string; icon: ComponentChildren };
+/** `sys`: the section is one of Rasgeth's named systems (3.10.3): its name is the label, with what
+ * it is under it. */
+type Section = {
+  id: SettingsSection;
+  label: () => string;
+  icon: ComponentChildren;
+  sys?: SystemId;
+};
+const named = (id: SettingsSection, sys: SystemId, icon: ComponentChildren): Section => ({
+  id,
+  label: () => sysName(sys),
+  icon,
+  sys,
+});
 
 /** The sections in groups, as the wizard groups its steps (the parity table with RGCompanion reads
  * them, G42.0). */
@@ -85,7 +99,7 @@ export const GROUPS: { title: () => string; sections: Section[] }[] = [
   {
     title: () => t("stGrpWho"),
     sections: [
-      { id: "agents", label: () => t("agents"), icon: <IconTree size={20} /> },
+      named("agents", "constellation", <IconTree size={20} />),
       { id: "projects", label: () => t("paPageQ"), icon: <IconBox size={20} /> },
       { id: "artifacts", label: () => t("arSection"), icon: <IconCode size={20} /> },
       { id: "memory", label: () => t("memSection"), icon: <IconBook size={20} /> },
@@ -96,7 +110,7 @@ export const GROUPS: { title: () => string; sections: Section[] }[] = [
       { id: "acp", label: () => t("acpSection"), icon: <IconNodes size={20} /> },
       { id: "tools", label: () => t("toolsSection"), icon: <IconTool size={20} /> },
       { id: "commands", label: () => t("cmdSection"), icon: <IconTerminal size={20} /> },
-      { id: "requests", label: () => t("rqSection"), icon: <IconBell size={20} /> },
+      named("requests", "eventHorizon", <IconBell size={20} />),
       { id: "keychain", label: () => t("kcSection"), icon: <IconKey size={20} /> },
     ],
   },
@@ -151,7 +165,7 @@ function SectionList({
               onClick={() => go(s.id)}
             >
               <span class="st-nav-ico">{s.icon}</span>
-              <span class="st-nav-name">{s.label()}</span>
+              <span class="st-nav-name">{s.sys ? <SysTitle id={s.sys} stack /> : s.label()}</span>
             </button>
           ))}
         </div>

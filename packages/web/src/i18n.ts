@@ -31,6 +31,15 @@ const en = {
   stCodeEyebrow: "Code",
   stRemoteQ: "{product} away from home",
   stAgQ: "Your team",
+  // The marketing names of Rasgeth's own systems (3.10.3, four confirmed so far): the name, then what it is.
+  sysConstellation: "Constellation",
+  sysConstellationWhat: "the team of agents, in levels",
+  sysEventHorizon: "Event Horizon",
+  sysEventHorizonWhat: "requests to you and protections",
+  sysNebula: "Nebula",
+  sysNebulaWhat: "the Canvas, with editors shared with the agent",
+  sysDeepField: "Deep Field",
+  sysDeepFieldWhat: "models bigger than the card, from the SSD",
   // Import from other agents (G36.7) and skills that come by themselves (G36.8).
   impSection: "Import",
   wzImport: "Coming from another agent?",
@@ -2481,6 +2490,9 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news3103Names: "Names for Rasgeth's own systems",
+  news3103NamesText:
+    "The features only Rasgeth has now carry their name, with what they are beside it: Constellation (the team of agents in levels), Event Horizon (requests to you and protections), Nebula (the Canvas) and Deep Field (local models bigger than the card). Everything else keeps its plain name.",
   news3102Tray: "The app stays in the tray",
   news3102TrayText:
     "On the computer, closing the app's window keeps it in the system tray, so requests, questions and reports still reach you; Open and Quit are in its menu, and you can switch this off in You › Notifications. Opening it again brings back the one already running.",
@@ -4911,7 +4923,7 @@ const en = {
   vwArchiveCount: "{n} files, {size}",
   vwArchiveNo: "This archive could not be read.",
   vwBackToArchive: "Back to the archive",
-  vwCanvasBack: "Canvas ({n})",
+  vwCanvasBack: "Nebula ({n})",
   vwCloseAll: "Close all",
   vwCut: "Only the first {size} are shown.",
   vwDecimal: ".",
@@ -7624,6 +7636,15 @@ const it: Record<Key, string> = {
   stCodeEyebrow: "Codice",
   stRemoteQ: "{product} anche fuori casa",
   stAgQ: "La tua squadra",
+  // I nomi di marketing dei sistemi di Rasgeth (3.10.3): il nome, poi che cos'è.
+  sysConstellation: "Constellation",
+  sysConstellationWhat: "la squadra di agenti, a livelli",
+  sysEventHorizon: "Event Horizon",
+  sysEventHorizonWhat: "richieste a te e protezioni",
+  sysNebula: "Nebula",
+  sysNebulaWhat: "il Canvas, con editor condivisi con l'agente",
+  sysDeepField: "Deep Field",
+  sysDeepFieldWhat: "modelli più grandi della scheda, dall'SSD",
   // Import from other agents (G36.7) and skills that come by themselves (G36.8).
   impSection: "Importa",
   wzImport: "Vieni da un altro agente?",
@@ -10109,6 +10130,9 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news3103Names: "Un nome per i sistemi di Rasgeth",
+  news3103NamesText:
+    "Le funzioni che ha solo Rasgeth ora portano il loro nome, con accanto che cosa sono: Constellation (la squadra di agenti a livelli), Event Horizon (richieste a te e protezioni), Nebula (il Canvas) e Deep Field (modelli locali più grandi della scheda). Il resto tiene il suo nome di sempre.",
   news3102Tray: "L'app resta nella barra di sistema",
   news3102TrayText:
     "Sul computer, chiudendo la finestra l'app resta nella barra di sistema, così richieste, domande e resoconti ti arrivano lo stesso; nel suo menu ci sono Apri ed Esci, e puoi spegnerlo in Tu › Notifiche. Riaprendola torna avanti quella già aperta.",
@@ -12551,7 +12575,7 @@ const it: Record<Key, string> = {
   vwArchiveCount: "{n} file, {size}",
   vwArchiveNo: "Non si riesce a leggere questo archivio.",
   vwBackToArchive: "Torna all'archivio",
-  vwCanvasBack: "Canvas ({n})",
+  vwCanvasBack: "Nebula ({n})",
   vwCloseAll: "Chiudi tutto",
   vwCut: "Si vedono solo i primi {size}.",
   vwDecimal: ",",

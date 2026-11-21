@@ -158,7 +158,7 @@ describe("Settings > Models and subscriptions, as the wizard", () => {
   it("has the local model as the wizard's step, with the bar and the engine of Settings", async () => {
     const r = render(<ModelsPage s={state()} reload={() => {}} />);
     await waitFor(() => expect(calls).toContain("localModels"));
-    expect(r.getByRole("switch", { name: "SSD stream" })).toBeTruthy();
+    expect(r.getByRole("switch", { name: "Deep Field" })).toBeTruthy();
     expect(r.getByText("Dove stanno i modelli")).toBeTruthy();
     expect(r.container.querySelector(".wz-machine .wz-room .lm-room")).toBeTruthy();
     expect(r.getByText("Avanzate")).toBeTruthy();

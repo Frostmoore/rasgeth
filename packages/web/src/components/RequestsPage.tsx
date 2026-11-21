@@ -31,6 +31,7 @@ import {
   IconWallet,
 } from "../icons.js";
 import { getApi, openSessionById } from "../state.js";
+import { SysTitle } from "../systems.js";
 import { explain } from "./Brain.js";
 import { spanWords } from "./CommandLimits.js";
 import { modelName } from "./ModelMenu.js";
@@ -146,7 +147,7 @@ export function RequestsPage() {
   if (!s || !loaded)
     return (
       <WzPage>
-        <Head q={t("rqPageQ")} lead={t("rqPageLead")} />
+        <Head eyebrow={<SysTitle id="eventHorizon" />} q={t("rqPageQ")} lead={t("rqPageLead")} />
         {error ? <p class="notice error">{error}</p> : <p class="dim">{t("loading")}</p>}
       </WzPage>
     );
@@ -177,7 +178,7 @@ export function RequestsPage() {
   const lightModel = loaded.defaultModel ? modelName(loaded.defaultModel.model) : t("rqNoModel");
   return (
     <WzPage class="rq-page">
-      <Head q={t("rqPageQ")} lead={t("rqPageLead")} />
+      <Head eyebrow={<SysTitle id="eventHorizon" />} q={t("rqPageQ")} lead={t("rqPageLead")} />
       <div class="wz-safe rq-cards">
         <SCard icon={<IconBell size={22} />} title={t("rqModeTitle")} q={t("rqModeQ")}>
           <Seg

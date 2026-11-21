@@ -21,6 +21,7 @@ import {
   projects,
   refresh,
 } from "../state.js";
+import { SysTitle } from "../systems.js";
 import { substantialChange } from "../word-diff.js";
 import { AgentKnowledge } from "./AgentKnowledge.js";
 import { AgentMemory } from "./AgentMemory.js";
@@ -858,12 +859,16 @@ function AgentsPage({ projectId = null }: { projectId?: string | null }) {
       <header class="agents-head">
         {projectId ? (
           <Head
-            eyebrow={t("agents")}
+            eyebrow={<SysTitle id="constellation" />}
             q={t("agentsOf", { project: projectName(projectId) })}
             lead={t("projectAgentsPurpose")}
           />
         ) : (
-          <Head eyebrow={t("agents")} q={t("stAgQ")} lead={t("agentsPurpose")} />
+          <Head
+            eyebrow={<SysTitle id="constellation" />}
+            q={t("stAgQ")}
+            lead={t("agentsPurpose")}
+          />
         )}
         <div class="agents-tools">
           <Seg

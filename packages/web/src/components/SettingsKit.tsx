@@ -51,7 +51,7 @@ export function Head({
   q,
   lead,
 }: {
-  eyebrow?: string | undefined;
+  eyebrow?: ComponentChildren;
   q: string;
   lead?: ComponentChildren;
 }) {
@@ -65,7 +65,7 @@ export function Head({
 }
 
 /** A part of the page: its heading and the line under it. */
-export function Sub({ title, lead }: { title: string; lead?: ComponentChildren }) {
+export function Sub({ title, lead }: { title: ComponentChildren; lead?: ComponentChildren }) {
   return (
     <>
       <h2 class="wz-sub">{title}</h2>

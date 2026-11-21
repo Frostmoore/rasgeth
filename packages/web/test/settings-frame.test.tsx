@@ -78,6 +78,16 @@ describe("Settings drawn as the wizard", () => {
     fireEvent.click(r.container.querySelector(".st-pick") as HTMLElement);
     const sheet = r.container.querySelector(".ui-modal") as HTMLElement;
     expect(sheet.querySelectorAll(".st-nav-item")).toHaveLength(29);
+    // Rasgeth's named systems (3.10.3): the name, and under it what it is in the person's words.
+    const named = [...nav.querySelectorAll(".st-nav-item .sys")].map((x) => [
+      x.querySelector(".sys-name")?.textContent,
+      x.querySelector(".sys-what")?.textContent,
+    ]);
+    expect(named).toEqual([
+      ["Constellation", "la squadra di agenti, a livelli"],
+      ["Event Horizon", "richieste a te e protezioni"],
+    ]);
+    expect(nav.textContent).toContain("Portachiavi");
   });
 
   it("General: theme and language in segments, and a window for each square", async () => {
