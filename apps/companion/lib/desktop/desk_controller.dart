@@ -425,8 +425,13 @@ class DeskController extends ChangeNotifier {
   void showProject(String projectId) => show(PanelProject(projectId));
 
   /// [a]'s conversation in the panel (God's shared one, else the latest); false when it failed.
-  Future<bool> openAgent(Agent a, {bool fresh = false, String? firstMessage}) async {
-    final id = await app.openAgent(a, fresh: fresh);
+  Future<bool> openAgent(
+    Agent a, {
+    bool fresh = false,
+    bool latest = false,
+    String? firstMessage,
+  }) async {
+    final id = await app.openAgent(a, fresh: fresh, latest: latest);
     if (id == null) return false;
     show(PanelConversation(id, agent: a, firstMessage: firstMessage));
     return true;

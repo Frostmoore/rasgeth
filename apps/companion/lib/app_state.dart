@@ -1765,11 +1765,13 @@ class AppController extends ChangeNotifier {
 
   /// The conversation to open with [a]: God and Demi-God their shared one, the others their
   /// latest (or a new one with [fresh]).
-  Future<String?> openAgent(Agent a, {bool fresh = false}) async {
+  /// [latest]: God and the Demigod too open their latest conversation instead of their work
+  /// session (3.10, the desk's rail: «cliccando su God mi si apra l'ultima conversazione»).
+  Future<String?> openAgent(Agent a, {bool fresh = false, bool latest = false}) async {
     final c = client;
     if (c == null) return null;
     try {
-      if (!fresh && (a.kind == AgentKind.god || a.kind == AgentKind.demigod)) {
+      if (!fresh && !latest && (a.kind == AgentKind.god || a.kind == AgentKind.demigod)) {
         return await c.workSession(a.id);
       }
       if (!fresh) {

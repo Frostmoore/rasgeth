@@ -36,6 +36,12 @@ const NOT_SECRET: [string, string][] = [
     "https://drive.example.com/file/d/1aB2cD3eF4gH5iJ6kL7mN8oP9qR0sT/view",
   ],
   ["a Pinterest pin (not a PIN)", "https://www.pinterest.com/pin/123456789/"],
+  // 3.10: an elided Italian word after «password:» is not its value («dall'importazione» gave «dall»).
+  [
+    "«password:» followed by an elided word",
+    "2) Verifica password: dall'importazione Avira risultano 15 voci",
+  ],
+  ["«password è» followed by an elided word", "la password è nell'email di ieri"],
   ["a «JWT» without alg outside a link", "il codice è eyJ2IjoiMSJ9.abcdefgh12.ijklmnop34"],
   ["a short key= that says nothing", "https://example.com/search?key=abc&monkey=Zx81Kq0pLm2Nb7Vc9"],
 ];
@@ -87,6 +93,7 @@ const SECRET: [string, string, string][] = [
     "Ab3dE5fG7hJ9kL1mN3pQ5rS7tU",
   ],
   ["a password next to a link", "password: hunter22 https://example.com", "hunter22"],
+  ["a password with an apostrophe inside it", "password: abc'd12!x", "abc"],
 ];
 
 describe("secrets in links (2026-11-19)", () => {

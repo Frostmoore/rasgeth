@@ -359,7 +359,8 @@ class _RailAgent extends StatelessWidget {
           onLongPress: () => showAgentSheet(context, a),
           onTap: () async {
             if (here) return;
-            if (!await desk.openAgent(a) && context.mounted) {
+            // The latest conversation, God's too (3.10); the list stays one click away.
+            if (!await desk.openAgent(a, latest: true) && context.mounted) {
               ScaffoldMessenger.maybeOf(context)
                   ?.showSnackBar(SnackBar(content: Text(l.statusUnreachable)));
             }

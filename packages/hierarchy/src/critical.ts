@@ -119,8 +119,14 @@ const SYSTEM_POSIX = [
   "/snap",
 ];
 /** Devices that are not disks. */
+/**
+ * Devices a command may write to without harm: the usual ones, and bash's network pseudo-devices
+ * (`/dev/tcp/host/port`, a port probe). A path read out of quoted text can carry what follows it
+ * (`/dev/null)\\ || …` inside a sed expression, 3.10): the device name ends at the first character
+ * a path does not have.
+ */
 const HARMLESS_DEV =
-  /^\/dev\/(null|zero|stdout|stderr|stdin|tty|fd\/\d+|shm(\/.*)?|pts\/\d+|random|urandom)$/;
+  /^\/dev\/(?:null|zero|stdout|stderr|stdin|tty|fd\/\d+|shm(?:\/[^\s)|;&'"\\]*)?|pts\/\d+|random|urandom|(?:tcp|udp)\/[\w.:-]+\/\d+)(?=$|[\s)|;&'"\\])/;
 const SYSTEM_WIN = [
   "windows",
   "program files",

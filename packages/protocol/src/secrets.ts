@@ -35,6 +35,21 @@ const NOT_A_VALUE = new Set(
   ).split(" "),
 );
 
+/** Italian words cut at their apostrophe («dall'importazione»): never a password's value. */
+const ELIDED =
+  /^(?:l|un|d|c|n|m|t|s|v|dall|dell|nell|sull|all|coll|tutt|quell|quest|bell|sant|nessun|alcun|ciascun)$/i;
+
+/**
+ * A password pattern's value is one, unless it is a describing word or an elided word cut at its
+ * apostrophe (3.10: «Verifica password: dall'importazione» blanked «dall»).
+ */
+function isValue(text: string, m: RegExpMatchArray): boolean {
+  const v = m[1];
+  if (!v || NOT_A_VALUE.has(v.toLowerCase())) return false;
+  const end = (m.index ?? 0) + m[0].length;
+  return !(ELIDED.test(v) && /^['’]\p{L}/u.test(text.slice(end, end + 2)));
+}
+
 /** "password: X", "la password del wifi è X", "my password is X": the keyword, then its value. */
 const PASSWORD =
   /\b(?:password|passwd|pwd|passcode|passphrase|parola d'ordine)(?:\s+(?:del|della|dello|dell'|di|of|for|per|to|on|su|sul|sulla|al|alla|mio|mia|my)\s+[^\s:=]+){0,2}\s*(?:[:=]\s*|\s(?:is|è|e'|era|sarebbe|vale|=)\s+)["'«]?([^\s"'»,;.]{3,})/giu;
@@ -150,7 +165,7 @@ export function findSecrets(text: string): SecretSpan[] {
       out.push({ start: at, end: at + value.length, kind: "key" });
     }
   for (const m of text.matchAll(PASSWORD))
-    if (m[1] && !NOT_A_VALUE.has(m[1].toLowerCase())) outside("password")(m, m[1]);
+    if (isValue(text, m)) outside("password")(m, m[1] as string);
   for (const m of text.matchAll(CODE)) if (m[1]) outside("code")(m, m[1]);
   for (const m of text.matchAll(KEY)) if (m[1] && /\d/.test(m[1])) outside("key")(m, m[1]);
   for (const m of text.matchAll(RANDOM)) outside("key")(m);
@@ -197,7 +212,7 @@ export function leakableSecrets(text: string): LeakableSecret[] {
     for (const m of text.matchAll(re)) add(name, m[0], m.index ?? 0);
   const valueAt = (m: RegExpMatchArray, v: string) => (m.index ?? 0) + m[0].lastIndexOf(v);
   for (const m of text.matchAll(PASSWORD))
-    if (m[1] && !NOT_A_VALUE.has(m[1].toLowerCase())) add("password", m[1], valueAt(m, m[1]));
+    if (isValue(text, m)) add("password", m[1] as string, valueAt(m, m[1] as string));
   for (const m of text.matchAll(KEY))
     if (m[1] && /\d/.test(m[1])) add("token", m[1], valueAt(m, m[1]));
   return out.map(({ name, value }) => ({ name, value }));

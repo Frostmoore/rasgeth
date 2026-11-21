@@ -386,47 +386,40 @@ describe("requests to the person (G36.17)", () => {
     expect((await r.person.list("me"))[0]?.reason).toContain("model down");
   });
 
-  it("questions: answered by the classifier among the options, or the agent's best guess", async () => {
-    const r = await rig({ mode: "classifier" }, async () => ({
-      answers: [["SQLite"]],
-      reason: "Un solo file basta per una prova.",
-      model: "fake/light",
-    }));
-    const out = await r.person.ask(AGENT, question(), undefined, "question");
-    expect(out).toEqual({
-      by: "classifier",
-      answers: [["SQLite"]],
-      reason: "Un solo file basta per una prova.",
+  it("questions and plans are always the person's, whatever the mode (3.10)", async () => {
+    let classified = 0;
+    const r = await rig({ mode: "classifier" }, async () => {
+      classified++;
+      return { answers: [["SQLite"]], reason: "guess", model: "fake/light" };
     });
-    expect(r.asked[0]?.questions?.[0]?.question).toBe("Which database?");
+    const q1 = question();
+    const asked = r.person.ask(AGENT, q1, undefined, "question");
+    await flush();
+    // The card reached the person; the classifier was never called.
+    expect(r.shown).toContain(q1.requestId);
+    expect(classified).toBe(0);
+    r.questions.answer("me", q1.requestId, [["Postgres"]], "web");
+    expect(await asked).toEqual({ by: "human", answers: [["Postgres"]] });
 
-    const bad = await rig({ mode: "classifier" }, async () => ({
-      answers: [["MongoDB"]],
-      reason: "not an option",
-      model: "fake/light",
-    }));
-    expect((await bad.person.ask(AGENT, question(), undefined, "question")).by).toBe("timeout");
+    const plan = { ...question(), plan: "1. Write the tests\n2. Fix the bug" };
+    const p = r.person.ask(AGENT, plan, undefined, "plan");
+    await flush();
+    expect(r.shown).toContain(plan.requestId);
+    r.questions.answer("me", plan.requestId, [[PLAN_APPROVE]], "web");
+    expect(await p).toEqual({ by: "human", answers: [[PLAN_APPROVE]] });
+    expect(classified).toBe(0);
 
-    const late = await rig({ timeoutMs: 60_000 });
-    const asked = late.person.ask(AGENT, question(), undefined, "question");
+    // A time limit with «then the classifier» ends a question as unanswered, never guessed.
+    const late = await rig({ timeoutMs: 60_000, afterTimeout: "classifier" }, async () => {
+      classified++;
+      return { answers: [["SQLite"]], reason: "guess", model: "fake/light" };
+    });
+    const q = late.person.ask(AGENT, question(), undefined, "question");
     await flush();
     late.clock.tick(60_000);
-    expect(await asked).toMatchObject({ by: "timeout" });
+    expect(await q).toMatchObject({ by: "timeout" });
+    expect(classified).toBe(0);
     expect((await late.person.list("me"))[0]).toMatchObject({ kind: "question", by: "timeout" });
-  });
-
-  it("plans: the classifier approves or not; an unanswered plan stays a plan", async () => {
-    const r = await rig({ mode: "classifier" }, async () => ({
-      decision: "allow",
-      reason: "Il piano fa ciò che è stato chiesto.",
-      model: "fake/light",
-    }));
-    const plan = { ...question(), plan: "1. Write the tests\n2. Fix the bug" };
-    expect(await r.person.ask(AGENT, plan, undefined, "plan")).toMatchObject({
-      by: "classifier",
-      answers: [[PLAN_APPROVE]],
-    });
-    expect(r.asked[0]?.plan).toContain("Write the tests");
   });
 
   it("the model's classifier reads the conversation and decides in JSON, charged to the agent", async () => {
@@ -605,7 +598,8 @@ describe("settings as configuration (G36.16, G36.17)", () => {
     expect(forced).toBeDefined();
   });
 
-  it("ask_user in 'don't ask me anything': the classifier answers and the agent is told", async () => {
+  it("ask_user in 'don't ask me anything': the question still reaches the person (3.10)", async () => {
+    let classified = 0;
     s = await startServer(
       [
         {
@@ -627,11 +621,10 @@ describe("settings as configuration (G36.16, G36.17)", () => {
       ],
       {},
       {
-        classify: async () => ({
-          answers: [["SQLite"]],
-          reason: "Basta un file.",
-          model: "fake/light",
-        }),
+        classify: async () => {
+          classified++;
+          return { answers: [["SQLite"]], reason: "Basta un file.", model: "fake/light" };
+        },
       },
     );
     const god = (
@@ -644,12 +637,20 @@ describe("settings as configuration (G36.16, G36.17)", () => {
     const sid = (await s.api<{ sessionId: string }>("POST", "/api/sessions", { agentId: god })).body
       .sessionId;
     await s.api("PUT", "/api/settings/requests", { mode: "classifier" });
+    const answering = (async () => {
+      let q = s.core.questions.list("me")[0];
+      while (!q) {
+        await new Promise((x) => setTimeout(x, 10));
+        q = s.core.questions.list("me")[0];
+      }
+      s.core.questions.answer("me", q.requestId, [["Postgres"]], "web");
+    })();
     await (await s.core.send("me", sid, "start")).done;
+    await answering;
+    expect(classified).toBe(0);
     const events = (await s.api<Event[]>("GET", `/api/sessions/${sid}/events`)).body;
     const answered = events.find((e) => e.type === "question.answered");
-    expect(answered?.payload).toMatchObject({ answers: [["SQLite"]], by: "classifier" });
-    const out = events.flatMap((e) => (e.type === "tool.result" ? [e.payload.output] : []));
-    expect(String(out[0])).toContain("classifier answered for them");
-    expect(String(out[0])).toContain("-> SQLite");
+    expect(answered?.payload).toMatchObject({ answers: [["Postgres"]] });
+    expect(JSON.stringify(answered?.payload)).not.toContain("classifier");
   });
 });

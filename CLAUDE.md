@@ -49,9 +49,10 @@
   change the table first. Approvals never resolve to "allow" on a failure or timeout. The one "allow" not
   given by a person is their classifier's (G36.17, Settings > Requests to you: "don't ask me anything", or after
   their time runs out if they chose so): an explicit decision with its reason in the log, never on a truly dangerous
-  request, and a classifier that fails is a no. Requests asked of the person reach every channel at once (the page
+  request, and a classifier that fails is a no; questions and plans (`ask_user`, `propose_plan`) are always the
+  person's, whatever the mode or timeout (3.10). Requests asked of the person reach every channel at once (the page
   and every linked chat, no per-channel choice; the first answer closes the other copies and says where); "don't ask
-  me anything" sends nothing anywhere, except the truly dangerous requests (G36.17b: `criticalOf` in
+  me anything" sends no permission request anywhere, except the truly dangerous requests (G36.17b: `criticalOf` in
   `packages/hierarchy/src/critical.ts`, a pure function tested as a table, change the table first: system files,
   deletions for good, secrets leaving, real payments, Rasgeth's own protections). Those always ask the person,
   whatever the rules and modes, reach every channel in both modes, and their time running out is a no. The

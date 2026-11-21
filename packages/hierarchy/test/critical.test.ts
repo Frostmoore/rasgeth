@@ -300,6 +300,21 @@ const TABLE: Case[] = [
   ["a new user", ...bash("sudo useradd -m eve"), "critical-system"],
   ["reading /etc", ...bash("cat /etc/os-release"), null],
   ["output to /dev/null", ...bash("make 2>&1 > /dev/null"), null],
+  // 3.10, from Coder: bash's network pseudo-devices and /dev/null seen inside a sed expression.
+  [
+    "a port probe through /dev/tcp",
+    ...bash("(exec 3<>/dev/tcp/127.0.0.1/8091) 2>/dev/null && echo up"),
+    null,
+  ],
+  ["a UDP probe through /dev/udp", ...bash("echo hi > /dev/udp/10.0.0.5/514"), null],
+  [
+    "/dev/null inside a sed expression",
+    ...bash(
+      `cd /w && sed -i "s#cmd=\\"\\$(tr '\\\\0' ' ' < \\"\\$p/cmdline\\" 2>/dev/null)\\" || continue#x#" bin/lab`,
+    ),
+    null,
+  ],
+  ["a real disk still is one", ...bash("echo 1 > /dev/sda"), "critical-delete"],
   [
     "a project inside /usr/src",
     ...bash("rm -rf dist"),

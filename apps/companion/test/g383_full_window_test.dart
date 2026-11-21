@@ -112,6 +112,18 @@ void main() {
       findsOneWidget,
     );
 
+    // God from the bar (3.10): his latest conversation, not a new work session.
+    final before = server.sessions.length;
+    await tester.tap(find.byKey(const Key('rail-a0')));
+    await _settle(tester);
+    final god = desk(tester).panel;
+    expect(god, isA<PanelConversation>());
+    expect((god! as PanelConversation).sessionId, 's1');
+    expect(server.sessions.length, before);
+    await tester.tap(find.byKey(const Key('rail-a2')));
+    await _settle(tester);
+    expect(desk(tester).panelAgentId, 'a2');
+
     // Escape while writing: nothing; with the field empty: back to the panel.
     await tester.enterText(composer(), 'una bozza');
     await _settle(tester, 3);

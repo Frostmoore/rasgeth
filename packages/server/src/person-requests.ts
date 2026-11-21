@@ -308,14 +308,14 @@ export class PersonRequests {
       kind === "plan"
         ? `Plan: ${(info.plan ?? "").split("\n")[0]?.slice(0, 160) ?? ""}`
         : info.questions.map((q) => q.question).join(" / ");
-    if (s.mode === "classifier") return this.answerFor(agent, info, kind, what, s, undefined);
+    // Questions and plans are always the person's (3.10, the person: «i permessi … ci può pensare
+    // il classificatore, ma alle DOMANDE devo rispondere io!»): no mode or timeout hands them over.
     const wait = s.timeoutMs ?? undefined;
     const t = this.timed(signal, wait);
     const answers = await this.o.questions.ask(owner, info, t.signal);
     t.done();
     if (answers) return { by: "human", answers };
     if (!t.timedOut() || wait === undefined) return { by: "nobody" };
-    if (s.afterTimeout === "classifier") return this.answerFor(agent, info, kind, what, s, wait);
     const lang = this.lang(owner);
     const reason = say(lang, "late", { time: span(lang, wait) });
     await this.recordFor(agent, info.requestId, info.sessionId, kind, what, [], {
@@ -425,72 +425,6 @@ export class PersonRequests {
       model: verdict.model,
     });
     return { decision: verdict.decision, by: "classifier", reason };
-  }
-
-  /** The classifier answers a question (or approves a plan) for the person. */
-  private async answerFor(
-    agent: AgentRecord,
-    info: QuestionRequestInfo,
-    kind: "question" | "plan",
-    what: string,
-    s: RequestSettings,
-    after: number | undefined,
-  ): Promise<QuestionOutcome> {
-    const lang = this.lang(agent.ownerId);
-    const late = after === undefined ? "" : `${say(lang, "late", { time: span(lang, after) })} `;
-    const detail =
-      kind === "plan"
-        ? `The agent proposes this plan and waits for a yes:\n${(info.plan ?? "").slice(0, 6000)}`
-        : info.questions
-            .map(
-              (q, i) =>
-                `${i + 1}. ${q.question}${q.multiSelect ? " (several may apply)" : ""}\n${q.options.map((x) => `   - ${x.label}${x.description ? `: ${x.description}` : ""}`).join("\n")}`,
-            )
-            .join("\n");
-    const record = (
-      decision: UnattendedDecision["decision"],
-      reason: string,
-      model: string | null,
-    ) =>
-      this.recordFor(agent, info.requestId, info.sessionId, kind, what, [], {
-        decision,
-        by: "classifier",
-        reason,
-        model,
-      });
-    try {
-      const v = await this.o.classify(
-        this.request(agent, kind, what, detail, s, {
-          sessionId: info.sessionId,
-          ...(kind === "plan"
-            ? { plan: info.plan ?? "" }
-            : { questions: info.questions as Question[] }),
-        }),
-      );
-      if (kind === "plan") {
-        if (!("decision" in v)) throw new Error("no decision");
-        const reason = `${late}${v.reason}`;
-        await record(v.decision, reason, v.model);
-        return {
-          by: "classifier",
-          answers: [[v.decision === "allow" ? PLAN_APPROVE : v.reason]],
-          reason,
-        };
-      }
-      if (!("answers" in v) || !validAnswers(info.questions as Question[], v.answers))
-        throw new Error("no valid answer");
-      const reason = `${late}${v.reason}`;
-      await record("answered", reason, v.model);
-      return { by: "classifier", answers: v.answers, reason };
-    } catch (err) {
-      const reason = `${late}${say(lang, "failedQ", { error: (err as Error).message })}`;
-      await record(
-        kind === "plan" ? "deny" : "answered",
-        `${reason} ${say(lang, kind === "plan" ? "planNo" : "guessed")}`,
-        null,
-      );
-      return { by: "timeout", reason };
-    }
   }
 
   private record(
