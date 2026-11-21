@@ -3,10 +3,10 @@
 // agents under them; aside, the backup model for tasks given up on. A model is changed in a
 // window. Orchestrators and agents take the model of who is above them (the registry's
 // inheritance): the tree says so instead of offering a choice that would not be kept.
-import { familyOf, modelFamilies } from "@redgiant/protocol";
+import { familyOf, groupTitle, modelFamilies, modelGroups } from "@redgiant/protocol";
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import type { Agent, ModelChoice } from "../api.js";
-import { t } from "../i18n.js";
+import { lang, t } from "../i18n.js";
 import {
   IconChat,
   IconChevronDown,
@@ -20,7 +20,7 @@ import {
 import { attempt, getApi } from "../state.js";
 import { type Spec, sameModel, suggestModel } from "../wizard.js";
 import { modelName } from "./ModelMenu.js";
-import { familyName, sourceOf, useModels, vendorName, wayHint, wayLabel } from "./ModelSelect.js";
+import { sourceOf, useModels, wayHint } from "./ModelSelect.js";
 import { Acts, Head, Seg } from "./SettingsKit.js";
 import { useOnNext, useWz } from "./SetupKit.js";
 import { Modal } from "./ui.js";
@@ -308,9 +308,11 @@ export function AssignStep() {
       },
     }));
   const families = modelFamilies(models);
-  const vendors = [...new Set(families.map((f) => f.vendor))];
   const current = open ? val[open] : null;
-  const at = current ? familyOf(families, current) : undefined;
+  const wayHintOf = (m: ModelChoice) => {
+    const at = familyOf(families, m);
+    return at ? wayHint(at.family, at.index) : "";
+  };
   const hasEffort = !!current && !!models.find((x) => key(x) === key(current))?.effort;
   return (
     <div class="wz-inner wide">
@@ -365,56 +367,30 @@ export function AssignStep() {
       {open && (
         <Modal title={roleTitle[open]} onClose={() => setOpen(null)}>
           <p class="wz-lead2">{roleText[open]}</p>
-          {vendors.map((v) => (
-            <div key={v}>
-              <div class="wz-grp">{vendorName(v)}</div>
+          {/* By provider and way, the newest first (2026-11-20, the person). */}
+          {modelGroups(models).map((g) => (
+            <div key={g.id}>
+              <div class="wz-grp">{groupTitle(g, lang.value)}</div>
               <div class="wz-opt">
-                {families
-                  .filter((f) => f.vendor === v)
-                  .map((f) => {
-                    const on = at?.family.id === f.id;
-                    const first = f.routes[0]?.choice;
-                    return (
-                      <button
-                        type="button"
-                        key={f.id}
-                        class={on ? "on" : ""}
-                        aria-pressed={on}
-                        onClick={() => {
-                          if (on || !first) return;
-                          // The same way as the model before, when this one has it.
-                          const was = at?.family.routes[at.index]?.route.kind;
-                          choose(open, f.routes.find((r) => r.route.kind === was)?.choice ?? first);
-                        }}
-                      >
-                        <b>{familyName(f)}</b>
-                        <em>{on ? t("wzChosen") : ""}</em>
-                        <small>
-                          {f.routes.map((_, i) => wayLabel(f, i)).join(` ${t("modelWayOr")} `)}
-                        </small>
-                      </button>
-                    );
-                  })}
+                {g.choices.map((m) => {
+                  const on = !!current && key(current) === key(m);
+                  return (
+                    <button
+                      type="button"
+                      key={key(m)}
+                      class={on ? "on" : ""}
+                      aria-pressed={on}
+                      onClick={() => !on && choose(open, m)}
+                    >
+                      <b>{m.name ?? modelName(m.model)}</b>
+                      <em>{on ? t("wzChosen") : ""}</em>
+                      <small>{wayHintOf(m)}</small>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           ))}
-          {at && at.family.routes.length > 1 && (
-            <>
-              <h4>{t("modelWay")}</h4>
-              <Seg
-                label={t("modelWay")}
-                value={String(at.index)}
-                onChange={(x) => {
-                  const r = at.family.routes[Number(x)];
-                  if (r) choose(open, r.choice);
-                }}
-                options={at.family.routes.map(
-                  (_, i) => [String(i), wayLabel(at.family, i)] as const,
-                )}
-              />
-              <p class="ui-help">{wayHint(at.family, at.index)}</p>
-            </>
-          )}
           {open === "backup" && (
             <>
               <div class="wz-grp">{t("wzNone")}</div>

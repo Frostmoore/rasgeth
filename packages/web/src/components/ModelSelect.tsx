@@ -1,12 +1,14 @@
 // One way to choose a model wherever one is chosen (G24.14d): the wizard, an agent's settings,
-// the chat's settings. The models connected now, by name, each once (G40.9b): a model that can go
+// the chat's settings. Our drawn list (3.10), by provider and way with the newest first. The models connected now, by name, each once (G40.9b): a model that can go
 // through the subscription and through the API key shows the two as a drawn choice, with a line
 // on what each means; with one way the way still shows, as a small label.
 import {
   familyOf,
+  groupTitle,
   KEY_PROVIDERS,
   type ModelFamily,
   modelFamilies,
+  modelGroups,
   OWN_SERVER_ID,
   routeHint,
   routeLabel,
@@ -16,6 +18,7 @@ import type { ModelChoice } from "../api.js";
 import { lang, t } from "../i18n.js";
 import { getApi } from "../state.js";
 import { modelName, modelNote } from "./ModelMenu.js";
+import { DropChoice, type DropOption } from "./ui.js";
 
 const EFFORTS = ["low", "medium", "high", "max"] as const;
 
@@ -111,9 +114,29 @@ export function ModelWay({
   );
 }
 
+/** An effort in words, for the drawn menus. */
+export const effortOptions = () =>
+  EFFORTS.map((x) => ({ id: x as string, label: t(`effort_${x}` as never) }));
+
 /**
- * The model menu by family, and the way under it. `value` and `onChange` speak
- * `provider/model` ("" for `empty`), like the forms that keep a string.
+ * The models as the menus list them (2026-11-20, the person): under a heading per provider and
+ * way («Anthropic · Abbonamento Claude», «Anthropic · Chiave API»…), the newest first in each.
+ */
+export function modelOptions(models: ModelChoice[]): DropOption<string>[] {
+  return modelGroups(models).flatMap((g) => {
+    const group = groupTitle(g, lang.value);
+    return g.choices.map((c) => ({
+      id: key(c),
+      label: `${c.name ?? modelName(c.model)}${modelNote(c)}`,
+      group,
+    }));
+  });
+}
+
+/**
+ * The model menu (our drawn list, by provider and way, with a search when it is long) and the way
+ * under it. `value` and `onChange` speak `provider/model` ("" for `empty`), like the forms that
+ * keep a string.
  */
 export function ModelFamilySelect({
   value,
@@ -140,6 +163,7 @@ export function ModelFamilySelect({
   selectClass?: string;
   title?: string;
   disabled?: boolean;
+  /** Called as the list opens (a way connected meanwhile shows up). */
   onFocus?: () => void;
   compact?: boolean;
   /** The model whose way shows when `value` is empty (the agent's, in the composer). */
@@ -149,45 +173,31 @@ export function ModelFamilySelect({
   const [provider = "", ...rest] = value.split("/");
   const at = value ? familyOf(families, { provider, model: rest.join("/") }) : undefined;
   const way = at ?? (!value && wayFor ? familyOf(families, wayFor) : undefined);
-  const vendors = new Set(families.map((f) => f.vendor));
-  const option = (f: ModelFamily<ModelChoice>) => (
-    <option key={f.id} value={f.id}>
-      {familyName(f)}
-      {modelNote(f.routes[0]?.choice ?? {})}
-    </option>
-  );
+  const listed = modelOptions(models);
+  const options: DropOption<string>[] = [
+    ...(empty !== undefined || !value
+      ? [{ id: "", label: emptyText ?? empty ?? t("modelPick") }]
+      : []),
+    ...(value && !at ? [{ id: value, label: modelName(rest.join("/")) }] : []),
+    ...listed,
+  ];
   return (
     <>
-      <select
-        class={selectClass}
-        aria-label={label ?? t("model")}
-        title={title}
-        disabled={disabled}
-        onFocus={onFocus}
-        value={at ? at.family.id : value}
-        onChange={(e) => {
-          const v = (e.target as HTMLSelectElement).value;
+      <DropChoice
+        class={`model-drop${selectClass ? ` ${selectClass}` : ""}`}
+        label={label ?? t("model")}
+        {...(title !== undefined && { title })}
+        {...(disabled !== undefined && { disabled })}
+        {...(onFocus && { onOpen: onFocus })}
+        {...(listed.length > 8 && { search: t("modelSearch") })}
+        value={value}
+        options={options}
+        onChange={(v) => {
           if (!v) return onChange("");
-          const f = families.find((x) => x.id === v);
-          if (!f) return;
-          // The same way as before when this model has it, else its first (the subscription).
-          const was = way?.family.routes[way.index]?.route.kind;
-          const r = f.routes.find((x) => x.route.kind === was) ?? f.routes[0];
-          if (r) onChange(key(r.choice), r.choice);
+          const m = models.find((x) => key(x) === v);
+          if (m) onChange(v, m);
         }}
-      >
-        {(empty !== undefined || !value) && (
-          <option value="">{emptyText ?? empty ?? t("modelPick")}</option>
-        )}
-        {value && !at && <option value={value}>{modelName(rest.join("/"))}</option>}
-        {vendors.size > 1
-          ? [...vendors].map((v) => (
-              <optgroup key={v} label={vendorName(v)}>
-                {families.filter((f) => f.vendor === v).map(option)}
-              </optgroup>
-            ))
-          : families.map(option)}
-      </select>
+      />
       {way && (
         <ModelWay
           family={way.family}
@@ -232,18 +242,14 @@ export function ModelSelect({
         }}
       />
       {value && effort && (
-        <select
-          aria-label={t("effort")}
+        <DropChoice
+          class="effort-drop"
+          label={t("effort")}
           title={t("effortHint")}
           value={value.effort ?? "medium"}
-          onChange={(e) => onChange({ ...value, effort: (e.target as HTMLSelectElement).value })}
-        >
-          {EFFORTS.map((x) => (
-            <option key={x} value={x}>
-              {t(`effort_${x}` as never)}
-            </option>
-          ))}
-        </select>
+          options={effortOptions()}
+          onChange={(v) => onChange({ ...value, effort: v })}
+        />
       )}
     </div>
   );

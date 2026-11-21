@@ -148,7 +148,7 @@ describe("Settings > Models and subscriptions, as the wizard", () => {
     fireEvent.keyDown(window, { key: "Escape" });
 
     open(/^claude-opus-5/);
-    await waitFor(() => expect(r.getByRole("combobox", { name: /Modello/ })).toBeTruthy());
+    await waitFor(() => expect(r.getByRole("button", { name: /^Modello:/ })).toBeTruthy());
     fireEvent.keyDown(window, { key: "Escape" });
 
     open(/^Brave/);

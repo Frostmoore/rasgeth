@@ -13,9 +13,9 @@ import { IconChat, IconKey, IconMonitor, IconServer, IconSpark } from "../icons.
 import { getApi, refreshLimits } from "../state.js";
 import type { Way } from "../wizard.js";
 import { modelName } from "./ModelMenu.js";
-import { ModelFamilySelect } from "./ModelSelect.js";
+import { effortOptions, ModelFamilySelect } from "./ModelSelect.js";
 import { Acts } from "./SettingsKit.js";
-import { Field, Pick } from "./ui.js";
+import { DropChoice, Field, Pick } from "./ui.js";
 
 export { explain } from "../explain.js";
 
@@ -492,8 +492,6 @@ export function ServerPanel({ s, onChange }: { s: SetupState; onChange: () => vo
   );
 }
 
-const EFFORTS = ["low", "medium", "high", "max"] as const;
-
 /** The model agents use when nobody chose another, among those connected, and its effort. */
 export function DefaultModel({ s, onSaved }: { s: SetupState; onSaved: () => void }) {
   const [models, setModels] = useState<ModelChoice[]>();
@@ -541,13 +539,12 @@ export function DefaultModel({ s, onSaved }: { s: SetupState; onSaved: () => voi
           </div>
         </Field>
         <Field label={t("effort")} help={t("brainEffortHelp")}>
-          <select value={effort} onChange={(e) => setEffort((e.target as HTMLSelectElement).value)}>
-            {EFFORTS.map((x) => (
-              <option key={x} value={x}>
-                {t(`effort_${x}`)}
-              </option>
-            ))}
-          </select>
+          <DropChoice
+            label={t("effort")}
+            value={effort}
+            options={effortOptions()}
+            onChange={setEffort}
+          />
         </Field>
       </div>
       <div class="row">

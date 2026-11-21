@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 // Subscription or API key (G40.9b): a model that goes both ways shows once, with a drawn choice of
 // the way and a line on what it means; with one way the way still shows.
-import { cleanup, fireEvent, render, waitFor } from "@testing-library/preact";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/preact";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ModelChoice } from "../src/api.js";
 import { lang } from "../src/i18n.js";
@@ -35,8 +35,18 @@ beforeEach(() => {
 });
 afterEach(cleanup);
 
-const options = (c: Element) =>
-  [...(c.querySelector("select")?.querySelectorAll("option") ?? [])].map((o) => o.textContent);
+/** Opens the drawn model menu and reads it: headings and models, in order. */
+const options = (c: Element) => {
+  fireEvent.click(c.querySelector(".model-drop .ui-drop-current") as Element);
+  const list = document.querySelector(".ui-drop-list");
+  return [...(list?.children ?? [])]
+    .filter((e) => !e.matches("input"))
+    .map((e) =>
+      e.matches(".ui-drop-group")
+        ? `# ${e.textContent}`
+        : e.querySelector(".ui-drop-words span")?.textContent,
+    );
+};
 
 describe("ModelSelect", () => {
   it("shows a model reached both ways once, with the drawn choice and its line", () => {
@@ -48,7 +58,14 @@ describe("ModelSelect", () => {
         models={MODELS}
       />,
     );
-    expect(options(container)).toEqual(["Opus 5.5", "Haiku 4.5"]);
+    expect(options(container)).toEqual([
+      "# Anthropic · Abbonamento Claude",
+      "Opus 5.5",
+      "# Anthropic · Chiave API",
+      "Opus 5.5",
+      "Haiku 4.5",
+    ]);
+    fireEvent.click(container.querySelector(".model-drop .ui-drop-current") as Element);
     const sub = getByText("Abbonamento");
     expect(sub.getAttribute("aria-pressed")).toBe("true");
     expect(getByText("Nei limiti del tuo piano: non paghi a consumo.")).toBeTruthy();
@@ -67,9 +84,10 @@ describe("ModelSelect", () => {
       />,
     );
     expect(getByText("A consumo con la tua chiave API: conta per il tetto di spesa.")).toBeTruthy();
-    const select = container.querySelector("select") as HTMLSelectElement;
-    fireEvent.change(select, { target: { value: "anthropic/claude-haiku-4-5" } });
+    options(container);
+    fireEvent.click(screen.getByRole("option", { name: "Haiku 4.5" }));
     expect(changes[0]).toEqual({ provider: "anthropic", model: "claude-haiku-4-5" });
+    expect(container.querySelector("select")).toBeNull();
   });
 
   it("shows the only way as a small label", () => {
@@ -83,6 +101,44 @@ describe("ModelSelect", () => {
     );
     expect(container.querySelector(".model-way-one")?.textContent).toBe("API key");
     expect(container.querySelector(".model-way-seg")).toBeNull();
+  });
+});
+
+describe("The model menu by provider and way (2026-11-20)", () => {
+  it("puts the newest first and searches a long list", () => {
+    const many: ModelChoice[] = [
+      { provider: "anthropic", model: "claude-haiku-4-5", effort: false, name: "Haiku 4.5" },
+      {
+        provider: "anthropic",
+        model: "claude-fable-5-2",
+        effort: true,
+        name: "Fable 5.2",
+        released: "2026-11-09",
+      },
+      ...Array.from({ length: 8 }, (_, i) => ({
+        provider: "openrouter",
+        model: `vendor/model-${i}`,
+        effort: false,
+      })),
+    ];
+    const { container } = render(
+      <ModelSelect value={null} onChange={() => {}} models={many} empty="Il predefinito" />,
+    );
+    const shown = options(container);
+    expect(shown.slice(0, 4)).toEqual([
+      "Il predefinito",
+      "# Anthropic · Chiave API",
+      "Fable 5.2",
+      "Haiku 4.5",
+    ]);
+    expect(shown).toContain("# OpenRouter · Chiave API");
+    const search = screen.getByRole("searchbox", { name: "Cerca un modello" });
+    fireEvent.input(search, { target: { value: "fable" } });
+    expect(
+      [...document.querySelectorAll(".ui-drop-list [role=option]")].map((o) => o.textContent),
+    ).toEqual(["Fable 5.2"]);
+    fireEvent.input(search, { target: { value: "nothing like it" } });
+    expect(screen.getByText("Nessun risultato.")).toBeTruthy();
   });
 });
 

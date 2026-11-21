@@ -126,7 +126,7 @@ describe("«Migliora le istruzioni» (G36.13)", () => {
     await waitFor(() =>
       expect(r.getByText(/Stima: circa 2200 token, meno di un centesimo/)).toBeTruthy(),
     );
-    expect(r.getByRole("combobox", { name: "Il modello che scrive" })).toBeTruthy();
+    expect(r.getByRole("button", { name: /^Il modello che scrive:/ })).toBeTruthy();
     expect(r.getByText("Il modello di Zeus")).toBeTruthy();
     fireEvent.input(r.getByPlaceholderText(/più conciso/), { target: { value: "più breve" } });
     fireEvent.click(r.getByRole("button", { name: "Migliora" }));
@@ -165,10 +165,9 @@ describe("«Migliora le istruzioni» (G36.13)", () => {
     );
     await waitFor(() => r.getByText("Migliora le istruzioni"));
     fireEvent.click(r.getByText("Migliora le istruzioni"));
-    await waitFor(() => r.getByRole("combobox", { name: "Il modello che scrive" }));
-    fireEvent.change(r.getByRole("combobox", { name: "Il modello che scrive" }), {
-      target: { value: "anthropic/claude-x" },
-    });
+    await waitFor(() => r.getByRole("button", { name: /^Il modello che scrive:/ }));
+    fireEvent.click(r.getByRole("button", { name: /^Il modello che scrive:/ }));
+    fireEvent.click(r.getByRole("option", { name: "claude-x" }));
     expect(JSON.parse(localStorage.getItem("rg.refiner.model") ?? "null")).toMatchObject({
       provider: "anthropic",
       model: "claude-x",

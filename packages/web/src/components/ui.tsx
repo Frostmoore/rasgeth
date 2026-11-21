@@ -194,6 +194,8 @@ export interface DropOption<T extends string> {
   id: T;
   label: string;
   hint?: string;
+  /** The heading it sits under; a new heading starts where the group changes. */
+  group?: string;
 }
 
 /**
@@ -210,6 +212,9 @@ export function DropChoice<T extends string>({
   title,
   class: c,
   disabled,
+  search,
+  current,
+  onOpen,
 }: {
   value: T;
   options: DropOption<T>[];
@@ -219,18 +224,33 @@ export function DropChoice<T extends string>({
   title?: string;
   class?: string;
   disabled?: boolean;
+  /** A search field on top of the list, with these words as its placeholder (long lists). */
+  search?: string;
+  /** The button's words when they differ from the chosen option's. */
+  current?: string;
+  /** Called as the list opens (to read the options again). */
+  onOpen?: () => void;
 }) {
   /** Where the list opens: under the button, from its left, or from its right near the edge. */
   const [at, setAt] = useState<{ left?: number; right?: number; top: number; width: number }>();
   const btn = useRef<HTMLButtonElement>(null);
   const list = useRef<HTMLDivElement>(null);
   const id = useId();
+  const [query, setQuery] = useState("");
   const cur = options.find((o) => o.id === value) ?? options[0];
+  const q = query.trim().toLowerCase();
+  const shown = q
+    ? options.filter((o) =>
+        [o.label, o.hint ?? "", o.group ?? ""].some((w) => w.toLowerCase().includes(q)),
+      )
+    : options;
   const close = (focus = true) => {
     setAt(undefined);
+    setQuery("");
     if (focus) btn.current?.focus();
   };
   const open = () => {
+    onOpen?.();
     const r = btn.current?.getBoundingClientRect();
     const width = Math.max(r?.width ?? 0, 200);
     const top = (r?.bottom ?? 0) + 4;
@@ -267,11 +287,11 @@ export function DropChoice<T extends string>({
       if (e.key === "Escape") e.preventDefault();
       return close(e.key === "Escape");
     }
+    const typing = (e.target as HTMLElement).tagName === "INPUT";
     const move: Record<string, () => void> = {
       ArrowDown: () => go(i + 1),
       ArrowUp: () => go(i - 1),
-      Home: () => go(0),
-      End: () => go(items.length - 1),
+      ...(!typing && { Home: () => go(0), End: () => go(items.length - 1) }),
     };
     const f = move[e.key];
     if (!f) return;
@@ -288,7 +308,7 @@ export function DropChoice<T extends string>({
         aria-haspopup="listbox"
         aria-expanded={!!at}
         aria-controls={at ? id : undefined}
-        aria-label={`${label}: ${cur?.label ?? ""}`}
+        aria-label={`${label}: ${current ?? cur?.label ?? ""}`}
         title={title ?? label}
         disabled={disabled}
         onClick={() => (at ? close() : open())}
@@ -300,7 +320,7 @@ export function DropChoice<T extends string>({
           }
         }}
       >
-        <span>{cur?.label}</span>
+        <span>{current ?? cur?.label}</span>
         <IconChevron open={!!at} size={12} />
       </button>
       {at && (
@@ -317,7 +337,25 @@ export function DropChoice<T extends string>({
           }}
           onKeyDown={listKey}
         >
-          {options.map((o) => (
+          {search && (
+            <input
+              class="ui-drop-search"
+              type="search"
+              aria-label={search}
+              placeholder={search}
+              value={query}
+              onInput={(e) => setQuery((e.target as HTMLInputElement).value)}
+            />
+          )}
+          {search && shown.length === 0 && <p class="ui-drop-none">{t("uiDropNone")}</p>}
+          {shown.flatMap((o, i) => [
+            ...(o.group && o.group !== shown[i - 1]?.group
+              ? [
+                  <div key={`g:${o.group}`} class="ui-drop-group" role="presentation">
+                    {o.group}
+                  </div>,
+                ]
+              : []),
             <button
               type="button"
               key={o.id}
@@ -337,8 +375,8 @@ export function DropChoice<T extends string>({
                 <span>{o.label}</span>
                 {o.hint && <small>{o.hint}</small>}
               </span>
-            </button>
-          ))}
+            </button>,
+          ])}
         </div>
       )}
     </span>
