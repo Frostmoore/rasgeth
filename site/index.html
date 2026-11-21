@@ -91,6 +91,21 @@
         <li><h3><span class="badge"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-shield" /></svg></span><span lang="it">Sicuro di base</span><span lang="en">Safe by default</span></h3>
           <p><span lang="it">Un guardiano chiede prima di scrivere fuori dal progetto; ogni passo finisce in un registro a prova di manomissione.</span><span lang="en">A guardian asks before anything is written outside the project; every step goes to a tamper-evident log.</span></p></li>
       </ul>
+      <h2 id="h-systems" class="systems-title"><span lang="it">I sistemi di Rasgeth</span><span lang="en">Rasgeth's own systems</span></h2>
+      <ul class="points systems">
+        <li><h3><span class="badge"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-users" /></svg></span>Constellation</h3>
+          <p><span lang="it">La squadra di agenti a livelli, ognuno con i suoi permessi: una richiesta sale i livelli e arriva a te solo quando serve.</span><span lang="en">The team of agents in levels, each with its permissions: a request climbs the levels and reaches you only when it has to.</span></p></li>
+        <li><h3><span class="badge"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-shield" /></svg></span>Event Horizon</h3>
+          <p><span lang="it">Le protezioni: le richieste davvero pericolose arrivano sempre a te, ovunque; il resto segue la tua scelta, con un classificatore che spiega perché.</span><span lang="en">The protections: truly dangerous requests always reach you, everywhere; the rest follows your choice, with a classifier that says why.</span></p></li>
+        <li><h3><span class="badge"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-canvas" /></svg></span>Nebula</h3>
+          <p><span lang="it">Il Canvas accanto alla chat, con editor veri (documenti, fogli, presentazioni, immagini, video) che tu e l'agente usate sullo stesso file.</span><span lang="en">The Canvas beside the chat, with real editors (documents, sheets, slides, pictures, video) that you and the agent use on the same file.</span></p></li>
+        <li><h3><span class="badge"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-cpu" /></svg></span>Deep Field</h3>
+          <p><span lang="it">Modelli locali più grandi della scheda video: il resto arriva dall'SSD, e i prossimi esperti si caricano in anticipo.</span><span lang="en">Local models bigger than the graphics card: the rest comes from the SSD, and the next experts are loaded ahead.</span></p></li>
+        <li><h3><span class="badge"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-layers" /></svg></span>Filament</h3>
+          <p><span lang="it">La disciplina della cache: lo stesso prefisso per tutta la conversazione, una storia che cresce come un filo, i riassunti come eventi espliciti.</span><span lang="en">The prompt-cache discipline: the same prefix for the whole conversation, a history that only grows like a thread, summaries as explicit events.</span></p></li>
+        <li><h3><span class="badge"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-disk" /></svg></span>Persistar</h3>
+          <p><span lang="it">Il contesto di ogni conversazione con un modello locale salvato su disco: tornandoci, anche dopo un riavvio, non si rilegge tutto.</span><span lang="en">Each conversation's context with a local model saved on disk: coming back to it, even after a restart, does not read everything again.</span></p></li>
+      </ul>
     </div>
   </section>
 
@@ -98,7 +113,7 @@
     <div class="wrap feature">
       <div class="text">
         <div class="kicker"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-cpu" /></svg><span lang="it">Modelli locali</span><span lang="en">Local models</span></div>
-        <h2 id="h-local"><span lang="it">Modelli che superano la tua scheda video</span><span lang="en">Local models that outgrow your graphics card</span></h2>
+        <h2 id="h-local"><span lang="it">Deep Field: modelli che superano la tua scheda video</span><span lang="en">Deep Field: local models that outgrow your graphics card</span></h2>
         <ul>
           <li><span lang="it">llama.cpp incluso e nativo: CUDA o Vulkan su Windows, Metal sul Mac. Scegli un GGUF da Hugging Face e Rasgeth stima quanto andrà veloce sul tuo computer prima di scaricarlo.</span><span lang="en">llama.cpp comes bundled and native: CUDA or Vulkan on Windows, Metal on the Mac. Pick a GGUF from Hugging Face and Rasgeth estimates how fast it will run on your computer before you download it.</span></li>
           <li><span lang="it"><strong>Flusso dall'SSD</strong>: un modello più grande della scheda tiene sulla scheda e in RAM quello che si usa di più e legge il resto dall'SSD; nei modelli a esperti, gli esperti usati di recente restano sulla scheda.</span><span lang="en"><strong>SSD stream</strong>: a model bigger than the card keeps what is used most on the card and in RAM and reads the rest from the SSD; for a mixture of experts, the ones used lately are cached on the card.</span></li>
@@ -112,7 +127,7 @@
   <section aria-labelledby="h-canvas">
     <div class="wrap">
       <div class="kicker"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-canvas" /></svg>Canvas</div>
-      <h2 id="h-canvas"><span lang="it">Il Canvas: qualsiasi file, in formati aperti</span><span lang="en">The Canvas: any file, in open formats</span></h2>
+      <h2 id="h-canvas"><span lang="it">Nebula, il Canvas: qualsiasi file, in formati aperti</span><span lang="en">Nebula, the Canvas: any file, in open formats</span></h2>
       <div class="feature">
         <ul>
           <li><span lang="it">Chiedi a un agente di mostrarti un file e si apre accanto alla chat: video e audio, PDF, Word, Excel e PowerPoint come si stampano, modelli 3D da girare, archivi, caratteri, codice e dati.</span><span lang="en">Ask an agent to show you a file and it opens beside the chat: video and audio, PDF, Word, Excel and PowerPoint laid out as they print, 3D models to turn, archives, fonts, code and data.</span></li>
@@ -130,7 +145,7 @@
   <section class="alt" aria-labelledby="h-team">
     <div class="wrap">
       <div class="kicker"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-tree" /></svg><span lang="it">Agenti e gerarchia</span><span lang="en">Agents and hierarchy</span></div>
-      <h2 id="h-team"><span lang="it">Una squadra di agenti, con compiti verificati</span><span lang="en">A team of agents, with tasks that are checked</span></h2>
+      <h2 id="h-team"><span lang="it">Constellation: una squadra di agenti, con compiti verificati</span><span lang="en">Constellation: a team of agents, with tasks that are checked</span></h2>
       <p class="dimmed"><span lang="it">Parli con <em>God</em>, dal browser, dal telefono o da una chat. God guida i tuoi progetti; ogni progetto ha un <em>orchestratore</em> che crea agenti (ognuno nel suo worktree git) e sotto-agenti, assegna i compiti e unisce il lavoro.</span><span lang="en">You talk to <em>God</em>, from the browser, your phone or a chat. God runs your projects; each project has an <em>orchestrator</em> that creates agents (each in its own git worktree) and short-lived sub-agents, hands them tasks and merges their work.</span></p>
       <ul class="mascots chain">
 <!-- mascots:hierarchy -->

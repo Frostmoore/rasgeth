@@ -107,9 +107,28 @@ conversations you exported from ChatGPT and Claude.
 Options, updates, backups, uninstalling and every environment variable are in
 [docs/INSTALL.md](docs/INSTALL.md).
 
+## Rasgeth's own systems
+
+Six things only Rasgeth does have a name of their own; everything else keeps its plain name (Knowledge,
+Automations, the Keychain, Extensions…).
+
+- **Constellation**: the team of agents in levels (God, the orchestrators, the agents and their
+  sub-agents), each with its permissions, so a request climbs the levels and reaches you only when it has to.
+- **Event Horizon**: the protections. Truly dangerous requests (system files, deletions for good, secrets
+  leaving, real payments) always reach you, everywhere; the rest follows your choice, with a classifier
+  that decides with its reason in the log, and a guardian on the project's folder.
+- **Nebula**: the Canvas beside the chat, with real editors (documents, sheets, slides, pictures, video)
+  that you and the agent use on the same file.
+- **Deep Field**: local models bigger than the graphics card. What is used most stays on the card and in
+  RAM, the rest comes from the SSD, and the next experts are loaded ahead while the current ones compute.
+- **Filament**: the prompt-cache discipline. A conversation keeps the same prefix from start to end, its
+  history only grows, like a thread, and a summary is an explicit event, so the cache keeps paying.
+- **Persistar**: each conversation's context with a local model is saved on disk, so coming back to it,
+  even after a restart, does not read everything again.
+
 ## Highlights
 
-### Local models that outgrow your graphics card
+### Local models that outgrow your graphics card (Deep Field, Persistar)
 
 <p align="center">
   <img src="docs/screenshots/local-models.png" alt="This computer (simulated by the demo): the graphics card, the RAM and the SSD, with SSD stream switched on" width="640" />
@@ -117,16 +136,16 @@ Options, updates, backups, uninstalling and every environment variable are in
 
 - llama.cpp comes bundled and native: CUDA or Vulkan on Windows, Metal on the Mac. Pick a GGUF from
   Hugging Face and Rasgeth estimates how fast it will run on your computer before you download it.
-- **SSD stream**: a model bigger than the card keeps what is used most on the card and in RAM and reads
+- **Deep Field** (_SSD stream_ in the settings): a model bigger than the card keeps what is used most on the card and in RAM and reads
   the rest from the SSD; for a mixture of experts, the experts leave the card and the ones used lately
   are cached there.
 - Rasgeth's own llama.cpp patch ([`engine/llama-patches`](engine/llama-patches)) copies the next
   layer's experts to the card while it computes the current one, and bigger passes speed up long
   prompts (both experimental, off by default).
-- The KV cache is saved on disk and restored by prefix, even after a restart (inspired by
+- **Persistar**: the KV cache is saved on disk and restored by prefix, even after a restart (inspired by
   [DwarfStar 4](https://github.com/antirez/ds4)), so a long conversation does not start over.
 
-### A team of agents, with tasks that are checked
+### Constellation: a team of agents, with tasks that are checked
 
 - You talk to _God_, from the browser, your phone or a chat. God runs your projects; each project has an
   _orchestrator_ that creates agents (each in its own git worktree) and short-lived sub-agents, hands
@@ -201,7 +220,7 @@ key from a window of its own, and from then on every agent can use it (unless yo
 You see the package before it installs: what it adds, which sites it may reach (or none), its code
 and its tests, with _Approve and install_ off until every test passes.
 
-### The Canvas: any file, in open formats
+### Nebula, the Canvas: any file, in open formats
 
 ![The Canvas beside the chat: a 3D model to turn and zoom, light theme](docs/screenshots/canvas.png)
 
@@ -247,11 +266,11 @@ and its tests, with _Approve and install_ off until every test passes.
   message. Switch tools off for every agent or one by one; essential tools stay on and say why. An
   agent missing a tool asks you for it by name.
 - Every message shows tokens read, cached and generated, context use and timings; budgets per agent, per
-  project and overall. The prompt prefix stays stable, so caching keeps costs down.
+  project and overall. The prompt prefix stays stable (Filament), so caching keeps costs down.
 - `find_files` finds files and programs anywhere on the computer in seconds (the system's index when
   there is one, the likely places first otherwise), instead of an agent walking the whole disk.
 
-### Safe by default
+### Event Horizon: safe by default
 
 - Agents work in the project's folder with a guardian: writing outside it asks you. Docker sandboxes
   with an egress proxy are there for servers that want them.
@@ -380,7 +399,7 @@ Rasgeth is in pre-alpha. What comes next, in order:
   beside the whole Rasgeth), new file names for every download, the `rasgeth` command and the site
   [rasgeth.it](https://rasgeth.it/). The data stay where they are; moving over is a clean install that the
   page guides, with a checked backup first.
-- **3.10 — Video, the whole app, and 3D generation** (3.10.0–3.10.2 released: the video editor and its second part, and the app doing natively everything the page does, then a fingerprint before a password and a quicker inspector, the app in the tray and the wake word in the app; 3D generation follows): a video editor
+- **3.10 — Video, the whole app, and 3D generation** (3.10.0–3.10.3 released: the video editor and its second part, and the app doing natively everything the page does, then a fingerprint before a password and a quicker inspector, the app in the tray and the wake word in the app, then names for Rasgeth's own systems on the page, in the app and here; 3D generation follows): a video editor
   with tracks, shared by you and the agent. The agent assembles a first cut from your clips (words, silences,
   speech or cover shots), writes the subtitles and puts music under them that dips when someone speaks; you
   cut, move clips across tracks, trim with ripple, make J- and L-cuts, add transitions, titles and Ken Burns,
