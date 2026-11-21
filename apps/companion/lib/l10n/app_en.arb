@@ -12572,5 +12572,70 @@
   "fsrHint": "The words in every conversation: the agents', the Chat's and the inspectors'. At least two letters.",
   "fsrNone": "No results.",
   "fsrUntitled": "New conversation",
-  "fsrInspector": "Inspector"
+  "fsrInspector": "Inspector",
+  "g7WzRoleFull": "A complete Rasgeth",
+  "g7WzRoleFullText": "Its agents, projects and chats live here.",
+  "g7WzRoleNode": "A node of another Rasgeth",
+  "g7WzRoleNodeText": "It lends this machine to another Rasgeth: commands, local models, room for projects and backups.",
+  "g7WzNoWay": "No way of thinking yet",
+  "g7WzWays": "Connected: {ways}",
+  "@g7WzWays": {
+    "placeholders": {
+      "ways": {
+        "type": "String"
+      }
+    }
+  },
+  "g7WzWayKeys": "API keys",
+  "g7WzWayLocal": "a model on this computer",
+  "g7WzWayServer": "your own server",
+  "g7WzOpenModels": "Models and subscriptions",
+  "g7WzNoLocal": "No model on this computer yet",
+  "g7WzLocal": "In use: {model}",
+  "@g7WzLocal": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "g7WzOpenLocal": "Models on this computer",
+  "g7WzAssignLead": "Who decides gets the strongest model, who answers a quick one: God, Demi-God, the assistants and the others, each with its own.",
+  "g7WzOpenAssign": "Choose who uses which model",
+  "g7WzTelegramLead": "Write to Demi-God from your phone, also by voice: a bot of your own, made in a minute with BotFather.",
+  "g7WzOpenTelegram": "Set up Telegram",
+  "g7WzOpenBackups": "Backups and their destinations",
+  "g7WzOpenCode": "GitHub and Gitea",
+  "g7WzOpenRemote": "Access from outside home",
+  "g7WzPresetText": "{n} kinds of action only you approve",
+  "@g7WzPresetText": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "g7WzSafetyMore": "Everything about safety and costs",
+  "g7WzCustom": "Your own choice",
+  "g7WzPassword": "Password",
+  "g7WzPasswordAgain": "The password again",
+  "g7WzDiskFree": "Free on disk: {gb} GB",
+  "@g7WzDiskFree": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "g7WzRedo": "Redo the setup",
+  "g7WzRedoText": "The page's guided setup, one step at a time: every step is saved at once.",
+  "g7WzContinue": "Continue the setup",
+  "g7WzContinueText": "Models, who uses which, imports, Telegram, backups, access from outside and safety: one step at a time, each one can be skipped.",
+  "g7AcpRemove": "Remove",
+  "g7ImpOpen": "Import from other agents",
+  "g7ImpRow": "From Claude Code, Codex, Cursor and the chat exports",
+  "g7AcpRow": "Claude Code, Codex, Gemini CLI as agents of a project",
+  "g7PlRow": "Every change to the settings and to the code, undoable",
+  "g7NewsRow": "What's new in this version",
+  "g7HubTitle": "Setup, imports and history"
 }

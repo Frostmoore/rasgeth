@@ -30434,6 +30434,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Inspector'**
   String get fsrInspector;
+
+  /// No description provided for @g7WzRoleFull.
+  ///
+  /// In en, this message translates to:
+  /// **'A complete Rasgeth'**
+  String get g7WzRoleFull;
+
+  /// No description provided for @g7WzRoleFullText.
+  ///
+  /// In en, this message translates to:
+  /// **'Its agents, projects and chats live here.'**
+  String get g7WzRoleFullText;
+
+  /// No description provided for @g7WzRoleNode.
+  ///
+  /// In en, this message translates to:
+  /// **'A node of another Rasgeth'**
+  String get g7WzRoleNode;
+
+  /// No description provided for @g7WzRoleNodeText.
+  ///
+  /// In en, this message translates to:
+  /// **'It lends this machine to another Rasgeth: commands, local models, room for projects and backups.'**
+  String get g7WzRoleNodeText;
+
+  /// No description provided for @g7WzNoWay.
+  ///
+  /// In en, this message translates to:
+  /// **'No way of thinking yet'**
+  String get g7WzNoWay;
+
+  /// No description provided for @g7WzWays.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected: {ways}'**
+  String g7WzWays(String ways);
+
+  /// No description provided for @g7WzWayKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'API keys'**
+  String get g7WzWayKeys;
+
+  /// No description provided for @g7WzWayLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'a model on this computer'**
+  String get g7WzWayLocal;
+
+  /// No description provided for @g7WzWayServer.
+  ///
+  /// In en, this message translates to:
+  /// **'your own server'**
+  String get g7WzWayServer;
+
+  /// No description provided for @g7WzOpenModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Models and subscriptions'**
+  String get g7WzOpenModels;
+
+  /// No description provided for @g7WzNoLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'No model on this computer yet'**
+  String get g7WzNoLocal;
+
+  /// No description provided for @g7WzLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'In use: {model}'**
+  String g7WzLocal(String model);
+
+  /// No description provided for @g7WzOpenLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Models on this computer'**
+  String get g7WzOpenLocal;
+
+  /// No description provided for @g7WzAssignLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Who decides gets the strongest model, who answers a quick one: God, Demi-God, the assistants and the others, each with its own.'**
+  String get g7WzAssignLead;
+
+  /// No description provided for @g7WzOpenAssign.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose who uses which model'**
+  String get g7WzOpenAssign;
+
+  /// No description provided for @g7WzTelegramLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Write to Demi-God from your phone, also by voice: a bot of your own, made in a minute with BotFather.'**
+  String get g7WzTelegramLead;
+
+  /// No description provided for @g7WzOpenTelegram.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up Telegram'**
+  String get g7WzOpenTelegram;
+
+  /// No description provided for @g7WzOpenBackups.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups and their destinations'**
+  String get g7WzOpenBackups;
+
+  /// No description provided for @g7WzOpenCode.
+  ///
+  /// In en, this message translates to:
+  /// **'GitHub and Gitea'**
+  String get g7WzOpenCode;
+
+  /// No description provided for @g7WzOpenRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Access from outside home'**
+  String get g7WzOpenRemote;
+
+  /// No description provided for @g7WzPresetText.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} kinds of action only you approve'**
+  String g7WzPresetText(String n);
+
+  /// No description provided for @g7WzSafetyMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything about safety and costs'**
+  String get g7WzSafetyMore;
+
+  /// No description provided for @g7WzCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Your own choice'**
+  String get g7WzCustom;
+
+  /// No description provided for @g7WzPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get g7WzPassword;
+
+  /// No description provided for @g7WzPasswordAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'The password again'**
+  String get g7WzPasswordAgain;
+
+  /// No description provided for @g7WzDiskFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free on disk: {gb} GB'**
+  String g7WzDiskFree(String gb);
+
+  /// No description provided for @g7WzRedo.
+  ///
+  /// In en, this message translates to:
+  /// **'Redo the setup'**
+  String get g7WzRedo;
+
+  /// No description provided for @g7WzRedoText.
+  ///
+  /// In en, this message translates to:
+  /// **'The page\'s guided setup, one step at a time: every step is saved at once.'**
+  String get g7WzRedoText;
+
+  /// No description provided for @g7WzContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue the setup'**
+  String get g7WzContinue;
+
+  /// No description provided for @g7WzContinueText.
+  ///
+  /// In en, this message translates to:
+  /// **'Models, who uses which, imports, Telegram, backups, access from outside and safety: one step at a time, each one can be skipped.'**
+  String get g7WzContinueText;
+
+  /// No description provided for @g7AcpRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get g7AcpRemove;
+
+  /// No description provided for @g7ImpOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from other agents'**
+  String get g7ImpOpen;
+
+  /// No description provided for @g7ImpRow.
+  ///
+  /// In en, this message translates to:
+  /// **'From Claude Code, Codex, Cursor and the chat exports'**
+  String get g7ImpRow;
+
+  /// No description provided for @g7AcpRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Claude Code, Codex, Gemini CLI as agents of a project'**
+  String get g7AcpRow;
+
+  /// No description provided for @g7PlRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Every change to the settings and to the code, undoable'**
+  String get g7PlRow;
+
+  /// No description provided for @g7NewsRow.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new in this version'**
+  String get g7NewsRow;
+
+  /// No description provided for @g7HubTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup, imports and history'**
+  String get g7HubTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

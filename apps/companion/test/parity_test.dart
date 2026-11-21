@@ -47,4 +47,16 @@ void main() {
     }
     expect(wrong, isEmpty);
   });
+
+  // G42.17: «All settings» (the page in a web view) is gone, so every section of the page's
+  // Settings is native in the app from here on.
+  test('every settings section is native: none is missing or partial', () {
+    final settings = table['settings']! as Map<String, Object?>;
+    final open = [
+      for (final e in settings.entries)
+        if (!e.key.startsWith(r'$') && ['no', 'partial'].contains((e.value! as Map)['app'])) e.key,
+    ];
+    expect(open, isEmpty);
+    expect(File('lib/screens/full_settings_screen.dart').existsSync(), isFalse);
+  });
 }

@@ -11,6 +11,7 @@ import '../../api/types.dart' show DevicePlatform;
 import '../../app_state.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/colors.dart';
+import '../../ui/dialogs.dart' show showRgWindow;
 import '../../ui/icons.dart';
 import 'hf_words.g.dart';
 import 'machine.dart';
@@ -192,7 +193,7 @@ class _HandsFreeIndicatorState extends State<HandsFreeIndicator>
         builder: (_) => SafeArea(child: body),
       );
     } else {
-      await showDialog<void>(
+      await showRgWindow<void>(
         context: context,
         builder: (ctx) => Align(
           alignment: Alignment.topRight,

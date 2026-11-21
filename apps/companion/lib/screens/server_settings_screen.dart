@@ -35,6 +35,11 @@ import 'first_start_screen.dart' show openExternal;
 import '../settings/automations/automations_screen.dart';
 import 'update_screen.dart';
 import 'voice_screen.dart' show openVoiceSettings;
+// G42.17: redo the setup, import, external agents, the history of changes.
+import '../setup/wizard/wizard_screen.dart' show openSetupWizard, wzWord;
+import '../settings/import_screen.dart' show openImportSettings;
+import '../settings/acp_screen.dart' show openAcpSettings;
+import '../settings/platform_screen.dart' show openPlatformSettings;
 import 'you_screen.dart' show reachWord;
 // G42.10: Settings › Knowledge and Shared memory, native.
 import '../settings/extensions/extensions_screen.dart' show openExtensionsSettings;
@@ -715,6 +720,45 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       l.syBackup,
                       l.syHubBackup,
                       () => openBackupSettings(context),
+                    ),
+                  ],
+                ),
+                // ---- the rest (G42.17: native, as the page's sections) ----
+                _Head(l.g7HubTitle),
+                _Card(
+                  key: const Key('settings-g7-hub'),
+                  children: [
+                    _hub(
+                      c,
+                      'redo-setup',
+                      RgIcons.list,
+                      l.g7WzRedo,
+                      l.g7WzRedoText,
+                      () => openSetupWizard(context),
+                    ),
+                    _hub(
+                      c,
+                      'import',
+                      RgIcons.download,
+                      l.g7ImpOpen,
+                      l.g7ImpRow,
+                      () => openImportSettings(context),
+                    ),
+                    _hub(
+                      c,
+                      'acp',
+                      RgIcons.terminal,
+                      wzWord(context, 'acpSection'),
+                      l.g7AcpRow,
+                      () => openAcpSettings(context),
+                    ),
+                    _hub(
+                      c,
+                      'platform',
+                      RgIcons.git,
+                      wzWord(context, 'platformView'),
+                      l.g7PlRow,
+                      () => openPlatformSettings(context),
                     ),
                   ],
                 ),

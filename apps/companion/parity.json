@@ -57,18 +57,21 @@
       "note": "Native (G42.14): the machine (processor, memory, cards, disks, virtual or not), the role asked first with the node's pairing, data and backups (places, disks, a folder, SFTP/SMB/node, the host's steps in a container and Proxmox's «Do it for me», when, how many, a backup now, the backups there restored), Wi-Fi, HTTPS at home with the certificate's QR, SSH, the OS's updates and the restart; the mandatory and breaking updates' gate with the safety backup (update_gate.dart, opened by itself on connect). Disk space shows as the page shows it (the data folder, the disks, a node's free disk); the page has no clean-up or sandbox repair (study rows 284-285: nothing to mirror)."
     },
     "setup": {
-      "app": "partial",
+      "app": "native",
       "files": [
         "lib/setup/first_start.dart",
         "lib/screens/first_start_screen.dart",
-        "lib/screens/full_settings_screen.dart"
+        "lib/setup/wizard/wizard_screen.dart",
+        "lib/setup/wizard/wizard_logic.dart",
+        "lib/setup/wizard/wizard_words.g.dart",
+        "lib/setup/wizard/wizard_presets.g.dart"
       ],
       "phase": "G42.17",
       "rows": [
         250,
         262
       ],
-      "note": "The app's first start does about 4 of the wizard's 17 steps; «redo the setup» only in «All settings»."
+      "note": "Native (G42.17): the page's wizard (Setup.tsx, wizard.ts with its vectors) as SetupWizardScreen: the same steps for every mode, role, local offer and password, the counter with every step, Next/Back/Skip, each step saved when left; role, password, machine, mode, names, safety's ready choices and the summary drawn here, the models, local models, who uses which, import, Telegram, backups, code and access from outside open their native screens from their step. «Redo the setup» in Settings; the app's first start (network, access, languages, a way of thinking, names) ends with «Continue the setup»."
     },
     "agents": {
       "app": "native",
@@ -332,15 +335,15 @@
       "note": "Native (G42.14): the backup file made with its steps, saved with its bar, the keychain sealed with a passphrase; a file sent with its bar, its preview, the names chosen, imported; the destinations (SFTP, SMB, node, the host's disks, Proxmox) in Settings › System."
     },
     "platform": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/platform_screen.dart"
       ],
       "phase": "G42.17",
       "rows": [
         201
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native Platform history in G42.17."
+      "note": "Native (G42.17): the history of changes in sentences (changes.ts's describeChange with its vectors), undo, God's code changes with discard and promote (asked first, only when supervised), technical details, how the server runs and its releases."
     },
     "tools": {
       "app": "native",
@@ -359,15 +362,15 @@
       "note": "Native (G42.4): the common tools with their cost, search, the essential ones locked, exceptions per agent back to «As for everyone», the extensions' tools; one agent's tools in its settings and when it is made. 3.9.4: the tool groups (off by default, always on, off by you) with their cost, for every agent and in an agent's settings (ToolKitsSection, AgentKits)."
     },
     "import": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/import_screen.dart"
       ],
       "phase": "G42.17",
       "rows": [
         151
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native import from other agents in G42.17."
+      "note": "Native (G42.17): look on this computer (home, projects, a folder) or upload a folder or an export; everything found by kind with its switch, what is already here, the notes and what is left behind; the server's job, undo, the memories offer; the history of imports with undo."
     },
     "commands": {
       "app": "native",
@@ -409,7 +412,6 @@
         "lib/desktop/new_project.dart",
         "lib/desktop/advanced/projects_wall.dart",
         "lib/app_state.dart",
-        "lib/screens/full_settings_screen.dart",
         "lib/ui/project_agents.dart"
       ],
       "phase": "G42.5",
@@ -440,15 +442,15 @@
       "note": "Settings of the server › Artifacts: by place, facts, permissions (grant with a cap, take back), open, export (.rgartifact with or without its data, or HTML), delete, import into a place; capability sentences from the protocol's vectors."
     },
     "acp": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/acp_screen.dart"
       ],
       "phase": "G42.17",
       "rows": [
         199
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native external ACP agents in G42.17."
+      "note": "Native (G42.17): the external agents with their command, project and state; add from the server's ready commands or another program, try, edit command, arguments and variables (secrets refused by the server), remove after a yes."
     },
     "machines": {
       "app": "native",
@@ -487,11 +489,19 @@
       "note": "Native: list, rename (G42.4), revoke and push test."
     },
     "voice": {
-      "app": "partial",
+      "app": "native",
       "files": [
         "lib/screens/voice_screen.dart",
         "lib/voice/voice_controller.dart",
-        "lib/screens/full_settings_screen.dart"
+        "lib/voice/hands_free/machine.dart",
+        "lib/voice/hands_free/vad.dart",
+        "lib/voice/hands_free/wake.dart",
+        "lib/voice/hands_free/speakable.dart",
+        "lib/voice/hands_free/controller.dart",
+        "lib/voice/hands_free/runtime.dart",
+        "lib/voice/hands_free/settings.dart",
+        "lib/voice/hands_free/settings_view.dart",
+        "lib/voice/hands_free/indicator.dart"
       ],
       "phase": "G42.16",
       "rows": [
@@ -502,7 +512,7 @@
         26,
         27
       ],
-      "note": "Who reads aloud, volume and press-and-talk are native; hands-free, wake word and transcription service settings are not."
+      "note": "Native (G42.16): who reads aloud, volume and press-and-talk (G40.10); hands-free as the page's voice/* (the state machine, the VAD, the wake word's spelling and checks, what is read of an answer, ported with the page's vectors), the indicator at the top (phone band, conversation header, computer's bar) with Talk now, Stop, Switch off, Settings › Voice's hands-free part (on this device, wake word of one's own checked by the server, sensitivity, language, who writes down with General's panel, follow-up, barge-in, where it goes), Android's foreground service while it listens. The wake word is not heard in the app yet (no recogniser): a turn starts from Talk now, and the app says so."
     },
     "portrait": {
       "app": "native",

@@ -17701,4 +17701,128 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fsrInspector => 'Inspector';
+
+  @override
+  String get g7WzRoleFull => 'A complete Rasgeth';
+
+  @override
+  String get g7WzRoleFullText => 'Its agents, projects and chats live here.';
+
+  @override
+  String get g7WzRoleNode => 'A node of another Rasgeth';
+
+  @override
+  String get g7WzRoleNodeText =>
+      'It lends this machine to another Rasgeth: commands, local models, room for projects and backups.';
+
+  @override
+  String get g7WzNoWay => 'No way of thinking yet';
+
+  @override
+  String g7WzWays(String ways) {
+    return 'Connected: $ways';
+  }
+
+  @override
+  String get g7WzWayKeys => 'API keys';
+
+  @override
+  String get g7WzWayLocal => 'a model on this computer';
+
+  @override
+  String get g7WzWayServer => 'your own server';
+
+  @override
+  String get g7WzOpenModels => 'Models and subscriptions';
+
+  @override
+  String get g7WzNoLocal => 'No model on this computer yet';
+
+  @override
+  String g7WzLocal(String model) {
+    return 'In use: $model';
+  }
+
+  @override
+  String get g7WzOpenLocal => 'Models on this computer';
+
+  @override
+  String get g7WzAssignLead =>
+      'Who decides gets the strongest model, who answers a quick one: God, Demi-God, the assistants and the others, each with its own.';
+
+  @override
+  String get g7WzOpenAssign => 'Choose who uses which model';
+
+  @override
+  String get g7WzTelegramLead =>
+      'Write to Demi-God from your phone, also by voice: a bot of your own, made in a minute with BotFather.';
+
+  @override
+  String get g7WzOpenTelegram => 'Set up Telegram';
+
+  @override
+  String get g7WzOpenBackups => 'Backups and their destinations';
+
+  @override
+  String get g7WzOpenCode => 'GitHub and Gitea';
+
+  @override
+  String get g7WzOpenRemote => 'Access from outside home';
+
+  @override
+  String g7WzPresetText(String n) {
+    return '$n kinds of action only you approve';
+  }
+
+  @override
+  String get g7WzSafetyMore => 'Everything about safety and costs';
+
+  @override
+  String get g7WzCustom => 'Your own choice';
+
+  @override
+  String get g7WzPassword => 'Password';
+
+  @override
+  String get g7WzPasswordAgain => 'The password again';
+
+  @override
+  String g7WzDiskFree(String gb) {
+    return 'Free on disk: $gb GB';
+  }
+
+  @override
+  String get g7WzRedo => 'Redo the setup';
+
+  @override
+  String get g7WzRedoText =>
+      'The page\'s guided setup, one step at a time: every step is saved at once.';
+
+  @override
+  String get g7WzContinue => 'Continue the setup';
+
+  @override
+  String get g7WzContinueText =>
+      'Models, who uses which, imports, Telegram, backups, access from outside and safety: one step at a time, each one can be skipped.';
+
+  @override
+  String get g7AcpRemove => 'Remove';
+
+  @override
+  String get g7ImpOpen => 'Import from other agents';
+
+  @override
+  String get g7ImpRow => 'From Claude Code, Codex, Cursor and the chat exports';
+
+  @override
+  String get g7AcpRow => 'Claude Code, Codex, Gemini CLI as agents of a project';
+
+  @override
+  String get g7PlRow => 'Every change to the settings and to the code, undoable';
+
+  @override
+  String get g7NewsRow => 'What\'s new in this version';
+
+  @override
+  String get g7HubTitle => 'Setup, imports and history';
 }

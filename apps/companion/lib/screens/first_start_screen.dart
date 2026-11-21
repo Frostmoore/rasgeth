@@ -16,6 +16,7 @@ import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../setup/first_start.dart';
 import '../setup/wifi.dart';
+import '../setup/wizard/wizard_screen.dart' show openSetupWizard;
 import '../theme/colors.dart';
 import '../ui/icons.dart';
 
@@ -1237,9 +1238,21 @@ class _Done extends StatelessWidget {
       items: [
         Center(child: RgIcon(RgIcons.check, size: 56, color: c.ok)),
         const SizedBox(height: 12),
-        _Hint(icon: RgIcons.tool, text: l.fsDoneMore),
+        _Hint(icon: RgIcons.tool, text: l.g7WzContinueText),
       ],
       actions: [
+        // G42.17: the rest of the page's wizard, native (models, assign, import, Telegram…).
+        if (!flow.maintenance)
+          OutlinedButton(
+            key: const Key('fs-continue'),
+            onPressed: () {
+              final nav = Navigator.of(context);
+              flow.app.setTab(AppTab.team);
+              nav.pop();
+              unawaited(openSetupWizard(nav.context, start: 'wzMachine'));
+            },
+            child: Text(l.g7WzContinue),
+          ),
         FilledButton(
           key: const Key('fs-done'),
           onPressed: () {

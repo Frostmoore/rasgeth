@@ -1216,6 +1216,10 @@ class RedGiantClient {
   Future<Object?> postBytes(String path, List<int> bytes) async =>
       _decode(await _send('POST', path, raw: bytes));
 
+  /// G42.17: a file's bytes with PUT (the import's uploads).
+  Future<Object?> putBytes(String path, List<int> bytes, {Map<String, String>? query}) async =>
+      _decode(await _send('PUT', path, query: query, raw: bytes));
+
   /// G42.4: an answer that must be an object, or a list of objects.
   Map<String, dynamic> objectOf(Object? o) => _object(o);
   List<Map<String, dynamic>> arrayOf(Object? o) => _array(o);
