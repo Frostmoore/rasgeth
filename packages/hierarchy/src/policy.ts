@@ -60,6 +60,7 @@ export interface DangerRule {
   except?: string[];
   /** A regex the tool's name must match too (for tools of connected services). */
   name?: string;
+  /** False switches the rule off; in DEFAULT_DANGER_RULES it marks a rule off by default. */
   enabled?: boolean;
 }
 
@@ -179,10 +180,13 @@ export const DEFAULT_DANGER_RULES: DangerRule[] = [
     except: ["repo_list"],
   },
   {
+    // Off by default (3.10, the person's decision of 2026-11-21): removing is undone by
+    // restore_agent, so it asks nobody unless the person switches it back on (Settings > Safety).
     id: REMOVE_AGENT,
     label: "Removes an agent from the team",
     tool: "remove_agent",
     pattern: ".*",
+    enabled: false,
   },
   {
     id: "secrets-files",
