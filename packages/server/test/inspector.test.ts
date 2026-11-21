@@ -5,6 +5,7 @@ import { commitAll, ensureRepo } from "@redgiant/sandbox";
 import { LocalWorkspace } from "@redgiant/tools";
 import { afterEach, describe, expect, it } from "vitest";
 import type { ChatEntry } from "../src/index.js";
+import { chunkLines, describeEvent, latestWithin } from "../src/inspector.js";
 import { startServer } from "./helpers.js";
 
 type Server = Awaited<ReturnType<typeof startServer>>;
@@ -267,5 +268,71 @@ describe("the inspector's running summary", () => {
     );
     // Its cost counts in the project's budget.
     expect((await core.budget.used({ scope: "project", id: "shop" })).tokens).toBeGreaterThan(0);
+  });
+
+  it("a first summary of a long history reads only the latest events, in one or two requests", async () => {
+    const asked: string[] = [];
+    s = await startServer((req) => {
+      if (req.system.startsWith("You keep a running summary")) {
+        asked.push(lastText(req));
+        return { text: `SUMMARY ${asked.length}` };
+      }
+      return { text: "x" };
+    });
+    const core = s.core;
+    await core.projects.create("me", "Shop");
+    const at = { ownerId: "me", projectId: "shop", agentId: "agent_x" };
+    // 120 events of ~200 characters each, with requests of 4000: far more than a first
+    // summary reads (two requests at most), so only the latest are read.
+    core.inspector.limits.chunk = 4000;
+    core.inspector.limits.first = 7000;
+    const long = "a".repeat(150);
+    for (let i = 0; i < 120; i++)
+      await core.store.append({
+        ...at,
+        body: { type: "message.user", payload: { text: `step ${i} ${long}` } },
+      });
+    expect(await core.inspector.summary("me", "shop")).toBe("SUMMARY 2");
+    expect(asked).toHaveLength(2);
+    // The older events are one line, the latest ones are read in full.
+    expect(asked[0]).toMatch(
+      /^Summary so far:\n\(\d+ older events, #\d+ to #\d+, .* were not read/,
+    );
+    expect(asked[1]).toContain("step 119 ");
+    expect(asked.join("\n")).not.toContain("step 0 ");
+    // Later updates stay incremental: one new event, one request, from the saved summary.
+    await core.store.append({
+      ...at,
+      body: { type: "message.user", payload: { text: "step new" } },
+    });
+    expect(await core.inspector.summary("me", "shop")).toBe("SUMMARY 3");
+    expect(asked[2]).toMatch(/^Summary so far:\nSUMMARY 2\n\nNew events:\n#\d+ .* step new$/);
+  });
+});
+
+describe("chunkLines and latestWithin", () => {
+  it("cut by characters, keeping every line whole", () => {
+    expect(chunkLines(["aaaa", "bbbb", "cc", "dddddddddd"], 10)).toEqual([
+      ["aaaa", "bbbb"],
+      ["cc"],
+      ["dddddddddd"],
+    ]);
+    expect(chunkLines([], 10)).toEqual([]);
+    const ev = (seq: number) =>
+      ({
+        seq,
+        ts: "2026-11-20T10:00:00.000Z",
+        agentId: "a",
+        type: "message.user",
+        payload: { text: `m${seq}` },
+      }) as never;
+    const all = [ev(1), ev(2), ev(3)];
+    expect(latestWithin(all, 10_000).older).toBeUndefined();
+    const one = describeEvent(ev(3)).length;
+    const cut = latestWithin(all, one + 1);
+    expect(cut.lines).toEqual([describeEvent(ev(3))]);
+    expect(cut.older).toBe(
+      "(2 older events, #1 to #2, 2026-11-20 to 2026-11-20, were not read for this summary.)",
+    );
   });
 });

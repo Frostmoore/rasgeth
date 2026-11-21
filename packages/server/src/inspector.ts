@@ -54,8 +54,59 @@ const CommandsInput = z.object({
   summary: z.boolean().optional(),
 });
 
-/** Events summarised per request: a long history is folded in a few steps. */
-const CHUNK = 150;
+/**
+ * Event lines summarised per request, in characters (about 15k tokens): a long history is
+ * folded in a few steps, each small enough for a local engine's context.
+ */
+const CHUNK_CHARS = 60_000;
+/**
+ * The first summary (none saved yet) reads only the latest events that fit in this many
+ * characters, two requests at most (3.10.1: 1869 events took 13 calls in a row, almost four
+ * minutes on a subscription, before the inspector could answer). What is older is one line.
+ */
+const FIRST_CHARS = 2 * CHUNK_CHARS - 1000; // a line is ~300 characters: two chunks, never three
+
+/** Lines in chunks of at most `max` characters (a single longer line is a chunk of its own). */
+export function chunkLines(lines: string[], max: number): string[][] {
+  const out: string[][] = [];
+  let cur: string[] = [];
+  let size = 0;
+  for (const l of lines) {
+    if (cur.length > 0 && size + l.length + 1 > max) {
+      out.push(cur);
+      cur = [];
+      size = 0;
+    }
+    cur.push(l);
+    size += l.length + 1;
+  }
+  if (cur.length > 0) out.push(cur);
+  return out;
+}
+
+/**
+ * The events a first summary reads: the latest ones within `max` characters, and one line
+ * saying what is older, or nothing when everything fits.
+ */
+export function latestWithin(events: Event[], max: number): { lines: string[]; older?: string } {
+  const lines: string[] = [];
+  let size = 0;
+  let i = events.length - 1;
+  for (; i >= 0; i--) {
+    const l = describeEvent(events[i] as Event);
+    if (lines.length > 0 && size + l.length + 1 > max) break;
+    lines.push(l);
+    size += l.length + 1;
+  }
+  lines.reverse();
+  if (i < 0) return { lines };
+  const first = events[0] as Event;
+  const last = events[i] as Event;
+  return {
+    lines,
+    older: `(${i + 1} older events, #${first.seq} to #${last.seq}, ${first.ts.slice(0, 10)} to ${last.ts.slice(0, 10)}, were not read for this summary.)`,
+  };
+}
 
 function git(cwd: string, args: string[]): Promise<string> {
   return new Promise((resolve) => {
@@ -101,6 +152,8 @@ export class Inspector {
   private timer: NodeJS.Timeout | undefined;
   private readonly summarised = new Map<string, string>();
   private readonly folding = new Map<string, Promise<string>>();
+  /** How much a summary request reads, in characters (tests make it small). */
+  readonly limits = { chunk: CHUNK_CHARS, first: FIRST_CHARS };
 
   /**
    * The project's running summary (G18.3): kept in the database, and brought up to date with
@@ -137,8 +190,12 @@ export class Inspector {
     // Without a model, the latest events themselves are the summary.
     if (!model) return fresh.slice(-40).map(describeEvent).join("\n");
     let summary = saved.summary;
-    for (let i = 0; i < fresh.length; i += CHUNK) {
-      const part = fresh.slice(i, i + CHUNK);
+    const first = saved.seq < 0 && !saved.summary;
+    const { lines, older } = first
+      ? latestWithin(fresh, this.limits.first)
+      : { lines: fresh.map(describeEvent) };
+    if (older) summary = older;
+    for (const part of chunkLines(lines, this.limits.chunk)) {
       const c = await complete(
         streamWithFallback(this.core.providers, model, {
           system: SUMMARISE,
@@ -149,7 +206,7 @@ export class Inspector {
               parts: [
                 {
                   type: "text",
-                  text: `Summary so far:\n${summary || "(none yet)"}\n\nNew events:\n${part.map(describeEvent).join("\n")}`,
+                  text: `Summary so far:\n${summary || "(none yet)"}\n\nNew events:\n${part.join("\n")}`,
                 },
               ],
             },
