@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'api/live_model.dart';
 import 'app_state.dart';
 import 'brand.dart';
 import 'app_update/update_window.dart';
@@ -22,6 +23,7 @@ class RGCompanionApp extends StatelessWidget {
       listenable: controller,
       builder: (context, _) => MaterialApp(
         title: kAppName,
+        scaffoldMessengerKey: serverErrorMessenger,
         debugShowCheckedModeBanner: false,
         theme: buildTheme(Brightness.light),
         darkTheme: buildTheme(Brightness.dark),
@@ -39,11 +41,14 @@ class RGCompanionApp extends StatelessWidget {
           (s) => s.languageCode == locale?.languageCode,
           orElse: () => const Locale('en'),
         ),
-        builder: (context, child) => MascotScope(
-          source: controller.mascots,
-          reduceMotion: controller.reduceMotion,
-          agentOf: controller.agentWithId,
-          child: child!,
+        builder: (context, child) => _ServerErrors(
+          live: controller.live,
+          child: MascotScope(
+            source: controller.mascots,
+            reduceMotion: controller.reduceMotion,
+            agentOf: controller.agentWithId,
+            child: child!,
+          ),
         ),
         home: const AppHome(),
       ),
@@ -66,4 +71,44 @@ class AppHome extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Where the server's errors on the live link appear (3.10, G42.17b).
+final serverErrorMessenger = GlobalKey<ScaffoldMessengerState>();
+
+/// Shows the server's own error on the live link once, as the page does (`lastError`).
+class _ServerErrors extends StatefulWidget {
+  const _ServerErrors({required this.live, required this.child});
+
+  final LiveModel live;
+  final Widget child;
+
+  @override
+  State<_ServerErrors> createState() => _ServerErrorsState();
+}
+
+class _ServerErrorsState extends State<_ServerErrors> {
+  @override
+  void initState() {
+    super.initState();
+    widget.live.serverError.addListener(_show);
+  }
+
+  @override
+  void dispose() {
+    widget.live.serverError.removeListener(_show);
+    super.dispose();
+  }
+
+  void _show() {
+    final text = widget.live.serverError.value;
+    if (text == null) return;
+    widget.live.serverError.value = null;
+    serverErrorMessenger.currentState?.showSnackBar(
+      SnackBar(key: const Key('server-error'), content: Text(text)),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

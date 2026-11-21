@@ -1341,68 +1341,75 @@
       ]
     },
     "doc.open": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         114
       ],
-      "note": "Sent by the page's editors; in the app the page inside embed=canvas sends it over its own connection."
+      "note": "Sent by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "doc.close": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         114
       ],
-      "note": "Sent by the page's editors; in the app the page inside embed=canvas sends it over its own connection."
+      "note": "Sent by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "doc.save": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         307
       ],
-      "note": "Sent by the page's editors; in the app the page inside embed=canvas sends it over its own connection."
+      "note": "Sent by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "doc.ops": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         114
       ],
-      "note": "Sent by the page's editors; in the app the page inside embed=canvas sends it over its own connection."
+      "note": "Sent by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "doc.undo": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         114,
         115
       ],
-      "note": "Sent by the page's editors; in the app the page inside embed=canvas sends it over its own connection."
+      "note": "Sent by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "doc.presence": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         114
       ],
-      "note": "Sent by the page's editors; in the app the page inside embed=canvas sends it over its own connection."
+      "note": "Sent by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "doc.decide": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         302
       ],
-      "note": "Sent by the page's editors; in the app the page inside embed=canvas sends it over its own connection."
+      "note": "Sent by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     }
   },
   "server": {
@@ -1668,101 +1675,114 @@
       "note": "Answered by the page inside embed (its own connection), with the app's tabs; an agent's canvas.act reaches the tab it is for there."
     },
     "doc.opened": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         114
       ],
-      "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
+      "note": "Read by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "doc.changed": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         114
       ],
-      "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
+      "note": "Read by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "doc.ack": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         114
       ],
-      "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
+      "note": "Read by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "doc.rejected": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         114,
         306
       ],
-      "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
+      "note": "Read by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "doc.replaced": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         306
       ],
-      "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
+      "note": "Read by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "doc.presence": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         114
       ],
-      "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
+      "note": "Read by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "doc.held": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         114
       ],
-      "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
+      "note": "Read by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "doc.proposals": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         302
       ],
-      "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
+      "note": "Read by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "doc.mode": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         114
       ],
-      "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
+      "note": "Read by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "doc.saved": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.7",
+      "app": "embed",
+      "files": [
+        "lib/embed/embed_view.dart"
+      ],
       "rows": [
         307
       ],
-      "note": "Read by the page's editors; in the app the page inside embed=canvas gets it over its own connection."
+      "note": "Read by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
     },
     "error": {
-      "app": "no",
-      "files": [],
-      "phase": "G42.0",
-      "note": "The live connection ignores the server's error messages (err_<code> words, browser unavailable)."
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/app.dart"
+      ],
+      "phase": "G42.17b",
+      "note": "Shown once as a notice, as the page's lastError; the browser's `unavailable` goes to the browser view."
     },
     "lists.changed": {
       "app": "native",

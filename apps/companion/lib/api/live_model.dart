@@ -270,6 +270,10 @@ class LiveModel extends ChangeNotifier {
   /// G42.17: the history of changes moved (`platform.changed`): Settings › Platform reads it again.
   final platformChanged = ValueNotifier<int>(0);
 
+  /// The server's own error on the live link (`error`, 3.10, G42.17b): what the page shows as its
+  /// `lastError`; the app shows it once as a notice. The browser's `unavailable` is not one.
+  final serverError = ValueNotifier<String?>(null);
+
   /// The automations' messages for the person (`automation.notice`, `notify.to: [web]`), newest
   /// first, the latest 50 (the page's bell keeps the same).
   List<AutomationNotice> notices = const [];
@@ -405,6 +409,10 @@ class LiveModel extends ChangeNotifier {
         final n = AutomationNotice.fromWire(m);
         if (n == null || notices.any((x) => x.runId == n.runId)) return;
         notices = [n, ...notices].take(50).toList();
+      case 'error' when m['code'] != 'unavailable':
+        final text = m['message'];
+        if (text is String && text.trim().isNotEmpty) serverError.value = text.trim();
+        return;
       case 'browser.frame' || 'browser.state' || 'error':
         browser.apply(m);
         return;
