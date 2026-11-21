@@ -72,6 +72,11 @@ void main() {
       unawaited(openModelsSettings(ctx));
       await frames(t, 3000);
       final machine = find.byKey(const Key('lm-machine'));
+      final local = find.text('Un modello su questo computer');
+      if (machine.evaluate().isEmpty && local.evaluate().isNotEmpty) {
+        await t.tap(local.first);
+        await frames(t, 3000);
+      }
       if (machine.evaluate().isNotEmpty) {
         await t.ensureVisible(machine);
         await frames(t, 800);
