@@ -4,7 +4,6 @@
 //   RG_VOSK_LIB=…/libvosk.so RG_VOSK_MODEL=…/vosk-model-small-en-us-0.15 \
 //   RG_VOSK_WAVS=<folder with hey.wav, other.wav, stop.wav: 16-bit mono, any rate> \
 //   flutter test test/g42_16_vosk_live_test.dart
-import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
