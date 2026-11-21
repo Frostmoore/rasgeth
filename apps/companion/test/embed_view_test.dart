@@ -16,7 +16,6 @@ import 'package:rgcompanion/app_state.dart';
 import 'package:rgcompanion/embed/embed_view.dart';
 import 'package:rgcompanion/embed/web_host.dart';
 import 'package:rgcompanion/l10n/app_localizations.dart';
-import 'package:rgcompanion/screens/full_settings_screen.dart';
 import 'package:rgcompanion/theme/theme.dart';
 
 class FakeWebHost implements WebHost {
@@ -228,6 +227,4 @@ void main() {
     await tester.pump();
     expect(find.byKey(embedWaitKey), findsNothing);
   });
-
-
 }

@@ -46,12 +46,7 @@ HfLook handsFreeLook(BuildContext context, HandsFreeRuntime r, {bool paused = fa
     case VoicePhase.followup:
       return (icon: RgIcons.mic, label: w('voiceFollowup'), live: true, tone: HfTone.hot);
     case VoicePhase.transcribing:
-      return (
-        icon: RgIcons.spinner,
-        label: w('voiceTranscribing'),
-        live: false,
-        tone: HfTone.busy,
-      );
+      return (icon: RgIcons.spinner, label: w('voiceTranscribing'), live: false, tone: HfTone.busy);
     case VoicePhase.thinking:
       return (icon: RgIcons.spinner, label: w('voiceThinking'), live: false, tone: HfTone.busy);
     case VoicePhase.speaking:
@@ -260,9 +255,15 @@ class _HandsFreePop extends StatelessWidget {
                   style: TextStyle(color: c.text, fontStyle: FontStyle.italic),
                 ),
               if (problem != null)
-                Text(problem, key: const Key('hf-error'), style: TextStyle(color: c.err)),
-              Row(
+                Text(
+                  problem,
+                  key: const Key('hf-error'),
+                  style: TextStyle(color: c.err),
+                ),
+              Wrap(
                 spacing: 8,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   if (busy)
                     OutlinedButton.icon(
@@ -289,7 +290,6 @@ class _HandsFreePop extends StatelessWidget {
                     },
                     child: Text(hfWord(context, 'voiceSwitchOff')),
                   ),
-                  const Spacer(),
                   if (onSettings != null)
                     IconButton(
                       key: const Key('hf-settings'),

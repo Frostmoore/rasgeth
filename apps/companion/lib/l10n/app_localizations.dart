@@ -30290,6 +30290,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'What to do'**
   String get syGateOpen;
+
+  /// No description provided for @hfServiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hands-free voice is on'**
+  String get hfServiceTitle;
+
+  /// No description provided for @hfServiceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The microphone stays open for the conversation by voice.'**
+  String get hfServiceBody;
+
+  /// No description provided for @hfServiceChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hands-free voice'**
+  String get hfServiceChannel;
+
+  /// No description provided for @hfServiceChannelText.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown while the microphone is open for hands-free voice.'**
+  String get hfServiceChannelText;
+
+  /// No description provided for @hfPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused: the app is not in front'**
+  String get hfPaused;
+
+  /// No description provided for @hfWakeNotHere.
+  ///
+  /// In en, this message translates to:
+  /// **'On this device the wake word is not heard yet: tap the indicator, then «Talk now».'**
+  String get hfWakeNotHere;
+
+  /// No description provided for @hfWakeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Your wake word is kept for this device and checked with the speech model of Rasgeth.'**
+  String get hfWakeHelp;
+
+  /// No description provided for @hfLimitPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'What you say after «Talk now» is sent to Rasgeth to be transcribed; nothing is heard before.'**
+  String get hfLimitPrivacy;
+
+  /// No description provided for @hfLimitAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'On Android the microphone stays open with the screen off or another app in front, with a notification that says so.'**
+  String get hfLimitAndroid;
+
+  /// No description provided for @hfLimitOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'On iPhone, iPad and the computers it listens while the app is open; in the background it pauses and the indicator says so.'**
+  String get hfLimitOthers;
+
+  /// No description provided for @hfReaderRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Who reads and how loud'**
+  String get hfReaderRow;
+
+  /// No description provided for @hfSttRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Who writes down what you say'**
+  String get hfSttRow;
+
+  /// No description provided for @hfSttNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No transcription service yet'**
+  String get hfSttNone;
+
+  /// No description provided for @hfPickConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the conversation'**
+  String get hfPickConversation;
+
+  /// No description provided for @hfNoRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversation yet'**
+  String get hfNoRecent;
+
+  /// No description provided for @hfHandsFreeRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Hands-free voice'**
+  String get hfHandsFreeRow;
+
+  /// No description provided for @hfHandsFreeOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On: {state}'**
+  String hfHandsFreeOn(String state);
+
+  /// No description provided for @hfHandsFreeOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off on this device'**
+  String get hfHandsFreeOff;
+
+  /// No description provided for @fsrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search the conversations'**
+  String get fsrTitle;
+
+  /// No description provided for @fsrGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get fsrGo;
+
+  /// No description provided for @fsrHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The words in every conversation: the agents\', the Chat\'s and the inspectors\'. At least two letters.'**
+  String get fsrHint;
+
+  /// No description provided for @fsrNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No results.'**
+  String get fsrNone;
+
+  /// No description provided for @fsrUntitled.
+  ///
+  /// In en, this message translates to:
+  /// **'New conversation'**
+  String get fsrUntitled;
+
+  /// No description provided for @fsrInspector.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspector'**
+  String get fsrInspector;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

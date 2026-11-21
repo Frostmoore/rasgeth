@@ -52,9 +52,9 @@ Float32List make(List<dynamic> parts) {
 }
 
 void main() {
-  final v =
-      jsonDecode(File('test/fixtures/voice_vectors.json').readAsStringSync())
-          as Map<String, dynamic>;
+  final v = jsonDecode(
+    File('test/fixtures/voice_vectors.json').readAsStringSync(),
+  ) as Map<String, dynamic>;
   WakeLang lang(Object? x) => wakeLangOf(x as String?);
 
   test('every phase × every event as the page', () {
@@ -137,7 +137,11 @@ void main() {
       expect(jsonDecode(wakeGrammar(l, own)), r['grammar'], reason: '$own');
     }
     for (final r in (w['problems'] as List).cast<Map<String, dynamic>>()) {
-      expect(wakeProblem(lang(r['lang']), r['text'] as String), r['problem'], reason: r['text']);
+      expect(
+        wakeProblem(lang(r['lang']), r['text'] as String),
+        r['problem'],
+        reason: '${r['text']}',
+      );
     }
     for (final r in (w['heard'] as List).cast<Map<String, dynamic>>()) {
       final words = (r['words'] as List?)
@@ -147,7 +151,13 @@ void main() {
       final sens = (r['sensitivity'] as num).toDouble();
       expect(minConfFor(sens), closeTo((r['minConf'] as num).toDouble(), 1e-12));
       expect(
-        classifyHeard(lang(r['lang']), r['text'] as String, words, minConfFor(sens), r['own']),
+        classifyHeard(
+          lang(r['lang']),
+          r['text'] as String,
+          words,
+          minConfFor(sens),
+          r['own'] as String?,
+        ),
         r['heard'],
         reason: '${r['text']} ${r['own']}',
       );

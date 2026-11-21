@@ -117,9 +117,7 @@ String? classifyHeard(
       return sure(name.sublist(name.length - 2).join(' ')) ? 'wake' : null;
     }
   }
-  final stop = stopPhrasesByLang[lang]!
-      .where((p) => said == p || said.endsWith(' $p'))
-      .firstOrNull;
+  final stop = stopPhrasesByLang[lang]!.where((p) => said == p || said.endsWith(' $p')).firstOrNull;
   if (stop != null) return sure(stop) ? 'stop' : null;
   return null;
 }

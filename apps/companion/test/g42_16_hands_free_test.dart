@@ -299,15 +299,10 @@ void main() {
 
   test('settings on this device start from the defaults and clamp what was saved', () {
     final d = HandsFreeSettings.fromJson(null, 'it');
-    expect([d.enabled, d.wake, d.sensitivity, d.lang, d.followupSec, d.bargeIn, d.target.fixed], [
-      false,
-      true,
-      0.5,
-      WakeLang.it,
-      8,
-      true,
-      false,
-    ]);
+    expect(
+      [d.enabled, d.wake, d.sensitivity, d.lang, d.followupSec, d.bargeIn, d.target.fixed],
+      [false, true, 0.5, WakeLang.it, 8, true, false],
+    );
     expect(d.currentWake, 'Ehi Rasgeth');
     final s = HandsFreeSettings.fromJson(
       jsonEncode({
@@ -344,7 +339,7 @@ void main() {
     Future<void> settle(WidgetTester tester, [int rounds = 10]) async {
       for (var i = 0; i < rounds; i++) {
         await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 30)));
-        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
       }
     }
 

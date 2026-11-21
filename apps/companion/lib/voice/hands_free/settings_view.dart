@@ -57,7 +57,8 @@ class _HandsFreeSectionState extends State<HandsFreeSection> {
     if (c == null) return;
     try {
       final s = await c.setupSummary();
-      if (mounted) setState(() => _stt = (transcription: s.transcription != null, name: s.transcription));
+      if (mounted)
+        setState(() => _stt = (transcription: s.transcription != null, name: s.transcription));
     } on ApiException {
       if (mounted) setState(() => _stt = (transcription: null, name: null));
     }
@@ -109,7 +110,8 @@ class _HandsFreeSectionState extends State<HandsFreeSection> {
       }
       _set(s.copyWith(wakeWords: {...s.wakeWords, lang: value.trim()}));
       setState(
-        () => _wakeResult = (ok: true, text: hfWord(context, 'vcWakeSaved', {'wake': value.trim()})),
+        () =>
+            _wakeResult = (ok: true, text: hfWord(context, 'vcWakeSaved', {'wake': value.trim()})),
       );
     } on ApiException catch (e) {
       if (mounted) setState(() => _wakeResult = (ok: false, text: e.message));
@@ -144,11 +146,7 @@ class _HandsFreeSectionState extends State<HandsFreeSection> {
               ),
             ),
             if (_stt?.transcription == false)
-              NoticeBanner(
-                key: const Key('hf-no-stt'),
-                text: w('vcNoTranscription'),
-                error: true,
-              ),
+              NoticeBanner(key: const Key('hf-no-stt'), text: w('vcNoTranscription'), error: true),
             const SizedBox(height: 10),
             SettingsCard(
               children: [
@@ -177,10 +175,12 @@ class _HandsFreeSectionState extends State<HandsFreeSection> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 8,
                     children: [
-                      Row(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         spacing: 8,
                         children: [
-                          Expanded(
+                          SizedBox(
+                            width: double.infinity,
                             child: TextField(
                               key: const Key('hf-wake-word'),
                               controller: _wakeText,
@@ -283,7 +283,6 @@ class HandsFreeTalkSection extends StatelessWidget {
     return ListenableBuilder(
       listenable: r,
       builder: (context, _) {
-        final c = RgColors.of(context);
         final s = r.settings;
         String w(String k, [Map<String, String> v = const {}]) => hfWord(context, k, v);
         final recent = [
@@ -324,7 +323,8 @@ class HandsFreeTalkSection extends StatelessWidget {
                   key: const Key('hf-target-open'),
                   title: w('vcTargetOpen'),
                   selected: !s.target.fixed,
-                  onTap: () => unawaited(r.update(s.copyWith(target: const HandsFreeTarget.open()))),
+                  onTap: () =>
+                      unawaited(r.update(s.copyWith(target: const HandsFreeTarget.open()))),
                 ),
                 PickRow(
                   key: const Key('hf-target-fixed'),
@@ -336,7 +336,10 @@ class HandsFreeTalkSection extends StatelessWidget {
                       : () => unawaited(
                           r.update(
                             s.copyWith(
-                              target: HandsFreeTarget.session(shown.first.id, shown.first.title ?? ''),
+                              target: HandsFreeTarget.session(
+                                shown.first.id,
+                                shown.first.title ?? '',
+                              ),
                             ),
                           ),
                         ),
@@ -356,7 +359,9 @@ class HandsFreeTalkSection extends StatelessWidget {
                         title: x.title?.isNotEmpty ?? false ? x.title! : l.tabChat,
                         selected: s.target.sessionId == x.id,
                         onTap: () => unawaited(
-                          r.update(s.copyWith(target: HandsFreeTarget.session(x.id, x.title ?? ''))),
+                          r.update(
+                            s.copyWith(target: HandsFreeTarget.session(x.id, x.title ?? '')),
+                          ),
                         ),
                       ),
                 ],
@@ -408,7 +413,10 @@ class _SwitchLine extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 2,
                 children: [
-                  Text(title, style: TextStyle(color: c.text, fontWeight: FontWeight.w700)),
+                  Text(
+                    title,
+                    style: TextStyle(color: c.text, fontWeight: FontWeight.w700),
+                  ),
                   Text(help, style: TextStyle(color: c.dim, fontSize: 12.5)),
                 ],
               ),
@@ -451,7 +459,10 @@ class _Steps extends StatelessWidget {
         if (title != null)
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-            child: Text(title!, style: TextStyle(color: c.text, fontWeight: FontWeight.w600)),
+            child: Text(
+              title!,
+              style: TextStyle(color: c.text, fontWeight: FontWeight.w600),
+            ),
           ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),

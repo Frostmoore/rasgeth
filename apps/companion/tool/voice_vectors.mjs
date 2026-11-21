@@ -5,7 +5,7 @@
 // (the same recipe as the page's test), the wake word's spelling and checks, what is read of an
 // answer, the WAV header.
 //
-//   pnpm build && node --experimental-strip-types apps/companion/tool/voice_vectors.mjs
+//   pnpm build && node --experimental-transform-types apps/companion/tool/voice_vectors.mjs
 import { writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";

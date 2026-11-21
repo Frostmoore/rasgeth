@@ -17621,4 +17621,84 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syGateOpen => 'What to do';
+
+  @override
+  String get hfServiceTitle => 'Hands-free voice is on';
+
+  @override
+  String get hfServiceBody => 'The microphone stays open for the conversation by voice.';
+
+  @override
+  String get hfServiceChannel => 'Hands-free voice';
+
+  @override
+  String get hfServiceChannelText => 'Shown while the microphone is open for hands-free voice.';
+
+  @override
+  String get hfPaused => 'Paused: the app is not in front';
+
+  @override
+  String get hfWakeNotHere =>
+      'On this device the wake word is not heard yet: tap the indicator, then «Talk now».';
+
+  @override
+  String get hfWakeHelp =>
+      'Your wake word is kept for this device and checked with the speech model of Rasgeth.';
+
+  @override
+  String get hfLimitPrivacy =>
+      'What you say after «Talk now» is sent to Rasgeth to be transcribed; nothing is heard before.';
+
+  @override
+  String get hfLimitAndroid =>
+      'On Android the microphone stays open with the screen off or another app in front, with a notification that says so.';
+
+  @override
+  String get hfLimitOthers =>
+      'On iPhone, iPad and the computers it listens while the app is open; in the background it pauses and the indicator says so.';
+
+  @override
+  String get hfReaderRow => 'Who reads and how loud';
+
+  @override
+  String get hfSttRow => 'Who writes down what you say';
+
+  @override
+  String get hfSttNone => 'No transcription service yet';
+
+  @override
+  String get hfPickConversation => 'Choose the conversation';
+
+  @override
+  String get hfNoRecent => 'No conversation yet';
+
+  @override
+  String get hfHandsFreeRow => 'Hands-free voice';
+
+  @override
+  String hfHandsFreeOn(String state) {
+    return 'On: $state';
+  }
+
+  @override
+  String get hfHandsFreeOff => 'Off on this device';
+
+  @override
+  String get fsrTitle => 'Search the conversations';
+
+  @override
+  String get fsrGo => 'Search';
+
+  @override
+  String get fsrHint =>
+      'The words in every conversation: the agents\', the Chat\'s and the inspectors\'. At least two letters.';
+
+  @override
+  String get fsrNone => 'No results.';
+
+  @override
+  String get fsrUntitled => 'New conversation';
+
+  @override
+  String get fsrInspector => 'Inspector';
 }

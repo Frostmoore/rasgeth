@@ -17668,4 +17668,85 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get syGateOpen => 'Cosa fare';
+
+  @override
+  String get hfServiceTitle => 'Voce a mani libere accesa';
+
+  @override
+  String get hfServiceBody => 'Il microfono resta aperto per la conversazione a voce.';
+
+  @override
+  String get hfServiceChannel => 'Voce a mani libere';
+
+  @override
+  String get hfServiceChannelText =>
+      'Si vede finché il microfono è aperto per la voce a mani libere.';
+
+  @override
+  String get hfPaused => 'In pausa: l\'app non è in primo piano';
+
+  @override
+  String get hfWakeNotHere =>
+      'Su questo dispositivo la parola di attivazione non si sente ancora: tocca l\'indicatore, poi «Parla ora».';
+
+  @override
+  String get hfWakeHelp =>
+      'La tua parola di attivazione resta su questo dispositivo e si controlla con il modello vocale di Rasgeth.';
+
+  @override
+  String get hfLimitPrivacy =>
+      'Quello che dici dopo «Parla ora» va a Rasgeth per essere trascritto; prima non si ascolta niente.';
+
+  @override
+  String get hfLimitAndroid =>
+      'Su Android il microfono resta aperto anche a schermo spento o con un\'altra app davanti, con una notifica che lo dice.';
+
+  @override
+  String get hfLimitOthers =>
+      'Su iPhone, iPad e sui computer ascolta finché l\'app è aperta; in secondo piano si mette in pausa e l\'indicatore lo dice.';
+
+  @override
+  String get hfReaderRow => 'Chi legge e a che volume';
+
+  @override
+  String get hfSttRow => 'Chi scrive quello che dici';
+
+  @override
+  String get hfSttNone => 'Ancora nessun servizio di trascrizione';
+
+  @override
+  String get hfPickConversation => 'Scegli la conversazione';
+
+  @override
+  String get hfNoRecent => 'Ancora nessuna conversazione';
+
+  @override
+  String get hfHandsFreeRow => 'Voce a mani libere';
+
+  @override
+  String hfHandsFreeOn(String state) {
+    return 'Accesa: $state';
+  }
+
+  @override
+  String get hfHandsFreeOff => 'Spenta su questo dispositivo';
+
+  @override
+  String get fsrTitle => 'Cerca nelle conversazioni';
+
+  @override
+  String get fsrGo => 'Cerca';
+
+  @override
+  String get fsrHint =>
+      'Le parole in tutte le conversazioni: degli agenti, della Chat e degli inspector. Almeno due lettere.';
+
+  @override
+  String get fsrNone => 'Nessun risultato.';
+
+  @override
+  String get fsrUntitled => 'Nuova conversazione';
+
+  @override
+  String get fsrInspector => 'Inspector';
 }

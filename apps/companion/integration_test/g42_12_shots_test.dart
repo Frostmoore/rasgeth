@@ -166,7 +166,8 @@ void main() {
       // A credential's window.
       final item = find.byWidgetPredicate(
         (w) =>
-            w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('kc-item-') &&
+            w.key is ValueKey<String> &&
+            (w.key! as ValueKey<String>).value.startsWith('kc-item-') &&
             !(w.key! as ValueKey<String>).value.startsWith('kc-item-used-by-'),
       );
       if (item.evaluate().isNotEmpty) {

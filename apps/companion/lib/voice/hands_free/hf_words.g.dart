@@ -29,20 +29,24 @@ const hfWords = <String, Map<String, String>>{
     'vcNoTranscription': 'Per capirti Rasgeth ha bisogno di un servizio di trascrizione (whisper su questo computer o un altro, o un servizio in cloud).',
     'vcChooseTranscription': 'Scegli il servizio di trascrizione',
     'vcEnabled': 'Voce a mani libere su questo dispositivo',
-    'vcEnabledHelp': 'Un indicatore nella barra in alto si vede ogni volta che il microfono è in uso.',
+    'vcEnabledHelp':
+        'Un indicatore nella barra in alto si vede ogni volta che il microfono è in uso.',
     'vcWakeTitle': 'Parola di attivazione',
     'vcWake': 'Ascolta «{wake}»',
     'vcWakeWord': 'La tua parola di attivazione',
     'vcWakeUse': 'Usala',
     'vcWakeExamples': 'Qualche esempio',
-    'vcWakeWordHelp': 'Due o tre parole che il modello vocale conosce, dette insieme. Ogni lingua tiene la sua.',
+    'vcWakeWordHelp':
+        'Due o tre parole che il modello vocale conosce, dette insieme. Ogni lingua tiene la sua.',
     'vcWakeSaved': 'Ora di\' «{wake}».',
     'vcWakeNeedsModel': 'Scarica prima il modello vocale: le parole si controllano su quello.',
     'vcWakeUnknown': 'Il modello vocale {lang} non conosce {words}: scegli altre parole.',
     'vcWakeProblem_empty': 'Scrivi le parole da dire.',
-    'vcWakeProblem_tooLong': 'Al massimo quattro parole: una parola di attivazione corta si sente meglio.',
+    'vcWakeProblem_tooLong':
+        'Al massimo quattro parole: una parola di attivazione corta si sente meglio.',
     'vcWakeProblem_stopWord': 'È una delle parole che fermano la risposta: scegline un\'altra.',
-    'vcWakeProblem_short': 'Una sola parola corta si attiva per sbaglio troppo facilmente: usane due.',
+    'vcWakeProblem_short':
+        'Una sola parola corta si attiva per sbaglio troppo facilmente: usane due.',
     'vcSensitivity': 'Sensibilità',
     'vcSens1': 'solo se chiara',
     'vcSens2': 'bassa',
@@ -59,9 +63,11 @@ const hfWords = <String, Map<String, String>>{
     'vcSttTry': 'Prova: parla per 4 secondi',
     'vcSttTrySpeak': 'Parla ora: ascolto per 4 secondi…',
     'vcSttHeard': 'Ho sentito: «{text}»',
-    'vcSttHeardNothing': 'Il servizio non ha sentito niente: parla più vicino al microfono e riprova.',
+    'vcSttHeardNothing':
+        'Il servizio non ha sentito niente: parla più vicino al microfono e riprova.',
     'vcReaderTitle': 'Voce che legge le risposte',
-    'vcReaderLead': 'Su questo dispositivo. Parlarci sopra e «stop» la interrompono, qualunque sia.',
+    'vcReaderLead':
+        'Su questo dispositivo. Parlarci sopra e «stop» la interrompono, qualunque sia.',
     'vcVolume': 'Volume',
     'vcTalkTitle': 'Conversazione',
     'vcFollowup': 'Continua ad ascoltare dopo la risposta',
@@ -74,7 +80,8 @@ const hfWords = <String, Map<String, String>>{
     'vcTargetOpen': 'La conversazione aperta davanti',
     'vcTargetFixed': 'Sempre la stessa conversazione',
     'vcLimitsTitle': 'Come funziona',
-    'vcLimitSpeakers': 'Le risposte sono lette con le voci di questo browser; la qualità dipende dal sistema.',
+    'vcLimitSpeakers':
+        'Le risposte sono lette con le voci di questo browser; la qualità dipende dal sistema.',
   },
   'en': {
     'voiceTitle': 'Voice',
@@ -108,7 +115,8 @@ const hfWords = <String, Map<String, String>>{
     'vcWakeWord': 'Your wake word',
     'vcWakeUse': 'Use it',
     'vcWakeExamples': 'Some examples',
-    'vcWakeWordHelp': 'Two or three words the speech model knows, said together. Each language keeps its own.',
+    'vcWakeWordHelp':
+        'Two or three words the speech model knows, said together. Each language keeps its own.',
     'vcWakeSaved': 'Now say «{wake}».',
     'vcWakeNeedsModel': 'Download the speech model first: the words are checked against it.',
     'vcWakeUnknown': 'The {lang} speech model does not know {words}: choose other words.',
@@ -147,6 +155,7 @@ const hfWords = <String, Map<String, String>>{
     'vcTargetOpen': 'The conversation open in front',
     'vcTargetFixed': 'Always the same conversation',
     'vcLimitsTitle': 'How it works',
-    'vcLimitSpeakers': 'Answers are read with this browser\'s own voices; their quality depends on the system.',
+    'vcLimitSpeakers':
+        'Answers are read with this browser\'s own voices; their quality depends on the system.',
   },
 };

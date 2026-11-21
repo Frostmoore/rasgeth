@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import '../api/client.dart';
 import '../api/model_routes.dart';
 import '../api/settings_types.dart';
-import '../api/transport.dart';
 import '../api/web_settings.dart';
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';

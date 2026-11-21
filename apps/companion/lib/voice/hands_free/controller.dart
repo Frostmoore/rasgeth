@@ -4,7 +4,6 @@
 // through its ports transcribes, asks the conversation, reads the answer and keeps time. The ports
 // are the only way out, so a whole conversation is tested with fakes.
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 

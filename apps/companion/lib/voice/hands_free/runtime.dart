@@ -11,7 +11,6 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 import 'dart:math' as math;
-import 'dart:typed_data';
 import 'dart:ui' show Locale, PlatformDispatcher;
 
 import 'package:flutter/foundation.dart';
@@ -24,6 +23,7 @@ import '../../app_state.dart';
 import '../../l10n/app_localizations.dart';
 import '../voice_words.dart';
 import 'controller.dart';
+import 'hf_words.g.dart';
 import 'machine.dart';
 import 'settings.dart';
 import 'speakable.dart';
@@ -143,9 +143,7 @@ Uint8List chimeWav() {
 }
 
 class HandsFreeRuntime extends ChangeNotifier implements VoicePorts {
-  HandsFreeRuntime(this.app, {MicStream? mic, MicKeeper? keeper})
-    : _mic = mic,
-      _keeper = keeper;
+  HandsFreeRuntime(this.app, {MicStream? mic, MicKeeper? keeper}) : _mic = mic, _keeper = keeper;
 
   final AppController app;
   MicStream? _mic;
@@ -177,6 +175,9 @@ class HandsFreeRuntime extends ChangeNotifier implements VoicePorts {
   VoiceState get state => controller.state;
 
   AppLocalizations get _l => lookupAppLocalizations(app.locale ?? _systemLocale());
+
+  /// A word of the page's voice in the interface's language (hf_words.g.dart).
+  String _w(String key) => hfWords[_l.localeName == 'it' ? 'it' : 'en']![key]!;
 
   static Locale _systemLocale() {
     final code = PlatformDispatcher.instance.locale.languageCode;
@@ -328,7 +329,7 @@ class HandsFreeRuntime extends ChangeNotifier implements VoicePorts {
   @override
   Future<String> ask(String text, Future<void> stop) async {
     final sid = target;
-    if (sid == null) throw SaidError(_l.hfNoConversation);
+    if (sid == null) throw SaidError(_w('voiceNoConversation'));
     final view = app.follow(sid);
     final sent = withVoiceHint(text);
     final after = view.events.isEmpty ? -1 : view.events.last.seq;
@@ -361,7 +362,7 @@ class HandsFreeRuntime extends ChangeNotifier implements VoicePorts {
     view.addListener(check);
     check();
     final timer = Timer(const Duration(minutes: 15), () {
-      if (!done.isCompleted) done.completeError(SaidError(_l.hfTooLong));
+      if (!done.isCompleted) done.completeError(SaidError(_w('voiceTooLong')));
     });
     unawaited(
       stop.then((_) {
@@ -390,12 +391,11 @@ class HandsFreeRuntime extends ChangeNotifier implements VoicePorts {
   void hush() => unawaited(app.voice.stopSpeaking());
 
   @override
-  void chime() => unawaited(
-    app.voice.chimePlayer.play(chimeWav(), 'audio/wav', volume: 80).catchError((_) {}),
-  );
+  void chime() =>
+      unawaited(app.voice.chimePlayer.play(chimeWav(), 'audio/wav', volume: 80).catchError((_) {}));
 
   @override
-  String more() => _l.hfRestOnScreen;
+  String more() => _w('voiceRestOnScreen');
 
   @override
   Object setTimer(void Function() fn, Duration after) => Timer(after, fn);

@@ -254,10 +254,7 @@ VoiceStep stepVoice(VoiceState s, VoiceEvent e) {
     case VoicePhase.listening:
       if (e is VoiceSpeechStart) return go(VoicePhase.listening, const [VoiceEffect.cancelTimer]);
       if (e is VoiceSpeechEnd) {
-        return go(VoicePhase.transcribing, const [
-          VoiceEffect.cancelTimer,
-          VoiceEffect.transcribe,
-        ]);
+        return go(VoicePhase.transcribing, const [VoiceEffect.cancelTimer, VoiceEffect.transcribe]);
       }
       if (e is VoiceSilence) return go(VoicePhase.idle, const [VoiceEffect.discard]);
       return stay;

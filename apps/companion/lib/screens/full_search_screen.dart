@@ -77,9 +77,8 @@ TextSpan markedExcerpt(String text, String q, TextStyle base, Color mark) {
   );
 }
 
-Future<void> openFullSearch(BuildContext context) => Navigator.of(
-  context,
-).push(MaterialPageRoute<void>(builder: (_) => const FullSearchScreen()));
+Future<void> openFullSearch(BuildContext context) =>
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const FullSearchScreen()));
 
 class FullSearchScreen extends StatefulWidget {
   const FullSearchScreen({super.key});
@@ -206,7 +205,9 @@ class _FullSearchScreenState extends State<FullSearchScreen> {
                     ),
                     FilledButton(
                       key: const Key('fsr-go'),
-                      onPressed: _busy || _q.text.trim().length < 2 ? null : () => unawaited(_run()),
+                      onPressed: _busy || _q.text.trim().length < 2
+                          ? null
+                          : () => unawaited(_run()),
                       child: Text(l.fsrGo),
                     ),
                   ],
@@ -268,7 +269,10 @@ class _FullSearchScreenState extends State<FullSearchScreen> {
                                           ),
                                         ),
                                         Text(
-                                          localWhen(h.at, Localizations.localeOf(context).toLanguageTag()),
+                                          localWhen(
+                                            h.at,
+                                            Localizations.localeOf(context).toLanguageTag(),
+                                          ),
                                           style: TextStyle(color: c.dim, fontSize: 12),
                                         ),
                                       ],
