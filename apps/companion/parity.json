@@ -33,9 +33,15 @@
       "note": "Native (G42.4): theme, interface language, agents' language, instructions for all with the PromptRefiner (diff, writer model, tools proposal), backup model, web search, voice messages, images, updates, What's new whenever, debug log, sign out; Safety (guardian, approvals, spending, skills, retention) in Settings › Safety."
     },
     "system": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart",
+        "lib/settings/system/system_screen.dart",
+        "lib/settings/system/os_panels.dart",
+        "lib/settings/system/backup_targets.dart",
+        "lib/settings/system/update_gate.dart",
+        "lib/settings/system/system_kit.dart",
+        "lib/settings/api/system_api.dart",
+        "lib/ui/qr.dart",
         "lib/screens/server_settings_screen.dart"
       ],
       "phase": "G42.14",
@@ -44,10 +50,11 @@
         241,
         242,
         243,
+        245,
         284,
         285
       ],
-      "note": "Native: the machine's name and state; role, storage, disks, SSH, Wi-Fi, HTTPS only in «All settings»."
+      "note": "Native (G42.14): the machine (processor, memory, cards, disks, virtual or not), the role asked first with the node's pairing, data and backups (places, disks, a folder, SFTP/SMB/node, the host's steps in a container and Proxmox's «Do it for me», when, how many, a backup now, the backups there restored), Wi-Fi, HTTPS at home with the certificate's QR, SSH, the OS's updates and the restart; the mandatory and breaking updates' gate with the safety backup (update_gate.dart, opened by itself on connect). Disk space shows as the page shows it (the data folder, the disks, a node's free disk); the page has no clean-up or sandbox repair (study rows 284-285: nothing to mirror)."
     },
     "setup": {
       "app": "partial",
@@ -293,10 +300,13 @@
       "note": "G42.5: Settings › Code as the page's CodeSettings and GitCode.tsx: GitHub and Gitea as two tiles lit when linked, each with its window (GitHub's guide for a fine-grained token, «Try and save», «Disconnect»; Gitea started here with its job followed step by step and the image's download bar, or one the person has, with the page's words when its name or address does not answer; «Open Gitea», «Switch off»), and «Create the repositories now» with each project's outcome. Same routes; nothing kept in the app."
     },
     "remote": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart",
-        "lib/screens/server_settings_screen.dart"
+        "lib/settings/system/remote_screen.dart",
+        "lib/settings/system/infra_rules.dart",
+        "lib/settings/system/system_kit.dart",
+        "lib/settings/api/system_api.dart",
+        "lib/ui/qr.dart"
       ],
       "phase": "G42.14",
       "rows": [
@@ -305,19 +315,21 @@
         279,
         287
       ],
-      "note": "The access link from outside is shown read only; password, 2FA, sessions, Tailscale, Cloudflare only in «All settings»."
+      "note": "Native (G42.14): the password (the others signed out on a yes), the authenticator's code with its QR, sign out everywhere, Tailscale, Cloudflare Tunnel and one's own domain with the job followed, the address with its QR and Switch off, one's own infrastructure (blocks filled by the page's own-infra rules, checked with vectors), «Try a name», «reachable already», Pi-hole."
     },
     "backup": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/system/backup_screen.dart",
+        "lib/settings/system/backup_targets.dart",
+        "lib/settings/api/system_api.dart"
       ],
       "phase": "G42.14",
       "rows": [
         248,
         249
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native backup and targets in G42.14."
+      "note": "Native (G42.14): the backup file made with its steps, saved with its bar, the keychain sealed with a passphrase; a file sent with its bar, its preview, the names chosen, imported; the destinations (SFTP, SMB, node, the host's disks, Proxmox) in Settings › System."
     },
     "platform": {
       "app": "partial",
@@ -439,26 +451,28 @@
       "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native external ACP agents in G42.17."
     },
     "machines": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/system/machines_screen.dart",
+        "lib/settings/api/system_api.dart"
       ],
       "phase": "G42.14",
       "rows": [
         246
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native SSH machines in G42.14."
+      "note": "Native (G42.14): add and change (secrets kept unless new ones are written), the public key to copy, the test with the first key trusted and a changed key replaced only after a yes, a new key, who may use it, remove."
     },
     "nodes": {
-      "app": "partial",
+      "app": "native",
       "files": [
-        "lib/screens/full_settings_screen.dart"
+        "lib/settings/system/nodes_screen.dart",
+        "lib/settings/api/system_api.dart"
       ],
       "phase": "G42.14",
       "rows": [
         247
       ],
-      "note": "Only inside «All settings» (the page in a web view; the browser on Windows and Linux); native node pairing in G42.14."
+      "note": "Native (G42.14): this machine's name and fingerprint, the code for ten minutes, the pairs waiting with their six digits and both fingerprints, the tree with state, capabilities and who may command it, rename and unpair on a yes, grants and Take away, pairing under another machine, where each project's commands, backups and videos go. Never a pair without the person's yes on both screens."
     },
     "devices": {
       "app": "native",

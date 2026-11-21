@@ -14408,4 +14408,3264 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get g4212OpenKeychain => 'Apri il Portachiavi';
+
+  @override
+  String get syBackup => 'Backup';
+
+  @override
+  String get syBackupAddsHint =>
+      'Un progetto con un nome già usato qui entra accanto all\'altro, con un numero dopo il nome.';
+
+  @override
+  String get syBackupAlreadyHere => 'c\'è già, resta com\'è';
+
+  @override
+  String get syBackupAnother => 'Importa un altro backup';
+
+  @override
+  String get syBackupChoose => 'Scegli il file del backup';
+
+  @override
+  String syBackupCounts(String agents, String conversations, String size) {
+    return '$agents agenti · $conversations conversazioni · $size di file';
+  }
+
+  @override
+  String syBackupDownload(String file) {
+    return 'Scarica $file';
+  }
+
+  @override
+  String get syBackupExport => 'Fai un backup';
+
+  @override
+  String get syBackupExportHint =>
+      'Progetti con i loro file, agenti, conversazioni, chat e bacheca. Le chiavi e gli accessi ai servizi non ci sono: restano su questo computer. Le cartelle node_modules sono lasciate fuori (si ricreano).';
+
+  @override
+  String syBackupFrom(String when) {
+    return 'Backup del $when';
+  }
+
+  @override
+  String get syBackupImport => 'Importa un backup';
+
+  @override
+  String get syBackupImportHint =>
+      'Da un altro Rasgeth o da questo. Qui non si cancella né si sostituisce niente: quello che c\'è nel backup viene aggiunto, e quello che c\'è già resta com\'è.';
+
+  @override
+  String get syBackupImportNow => 'Importa';
+
+  @override
+  String syBackupImported(String agents, String conversations, String projects) {
+    return 'Fatto: aggiunti $projects progetti, $agents agenti e $conversations conversazioni.';
+  }
+
+  @override
+  String syBackupKeepName(String name) {
+    return 'Tieni $name';
+  }
+
+  @override
+  String get syBackupKeys => 'Includi il portachiavi';
+
+  @override
+  String get syBackupKeysHelp =>
+      'Cifrato con una frase segreta tua, con le chiavi dei modelli, delle chat e delle caselle: senza, le credenziali del backup non si possono aprire.';
+
+  @override
+  String get syBackupKeysIn => 'Il backup contiene un portachiavi: la sua frase segreta';
+
+  @override
+  String get syBackupKeysInHelp =>
+      'Lasciala vuota per importare tutto il resto senza le credenziali.';
+
+  @override
+  String get syBackupKeysWrong =>
+      'Il portachiavi non è stato importato: frase segreta sbagliata. Tutto il resto sì.';
+
+  @override
+  String get syBackupMake => 'Prepara il backup';
+
+  @override
+  String get syBackupMakeAgain => 'Preparalo di nuovo';
+
+  @override
+  String syBackupNameQuestion(String backup, String here, String who) {
+    return '$who qui si chiama $here e nel backup $backup. Che nome tiene?';
+  }
+
+  @override
+  String get syBackupNothingNew =>
+      'Tutti i progetti di questo backup ci sono già: si aggiunge solo quello che manca.';
+
+  @override
+  String get syBackupPurpose =>
+      'Tutti i progetti con i loro file, gli agenti e le conversazioni in un file solo: da tenere al sicuro, o da portare in un altro Rasgeth.';
+
+  @override
+  String get syBackupSaved => 'Salvato nella cartella Download.';
+
+  @override
+  String get syBackupSending => 'Mando il file a Rasgeth';
+
+  @override
+  String syBackupTakeName(String name) {
+    return 'Usa $name';
+  }
+
+  @override
+  String get syBrainDisconnect => 'Scollega';
+
+  @override
+  String get syCaddyDomain => 'L\'indirizzo';
+
+  @override
+  String get syCaddyDomainHelp => 'Rasgeth prende da solo il certificato HTTPS da Let\'s Encrypt.';
+
+  @override
+  String get syCaddyPihole =>
+      'In casa alcuni router non riescono a raggiungere il proprio indirizzo pubblico: allora apri Rasgeth in casa con il solito link, oppure accendi Pi-hole in Impostazioni, Accesso da fuori casa (è facoltativo).';
+
+  @override
+  String get syCaddyStep1 =>
+      'Dal fornitore del tuo dominio crea un record DNS di tipo A per l\'indirizzo che vuoi (per esempio rasgeth.tuodominio.it) che punti all\'indirizzo pubblico di casa. Se cambia, usa un servizio di DNS dinamico.';
+
+  @override
+  String get syCaddyStep2 => 'Sul router inoltra le porte 80 e 443 a questo computer.';
+
+  @override
+  String get syCaddyWarning =>
+      'Con questa strada la pagina di accesso di Rasgeth è su internet: tieni la password forte e la seconda verifica attiva.';
+
+  @override
+  String get syCancel => 'Annulla';
+
+  @override
+  String get syCfAccess =>
+      'Ancora più sicuro: in Cloudflare Zero Trust, Access, aggiungi un\'applicazione per questo indirizzo, così Cloudflare chiede chi sei prima ancora di mostrare la pagina.';
+
+  @override
+  String get syCfBuy => 'Compra un dominio su Cloudflare';
+
+  @override
+  String get syCfHost => 'L\'indirizzo che hai scelto';
+
+  @override
+  String get syCfHostHelp =>
+      'Per esempio rasgeth.tuodominio.it: sottodominio e dominio del Public hostname.';
+
+  @override
+  String get syCfStep1 =>
+      'Se non hai ancora un dominio, comprane uno (Cloudflare li vende a prezzo di costo, circa 10 euro l\'anno):';
+
+  @override
+  String get syCfStep2 =>
+      'Apri Tunnels in Cloudflare Zero Trust, premi Create a tunnel, scegli Cloudflared e dagli un nome (per esempio rasgeth):';
+
+  @override
+  String get syCfStep3 =>
+      'Nel passo Public hostname: sottodominio rasgeth, il tuo dominio, Service type HTTP, URL redgiant:7600. Salva.';
+
+  @override
+  String get syCfStep4 =>
+      'Cloudflare mostra un comando con un token lungo dopo --token: copia solo il token e scrivi qui l\'indirizzo.';
+
+  @override
+  String get syCfToken => 'Il token del tunnel';
+
+  @override
+  String get syCfTokenHelp =>
+      'La stringa lunga dopo --token nel comando che mostra Cloudflare (comincia con eyJ).';
+
+  @override
+  String get syCfTunnels => 'Tunnel di Cloudflare';
+
+  @override
+  String get syConnecting => 'collegamento…';
+
+  @override
+  String get syConversations => 'Conversazioni';
+
+  @override
+  String syErr_agent_limit(String count, String max, String project) {
+    return 'Il progetto «$project» può avere al massimo $max agenti oltre all\'orchestratore: ne ha $count. Alza il limite in Impostazioni › Progetti o rimuovine uno.';
+  }
+
+  @override
+  String get syErr_agent_removed =>
+      'L\'agente è stato rimosso dalla squadra: ripristinalo per lavorarci.';
+
+  @override
+  String get syErr_agent_stopped => 'L\'agente è fermato (in pausa): riattivalo per riprendere.';
+
+  @override
+  String get syErr_bad_name => 'Questo non è un nome (per esempio git.home.example.com).';
+
+  @override
+  String get syErr_code_rejected =>
+      'Anthropic non ha accettato questo codice: forse è incompleto o vecchio. Riapri la pagina di accesso per averne uno nuovo.';
+
+  @override
+  String get syErr_email_failed =>
+      'La casella non ha fatto entrare Rasgeth: controlla server, indirizzo e password per le app.';
+
+  @override
+  String get syErr_failed => 'L\'accesso non è andato a buon fine. Riprova dall\'inizio.';
+
+  @override
+  String get syErr_host_unreachable =>
+      'Il nome del server è noto, ma da Rasgeth il suo indirizzo non risponde. Vedi Impostazioni › Accesso da fuori casa › I tuoi servizi di casa.';
+
+  @override
+  String get syErr_key_rejected =>
+      'Il fornitore ha rifiutato questa chiave. Controlla di averla copiata tutta e che sia ancora attiva.';
+
+  @override
+  String get syErr_memory_empty => 'Scrivi qualcosa da ricordare.';
+
+  @override
+  String get syErr_memory_forgotten => 'Un ricordo dimenticato per sempre non può tornare.';
+
+  @override
+  String get syErr_memory_full =>
+      'La memoria è piena: cancella o unisci prima qualche ricordo vecchio.';
+
+  @override
+  String get syErr_memory_gone => 'Quel ricordo non c\'è più.';
+
+  @override
+  String get syErr_memory_long =>
+      'Un ricordo è lungo al massimo 400 caratteri: scrivilo più corto.';
+
+  @override
+  String get syErr_memory_moved =>
+      'Il ricordo è cambiato ancora: annulla prima la modifica più recente.';
+
+  @override
+  String get syErr_memory_same => 'Un altro ricordo dice già la stessa cosa.';
+
+  @override
+  String get syErr_memory_secret =>
+      'Sembra una password, un codice o il numero di una carta: i segreti non vanno mai in memoria.';
+
+  @override
+  String get syErr_memory_undone => 'Quella modifica è già stata annullata.';
+
+  @override
+  String get syErr_missing_permission =>
+      'GitHub non ha lasciato creare repository a questo token. Fanne uno nuovo con Administration su Read and write.';
+
+  @override
+  String get syErr_name_not_found =>
+      'Rasgeth non trova il nome del server nel DNS che usa. Vedi Impostazioni › Accesso da fuori casa › I tuoi servizi di casa.';
+
+  @override
+  String get syErr_no_login => 'Prima apri la pagina di accesso di Anthropic.';
+
+  @override
+  String get syErr_no_model =>
+      'Non hai ancora scelto un modello: apri Impostazioni, Modelli e abbonamenti, collegane uno (un abbonamento, una chiave o un modello locale) e sceglilo in \"Il modello che usano gli agenti\".';
+
+  @override
+  String get syErr_no_page =>
+      'Non è stato possibile preparare la pagina di accesso di Anthropic. Riprova fra un momento.';
+
+  @override
+  String get syErr_no_password => 'Prima imposta una password.';
+
+  @override
+  String get syErr_portrait_empty => 'Scrivi il tratto.';
+
+  @override
+  String get syErr_portrait_gone => 'Quel tratto non c\'è più.';
+
+  @override
+  String get syErr_portrait_long => 'Un tratto è al massimo di 200 caratteri: scrivilo più corto.';
+
+  @override
+  String get syErr_portrait_private =>
+      'Indirizzi email e numeri di telefono non entrano mai nel ritratto.';
+
+  @override
+  String get syErr_portrait_secret =>
+      'Sembra una password, un codice o un numero di carta: i segreti non entrano mai nel ritratto.';
+
+  @override
+  String get syErr_project_archived => 'Il progetto è archiviato: ripristinalo per lavorarci.';
+
+  @override
+  String syErr_provider_stalled(String minutes, String retries) {
+    return 'Il fornitore non risponde da $minutes minuti: ho riprovato $retries volte. Riprova fra un po\', o scegli un altro modello.';
+  }
+
+  @override
+  String get syErr_terms => 'Prima spunta la casella sulle condizioni dei fornitori.';
+
+  @override
+  String get syErr_token_rejected =>
+      'Telegram ha rifiutato questo token. Copialo di nuovo dal messaggio di BotFather, tutto intero.';
+
+  @override
+  String get syErr_too_many => 'Troppi tentativi sbagliati: aspetta 15 minuti e riprova.';
+
+  @override
+  String get syErr_unreachable =>
+      'Il fornitore non ha risposto. Controlla l\'indirizzo e la connessione a internet, poi riprova.';
+
+  @override
+  String get syErr_vault_bad_file =>
+      'Questo file non è un\'esportazione di password che Rasgeth sa leggere.';
+
+  @override
+  String get syErr_vault_bad_passphrase => 'Frase segreta sbagliata, o file rovinato.';
+
+  @override
+  String get syErr_vault_closed => 'Il portachiavi è chiuso su questo computer.';
+
+  @override
+  String get syErr_vault_in_git =>
+      'La cartella del portachiavi sta dentro un repository git: non deve mai finire in un commit. Sposta la cartella dei dati di Rasgeth fuori da lì.';
+
+  @override
+  String get syErr_vault_name_taken =>
+      'Un\'altra credenziale ha già quel nome per gli agenti: scegline un altro.';
+
+  @override
+  String get syErr_vault_no_value => 'Scrivi il segreto.';
+
+  @override
+  String get syErr_vault_not_found => 'Quella credenziale non è più nel portachiavi.';
+
+  @override
+  String get syErr_vault_system =>
+      'Rasgeth usa questa chiave: la togli dalla sua pagina nelle Impostazioni.';
+
+  @override
+  String get syErr_voice_convert =>
+      'Non sono riuscito a convertire la registrazione per whisper su questo computer.';
+
+  @override
+  String get syErr_voice_empty => 'La registrazione è vuota.';
+
+  @override
+  String syErr_voice_key_refused(String name) {
+    return '$name ha rifiutato la chiave: controllala in Impostazioni, Voce.';
+  }
+
+  @override
+  String syErr_voice_no_key(String name) {
+    return '$name non ha ancora una chiave: aggiungila in Impostazioni, Voce.';
+  }
+
+  @override
+  String get syErr_voice_no_service =>
+      'Rasgeth non ha un servizio di trascrizione: scegline uno in Impostazioni, Voce, Trascrizione.';
+
+  @override
+  String get syErr_voice_provider => 'Questo fornitore non lo sa fare: scegline un altro.';
+
+  @override
+  String syErr_voice_rate_limited(String name) {
+    return '$name dice troppe richieste o credito finito.';
+  }
+
+  @override
+  String syErr_voice_service_error(String name, String status) {
+    return '$name ha risposto con un errore ($status).';
+  }
+
+  @override
+  String syErr_voice_timeout(String name) {
+    return '$name ci ha messo troppo a rispondere.';
+  }
+
+  @override
+  String get syErr_voice_too_long => 'La registrazione è troppo lunga.';
+
+  @override
+  String syErr_voice_unreachable(String name) {
+    return '$name non si raggiunge: controlla che sia acceso e il suo indirizzo.';
+  }
+
+  @override
+  String get syErr_weak => 'La password deve avere almeno 10 caratteri.';
+
+  @override
+  String get syErr_wrong => 'Password o codice sbagliati.';
+
+  @override
+  String get syError => 'Errore';
+
+  @override
+  String get syFailed => 'fallito';
+
+  @override
+  String get syFbArch => 'Architettura';
+
+  @override
+  String get syFbBackupBusy => 'Una copia è già in corso.';
+
+  @override
+  String get syFbBackupNow => 'Fai una copia adesso';
+
+  @override
+  String get syFbBackupQ => 'Meglio su un altro disco: se questo si rompe, la copia c\'è ancora.';
+
+  @override
+  String get syFbBackupStarted => 'Copia avviata: la vedi tra i lavori in corso.';
+
+  @override
+  String get syFbBackupTitle => 'Copie di sicurezza';
+
+  @override
+  String get syFbCannotMount => 'Qui non si può montare';
+
+  @override
+  String syFbContainerDisks(String name) {
+    return 'Rasgeth OS gira in un container ($name): i dischi che vede sono quelli della macchina che lo ospita e da qui non si possono usare.';
+  }
+
+  @override
+  String get syFbDaily => 'Ogni giorno';
+
+  @override
+  String get syFbDataDir => 'Cartella';
+
+  @override
+  String get syFbDataQ => 'Qui ci sono progetti, conversazioni e impostazioni.';
+
+  @override
+  String get syFbDataTitle => 'I dati';
+
+  @override
+  String get syFbDay => 'Giorno';
+
+  @override
+  String syFbDestDisk(String label, String path) {
+    return 'Le copie vanno sul disco $label ($path).';
+  }
+
+  @override
+  String syFbDestFolder(String path) {
+    return 'Le copie vanno nella cartella $path.';
+  }
+
+  @override
+  String syFbDestNode(String name) {
+    return 'Le copie vanno sul nodo $name, nello spazio che presta.';
+  }
+
+  @override
+  String syFbDestSftp(String machine, String path) {
+    return 'Le copie vanno su $machine, in $path (SFTP).';
+  }
+
+  @override
+  String syFbDestSmb(String path, String user) {
+    return 'Le copie vanno nella cartella condivisa $path, come $user.';
+  }
+
+  @override
+  String get syFbDisks => 'Dischi';
+
+  @override
+  String get syFbDisksTitle => 'Dischi rimovibili';
+
+  @override
+  String get syFbErr_already => 'Il container ha già una cartella con quel nome.';
+
+  @override
+  String get syFbErr_auth =>
+      'La destinazione ha rifiutato l\'accesso: controlla utente e password (o la chiave della macchina).';
+
+  @override
+  String get syFbErr_bad_path =>
+      'Scrivi un percorso completo (/volume1/Rasgeth) o dalla home (~/backup).';
+
+  @override
+  String get syFbErr_denied => 'La destinazione non lascia scrivere questo utente.';
+
+  @override
+  String get syFbErr_disk_missing =>
+      'Il disco delle copie non è collegato: collegalo. Non è stato scritto niente altrove.';
+
+  @override
+  String get syFbErr_has_filesystem => 'Quel disco è già formattato: da qui non si riformatta mai.';
+
+  @override
+  String get syFbErr_keychain_closed => 'Apri prima il Portachiavi: la password si tiene lì.';
+
+  @override
+  String get syFbErr_mismatch =>
+      'La copia è arrivata diversa dall\'originale: non è stata tenuta. Riprova.';
+
+  @override
+  String get syFbErr_needs_format => 'Quel disco non è formattato.';
+
+  @override
+  String get syFbErr_no_container => 'Sull\'host non c\'è un container con quel numero.';
+
+  @override
+  String get syFbErr_no_destination => 'Scegli prima dove vanno le copie.';
+
+  @override
+  String get syFbErr_no_disk => 'Quel disco non è (più) un disco rimovibile dell\'host.';
+
+  @override
+  String get syFbErr_not_found => 'La cartella o la destinazione non c\'è (più).';
+
+  @override
+  String get syFbErr_not_proxmox => 'Quella macchina non è un host Proxmox.';
+
+  @override
+  String get syFbErr_not_trusted =>
+      'Prova prima questa macchina in Impostazioni › Macchine e fidati della sua chiave.';
+
+  @override
+  String get syFbErr_place_missing =>
+      'La cartella della macchina ospite ora non è montata: non è stato scritto niente sul disco di sistema.';
+
+  @override
+  String get syFbErr_smb_address =>
+      'Scrivi la cartella condivisa come \\\\host\\condivisione\\cartella (lettere, cifre, spazi, punti e trattini).';
+
+  @override
+  String get syFbErr_smb_bad_domain => 'Il dominio è fatto di lettere, cifre, punti e trattini.';
+
+  @override
+  String get syFbErr_smb_bad_password => 'Questa password non si può usare (niente a capo).';
+
+  @override
+  String get syFbErr_smb_bad_user => 'Questo nome utente non si può usare.';
+
+  @override
+  String get syFbErr_smb_missing =>
+      'Le cartelle condivise hanno bisogno di smbclient, che questa installazione non ha.';
+
+  @override
+  String get syFbErr_unreachable =>
+      'La destinazione non risponde: è accesa e in rete? Non è stato scritto niente altrove.';
+
+  @override
+  String get syFbFolderLead =>
+      'Una cartella in cui questa macchina può scrivere: una condivisione di rete, un disco montato da te. Non dentro la cartella dei dati.';
+
+  @override
+  String get syFbFolderPath => 'Cartella';
+
+  @override
+  String get syFbFolderTitle => 'Oppure una cartella';
+
+  @override
+  String syFbFreeOf(String free) {
+    return '$free liberi';
+  }
+
+  @override
+  String syFbFreeOfTotal(String free, String total) {
+    return '$free GB liberi su $total GB';
+  }
+
+  @override
+  String get syFbFri => 'Ven';
+
+  @override
+  String get syFbHostBad_bad_device => 'Il dispositivo di questo disco non si può usare.';
+
+  @override
+  String get syFbHostBad_bad_id => 'Il numero del container è un numero, come 105.';
+
+  @override
+  String get syFbHostBad_bad_mp => 'Nessun punto di montaggio libero.';
+
+  @override
+  String get syFbHostBad_bad_name => 'Il nome di questo disco non si può usare per una cartella.';
+
+  @override
+  String get syFbHostId => 'Numero del container su Proxmox';
+
+  @override
+  String syFbHostIdHelp(String hostname) {
+    return 'Il numero nell\'elenco di Proxmox (questo container si chiama $hostname).';
+  }
+
+  @override
+  String get syFbHostKind => 'La macchina ospite';
+
+  @override
+  String get syFbHostLead =>
+      'Da un container Rasgeth vede i dischi della macchina ospite ma non può montarli: li monta l\'ospite e passa dentro una cartella. Rasgeth se ne accorge da solo.';
+
+  @override
+  String syFbHostMany(String n) {
+    return 'Su questa macchina ci sono $n dischi rimovibili: scegli quello per le copie.';
+  }
+
+  @override
+  String get syFbHostNone =>
+      'Non si vede nessun disco rimovibile dell\'ospite: collegalo all\'ospite, oppure usa una cartella in rete qui sotto.';
+
+  @override
+  String syFbHostOne(String how, String size, String title) {
+    return 'Su questa macchina c\'è il disco $title, $how, $size.';
+  }
+
+  @override
+  String get syFbHostOther => 'Altro';
+
+  @override
+  String get syFbHostSteps => 'Da eseguire sulla macchina ospite, come root';
+
+  @override
+  String get syFbHostTitle => 'Un disco della macchina ospite';
+
+  @override
+  String syFbHostWatching(String target) {
+    return 'Controllo ogni pochi secondi: quando arriva $target compare qui sopra, pronta da usare.';
+  }
+
+  @override
+  String get syFbHour => 'Ora';
+
+  @override
+  String get syFbKeep => 'Copie tenute';
+
+  @override
+  String syFbKeepN(String n) {
+    return 'ne tiene $n';
+  }
+
+  @override
+  String syFbLastFailed(String when, String why) {
+    return 'La copia del $when non è riuscita: $why';
+  }
+
+  @override
+  String syFbLastOk(String when) {
+    return 'Ultima copia: $when, riletta e completa.';
+  }
+
+  @override
+  String get syFbListAgain => 'Guarda di nuovo';
+
+  @override
+  String syFbListEmpty(String where) {
+    return 'Ancora nessuna copia in $where.';
+  }
+
+  @override
+  String get syFbListLead =>
+      'Ognuna si può riportare qui: si aggiunge quello che manca, qui non si cancella niente.';
+
+  @override
+  String get syFbListShow => 'Mostra le copie';
+
+  @override
+  String get syFbListTitle => 'Le copie che ci sono';
+
+  @override
+  String get syFbMachineTitle => 'La macchina';
+
+  @override
+  String get syFbMethod_helper =>
+      'Scegline uno: Rasgeth lo monta solo per le copie. I dischi di sistema non vengono mai proposti.';
+
+  @override
+  String get syFbMethod_none =>
+      'Questa installazione non può montare dischi (per esempio Docker senza privilegi): usa un disco già montato, oppure una cartella qui sotto.';
+
+  @override
+  String get syFbMethod_udisks =>
+      'Scegline uno: lo monta il sistema (udisks2). I dischi di sistema non vengono mai proposti.';
+
+  @override
+  String get syFbMissing_not_installed => 'non noto: manca il programma che lo dice';
+
+  @override
+  String get syFbMissing_unreadable => 'non leggibile';
+
+  @override
+  String get syFbMissing_unsupported => 'non disponibile su questo sistema';
+
+  @override
+  String get syFbMon => 'Lun';
+
+  @override
+  String get syFbNetAProxy => 'un reverse proxy';
+
+  @override
+  String syFbNetDns(String ip) {
+    return 'Un server DNS nella tua rete ($ip): un nome come rasgeth.home può puntare qui.';
+  }
+
+  @override
+  String get syFbNetFolder => 'Cartella lì';
+
+  @override
+  String get syFbNetFolderHelp =>
+      'Un percorso completo (/volume1/Rasgeth, E:\\Backup) o dalla home (~/RedGiant-backups). Se manca la crea.';
+
+  @override
+  String get syFbNetLanOnly => 'Solo rete locale va benissimo: salta questo passo.';
+
+  @override
+  String get syFbNetLead =>
+      'Niente da montare: funziona anche in un container o in Docker. Ogni copia arriva con un nome temporaneo e prende il suo nome vero solo quando è completa e controllata.';
+
+  @override
+  String syFbNetName(String name) {
+    return 'Hai raggiunto Rasgeth con un nome: $name.';
+  }
+
+  @override
+  String get syFbNetNoMachines =>
+      'Nessuna macchina ancora: aggiungi il NAS o un altro computer in Impostazioni › Macchine (SSH), provalo una volta e torna qui.';
+
+  @override
+  String get syFbNetNoNodes =>
+      'Nessun Rasgeth abbinato: abbinane uno in Impostazioni › Nodi (deve prestare il suo spazio).';
+
+  @override
+  String get syFbNetNode => 'Un altro Rasgeth';
+
+  @override
+  String get syFbNetNotTrusted => 'Prima provala in Impostazioni › Macchine';
+
+  @override
+  String get syFbNetNothing => 'Non c\'è niente che raggiunga già questa macchina da fuori.';
+
+  @override
+  String get syFbNetPick => 'Usa per le copie';
+
+  @override
+  String syFbNetProxies(String names) {
+    return 'Gira già su questa macchina: $names.';
+  }
+
+  @override
+  String syFbNetProxyFront(String name) {
+    return 'Davanti a Rasgeth c\'è già $name.';
+  }
+
+  @override
+  String get syFbNetSftp => 'Una delle tue macchine';
+
+  @override
+  String get syFbNetSmb => 'Cartella condivisa (SMB)';
+
+  @override
+  String syFbNetTailscale(String name) {
+    return 'Tailscale è già attivo qui ($name): puoi usarlo.';
+  }
+
+  @override
+  String get syFbNetTailscaleOff => 'Tailscale è installato qui ma non collegato.';
+
+  @override
+  String get syFbNetTitle => 'Oppure una cartella in rete';
+
+  @override
+  String get syFbNoDisks =>
+      'Nessun disco rimovibile trovato. Collegane uno e riapri questa pagina, oppure usa una cartella.';
+
+  @override
+  String get syFbNodeOffline => 'Non in linea ora';
+
+  @override
+  String get syFbNodeOnline => 'In linea';
+
+  @override
+  String get syFbOff => 'Solo quando lo chiedo';
+
+  @override
+  String get syFbOfferCloud => 'Modelli nel cloud: sempre disponibili.';
+
+  @override
+  String syFbOfferLocalCpu(String max) {
+    return 'Modelli locali: sì, piccoli, sul processore, fino a circa $max GB (più lenti che su una scheda video).';
+  }
+
+  @override
+  String syFbOfferLocalGpu(String max) {
+    return 'Modelli locali: sì, sulla scheda video, fino a circa $max GB.';
+  }
+
+  @override
+  String get syFbOfferNoLocal =>
+      'Modelli locali: non proposti, qui c\'è troppa poca memoria. Puoi comunque aggiungerne uno da Impostazioni › Modelli.';
+
+  @override
+  String get syFbPairLater =>
+      'Scrivi l\'indirizzo del Rasgeth principale e il codice che mostra in Impostazioni › Nodi › «Aggiungi un nodo». Puoi farlo anche dopo, dalle Impostazioni.';
+
+  @override
+  String get syFbPassword => 'Password';
+
+  @override
+  String get syFbPasswordAgain => 'La stessa password di nuovo';
+
+  @override
+  String get syFbPasswordHelp => 'Almeno 10 caratteri.';
+
+  @override
+  String syFbPlaceFree(String free, String total) {
+    return '$free GB liberi su $total';
+  }
+
+  @override
+  String get syFbPlaceNotWritable => 'Rasgeth non può scriverci';
+
+  @override
+  String get syFbPlacesLead =>
+      'Cartelle che la macchina che ospita Rasgeth ha montato in /var/lib/redgiant/backups (un punto di montaggio di Proxmox, una cartella di rete).';
+
+  @override
+  String get syFbPlacesTitle => 'Cartelle montate per le copie';
+
+  @override
+  String get syFbPveDo => 'Passalo a Rasgeth';
+
+  @override
+  String syFbPveDone(String target) {
+    return 'Fatto: la cartella $target è arrivata.';
+  }
+
+  @override
+  String get syFbPveFormat => 'Non formattato: formattalo e passalo';
+
+  @override
+  String syFbPveFormatLabel(String title) {
+    return 'Tutto quello che c\'è sopra viene cancellato. Per andare avanti scrivi il suo nome: $title';
+  }
+
+  @override
+  String syFbPveFormatQ(String title) {
+    return 'Formattare il disco $title?';
+  }
+
+  @override
+  String get syFbPveFormatYes => 'Formatta e passalo';
+
+  @override
+  String syFbPveGuess(String id) {
+    return 'Questo container è il $id.';
+  }
+
+  @override
+  String syFbPveHost(String name, String version) {
+    return '$name: Proxmox $version.';
+  }
+
+  @override
+  String get syFbPveLead =>
+      'Se l\'host Proxmox è tra le tue macchine (Impostazioni › Macchine), Rasgeth può eseguire lì questi passi da solo. Prima te lo chiede, con tutti i comandi nella richiesta.';
+
+  @override
+  String get syFbPveLook => 'Cerca l\'host Proxmox';
+
+  @override
+  String get syFbPveNeedId => 'Scrivi prima il numero del container.';
+
+  @override
+  String get syFbPveNoDisks => 'Nessun disco rimovibile su quell\'host.';
+
+  @override
+  String syFbPveNone(String n) {
+    return 'Nessuna delle tue $n macchine è un host Proxmox. Aggiungi l\'host in Impostazioni › Macchine (come root, con la chiave di Rasgeth), provalo, poi cerca di nuovo.';
+  }
+
+  @override
+  String syFbPveQ(String host, String id, String title) {
+    return 'Passare il disco $title di $host al container $id?';
+  }
+
+  @override
+  String syFbPveRestart(String target) {
+    return 'Fatto sull\'host. Se $target non compare entro un minuto, riavvia il container da Proxmox.';
+  }
+
+  @override
+  String get syFbPveText =>
+      'Rasgeth te lo chiede di nuovo tra le richieste, con i comandi esatti, prima di eseguire qualcosa sull\'host.';
+
+  @override
+  String get syFbPveTitle => 'Fallo tu';
+
+  @override
+  String get syFbPveYes => 'Chiedimelo con i comandi';
+
+  @override
+  String syFbRamFree(String gb) {
+    return '$gb GB liberi adesso';
+  }
+
+  @override
+  String syFbRamTotal(String gb) {
+    return '$gb GB in tutto';
+  }
+
+  @override
+  String get syFbRemovable => 'rimovibile';
+
+  @override
+  String get syFbRestore => 'Ripristina';
+
+  @override
+  String syFbRestoreQ(String when) {
+    return 'Ripristinare la copia del $when?';
+  }
+
+  @override
+  String get syFbRestoreText =>
+      'Prima viene riletta, poi si aggiungono i progetti, gli agenti e le conversazioni che qui non ci sono. Qui non si cancella niente.';
+
+  @override
+  String get syFbRestoreYes => 'Ripristina';
+
+  @override
+  String get syFbRoleFull => 'Rasgeth completo';
+
+  @override
+  String get syFbRoleFullText => 'Agenti, progetti, chat e tutto il resto, su questa macchina.';
+
+  @override
+  String get syFbRoleNode => 'Nodo di un altro Rasgeth';
+
+  @override
+  String get syFbRoleNodeText => 'Questa macchina lavora per un Rasgeth che hai già.';
+
+  @override
+  String get syFbRoleSettingsLead => 'Puoi cambiarlo quando vuoi: prima chiede e dice cosa cambia.';
+
+  @override
+  String get syFbRoleTitle => 'Ruolo';
+
+  @override
+  String get syFbSat => 'Sab';
+
+  @override
+  String get syFbSmbAddress => 'Cartella condivisa';
+
+  @override
+  String get syFbSmbAddressHelp =>
+      'Come la scrive Windows (\\\\nas\\backup\\Rasgeth) oppure smb://nas/backup/Rasgeth.';
+
+  @override
+  String get syFbSmbDomain => 'Dominio o gruppo di lavoro';
+
+  @override
+  String get syFbSmbDomainHelp => 'Solo se la tua rete lo chiede (spesso vuoto).';
+
+  @override
+  String get syFbSmbMissing =>
+      'Le cartelle condivise hanno bisogno di smbclient, che questa installazione non ha (l\'immagine Docker e Rasgeth OS ce l\'hanno). Su Windows usa il campo cartella qui sopra con \\\\host\\condivisione.';
+
+  @override
+  String get syFbSmbPassword => 'Password';
+
+  @override
+  String get syFbSmbPasswordHelp => 'Va solo nel Portachiavi, mai in un file o in un log.';
+
+  @override
+  String get syFbSmbPasswordKept => 'È nel Portachiavi: lascia vuoto per tenerla.';
+
+  @override
+  String get syFbSmbUser => 'Utente';
+
+  @override
+  String get syFbSshAddKey => 'Aggiungi questa chiave';
+
+  @override
+  String syFbSshContainer(String name) {
+    return 'In un container ($name) SSH entra nel container stesso, al suo indirizzo, con l\'utente redgiant.';
+  }
+
+  @override
+  String get syFbSshKey => 'Chiave pubblica';
+
+  @override
+  String get syFbSshKeyHelp =>
+      'Una riga che inizia con ssh-ed25519, ssh-rsa o ecdsa-sha2 (il file .pub).';
+
+  @override
+  String get syFbSshKeyPlaceholder => 'ssh-ed25519 AAAA… io@portatile';
+
+  @override
+  String syFbSshKeys(String n) {
+    return '$n chiavi ammesse';
+  }
+
+  @override
+  String get syFbSshNeedKey => 'Incolla prima una chiave pubblica, poi accendilo.';
+
+  @override
+  String get syFbSshOffHelp => 'Incolla qui sotto una chiave pubblica, poi accendilo.';
+
+  @override
+  String get syFbSshOn => 'SSH acceso';
+
+  @override
+  String get syFbSshQ =>
+      'Per lavorare sulla macchina stessa da un terminale. Spento finché non lo accendi; solo chiavi, mai password.';
+
+  @override
+  String get syFbSshTitle => 'SSH';
+
+  @override
+  String get syFbSshWhy_no_helper =>
+      'Questa installazione non ha l\'aiutante di sistema di Rasgeth OS: SSH lo gestisce il sistema che la ospita.';
+
+  @override
+  String get syFbSshWhy_not_installed => 'SSH (openssh-server) non è installato in questo sistema.';
+
+  @override
+  String syFbSshWhy_other(String why) {
+    return 'Qui SSH non si può leggere: l\'aiutante di sistema ha risposto «$why».';
+  }
+
+  @override
+  String get syFbSshWhy_timeout =>
+      'L\'aiutante di sistema di Rasgeth OS ci ha messo troppo a rispondere: riprova tra poco.';
+
+  @override
+  String get syFbSshWhy_unreachable =>
+      'L\'aiutante di sistema di Rasgeth OS non risponde (redgiant-helper.socket): ora SSH non si può leggere né cambiare. Di solito riavviare la macchina lo rimette a posto.';
+
+  @override
+  String get syFbSun => 'Dom';
+
+  @override
+  String get syFbSystemLead =>
+      'La macchina su cui gira Rasgeth, il suo ruolo, dove stanno i dati e le copie, e SSH.';
+
+  @override
+  String get syFbSystemQ => 'Sistema';
+
+  @override
+  String get syFbSystemSection => 'Sistema';
+
+  @override
+  String get syFbThu => 'Gio';
+
+  @override
+  String get syFbToFullQ => 'Rendere di nuovo questo un Rasgeth completo?';
+
+  @override
+  String get syFbToFullText =>
+      'Smette di lavorare per l\'altro Rasgeth; i suoi agenti, progetti e conversazioni tornano com\'erano.';
+
+  @override
+  String get syFbToFullYes => 'Rendilo completo';
+
+  @override
+  String get syFbToNodeQ => 'Trasformare questo Rasgeth in un nodo?';
+
+  @override
+  String get syFbToNodeText =>
+      'Smetterà di essere un Rasgeth a sé quando sarà abbinato: agenti, progetti e conversazioni restano salvati, intatti, ma fermi finché non lo rendi di nuovo completo.';
+
+  @override
+  String get syFbToNodeYes => 'Rendilo un nodo';
+
+  @override
+  String get syFbTue => 'Mar';
+
+  @override
+  String get syFbUseDisk => 'Usa per le copie';
+
+  @override
+  String get syFbUseFolder => 'Usa questa cartella';
+
+  @override
+  String get syFbUsePlace => 'Usa per le copie';
+
+  @override
+  String get syFbUseShare => 'Usa questa cartella condivisa';
+
+  @override
+  String get syFbVirt => 'Gira su';
+
+  @override
+  String syFbVirtContainer(String name) {
+    return 'un container ($name)';
+  }
+
+  @override
+  String get syFbVirtNone => 'una macchina fisica';
+
+  @override
+  String syFbVirtVm(String name) {
+    return 'una macchina virtuale ($name)';
+  }
+
+  @override
+  String get syFbWed => 'Mer';
+
+  @override
+  String get syFbWeekly => 'Ogni settimana';
+
+  @override
+  String get syFbWhenTitle => 'Quando';
+
+  @override
+  String get syFbWhyFs => 'Formato non supportato';
+
+  @override
+  String get syFbWhyNoFs => 'Non formattato';
+
+  @override
+  String get syFbWhyNoUuid => 'Senza un identificativo';
+
+  @override
+  String get syFbWhyNotDisk => 'Non è un disco';
+
+  @override
+  String get syFbWhyNotRemovable => 'Non rimovibile';
+
+  @override
+  String get syFbWhySystem => 'Contiene il sistema';
+
+  @override
+  String get syFolder => 'Cartella';
+
+  @override
+  String get syGitGiteaAgain => 'La stessa password, di nuovo';
+
+  @override
+  String get syGitGiteaGuide => 'Apri «I tuoi servizi di casa»';
+
+  @override
+  String get syGitGiteaMismatch => 'Le due password sono diverse.';
+
+  @override
+  String get syInspector => 'Inspector';
+
+  @override
+  String get syJob_pihole => 'Avvio di Pi-hole';
+
+  @override
+  String get syJob_remote => 'Apro l\'accesso da fuori';
+
+  @override
+  String get syJob_step_account => 'Creo il tuo account';
+
+  @override
+  String get syJob_step_arrive => 'Aspetto la cartella';
+
+  @override
+  String get syJob_step_ask => 'Aspetto il tuo sì';
+
+  @override
+  String get syJob_step_conversations => 'Conversazioni';
+
+  @override
+  String get syJob_step_convert => 'Converto';
+
+  @override
+  String get syJob_step_copy => 'Copio i modelli';
+
+  @override
+  String get syJob_step_data => 'Progetti, agenti e impostazioni';
+
+  @override
+  String get syJob_step_download => 'Scarico il modello';
+
+  @override
+  String get syJob_step_draft => 'Con il modello piccolo';
+
+  @override
+  String get syJob_step_fetch => 'Porto qui la copia';
+
+  @override
+  String get syJob_step_files => 'I file dei progetti';
+
+  @override
+  String get syJob_step_gitea_image => 'Scarico Gitea (una volta sola)';
+
+  @override
+  String get syJob_step_gitea_start => 'Avvio Gitea';
+
+  @override
+  String get syJob_step_image => 'Scarico il motore (una volta sola)';
+
+  @override
+  String get syJob_step_image_download => 'Download';
+
+  @override
+  String get syJob_step_load => 'Carico il modello in memoria';
+
+  @override
+  String get syJob_step_look => 'Guardo l\'host';
+
+  @override
+  String get syJob_step_model_download => 'Il modello';
+
+  @override
+  String get syJob_step_model_prepare => 'Lo preparo per la pagina';
+
+  @override
+  String get syJob_step_move => 'Copio sul nuovo disco';
+
+  @override
+  String get syJob_step_ngram => 'Con gli n-gram';
+
+  @override
+  String get syJob_step_node_check => 'Controllo il video (SHA-256)';
+
+  @override
+  String syJob_step_node_copy(String node) {
+    return 'Copio i file su $node';
+  }
+
+  @override
+  String syJob_step_node_fetch(String node) {
+    return 'Riporto il video da $node';
+  }
+
+  @override
+  String syJob_step_node_ffmpeg(String node) {
+    return 'Preparo ffmpeg su $node';
+  }
+
+  @override
+  String get syJob_step_none => 'Il modello da solo';
+
+  @override
+  String get syJob_step_ocr_languages => 'Le lingue';
+
+  @override
+  String get syJob_step_ocr_program => 'Il programma';
+
+  @override
+  String get syJob_step_pihole_check => 'Controllo che risponda';
+
+  @override
+  String get syJob_step_pihole_image => 'Scarico Pi-hole (una volta sola)';
+
+  @override
+  String get syJob_step_pihole_start => 'Avvio Pi-hole';
+
+  @override
+  String get syJob_step_preload =>
+      'Leggo il modello una volta, così il primo messaggio non aspetta il disco';
+
+  @override
+  String get syJob_step_remote_cert => 'Prendo il certificato da Let\'s Encrypt';
+
+  @override
+  String get syJob_step_remote_connect => 'Mi collego a Cloudflare';
+
+  @override
+  String get syJob_step_remote_https => 'Prendo l\'indirizzo sicuro (HTTPS)';
+
+  @override
+  String get syJob_step_remote_image => 'Scarico quello che serve (una volta sola)';
+
+  @override
+  String get syJob_step_remote_login => 'Aspetto che tu acceda a Tailscale';
+
+  @override
+  String get syJob_step_remote_start => 'Lo avvio';
+
+  @override
+  String get syJob_step_restore => 'Rimetto il motore com\'era';
+
+  @override
+  String get syJob_step_run => 'Eseguo i passi sull\'host';
+
+  @override
+  String get syJob_step_searxng_check => 'Controllo che risponda';
+
+  @override
+  String get syJob_step_searxng_image => 'Scarico SearXNG (una volta sola)';
+
+  @override
+  String get syJob_step_searxng_start => 'Lo avvio';
+
+  @override
+  String get syJob_step_start => 'Avvio il motore';
+
+  @override
+  String get syJob_step_switch => 'Avvio il modello su Windows';
+
+  @override
+  String get syJob_step_tool_download => 'Scarico';
+
+  @override
+  String get syJob_step_tool_unpack => 'Estraggo';
+
+  @override
+  String get syJob_step_try => 'Provo una risposta';
+
+  @override
+  String get syJob_step_tune => 'Misuro questo computer per scegliere la regolazione più veloce';
+
+  @override
+  String get syJob_step_verify => 'Rileggo il backup';
+
+  @override
+  String get syJob_step_video_derive => 'Preparo il file';
+
+  @override
+  String get syJob_step_video_probe => 'Leggo il file';
+
+  @override
+  String get syJob_step_video_render => 'Faccio il video con ffmpeg';
+
+  @override
+  String get syJob_step_video_save => 'Lo salvo nel progetto';
+
+  @override
+  String get syJob_step_video_silences => 'Cerco i silenzi';
+
+  @override
+  String get syJob_step_video_sound => 'Prendo il suono';
+
+  @override
+  String get syJob_step_video_transcribe => 'Scrivo le parole';
+
+  @override
+  String get syJob_step_video_wait => 'Aspetto il video prima di questo';
+
+  @override
+  String syKcImported(String n) {
+    return '$n credenziali aggiunte al portachiavi.';
+  }
+
+  @override
+  String get syKcPassphrase => 'Frase segreta';
+
+  @override
+  String get syKcPassphraseHelp =>
+      'Almeno 8 caratteri. Tienila in un posto sicuro: non si può recuperare.';
+
+  @override
+  String get syLmRecommended => 'consigliato';
+
+  @override
+  String get syLoginCode => 'Codice dell\'app (6 cifre)';
+
+  @override
+  String get syMcAdd => 'Aggiungi';
+
+  @override
+  String get syMcAuthKey => 'Chiave';
+
+  @override
+  String get syMcAuthPassword => 'Password';
+
+  @override
+  String get syMcChangedNow => 'Adesso';
+
+  @override
+  String syMcChangedText(String name) {
+    return 'Al posto di «$name» potrebbe esserci un altro computer. Non è partito niente e la connessione è stata rifiutata. Fidati della chiave nuova solo se sai perché è cambiata (sistema reinstallato, macchina sostituita).';
+  }
+
+  @override
+  String get syMcChangedTitle => 'Pericolo: la macchina ha risposto con un\'altra chiave';
+
+  @override
+  String get syMcChangedWas => 'Fidata';
+
+  @override
+  String get syMcCopied => 'Copiata';
+
+  @override
+  String get syMcCopy => 'Copia';
+
+  @override
+  String get syMcCopyKey => 'Copia la chiave pubblica';
+
+  @override
+  String get syMcEdit => 'Modifica';
+
+  @override
+  String get syMcEditorLead =>
+      'Dove si trova la macchina e chi entra. La chiave o la password vanno dritte nel portachiavi.';
+
+  @override
+  String get syMcEmpty =>
+      'Ancora nessuna macchina. Aggiungine una: Rasgeth le prepara una chiave, tu ne copi la parte pubblica sulla macchina.';
+
+  @override
+  String get syMcFolder => 'Cartella di lavoro';
+
+  @override
+  String get syMcFolderHelp =>
+      'Dove partono i comandi; cancellare fuori da qui ti chiede sempre. Un percorso completo (/srv/app, ~/app, o su Windows E:\\coding\\sito). Vuota per la cartella personale.';
+
+  @override
+  String get syMcFolderNone => 'la cartella personale (ogni cancellazione ti chiede)';
+
+  @override
+  String get syMcHost => 'Indirizzo';
+
+  @override
+  String get syMcHostHelp => 'Il suo nome o indirizzo IP in rete.';
+
+  @override
+  String get syMcHostKey => 'Chiave della macchina';
+
+  @override
+  String get syMcKeyGenerate => 'Crea una chiave nuova';
+
+  @override
+  String get syMcKeyGenerateHelp =>
+      'Rasgeth crea una chiave ed25519: ne copierai la parte pubblica in ~/.ssh/authorized_keys sulla macchina.';
+
+  @override
+  String get syMcKeyKeep => 'Tieni la chiave';
+
+  @override
+  String get syMcKeyKeepHelp => 'La chiave nel portachiavi resta com\'è.';
+
+  @override
+  String get syMcKeyPaste => 'Incolla una chiave privata';
+
+  @override
+  String get syMcLead =>
+      'Altri computer che i tuoi agenti raggiungono via SSH: un server, un Raspberry Pi, il computer dell\'ufficio. Chiavi e password restano nel portachiavi; gli agenti scelgono una macchina per nome e non le vedono mai.';
+
+  @override
+  String get syMcLogin => 'Accesso';
+
+  @override
+  String get syMcLoginGenerated => 'chiave fatta da Rasgeth, nel portachiavi';
+
+  @override
+  String get syMcLoginImported => 'la tua chiave, nel portachiavi';
+
+  @override
+  String get syMcLoginPassword => 'password nel portachiavi';
+
+  @override
+  String get syMcName => 'Nome';
+
+  @override
+  String get syMcNameHelp =>
+      'Come la chiamano gli agenti: lettere, cifre, punto, trattino, senza spazi (web, pi, ufficio).';
+
+  @override
+  String get syMcNew => 'Aggiungi una macchina';
+
+  @override
+  String get syMcNewKey => 'Crea una chiave nuova';
+
+  @override
+  String get syMcNewKeyQ => 'Creare una chiave nuova per questa macchina?';
+
+  @override
+  String get syMcNewKeyText =>
+      'La chiave vecchia smette di funzionare qui: copia la nuova chiave pubblica sulla macchina e togli quella vecchia.';
+
+  @override
+  String get syMcPassphrase => 'La sua frase segreta (se ne ha una)';
+
+  @override
+  String get syMcPassword => 'Password';
+
+  @override
+  String get syMcPasswordHelp =>
+      'Resta nel portachiavi. Una chiave è più sicura: la password viaggia a ogni accesso.';
+
+  @override
+  String get syMcPasswordKept => 'La password nel portachiavi resta se non ne scrivi una nuova.';
+
+  @override
+  String get syMcPort => 'Porta';
+
+  @override
+  String get syMcPrivateKey => 'Chiave privata';
+
+  @override
+  String get syMcPrivateKeyHelp => 'OpenSSH o PEM. Va nel portachiavi e non si vede più.';
+
+  @override
+  String get syMcPrivateKeyPlaceholder => '-----BEGIN OPENSSH PRIVATE KEY-----';
+
+  @override
+  String get syMcProject => 'progetto';
+
+  @override
+  String get syMcPublicKey => 'Chiave pubblica';
+
+  @override
+  String get syMcPublicKeyHelp =>
+      'Copiala in ~/.ssh/authorized_keys dell\'utente sulla macchina (una riga), poi prova la connessione.';
+
+  @override
+  String syMcRemoveQ(String name) {
+    return 'Togliere «$name»?';
+  }
+
+  @override
+  String get syMcRemoveText =>
+      'La sua chiave o password esce dal portachiavi e gli agenti non possono più usarla. Togli anche la chiave pubblica dalla macchina.';
+
+  @override
+  String syMcReplaceQ(String name) {
+    return 'Fidarsi della chiave nuova di «$name»?';
+  }
+
+  @override
+  String get syMcReplaceText =>
+      'Fallo solo se sai perché la chiave della macchina è cambiata: altrimenti qualcuno potrebbe leggere quello che Rasgeth manda.';
+
+  @override
+  String get syMcReplaceYes => 'Fidati della chiave nuova';
+
+  @override
+  String get syMcSafety =>
+      'Quello che succede lì segue le stesse regole di qui: sudo, spegnere la macchina, installare programmi di sistema, cambiarne i file di sistema e cancellare fuori dalla sua cartella di lavoro ti chiedono sempre, anche con «Non chiedermi niente».';
+
+  @override
+  String get syMcSave => 'Salva';
+
+  @override
+  String get syMcSection => 'Macchine';
+
+  @override
+  String get syMcStateFailed => 'L\'ultima prova non è riuscita';
+
+  @override
+  String get syMcStateNew => 'Non ancora controllata';
+
+  @override
+  String get syMcStateTrusted => 'Chiave fidata';
+
+  @override
+  String get syMcTest => 'Prova la connessione';
+
+  @override
+  String get syMcTestAuth =>
+      'La macchina ha rifiutato l\'accesso: la chiave pubblica è in ~/.ssh/authorized_keys (o la password è giusta)?';
+
+  @override
+  String syMcTestError(String message) {
+    return 'Non è riuscito: $message';
+  }
+
+  @override
+  String get syMcTestNoSecret =>
+      'Nel portachiavi non c\'è né chiave né password per questa macchina: modificala e impostane una.';
+
+  @override
+  String syMcTestOk(String system) {
+    return 'Collegata: $system';
+  }
+
+  @override
+  String get syMcTestTimeout => 'La macchina non ha risposto in tempo.';
+
+  @override
+  String get syMcTestUnreachable =>
+      'La macchina non si raggiunge: controlla l\'indirizzo e che sia accesa.';
+
+  @override
+  String get syMcTesting => 'Mi collego…';
+
+  @override
+  String get syMcTitle => 'Le tue macchine';
+
+  @override
+  String get syMcTofuHow =>
+      'Per vederla sulla macchina: ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub';
+
+  @override
+  String get syMcTofuText =>
+      'Non è ancora partito niente. Se l\'impronta è quella della macchina, fidati: da ora Rasgeth si collega solo a una macchina con questa chiave.';
+
+  @override
+  String get syMcTofuTitle => 'Prima connessione: è la chiave della macchina?';
+
+  @override
+  String get syMcTrust => 'Fidati di questa chiave';
+
+  @override
+  String get syMcUser => 'Utente';
+
+  @override
+  String get syMcWho => 'Chi può usarla';
+
+  @override
+  String get syMcWhoAgents => 'Agenti';
+
+  @override
+  String get syMcWhoEveryone => 'Tutti gli agenti';
+
+  @override
+  String get syMcWhoEveryoneHelp => 'God, gli assistenti e gli agenti di ogni progetto.';
+
+  @override
+  String get syMcWhoLead => 'Gli agenti non scelti non la vedono nemmeno.';
+
+  @override
+  String get syMcWhoNoAgents => 'Non ci sono ancora agenti.';
+
+  @override
+  String get syMcWhoNobody => 'ancora nessuno';
+
+  @override
+  String get syMcWhoProjects => 'Tutti gli agenti di questi progetti';
+
+  @override
+  String get syNdAddButton => 'Mostra un codice di abbinamento';
+
+  @override
+  String get syNdAddLead =>
+      'Sull\'altra macchina, al primo avvio (ruolo «Nodo di un altro Rasgeth») o nelle sue Impostazioni › Nodi, scrivi l\'indirizzo di questa macchina e il codice qui sotto.';
+
+  @override
+  String get syNdAddTitle => 'Aggiungi un nodo';
+
+  @override
+  String get syNdAddress => 'L\'indirizzo dell\'altro Rasgeth';
+
+  @override
+  String get syNdAddressPh => 'https://rasgeth.local oppure 192.168.1.10:3000';
+
+  @override
+  String get syNdAdmin => 'la usa e la gestisce';
+
+  @override
+  String syNdBackupDone(String name) {
+    return 'Copiato sul nodo: $name';
+  }
+
+  @override
+  String get syNdBackupNow => 'Copia ora';
+
+  @override
+  String get syNdBackupsOn => 'Copie';
+
+  @override
+  String get syNdCode => 'Codice di abbinamento';
+
+  @override
+  String syNdCodeAddress(String address) {
+    return 'L\'indirizzo di questa macchina, come la raggiunge l\'altra (in rete locale, con Tailscale o un proxy): $address';
+  }
+
+  @override
+  String syNdCodeExpires(String min) {
+    return 'Vale una volta, ancora per $min minuti.';
+  }
+
+  @override
+  String get syNdCodeField => 'Il suo codice';
+
+  @override
+  String get syNdCodePh => 'ABCD-EFGH';
+
+  @override
+  String get syNdCodeStop => 'Smetti di mostrarlo';
+
+  @override
+  String get syNdCommandsOn => 'Comandi';
+
+  @override
+  String get syNdConfirm => 'Coincidono: conferma';
+
+  @override
+  String get syNdConnecting => 'Si collega';
+
+  @override
+  String get syNdControl => 'Controllo';
+
+  @override
+  String get syNdControlLead =>
+      'Mai implicito: una macchina ne comanda un\'altra solo con questo permesso, che la macchina comandata tiene e può togliere.';
+
+  @override
+  String syNdControlTitle(String name) {
+    return 'Chi può comandare $name';
+  }
+
+  @override
+  String get syNdController => 'Quale macchina';
+
+  @override
+  String syNdCpu(String n) {
+    return '$n CPU';
+  }
+
+  @override
+  String get syNdFingerprint => 'L\'impronta della sua chiave';
+
+  @override
+  String syNdFree(String n) {
+    return '$n GB liberi';
+  }
+
+  @override
+  String get syNdGive => 'Dai';
+
+  @override
+  String get syNdGrantsHere => 'Chi può comandare questa macchina';
+
+  @override
+  String get syNdGrantsLead =>
+      'Solo queste macchine possono usare questa, ognuna con quello che le ha dato la persona. Toglierlo vale subito.';
+
+  @override
+  String get syNdHere => 'Qui';
+
+  @override
+  String get syNdJoinLead =>
+      'Abbina questa macchina come nodo di un altro Rasgeth: su quello, Impostazioni › Nodi › «Aggiungi un nodo» mostra l\'indirizzo e un codice.';
+
+  @override
+  String get syNdJoinTitle => 'Lavora per un altro Rasgeth';
+
+  @override
+  String syNdLastSeen(String when) {
+    return 'Vista l\'ultima volta $when';
+  }
+
+  @override
+  String get syNdLead =>
+      'Altre macchine Rasgeth che lavorano con questa: prestano comandi, modelli locali e spazio per progetti e copie di sicurezza. Chi può comandare chi si decide qui, macchina per macchina.';
+
+  @override
+  String syNdLoad(String n) {
+    return 'carico $n%';
+  }
+
+  @override
+  String syNdModels(String n) {
+    return '$n modelli';
+  }
+
+  @override
+  String get syNdName => 'Nome';
+
+  @override
+  String get syNdNameHelp => 'Come la chiamano le altre macchine e gli agenti.';
+
+  @override
+  String get syNdNoContainer => 'comandi solo per chi la gestisce';
+
+  @override
+  String get syNdNoContainerHelp =>
+      'Lì non c\'è un contenitore (niente Docker): esegue comandi solo per una macchina che la gestisce, sulla macchina stessa. Con il solo «usare», solo file, spazio e modelli.';
+
+  @override
+  String get syNdNoNodes => 'Ancora nessun nodo.';
+
+  @override
+  String get syNdNoProjects => 'Ancora nessun progetto.';
+
+  @override
+  String get syNdNoRights => 'Senza permessi';
+
+  @override
+  String get syNdNoSandbox => 'niente comandi';
+
+  @override
+  String get syNdNodeName => 'Nome del nodo';
+
+  @override
+  String get syNdNodeNameHelp =>
+      'Come la chiamate qui tu, gli agenti e le richieste. Vuoto: il nome che si dà da sola.';
+
+  @override
+  String get syNdNotReady =>
+      'I nodi hanno bisogno del Portachiavi: la chiave di questa macchina sta solo lì. Aprilo in Impostazioni › Portachiavi.';
+
+  @override
+  String get syNdOffline => 'Non in linea';
+
+  @override
+  String get syNdOnline => 'In linea';
+
+  @override
+  String get syNdPair => 'Abbina';
+
+  @override
+  String get syNdPairing => 'Abbino…';
+
+  @override
+  String get syNdParent => 'Lavora per';
+
+  @override
+  String get syNdPending => 'In attesa del sì sull\'altra macchina';
+
+  @override
+  String syNdPendingFromNode(String name) {
+    return '$name vuole diventare un nodo di questa macchina';
+  }
+
+  @override
+  String syNdPendingFromPrincipal(String name) {
+    return 'Questa macchina lavorerà per $name';
+  }
+
+  @override
+  String get syNdPendingLead =>
+      'Le due macchine mostrano le stesse sei cifre e l\'impronta l\'una dell\'altra. Se coincidono su tutti e due gli schermi, conferma su tutte e due: prima non si usa niente.';
+
+  @override
+  String get syNdPendingTitle => 'Confronta e conferma';
+
+  @override
+  String get syNdPlaces => 'Dove girano le cose';
+
+  @override
+  String get syNdPlacesLead =>
+      'Per ogni progetto: di base resta tutto qui. Un nodo fissato per i comandi è dove va il node_run dei suoi agenti; uno per le copie tiene le copie dei suoi file.';
+
+  @override
+  String get syNdQ => 'Nodi';
+
+  @override
+  String syNdRam(String n) {
+    return '$n GB di RAM';
+  }
+
+  @override
+  String get syNdReason => 'Perché';
+
+  @override
+  String get syNdRefused => 'Rifiutata: la sua chiave è cambiata';
+
+  @override
+  String get syNdReject => 'Non coincidono';
+
+  @override
+  String get syNdRename => 'Rinomina';
+
+  @override
+  String syNdRenameQ(String name) {
+    return 'Un nome per $name';
+  }
+
+  @override
+  String get syNdRenderOn => 'Video';
+
+  @override
+  String get syNdRevoke => 'Togli';
+
+  @override
+  String syNdRevokeQ(String name) {
+    return 'Togliere quello che $name può fare qui?';
+  }
+
+  @override
+  String get syNdRightAdmin => 'Gestirla';
+
+  @override
+  String get syNdRightAdminHelp =>
+      'Dare e togliere ad altre macchine il controllo di questa, e scrivere fuori dalla sandbox.';
+
+  @override
+  String get syNdRightUse => 'Usarla';
+
+  @override
+  String get syNdRightUseHelp =>
+      'Far girare i comandi dei suoi agenti in una sandbox qui, usare i suoi modelli e tenere file qui.';
+
+  @override
+  String get syNdRights => 'Che cosa può fare';
+
+  @override
+  String syNdRightsTitle(String name) {
+    return 'Che cosa può fare $name su questa macchina';
+  }
+
+  @override
+  String get syNdSas => 'Le sei cifre';
+
+  @override
+  String get syNdSection => 'Nodi';
+
+  @override
+  String get syNdTheirFp => 'L\'impronta dell\'altra macchina';
+
+  @override
+  String get syNdThis => 'Questa macchina';
+
+  @override
+  String get syNdTree => 'L\'albero';
+
+  @override
+  String get syNdTreeLead =>
+      'Questa macchina, i suoi nodi e i loro. Il controllo è a parte: è scritto sotto ogni macchina.';
+
+  @override
+  String get syNdUnpair => 'Scollega';
+
+  @override
+  String syNdUnpairQ(String name) {
+    return 'Scollegare $name?';
+  }
+
+  @override
+  String get syNdUnpairText =>
+      'Le due macchine si dimenticano: se ne vanno collegamenti, permessi e collocazioni con lei. I suoi file restano dove sono. Per abbinarla di nuovo serve un codice nuovo.';
+
+  @override
+  String get syNdUse => 'la usa';
+
+  @override
+  String get syNdWho => 'Chi può comandarla';
+
+  @override
+  String get syNdWhoNobody => 'Nessuno oltre a lei';
+
+  @override
+  String get syOiAddress => 'L\'indirizzo di Rasgeth nella rete';
+
+  @override
+  String syOiAddressHelp(String port) {
+    return 'Dove il proxy o la VPN trovano Rasgeth; la sua porta è $port.';
+  }
+
+  @override
+  String get syOiAuthCaddy =>
+      'Caddyfile con forward auth (Authelia), lasciando fuori i percorsi dell\'app';
+
+  @override
+  String get syOiAuthIf =>
+      'Se lo vuoi comunque, lascia fuori /api/ e /ws: il forward auth protegge la pagina, la password di Rasgeth tutto il resto.';
+
+  @override
+  String get syOiAuthTitle => 'Authelia, Authentik o un altro forward auth davanti?';
+
+  @override
+  String get syOiAuthWhy =>
+      'Meglio di no: Rasgeth ha già la sua password, con tentativi limitati e il codice facoltativo dell\'app di autenticazione, e un accesso davanti blocca l\'app, la riga di comando, gli agenti ACP, l\'estensione del browser e i webhook (Telegram, WhatsApp, automazioni), che entrano con i loro token.';
+
+  @override
+  String get syOiCaddy => 'Caddyfile: un sito tutto suo';
+
+  @override
+  String get syOiCaddyReload => 'Poi ricarica Caddy (caddy reload, o riavvia il suo container).';
+
+  @override
+  String syOiCaddyWildcard(String domain) {
+    return 'Caddyfile: dentro un sito jolly che hai già (*.$domain)';
+  }
+
+  @override
+  String get syOiCheck => 'Controlla che risponda';
+
+  @override
+  String get syOiCheckAnswers =>
+      'Qualcosa risponde a questo indirizzo (il browser non lascia leggere chi): aprilo per vedere Rasgeth.';
+
+  @override
+  String syOiCheckGo(String url) {
+    return 'Controlla $url da qui';
+  }
+
+  @override
+  String syOiCheckLead(String lb, String rb) {
+    return 'Da qualsiasi computer: Rasgeth risponde $lb\"ok\":true,…$rb.';
+  }
+
+  @override
+  String get syOiCheckNo =>
+      'Nessuna risposta da questo browser: controlla il nome nel DNS, il blocco del proxy e, da fuori, la VPN.';
+
+  @override
+  String get syOiCheckRedgiant => 'Rasgeth risponde a questo indirizzo.';
+
+  @override
+  String get syOiClose => 'Nascondi la guida';
+
+  @override
+  String get syOiCopied => 'Copiato';
+
+  @override
+  String get syOiCopy => 'Copia';
+
+  @override
+  String syOiDnsAdguard(String address, String domain) {
+    return 'AdGuard Home: Filtri › Riscritture DNS: *.$domain o il nome singolo → $address.';
+  }
+
+  @override
+  String get syOiDnsLead =>
+      'Un nome al posto di un indirizzo: puntalo al proxy quando c\'è, altrimenti all\'indirizzo di Rasgeth.';
+
+  @override
+  String syOiDnsPihole(String address, String name) {
+    return 'Pi-hole: Settings › Local DNS › DNS Records: $name → $address.';
+  }
+
+  @override
+  String get syOiDnsRouter =>
+      'Il router: la sua pagina «DNS statico», «nomi locali» o prenotazione DHCP (il nome cambia da router a router).';
+
+  @override
+  String get syOiDnsTs =>
+      'Fuori casa con Tailscale: aggiungi il DNS di casa in DNS › Nameservers di Tailscale, limitato al tuo dominio, e gli stessi nomi funzionano anche fuori.';
+
+  @override
+  String syOiDnsWildcard(String domain) {
+    return 'Pi-hole o dnsmasq, tutti i nomi di *.$domain insieme (un file in /etc/dnsmasq.d/)';
+  }
+
+  @override
+  String syOiHomeAdguard(String address, String name) {
+    return 'AdGuard Home: Filtri › Riscritture DNS: $name → $address.';
+  }
+
+  @override
+  String get syOiHomeDnsmasq => 'dnsmasq (o un file in /etc/dnsmasq.d/ di Pi-hole)';
+
+  @override
+  String get syOiHomeHosts => 'I record di Pi-hole o /etc/hosts, a mano';
+
+  @override
+  String get syOiHomeLookup => 'Su Rasgeth OS, cosa risponde il suo DNS per il nome';
+
+  @override
+  String syOiHomePihole(String address, String name) {
+    return 'Pi-hole: Settings › Local DNS › DNS Records: $name → $address.';
+  }
+
+  @override
+  String syOiHomeRouter(String address, String name) {
+    return 'Il router: la pagina «DNS statico» o «nomi locali»: $name → $address.';
+  }
+
+  @override
+  String syOiHomeSeen(String dns) {
+    return 'Rasgeth chiede i nomi a $dns.';
+  }
+
+  @override
+  String get syOiHomeTitle => 'I tuoi servizi di casa (Gitea, NAS…) visti da Rasgeth';
+
+  @override
+  String get syOiHomeTs =>
+      'Se il tuo Pi-hole risponde con indirizzi Tailscale (100.…), quelli funzionano solo per i dispositivi in Tailscale: aggiungi un record locale con l\'indirizzo della tua rete come sopra, oppure fai usare alla macchina di Rasgeth il router come DNS, con il nome lì.';
+
+  @override
+  String get syOiHomeV6 =>
+      'Un router che risponde «non esiste» alla domanda IPv6 (AAAA) per i nomi aggiunti a mano: Rasgeth OS lo gestisce già; su altri sistemi con systemd-resolved serve Cache=no-negative in un file di /etc/systemd/resolved.conf.d/, altrimenti per un po\' il nome sembra non esistere.';
+
+  @override
+  String get syOiHomeWhat => 'Nel DNS che usa Rasgeth, dai al nome quell\'indirizzo locale:';
+
+  @override
+  String get syOiHomeWhich =>
+      'Quale DNS usa Rasgeth: su Rasgeth OS lo mostra la console (o SSH) con il comando qui sotto, alla voce «Current DNS Server»; su un altro computer è il DNS di quel computer (impostazioni di rete, /etc/resolv.conf su Linux). «Prova un nome» chiede proprio al DNS che usa Rasgeth.';
+
+  @override
+  String get syOiHomeWhichCmd => 'Su Rasgeth OS, quale DNS usa';
+
+  @override
+  String get syOiHomeWhy =>
+      'Rasgeth raggiunge il tuo Gitea, il NAS o gli altri servizi per nome, con il DNS della macchina su cui gira (spesso il router). Un nome che il telefono apre può lì essere sconosciuto, o portare a un indirizzo che Rasgeth non raggiunge: allora «Un Gitea che hai già» non riesce anche se il servizio funziona.';
+
+  @override
+  String get syOiLead =>
+      'Un reverse proxy, una VPN, un DNS di casa: se raggiungi già le tue macchine così, Rasgeth ci va dietro come qualsiasi altro servizio. Qui ci sono i blocchi da copiare.';
+
+  @override
+  String get syOiName => 'Il nome di Rasgeth';
+
+  @override
+  String get syOiNameHelp => 'Il nome che aprirai, per esempio rasgeth.casa.example.com.';
+
+  @override
+  String syOiNpm1(String name) {
+    return 'Hosts › Proxy Hosts › Add Proxy Host; Domain Names: $name.';
+  }
+
+  @override
+  String syOiNpm2(String address, String port) {
+    return 'Scheme http, Forward Hostname / IP $address, Forward Port $port.';
+  }
+
+  @override
+  String get syOiNpm3 =>
+      'Accendi «Websockets Support» (la pagina di Rasgeth vive su un WebSocket) e «Block Common Exploits».';
+
+  @override
+  String get syOiNpm4 =>
+      'SSL: «Request a new SSL Certificate», «Force SSL», «HTTP/2 Support». Salva.';
+
+  @override
+  String get syOiOpen => 'Mostra la guida';
+
+  @override
+  String get syOiOtherVpn => 'WireGuard, ZeroTier e le altre';
+
+  @override
+  String syOiOtherVpnLead(String subnet) {
+    return 'La stessa idea: con la rete di casa $subnet negli AllowedIPs del peer (WireGuard) o come rotta gestita (ZeroTier), Rasgeth si apre al suo indirizzo di casa.';
+  }
+
+  @override
+  String get syOiPart => 'Cosa hai';
+
+  @override
+  String get syOiPartDns => 'DNS di casa';
+
+  @override
+  String get syOiPartHome => 'I tuoi servizi di casa';
+
+  @override
+  String get syOiPartProxy => 'Reverse proxy';
+
+  @override
+  String get syOiPartVpn => 'Tailscale o un\'altra VPN';
+
+  @override
+  String get syOiProbe => 'Prova un nome';
+
+  @override
+  String get syOiProbeBad => 'Questo non è un nome (per esempio git.home.example.com).';
+
+  @override
+  String syOiProbeDnsFailed(String name) {
+    return 'Il DNS che usa Rasgeth non ha risposto per $name. Controlla che funzioni, poi riprova.';
+  }
+
+  @override
+  String syOiProbeGo(String name) {
+    return 'Prova $name';
+  }
+
+  @override
+  String syOiProbeLead(String name) {
+    return 'Rasgeth cerca il nome e apre https://$name da dove gira, come fa per il tuo Gitea. Della risposta non tiene e non mostra nulla, tranne il codice.';
+  }
+
+  @override
+  String syOiProbeNotFound(String name) {
+    return 'Il DNS che usa Rasgeth non conosce $name. Aggiungi lì il nome (router, Pi-hole o AdGuard) con l\'indirizzo locale del proxy, poi riprova.';
+  }
+
+  @override
+  String syOiProbeOk(String address, String name, String status) {
+    return 'Tutto a posto: qui $name è $address, e https://$name ha risposto (HTTP $status).';
+  }
+
+  @override
+  String syOiProbeTailscale(String address, String name) {
+    return 'Qui $name è $address: un indirizzo Tailscale, che Rasgeth non raggiunge. Nel DNS che usa Rasgeth, dai al nome l\'indirizzo locale del proxy.';
+  }
+
+  @override
+  String syOiProbeTimeout(String address, String name) {
+    return 'Qui $name è $address, ma non ha risposto in tempo: probabilmente un indirizzo che Rasgeth non raggiunge (un\'altra rete, una VPN).';
+  }
+
+  @override
+  String syOiProbeTls(String address, String name) {
+    return 'Qui $name è $address e risponde, ma con un certificato di cui Rasgeth non si fida (fatto a mano?). Dai al proxy un certificato di un\'autorità pubblica (Let\'s Encrypt).';
+  }
+
+  @override
+  String syOiProbeUnreachable(String address, String name) {
+    return 'Qui $name è $address, ma da Rasgeth nessuno risponde in https. Controlla che sia l\'indirizzo locale del proxy e che il proxy sia acceso.';
+  }
+
+  @override
+  String get syOiProxyAddr => 'L\'indirizzo locale del proxy';
+
+  @override
+  String get syOiProxyAddrHelp =>
+      'L\'indirizzo nella tua rete (192.168.…) del proxy davanti al servizio, o del servizio stesso. Non un indirizzo Tailscale (100.…): Rasgeth lo raggiunge solo se è anche lui in Tailscale.';
+
+  @override
+  String get syOiProxyLead =>
+      'Il proxy può stare su un\'altra macchina: gli basta raggiungere l\'indirizzo di Rasgeth. Prende il certificato (HTTPS) e passa tutto, WebSocket compreso.';
+
+  @override
+  String syOiReachedAs(String host) {
+    return 'Sei già raggiungibile come $host.';
+  }
+
+  @override
+  String get syOiReachedName =>
+      'Questa pagina è arrivata con un nome della tua rete: in casa funziona già; da fuori serve una delle strade qui sotto (per esempio Tailscale).';
+
+  @override
+  String get syOiReachedProxy =>
+      'Questa pagina è arrivata attraverso un reverse proxy della tua rete: la guida qui sotto è già compilata con quello che Rasgeth ha visto.';
+
+  @override
+  String get syOiSaid =>
+      'Hai detto che Rasgeth è già raggiungibile a modo tuo: non chiede più di configurare le sue strade.';
+
+  @override
+  String get syOiSaidUndo => 'Chiedimelo di nuovo';
+
+  @override
+  String syOiSaidUrl(String url) {
+    return 'Hai detto che Rasgeth è già raggiungibile a $url: non chiede più di configurare le sue strade e i suoi link (Telegram…) usano quell\'indirizzo.';
+  }
+
+  @override
+  String get syOiService => 'Il nome del servizio';
+
+  @override
+  String get syOiServiceHelp => 'Come lo apri, per esempio git.home.example.com.';
+
+  @override
+  String get syOiSkip => 'Salta: sono già raggiungibile';
+
+  @override
+  String get syOiSkipNote =>
+      'Rasgeth smette di chiederti di configurare le sue strade (Tailscale, Cloudflare, il tuo dominio); restano qui se un giorno ne vuoi una.';
+
+  @override
+  String get syOiTitle => 'Hai già un\'infrastruttura';
+
+  @override
+  String get syOiTraefik => 'Traefik: file provider (configurazione dinamica)';
+
+  @override
+  String get syOiTraefikNote =>
+      'Con le etichette di Docker invece: la stessa regola e l\'indirizzo come servizio con loadbalancer.server.url. Usa i nomi del tuo entry point e del tuo certificate resolver.';
+
+  @override
+  String get syOiTsHere => 'Tailscale sulla macchina di Rasgeth';
+
+  @override
+  String get syOiTsHereLead =>
+      'Installa Tailscale sulla macchina ed entra (tailscale up): dai tuoi dispositivi della tailnet Rasgeth si apre a http://<macchina>:7600. Per l\'HTTPS con un certificato vero:';
+
+  @override
+  String syOiTsRunning(String name) {
+    return 'Tailscale gira già qui come $name: dai tuoi dispositivi della tailnet Rasgeth si apre con quel nome. Per l\'HTTPS con un certificato vero:';
+  }
+
+  @override
+  String get syOiTsServe => 'Sulla macchina';
+
+  @override
+  String get syOiTsSubnet => 'Tailscale come subnet router';
+
+  @override
+  String syOiTsSubnetLead(String subnet) {
+    return 'Tailscale su un altro dispositivo di casa (il router, un Raspberry, la macchina del proxy) che condivide la rete $subnet:';
+  }
+
+  @override
+  String syOiTsSubnetThen(String address, String port) {
+    return 'Approva la rotta nella console di Tailscale (Machines › Edit route settings). Il telefono apre poi http://$address:$port da ovunque, e anche i nomi del tuo DNS di casa se lo aggiungi in DNS › Nameservers (limitato al tuo dominio).';
+  }
+
+  @override
+  String get syOiWs =>
+      'Rasgeth tiene viva la pagina con un WebSocket su /ws: Caddy e Traefik lo passano da soli; Nginx vuole gli header Upgrade (Websockets Support in Nginx Proxy Manager).';
+
+  @override
+  String get syOnline => 'collegato';
+
+  @override
+  String get syOpen => 'apri';
+
+  @override
+  String get syOsErr_bad_password => 'Una password Wi-Fi ha da 8 a 63 caratteri.';
+
+  @override
+  String get syOsErr_bad_ssid => 'Il nome di una rete ha da 1 a 32 caratteri.';
+
+  @override
+  String get syOsErr_busy => 'La macchina si sta già collegando a una rete: aspetta un momento.';
+
+  @override
+  String get syOsErr_cannot_https => 'L\'HTTPS non è gestito da questa installazione.';
+
+  @override
+  String get syOsErr_cannot_reboot => 'I riavvii non sono gestiti da questa installazione.';
+
+  @override
+  String get syOsErr_cannot_update => 'Gli aggiornamenti non sono gestiti da questa installazione.';
+
+  @override
+  String get syOsErr_cannot_wifi => 'Il Wi-Fi non è gestito da questa installazione.';
+
+  @override
+  String get syOsErr_clean_install => 'Questa versione chiede un\'installazione pulita.';
+
+  @override
+  String get syOsErr_connect_failed =>
+      'La rete ha rifiutato il collegamento: controlla la password e riprova.';
+
+  @override
+  String get syOsErr_failed => 'Non ha funzionato. Riprova tra un momento.';
+
+  @override
+  String get syOsErr_https_failed => 'L\'HTTPS locale non è partito.';
+
+  @override
+  String get syOsErr_https_off => 'L\'HTTPS locale è spento: accendilo prima.';
+
+  @override
+  String get syOsErr_manual => 'Questa installazione non si aggiorna da sola.';
+
+  @override
+  String get syOsErr_no_wifi => 'Questa macchina non ha una scheda Wi-Fi.';
+
+  @override
+  String get syOsErr_not_found => 'Quella rete adesso non è a portata.';
+
+  @override
+  String get syOsErr_not_installed => 'Questo sistema non può farlo.';
+
+  @override
+  String get syOsErr_not_trusted => 'Questo dispositivo non si fida ancora del certificato.';
+
+  @override
+  String get syOsErr_reboot_failed => 'Non sono riuscito a programmare il riavvio.';
+
+  @override
+  String get syOsErr_start_failed => 'L\'aggiornamento non è partito.';
+
+  @override
+  String get syOsErr_timeout => 'La macchina ci ha messo troppo a rispondere.';
+
+  @override
+  String get syOsErr_tls_failed => 'Non sono riuscito a fare il certificato.';
+
+  @override
+  String get syOsErr_unreachable => 'L\'aiutante della macchina non ha risposto.';
+
+  @override
+  String get syOsErr_wifi_off => 'Il Wi-Fi non è attivo su questa macchina.';
+
+  @override
+  String get syOsHttpsAddress => 'Indirizzo';
+
+  @override
+  String get syOsHttpsCheck => 'Prova questo dispositivo';
+
+  @override
+  String get syOsHttpsDevice => 'Il tuo dispositivo';
+
+  @override
+  String get syOsHttpsDownload => 'Scarica il certificato';
+
+  @override
+  String get syOsHttpsFingerprint => 'Impronta del certificato (SHA-256)';
+
+  @override
+  String get syOsHttpsFirefox =>
+      'Firefox su qualsiasi sistema: Impostazioni › Privacy e sicurezza › Certificati › Mostra certificati › Autorità › Importa, spunta «Considera attendibile questa CA per l\'identificazione di siti web».';
+
+  @override
+  String get syOsHttpsHow_android =>
+      'Impostazioni › Sicurezza (o Sicurezza e privacy) › Altro › Crittografia e credenziali › Installa un certificato › Certificato CA: «Installa comunque», scegli Rasgeth-CA.crt.';
+
+  @override
+  String get syOsHttpsHow_iphone =>
+      'Apri il file scaricato in Safari, «Consenti». Impostazioni › Generali › VPN e gestione dispositivi: installa il profilo. Poi Impostazioni › Generali › Info › Impostazioni certificati attendibili: attiva «Rasgeth on …».';
+
+  @override
+  String get syOsHttpsHow_linux =>
+      'Debian/Ubuntu: sudo cp Rasgeth-CA.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates. Chrome e Firefox hanno un elenco loro: aggiungilo nelle impostazioni dei certificati del browser (Autorità, «Importa»).';
+
+  @override
+  String get syOsHttpsHow_mac =>
+      'Apri Rasgeth-CA.crt: Accesso Portachiavi lo aggiunge. Fai doppio clic su «Rasgeth on …» nel portachiavi «login», apri «Attendibilità», metti «Quando si utilizza questo certificato» su «Fidati sempre», chiudi e scrivi la tua password.';
+
+  @override
+  String get syOsHttpsHow_windows =>
+      'Apri Rasgeth-CA.crt, «Installa certificato…», «Utente corrente», «Colloca tutti i certificati nel seguente archivio», «Autorità di certificazione radice attendibili», Fine, Sì. Riavvia il browser.';
+
+  @override
+  String syOsHttpsInFront(String name) {
+    return 'Arrivi già a Rasgeth in HTTPS attraverso $name: per quell\'indirizzo il certificato locale non serve.';
+  }
+
+  @override
+  String get syOsHttpsLocal => 'HTTPS nella rete locale';
+
+  @override
+  String get syOsHttpsLocalOff =>
+      'Spento: Rasgeth risponde solo in http (o attraverso l\'HTTPS che hai messo tu).';
+
+  @override
+  String syOsHttpsLocalOn(String name) {
+    return 'https://$name e gli indirizzi della macchina rispondono con un certificato di questa macchina. http continua a funzionare finché non dici che è fidato.';
+  }
+
+  @override
+  String get syOsHttpsNotYet =>
+      'Questo dispositivo non si fida ancora del certificato (o https://… non risponde): non è cambiato niente, http continua a funzionare.';
+
+  @override
+  String get syOsHttpsNowOnly =>
+      'Questo dispositivo si fida. Da ora http passa a https per il nome locale e gli indirizzi della macchina.';
+
+  @override
+  String get syOsHttpsOffQ => 'Spegnere l\'HTTPS locale?';
+
+  @override
+  String get syOsHttpsOffText =>
+      'I browser che sono già passati da https://rasgeth.local continuano a chiedere https per al massimo 30 giorni: lì apri la macchina con il suo indirizzo (http://192.168…:7600) fino ad allora.';
+
+  @override
+  String get syOsHttpsOffYes => 'Spegni';
+
+  @override
+  String get syOsHttpsQ => 'Vuoi il lucchetto del browser anche nella rete di casa?';
+
+  @override
+  String get syOsHttpsQr => 'Codice QR per scaricare il certificato';
+
+  @override
+  String get syOsHttpsQrHelp =>
+      'Da un telefono sulla stessa rete, inquadra il codice per scaricarlo.';
+
+  @override
+  String get syOsHttpsRedirect => 'Manda sempre a HTTPS';
+
+  @override
+  String get syOsHttpsRedirectOn =>
+      'Le richieste http nella tua rete passano a https; i browser se lo ricordano (HSTS, 30 giorni). I dispositivi senza certificato mostrano un avviso: installalo anche lì.';
+
+  @override
+  String get syOsHttpsTitle => 'HTTPS nella tua rete';
+
+  @override
+  String get syOsHttpsTrustLead =>
+      'Scaricalo sul dispositivo (dal telefono: inquadra il codice), installalo come scritto qui sotto, poi premi «Prova questo dispositivo». Il certificato vale solo per i nomi e gli indirizzi locali di questa macchina, mai per un sito qualsiasi.';
+
+  @override
+  String get syOsHttpsTrustTitle => 'Fidati del certificato su ogni dispositivo';
+
+  @override
+  String get syOsHttpsUntil => 'Il certificato della macchina si rinnova da solo prima del';
+
+  @override
+  String get syOsNetSub => 'Rete';
+
+  @override
+  String get syOsNetSubLead =>
+      'Come la macchina si collega alla rete, e l\'HTTPS per le pagine della rete di casa.';
+
+  @override
+  String get syOsRebootNow => 'Riavvia ora';
+
+  @override
+  String get syOsRebootQ => 'Riavviare la macchina adesso?';
+
+  @override
+  String get syOsRebootText =>
+      'Rasgeth si ferma per due o tre minuti mentre la macchina riparte; gli agenti al lavoro vengono interrotti e riprendono da quello che era salvato. La pagina torna da sola.';
+
+  @override
+  String get syOsRebootYes => 'Riavvia';
+
+  @override
+  String get syOsRebooting => 'La macchina si riavvia tra pochi secondi. La pagina torna da sola.';
+
+  @override
+  String get syOsSecLast => 'L\'ultima volta';
+
+  @override
+  String syOsSecLastAt(String when) {
+    return '$when';
+  }
+
+  @override
+  String syOsSecLastN(String n, String when) {
+    return '$when, $n pacchetti';
+  }
+
+  @override
+  String get syOsSecNever => 'Non ancora (gira una volta al giorno)';
+
+  @override
+  String get syOsSecNoReboot => 'Niente aspetta un riavvio.';
+
+  @override
+  String get syOsSecQ =>
+      'Il sistema installa da solo gli aggiornamenti di sicurezza di Debian, ogni giorno.';
+
+  @override
+  String get syOsSecReboot => 'Un aggiornamento chiede un riavvio per finire';
+
+  @override
+  String get syOsSecTitle => 'Aggiornamenti di sicurezza del sistema';
+
+  @override
+  String syOsUpdApply(String version) {
+    return 'Aggiorna alla $version';
+  }
+
+  @override
+  String syOsUpdApplyQ(String version) {
+    return 'Aggiornare Rasgeth alla $version?';
+  }
+
+  @override
+  String get syOsUpdApplyText =>
+      'La macchina scarica la versione nuova mentre questa continua a funzionare, poi riavvia Rasgeth: la pagina si ferma per qualche minuto e torna da sola. Non si perde niente, e se la versione nuova non parte torna quella di prima.';
+
+  @override
+  String get syOsUpdApplyYes => 'Aggiorna ora';
+
+  @override
+  String get syOsUpdBreaking =>
+      'Questa versione non si installa sopra quella di adesso: Rasgeth ti guida (backup su un disco USB, reinstalli Rasgeth OS, ripristini).';
+
+  @override
+  String get syOsUpdChecked => 'Ultimo controllo';
+
+  @override
+  String get syOsUpdInstalled => 'Installato';
+
+  @override
+  String get syOsUpdQ => 'Rasgeth è aggiornato su questa macchina?';
+
+  @override
+  String get syOsUpdState => 'Stato';
+
+  @override
+  String get syOsUpdSub => 'Aggiornamenti';
+
+  @override
+  String get syOsUpdSubLead => 'Rasgeth e il sistema su cui gira, sempre aggiornati.';
+
+  @override
+  String get syOsUpdTitle => 'Rasgeth';
+
+  @override
+  String syOsUpd_applying(String version) {
+    return 'Aggiorno alla $version';
+  }
+
+  @override
+  String syOsUpd_available(String version) {
+    return 'Rasgeth $version è pronto da installare';
+  }
+
+  @override
+  String syOsUpd_breaking(String version) {
+    return 'Rasgeth $version chiede un\'installazione pulita';
+  }
+
+  @override
+  String get syOsUpd_error => 'L\'ultimo aggiornamento non è finito (gira la versione di prima)';
+
+  @override
+  String get syOsUpd_latest => 'Aggiornato';
+
+  @override
+  String get syOsUpd_unknown => 'Non ancora controllato';
+
+  @override
+  String get syOsUpd_unreachable => 'Non riesco a raggiungere GitHub per controllare';
+
+  @override
+  String syOsUpd_unsigned(String version) {
+    return 'È uscito Rasgeth $version, ma ancora senza il pacchetto firmato per Rasgeth OS: arriva con un rilascio successivo';
+  }
+
+  @override
+  String get syOsWifi8021x => 'rete aziendale (non da qui)';
+
+  @override
+  String syOsWifiConnectedTo(String ip, String name) {
+    return 'Collegata a «$name» ($ip)';
+  }
+
+  @override
+  String get syOsWifiForget => 'Dimentica';
+
+  @override
+  String syOsWifiForgetQ(String name) {
+    return 'Dimenticare «$name»?';
+  }
+
+  @override
+  String get syOsWifiForgetText =>
+      'La macchina smette di collegarsi a questa rete e la sua password viene cancellata. Se è la rete in uso e non c\'è un cavo, la pagina smette di rispondere finché la macchina non ha un\'altra rete.';
+
+  @override
+  String get syOsWifiGood => 'segnale buono';
+
+  @override
+  String get syOsWifiHidden => 'Rete nascosta…';
+
+  @override
+  String get syOsWifiHiddenName => 'Il nome della rete';
+
+  @override
+  String get syOsWifiInReach => 'Reti a portata';
+
+  @override
+  String get syOsWifiInUse => 'in uso';
+
+  @override
+  String get syOsWifiJoin => 'Collegati';
+
+  @override
+  String syOsWifiJoined(String name) {
+    return 'Collegata a «$name». Se stai usando questa pagina attraverso quella rete, continua a funzionare.';
+  }
+
+  @override
+  String get syOsWifiJoining => 'Mi collego…';
+
+  @override
+  String get syOsWifiKnown => 'salvata';
+
+  @override
+  String syOsWifiKnownAway(String names) {
+    return 'Salvate, ora non a portata: $names';
+  }
+
+  @override
+  String get syOsWifiLooking => 'Cerco…';
+
+  @override
+  String get syOsWifiNone =>
+      'Nessuna rete trovata. Cerca di nuovo, o collegati a una rete nascosta con il suo nome.';
+
+  @override
+  String get syOsWifiNotConnected => 'Non collegata a una rete Wi-Fi';
+
+  @override
+  String get syOsWifiNow => 'Adesso';
+
+  @override
+  String syOsWifiPassword(String name) {
+    return 'Password di «$name»';
+  }
+
+  @override
+  String get syOsWifiPasswordHelp =>
+      'Da 8 a 63 caratteri. Resta solo sulla macchina, leggibile solo dal sistema; Rasgeth non la conserva e non la mostra mai.';
+
+  @override
+  String get syOsWifiQ => 'A quale rete senza fili si collega la macchina?';
+
+  @override
+  String syOsWifiSaved(String name) {
+    return '«$name» è salvata: la macchina si collega appena la rete è a portata.';
+  }
+
+  @override
+  String get syOsWifiScan => 'Cerca di nuovo';
+
+  @override
+  String get syOsWifiStrong => 'segnale forte';
+
+  @override
+  String get syOsWifiTitle => 'Wi-Fi';
+
+  @override
+  String get syOsWifiWeak => 'segnale debole';
+
+  @override
+  String get syOsWifiWhy_failed => 'Non riesco a leggere il Wi-Fi adesso. Riprova tra un momento.';
+
+  @override
+  String get syOsWifiWhy_no_helper => 'Il Wi-Fi lo gestisce il sistema di questa macchina.';
+
+  @override
+  String get syOsWifiWhy_no_wifi =>
+      'Questa macchina non ha una scheda Wi-Fi (o il sistema non la riconosce).';
+
+  @override
+  String get syOsWifiWhy_not_installed => 'Questo sistema non ha gli strumenti per il Wi-Fi.';
+
+  @override
+  String get syOsWifiWhy_wifi_off =>
+      'Il Wi-Fi non è attivo su questa macchina. Riavviala, o collega un cavo.';
+
+  @override
+  String get syOsWifiWired =>
+      'C\'è un cavo collegato: la macchina usa il cavo, il Wi-Fi resta di riserva.';
+
+  @override
+  String get syPiholeAdmin => 'La pagina di Pi-hole, per vedere cosa blocca e sbloccare un sito:';
+
+  @override
+  String get syPiholeAds => 'Sul blocco della pubblicità';
+
+  @override
+  String get syPiholeAdsText =>
+      'Pi-hole blocca i nomi dei servizi di pubblicità e tracciamento più noti, per ogni dispositivo che lo usa, telefoni e TV compresi. Ogni tanto un sito o un\'app ha bisogno di uno di quei nomi per funzionare (certi link dei negozi, certe app di streaming): allora sembra rotto.';
+
+  @override
+  String get syPiholeAllow =>
+      'Se un sito smette di funzionare: apri la pagina di Pi-hole, Query Log, trova il nome bloccato e premi Allow. Per sospendere tutto il blocco per qualche minuto usa Disable blocking nella stessa pagina.';
+
+  @override
+  String syPiholeAnswers(String domain, String ip) {
+    return 'In casa $domain ora porta a $ip.';
+  }
+
+  @override
+  String get syPiholeChanges => 'Cosa cambia in casa, e come tornare indietro';
+
+  @override
+  String get syPiholeDevice =>
+      'Se il router non permette di cambiare il DNS (alcuni router dei fornitori no), impostalo su ogni dispositivo: nei dettagli della rete Wi-Fi sui telefoni, nelle impostazioni della scheda di rete sui computer.';
+
+  @override
+  String get syPiholeDomain => 'Il tuo dominio (facoltativo)';
+
+  @override
+  String get syPiholeDomainHelp =>
+      'L\'indirizzo che usi da fuori, tipo rasgeth.tuodominio.it: Pi-hole risponde per quello con l\'indirizzo qui sopra. Lascialo vuoto per usare Pi-hole solo contro la pubblicità.';
+
+  @override
+  String get syPiholeDomainWrong => 'Deve essere un nome tipo rasgeth.tuodominio.it.';
+
+  @override
+  String get syPiholeIp => 'L\'indirizzo di casa di questo computer';
+
+  @override
+  String get syPiholeIpHelp =>
+      'Quattro numeri tipo 192.168.1.50. Lo trovi nella pagina del router tra i dispositivi collegati, oppure su questo computer: \"ip a\" su Linux, \"ipconfig\" su Windows, Impostazioni di Sistema, Rete su Mac. Meglio se il router dà sempre lo stesso indirizzo a questo computer (prenotazione dell\'indirizzo).';
+
+  @override
+  String get syPiholeIpWrong =>
+      'Devono essere quattro numeri da 0 a 255 separati da punti, tipo 192.168.1.50.';
+
+  @override
+  String get syPiholeNeed =>
+      'raggiungi Rasgeth da fuori con un tuo dominio, e in casa lo stesso link non si apre. Molti router non sanno rimandarti a casa tua passando da internet (la funzione si chiama NAT loopback o hairpin, e il loro non ce l\'ha).';
+
+  @override
+  String get syPiholeNeedTitle => 'Ti serve se';
+
+  @override
+  String get syPiholeNoNeed =>
+      'usi Tailscale o Cloudflare Tunnel: quei link funzionano uguale in casa e fuori. Puoi comunque accenderlo solo per bloccare la pubblicità, se ti va.';
+
+  @override
+  String get syPiholeNoNeedTitle => 'Non ti serve se';
+
+  @override
+  String syPiholeNowRouter(String ip) {
+    return 'Ultimo passo, tocca a te: sul router (o su ogni dispositivo) metti come server DNS $ip. Finché non lo fai, in casa nessuno usa Pi-hole.';
+  }
+
+  @override
+  String get syPiholeOff =>
+      'Per tornare indietro: rimetti il DNS del router com\'era (spesso \"automatico\") e spegni Pi-hole da qui. Sui tuoi computer non cambia nient\'altro.';
+
+  @override
+  String syPiholeOn(String ip) {
+    return 'Pi-hole è acceso, su $ip.';
+  }
+
+  @override
+  String get syPiholeOpenAdmin => 'Apri Pi-hole';
+
+  @override
+  String get syPiholePort => 'Dettagli tecnici: la porta 53';
+
+  @override
+  String get syPiholePortText =>
+      'Pi-hole risponde sulla porta 53 (quella del DNS) solo all\'indirizzo di casa di questo computer, non su internet, e la sua pagina sta sulla porta 8053. Se su questo computer qualcos\'altro risponde già sulla porta 53 (un altro DNS, o quello del sistema su alcuni Linux), Pi-hole non può partire: Rasgeth te lo dice e non cambia niente.';
+
+  @override
+  String get syPiholeRouter =>
+      'Per tutti i dispositivi insieme: apri la pagina del router (l\'indirizzo di solito è scritto sotto il router, tipo 192.168.1.1), cerca le impostazioni DHCP o LAN e metti come server DNS l\'indirizzo di casa di questo computer. I dispositivi lo prendono la prossima volta che si collegano (oppure riavviali).';
+
+  @override
+  String get syPiholeSecond =>
+      'Un secondo DNS: se questo computer è spento, i dispositivi che conoscono solo Pi-hole non aprono nessun sito. Come secondo DNS puoi mettere l\'indirizzo del router o uno pubblico (1.1.1.1): tutto continua a funzionare a computer spento, ma a volte i dispositivi chiedono al secondo e allora vedono la pubblicità, o in casa non trovano il tuo dominio.';
+
+  @override
+  String get syPiholeShowPassword => 'Mostra la sua password';
+
+  @override
+  String get syPiholeStart => 'Accendi Pi-hole';
+
+  @override
+  String get syPiholeStop => 'Spegni Pi-hole';
+
+  @override
+  String get syPiholeTest =>
+      'Come capirlo: collega il telefono al Wi-Fi di casa e apri il link di Rasgeth. Se si apre, Pi-hole per questo non ti serve (puoi volerlo lo stesso per bloccare la pubblicità). Se non si apre, ma con i dati del telefono sì, Pi-hole lo risolve.';
+
+  @override
+  String get syPiholeTitle => 'Il DNS di casa, con Pi-hole (facoltativo)';
+
+  @override
+  String get syPiholeWhat =>
+      'Ogni dispositivo di casa chiede a un server DNS quale numero sta dietro a un nome (per esempio rasgeth.tuodominio.it). Di solito risponde il router o il tuo fornitore di internet. Pi-hole è un piccolo DNS che Rasgeth può far girare su questo computer: per il tuo dominio risponde con l\'indirizzo di casa di questo computer, così il link funziona anche in casa, e in più blocca pubblicità e tracciamento per ogni dispositivo che lo usa.';
+
+  @override
+  String get syPwSignOutOthersQ => 'Scollegare anche gli altri dispositivi?';
+
+  @override
+  String get syPwSignOutOthersText =>
+      'Gli altri browser e le app collegate con la password vecchia restano dentro se li tieni. Scollegali se l\'hai cambiata perché qualcun altro potrebbe conoscerla.';
+
+  @override
+  String get syPwSignOutOthersYes => 'Scollegali';
+
+  @override
+  String get syRemoteCaddy =>
+      'Per esperti: il tuo dominio che punta a casa, porte 80 e 443 aperte sul router. Chiunque su internet raggiunge la pagina di accesso.';
+
+  @override
+  String get syRemoteCloudflare =>
+      'Un indirizzo sul tuo dominio (circa 10 euro l\'anno), niente da aprire sul router. Qualche passo in più sul sito di Cloudflare.';
+
+  @override
+  String get syRemoteCode => 'Seconda verifica (consigliata)';
+
+  @override
+  String get syRemoteCodeConfirm => 'Conferma';
+
+  @override
+  String get syRemoteCodeHint =>
+      'Oltre alla password, un codice di 6 cifre da un\'app sul telefono (Google Authenticator, Microsoft Authenticator, 2FAS…): chi scopre la password non entra lo stesso.';
+
+  @override
+  String get syRemoteCodeOff => 'Seconda verifica spenta.';
+
+  @override
+  String get syRemoteCodeOn => 'Seconda verifica attiva';
+
+  @override
+  String get syRemoteCodeQr => 'Inquadra con l\'app di autenticazione';
+
+  @override
+  String get syRemoteCodeScan =>
+      'Inquadra il codice con l\'app (oppure scrivici la chiave qui sotto), poi scrivi qui le 6 cifre che ti mostra.';
+
+  @override
+  String get syRemoteCodeStart => 'Attiva la seconda verifica';
+
+  @override
+  String get syRemoteConnect => 'Collega';
+
+  @override
+  String get syRemoteHow => 'Come raggiungerlo';
+
+  @override
+  String get syRemoteNeedsPassword => 'Prima imposta la password qui sopra.';
+
+  @override
+  String get syRemoteNewPassword => 'Nuova password';
+
+  @override
+  String get syRemoteOff => 'Spegni l\'accesso da fuori';
+
+  @override
+  String get syRemoteOn => 'Rasgeth si raggiunge da fuori a questo indirizzo:';
+
+  @override
+  String get syRemoteOwnDomain => 'Il tuo dominio, router aperto';
+
+  @override
+  String get syRemotePassword => 'La tua password';
+
+  @override
+  String get syRemotePasswordChange => 'Cambiala';
+
+  @override
+  String get syRemotePasswordHint =>
+      'Da fuori Rasgeth chiede questa password (il link con il token resta per questo computer). Scegline una che non usi da nessun\'altra parte.';
+
+  @override
+  String get syRemotePasswordRule =>
+      'Almeno 10 caratteri. Una frase breve è facile da ricordare e difficile da indovinare.';
+
+  @override
+  String get syRemotePasswordSaved => 'Password salvata.';
+
+  @override
+  String get syRemotePasswordSet => 'La password è impostata';
+
+  @override
+  String get syRemotePurpose =>
+      'Usa Rasgeth dal telefono o da un altro computer quando sei fuori. Prima una password, poi una di tre strade; niente è raggiungibile da fuori finché non hai finito. Facoltativo.';
+
+  @override
+  String get syRemoteSessions => 'Browser collegati';
+
+  @override
+  String get syRemoteSessionsHint =>
+      'Ogni accesso dura 30 giorni. Se hai perso un telefono, o pensi che qualcun altro sia entrato (si scollegano anche le app di Rasgeth):';
+
+  @override
+  String get syRemoteSignOutAll => 'Scollega tutti';
+
+  @override
+  String get syRemoteSignedOut => 'Scollegati tutti.';
+
+  @override
+  String get syRemoteTailscale =>
+      'Una rete privata fra i tuoi dispositivi: niente da aprire sul router, gratis per uso personale. Installi Tailscale anche sul telefono.';
+
+  @override
+  String get syRemoteWaysFolded => 'Le strade di Rasgeth';
+
+  @override
+  String get syRemove => 'Rimuovi';
+
+  @override
+  String get sySave => 'Salva';
+
+  @override
+  String get sySaved => 'Salvato';
+
+  @override
+  String get sySbBackupQ => 'Tutto Rasgeth in un file';
+
+  @override
+  String get sySettings => 'Impostazioni';
+
+  @override
+  String get sySnCable => 'Uso il cavo';
+
+  @override
+  String sySnCableDone(String address) {
+    return 'Il cavo funziona: Rasgeth è a $address. Collega questo dispositivo alla rete di casa e apri http://$address:7600 (oppure http://rasgeth.local:7600).';
+  }
+
+  @override
+  String sySnFailed(String name, String why) {
+    return 'Rasgeth non è riuscito a collegarsi a «$name»: $why';
+  }
+
+  @override
+  String get sySnHidden => 'Una rete nascosta';
+
+  @override
+  String get sySnHiddenName => 'Nome della rete';
+
+  @override
+  String get sySnJoin => 'Usa questa rete';
+
+  @override
+  String sySnMaintQ(String ssid) {
+    return 'Rasgeth non trovava più la rete di casa e ha riaperto $ssid: scegli la rete che deve usare.';
+  }
+
+  @override
+  String get sySnNone =>
+      'Intorno non si vede nessuna rete: usa il cavo, oppure scrivi il nome di una rete nascosta.';
+
+  @override
+  String sySnPassword(String name) {
+    return 'Password di «$name»';
+  }
+
+  @override
+  String sySnQ(String ssid) {
+    return 'Sei collegato a $ssid, la rete temporanea di Rasgeth: quale rete deve usare Rasgeth a casa?';
+  }
+
+  @override
+  String get sySnTitle => 'La rete di casa';
+
+  @override
+  String sySnTrying(String name, String ssid) {
+    return 'Rasgeth si collega a «$name»: questa rete temporanea adesso si chiude. Collega questo dispositivo alla rete di casa e apri http://rasgeth.local:7600. Se non funziona, $ssid torna fra un minuto con il motivo.';
+  }
+
+  @override
+  String get syStRemoteQ => 'Rasgeth anche fuori casa';
+
+  @override
+  String get syStopped => 'fermato';
+
+  @override
+  String get syTgQr => 'Inquadra con la fotocamera del telefono';
+
+  @override
+  String get syTsApps => 'App di Tailscale';
+
+  @override
+  String get syTsDns => 'Impostazioni DNS di Tailscale';
+
+  @override
+  String get syTsOpenSignIn => 'Apri la pagina di accesso di Tailscale';
+
+  @override
+  String get syTsSignIn => 'Tailscale vuole che tu acceda, per aggiungere Rasgeth alla tua rete:';
+
+  @override
+  String get syTsSignUp => 'Iscriviti a Tailscale';
+
+  @override
+  String get syTsStep1 =>
+      'Crea un account gratuito su Tailscale (va bene con Google, Microsoft o GitHub):';
+
+  @override
+  String get syTsStep2 =>
+      'Nella pagina DNS di Tailscale attiva MagicDNS e HTTPS Certificates (danno a Rasgeth un indirizzo sicuro):';
+
+  @override
+  String get syTsStep3 => 'Poi qui:';
+
+  @override
+  String get syTsStep4 =>
+      'Installa Tailscale sul telefono e sugli altri computer, con lo stesso account:';
+
+  @override
+  String get syUiAdvanced => 'Avanzate';
+
+  @override
+  String get syUiDone => 'Fatto.';
+
+  @override
+  String get syUiNotNeeded => 'non serve';
+
+  @override
+  String syUpdBrkChecked(String conversations, String file, String projects, String size) {
+    return '$file · $size · $projects progetti, $conversations conversazioni, memorie e impostazioni';
+  }
+
+  @override
+  String get syUpdBrkDockerCopy =>
+      'La cartella sta nel volume dei dati di Rasgeth, che l\'installazione pulita cancella: copia prima il file fuori, dalla cartella di Rasgeth:';
+
+  @override
+  String get syUpdBrkDone => 'Ho capito';
+
+  @override
+  String syUpdBrkKeys(String n) {
+    return 'Il tuo portachiavi ($n chiavi, anche quelle dei modelli, delle chat e delle caselle) non è nel backup: ci entra solo protetto da una frase tua.';
+  }
+
+  @override
+  String get syUpdBrkKeysAdd => 'Aggiungi anche il portachiavi';
+
+  @override
+  String get syUpdBrkKeysAgain => 'Rifai il backup con il portachiavi';
+
+  @override
+  String get syUpdBrkKeysIn => 'Nel backup c\'è anche il portachiavi, protetto dalla tua frase.';
+
+  @override
+  String syUpdBrkLead(String version) {
+    return 'Rasgeth $version è cambiato troppo dentro per aggiornarsi come al solito: installato sopra quello vecchio potrebbe rompersi.';
+  }
+
+  @override
+  String get syUpdBrkNext => 'Avanti';
+
+  @override
+  String get syUpdBrkRetry => 'Riprova il backup';
+
+  @override
+  String get syUpdBrkSaved => 'Backup fatto e riletto: è in questa cartella';
+
+  @override
+  String get syUpdBrkStep1 => 'Togli il Rasgeth vecchio';
+
+  @override
+  String get syUpdBrkStep1Docker => 'Nella cartella di Rasgeth togli i container e i loro volumi:';
+
+  @override
+  String get syUpdBrkStep1Mac =>
+      'Dall\'icona nella barra dei menu scegli «Disinstalla…» (oppure trascina Rasgeth da Applicazioni nel Cestino).';
+
+  @override
+  String get syUpdBrkStep1Os =>
+      'Copia il backup su un disco USB (Impostazioni › Sistema › Backup): reinstallare Rasgeth OS cancella il disco di questa macchina.';
+
+  @override
+  String get syUpdBrkStep1Source => 'Ferma Rasgeth e sposta altrove la sua cartella dei dati.';
+
+  @override
+  String get syUpdBrkStep1Win =>
+      'Disinstalla Rasgeth. Quando chiede se tenere i dati puoi rispondere No: è tutto nel backup.';
+
+  @override
+  String syUpdBrkStep2(String version) {
+    return 'Installa Rasgeth $version';
+  }
+
+  @override
+  String get syUpdBrkStep3 => 'Ripristina';
+
+  @override
+  String get syUpdBrkStep3Docker =>
+      'Apri Rasgeth, finisci la configurazione e importa il file copiato in Impostazioni › Backup › Importa un backup.';
+
+  @override
+  String get syUpdBrkStep3Os =>
+      'Scrivi la nuova Rasgeth OS (chiavetta o immagine) e accendi la macchina: il primo avvio propone «Ripristina dal backup» e lo trova sul disco USB.';
+
+  @override
+  String get syUpdBrkStep3Text =>
+      'Al primo avvio il nuovo Rasgeth propone «Ripristina dal backup»: lo trova da solo in quella cartella.';
+
+  @override
+  String syUpdBrkSub(String installed, String version) {
+    return 'Rasgeth $version non si può installare sopra la $installed';
+  }
+
+  @override
+  String syUpdBrkSure(String folder) {
+    return 'Rasgeth si chiude e parte il suo disinstallatore. Il backup resta in $folder.';
+  }
+
+  @override
+  String get syUpdBrkTitle => 'Questa versione richiede un\'installazione pulita';
+
+  @override
+  String get syUpdBrkUninstall => 'Disinstalla Rasgeth';
+
+  @override
+  String get syUpdBrkUninstallYes => 'Sì, disinstalla';
+
+  @override
+  String get syUpdBrkUninstalling => 'Il disinstallatore sta partendo sul desktop.';
+
+  @override
+  String get syUpdBrkWhy =>
+      'Quindi si fa in tre passi brevi: prima un backup di tutto (lo sto facendo adesso, da solo), poi togli il Rasgeth vecchio e installi quello nuovo, che rimette tutto a posto dal backup.';
+
+  @override
+  String get syUpdCopied => 'Copiato';
+
+  @override
+  String get syUpdCopy => 'Copia';
+
+  @override
+  String get syUpdDownloadNew => 'Scarica la versione nuova';
+
+  @override
+  String get syUpdFoundDone =>
+      'È tutto tornato. Vai avanti con i passi successivi per sistemare i modelli.';
+
+  @override
+  String get syUpdFoundKeys =>
+      'La frase che hai scelto per il portachiavi. Senza, tutto il resto si ripristina lo stesso, e le chiavi dei modelli e delle chat si rimettono dalle loro pagine.';
+
+  @override
+  String syUpdFoundLead(String conversations, String date, String projects, String version) {
+    return 'C\'è un backup del $date (Rasgeth $version): $projects progetti e $conversations conversazioni. Rimetto tutto a posto adesso?';
+  }
+
+  @override
+  String get syUpdFoundRestore => 'Ripristina dal backup';
+
+  @override
+  String get syUpdFoundTitle => 'Ripristina dal backup';
+
+  @override
+  String get syUpdLater => 'Più tardi';
+
+  @override
+  String get syUpdLook => 'Cerca aggiornamenti';
+
+  @override
+  String get syUpdLooking => 'Cerco…';
+
+  @override
+  String get syUpdReqAgain => 'Controlla di nuovo';
+
+  @override
+  String get syUpdReqClose => 'Chiudi Rasgeth';
+
+  @override
+  String get syUpdReqClosing => 'Rasgeth si sta chiudendo. Puoi chiudere questa pagina.';
+
+  @override
+  String get syUpdReqDocker => 'Sul computer dove gira Rasgeth, nella sua cartella, esegui:';
+
+  @override
+  String get syUpdReqInstaller => 'Se l\'aggiornamento non parte, l\'installazione completa è qui:';
+
+  @override
+  String get syUpdReqInstallerLink => 'Rasgeth-Setup.exe';
+
+  @override
+  String syUpdReqLead(String installed, String version) {
+    return 'Questo aggiornamento non può aspettare: Rasgeth $version sistema una cosa che la $installed non può continuare a fare in sicurezza.';
+  }
+
+  @override
+  String get syUpdReqMac =>
+      'Apri il file scaricato e trascina Rasgeth in Applicazioni, sostituendo quello vecchio; poi riaprilo.';
+
+  @override
+  String get syUpdReqNow => 'Aggiorna ora';
+
+  @override
+  String get syUpdReqSafe =>
+      'Finché non aggiorni, agenti e automazioni restano fermi. Conversazioni, progetti e impostazioni sono al sicuro: non si perde niente.';
+
+  @override
+  String get syUpdReqSource =>
+      'Porta il codice all\'ultima versione (git pull), ricompilalo e riavvia Rasgeth.';
+
+  @override
+  String syUpdReqSub(String installed, String version) {
+    return 'Serve la versione $version (hai la $installed)';
+  }
+
+  @override
+  String get syUpdReqTitle => 'È necessario aggiornare Rasgeth';
+
+  @override
+  String get syUpdReqUpdating =>
+      'Rasgeth sta scaricando l\'aggiornamento: segui la finestra sul desktop. Si riavvia da solo.';
+
+  @override
+  String get syUpdReqUpdatingOs =>
+      'Rasgeth OS sta aggiornando Rasgeth: la pagina si ferma per qualche minuto e torna da sola.';
+
+  @override
+  String get syWzBack => 'Indietro';
+
+  @override
+  String get syWzCpu => 'Processore';
+
+  @override
+  String get syWzFree => 'liberi';
+
+  @override
+  String get syWzGpu => 'Scheda video';
+
+  @override
+  String get syWzMemory => 'Memoria';
+
+  @override
+  String get syWzNoGpu => 'Nessuna';
+
+  @override
+  String get syWzRecommended => 'consigliata';
+
+  @override
+  String get syWzRemote => 'Accesso da fuori casa';
+
+  @override
+  String get syWzStorage => 'Dati e copie';
+
+  @override
+  String syWzThreads(String n) {
+    return '$n thread';
+  }
+
+  @override
+  String get syHubTitle => 'Sistema e accesso';
+
+  @override
+  String get syHubRemote =>
+      'Password, secondo controllo, Tailscale, Cloudflare, il tuo dominio, Pi-hole';
+
+  @override
+  String get syHubSystem =>
+      'La macchina, il ruolo, dati e backup, Wi-Fi, HTTPS, SSH, aggiornamenti';
+
+  @override
+  String get syHubMachines => 'I tuoi computer che gli agenti raggiungono via SSH';
+
+  @override
+  String get syHubNodes => 'Altre macchine che lavorano con questa';
+
+  @override
+  String get syHubBackup => 'Tutto in un file, e un file riportato qui';
+
+  @override
+  String get syGateOpen => 'Cosa fare';
 }

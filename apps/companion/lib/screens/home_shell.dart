@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';
+import '../settings/system/update_gate.dart';
 import '../theme/colors.dart';
 import '../ui/icons.dart';
 import '../ui/no_internet_notice.dart';
@@ -67,6 +68,9 @@ class _HomeShellState extends State<HomeShell> {
     }
     // An update found running when the app connected: its screen, by itself.
     if (_app.takeUpdateToOpen() && !updateScreenOpen) unawaited(openUpdateScreen(context));
+    // G42.14: a mandatory or breaking update, as the page's UpdateGate.
+    final gate = _app.takeUpdateGate();
+    if (gate != null && !updateScreenOpen) unawaited(openUpdateGate(context, gate));
     final sid = _app.takePendingSession();
     if (sid != null) {
       unawaited(

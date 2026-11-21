@@ -10470,5 +10470,2076 @@
   "g4212Hub": "Keys and passwords, safe in one place",
   "g4211SignInOpened": "The service's page opened in the browser: sign in there, then come back here.",
   "g4211OpenExtensions": "Open Extensions",
-  "g4212OpenKeychain": "Open the keychain"
+  "g4212OpenKeychain": "Open the keychain",
+  "syBackup": "Backup",
+  "syBackupAddsHint": "A project whose name is taken here comes in beside it, with a number after the name.",
+  "syBackupAlreadyHere": "already here, left as it is",
+  "syBackupAnother": "Import another backup",
+  "syBackupChoose": "Choose the backup file",
+  "syBackupCounts": "{agents} agents · {conversations} conversations · {size} of files",
+  "@syBackupCounts": {
+    "placeholders": {
+      "agents": {
+        "type": "String"
+      },
+      "conversations": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "syBackupDownload": "Download {file}",
+  "@syBackupDownload": {
+    "placeholders": {
+      "file": {
+        "type": "String"
+      }
+    }
+  },
+  "syBackupExport": "Make a backup",
+  "syBackupExportHint": "Projects with their files, agents, conversations, chats and the board. Keys and sign-ins to services are not in it: they stay on this computer. node_modules folders are left out (they are rebuilt).",
+  "syBackupFrom": "Backup of {when}",
+  "@syBackupFrom": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "syBackupImport": "Import a backup",
+  "syBackupImportHint": "From another Rasgeth or from this one. Nothing here is deleted or replaced: what is in the backup is added, and what is already here stays as it is.",
+  "syBackupImportNow": "Import",
+  "syBackupImported": "Done: {projects} projects, {agents} agents and {conversations} conversations added.",
+  "@syBackupImported": {
+    "placeholders": {
+      "agents": {
+        "type": "String"
+      },
+      "conversations": {
+        "type": "String"
+      },
+      "projects": {
+        "type": "String"
+      }
+    }
+  },
+  "syBackupKeepName": "Keep {name}",
+  "@syBackupKeepName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syBackupKeys": "Include the keychain",
+  "syBackupKeysHelp": "Sealed with a passphrase of yours, with the keys of the models, chats and mailboxes: without it the backup's credentials cannot be opened.",
+  "syBackupKeysIn": "The backup carries a keychain: its passphrase",
+  "syBackupKeysInHelp": "Leave it empty to import everything else without the credentials.",
+  "syBackupKeysWrong": "The keychain was not imported: wrong passphrase. Everything else was.",
+  "syBackupMake": "Prepare the backup",
+  "syBackupMakeAgain": "Prepare it again",
+  "syBackupNameQuestion": "{who} is called {here} here and {backup} in the backup. Which name does it keep?",
+  "@syBackupNameQuestion": {
+    "placeholders": {
+      "backup": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "syBackupNothingNew": "Every project in this backup is here already: only what is missing is added.",
+  "syBackupPurpose": "Every project with its files, the agents and the conversations in one file: keep it safe, or carry it to another Rasgeth.",
+  "syBackupSaved": "Saved in your Downloads folder.",
+  "syBackupSending": "Sending the file to Rasgeth",
+  "syBackupTakeName": "Use {name}",
+  "@syBackupTakeName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syBrainDisconnect": "Disconnect",
+  "syCaddyDomain": "The address",
+  "syCaddyDomainHelp": "Rasgeth gets its HTTPS certificate from Let's Encrypt by itself.",
+  "syCaddyPihole": "Inside home some routers cannot reach their own public address: then open Rasgeth at home with its usual link, or turn on Pi-hole in Settings, Access from outside home (it is optional).",
+  "syCaddyStep1": "At your domain's provider, make a DNS record of type A for the address you want (for example rasgeth.yourdomain.com) pointing at your home's public address. If it changes, use a dynamic DNS service.",
+  "syCaddyStep2": "On your router, forward ports 80 and 443 to this computer.",
+  "syCaddyWarning": "With this way Rasgeth's sign-in page is on the internet: keep the password strong and the second check on.",
+  "syCancel": "Cancel",
+  "syCfAccess": "Safer still: in Cloudflare Zero Trust, Access, add an application for this address, so Cloudflare asks who you are before the page even appears.",
+  "syCfBuy": "Buy a domain on Cloudflare",
+  "syCfHost": "The address you chose",
+  "syCfHostHelp": "For example rasgeth.yourdomain.com: the subdomain and domain of the Public hostname.",
+  "syCfStep1": "If you have no domain yet, buy one (Cloudflare sells them at cost, about 10 euros a year):",
+  "syCfStep2": "Open Tunnels in Cloudflare Zero Trust, press Create a tunnel, choose Cloudflared and give it a name (for example rasgeth):",
+  "syCfStep3": "In the step Public hostname: subdomain rasgeth, your domain, Service type HTTP, URL redgiant:7600. Save.",
+  "syCfStep4": "Cloudflare shows a command with a long token after --token: copy only the token and write the address here.",
+  "syCfToken": "The tunnel's token",
+  "syCfTokenHelp": "The long string after --token in the command Cloudflare shows (it starts with eyJ).",
+  "syCfTunnels": "Cloudflare tunnels",
+  "syConnecting": "connecting…",
+  "syConversations": "Conversations",
+  "syErr_agent_limit": "The project «{project}» can have at most {max} agents besides its orchestrator: it has {count}. Raise the limit in Settings › Projects or remove one.",
+  "@syErr_agent_limit": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      },
+      "project": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_agent_removed": "The agent was removed from the team: restore it to work with it.",
+  "syErr_agent_stopped": "The agent is stopped (paused): resume it to go on.",
+  "syErr_bad_name": "That is not a name (for instance git.home.example.com).",
+  "syErr_code_rejected": "Anthropic did not accept this code: it may be incomplete or old. Open the sign-in page again to get a new one.",
+  "syErr_email_failed": "The mailbox did not let Rasgeth in: check the server, the address and the app password.",
+  "syErr_failed": "The sign-in did not finish. Try again from the start.",
+  "syErr_host_unreachable": "The server's name is known, but its address does not answer from Rasgeth. See Settings › Access from outside home › Your home services.",
+  "syErr_key_rejected": "The provider refused this key. Check that you copied all of it and that it is still active.",
+  "syErr_memory_empty": "Write something to remember.",
+  "syErr_memory_forgotten": "A memory forgotten for good cannot come back.",
+  "syErr_memory_full": "The memory is full: delete or merge some old memories first.",
+  "syErr_memory_gone": "That memory is not there any more.",
+  "syErr_memory_long": "A memory is at most 400 characters: write it shorter.",
+  "syErr_memory_moved": "The memory changed again since: undo the newer change first.",
+  "syErr_memory_same": "Another memory already says the same.",
+  "syErr_memory_secret": "That looks like a password, a code or a card number: secrets are never kept in memory.",
+  "syErr_memory_undone": "That change was already undone.",
+  "syErr_missing_permission": "GitHub did not let the token create repositories. Make a new one with Administration set to Read and write.",
+  "syErr_name_not_found": "Rasgeth cannot find the server's name in the DNS it uses. See Settings › Access from outside home › Your home services.",
+  "syErr_no_login": "Open Anthropic's sign-in page first.",
+  "syErr_no_model": "No model is chosen yet: open Settings, Models and subscriptions, connect one (a subscription, a key or a local model) and choose it in \"The model agents use\".",
+  "syErr_no_page": "Anthropic's sign-in page could not be prepared. Try again in a moment.",
+  "syErr_no_password": "Set a password first.",
+  "syErr_portrait_empty": "Write the trait.",
+  "syErr_portrait_gone": "That trait is not there any more.",
+  "syErr_portrait_long": "A trait is at most 200 characters: write it shorter.",
+  "syErr_portrait_private": "Email addresses and phone numbers never go into the portrait.",
+  "syErr_portrait_secret": "That looks like a password, a code or a card number: secrets never go into the portrait.",
+  "syErr_project_archived": "The project is archived: restore it to work in it.",
+  "syErr_provider_stalled": "The provider has not answered for {minutes} minutes: I tried again {retries} times. Try again in a while, or choose another model.",
+  "@syErr_provider_stalled": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      },
+      "retries": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_terms": "First tick the box about the providers' terms.",
+  "syErr_token_rejected": "Telegram refused this token. Copy it again from BotFather's message, all of it.",
+  "syErr_too_many": "Too many wrong tries: wait 15 minutes, then try again.",
+  "syErr_unreachable": "The provider did not answer. Check the address and the internet connection, then try again.",
+  "syErr_vault_bad_file": "This file is not a password export Rasgeth can read.",
+  "syErr_vault_bad_passphrase": "Wrong passphrase, or a damaged file.",
+  "syErr_vault_closed": "The keychain is closed on this computer.",
+  "syErr_vault_in_git": "The keychain's folder is inside a git repository: it must never be committed. Move Rasgeth's data folder outside it.",
+  "syErr_vault_name_taken": "Another credential has that name for the agents: choose another one.",
+  "syErr_vault_no_value": "Write the secret.",
+  "syErr_vault_not_found": "That credential is no longer in the keychain.",
+  "syErr_vault_system": "Rasgeth uses this key: remove it from its page in Settings.",
+  "syErr_voice_convert": "The recording could not be converted for whisper on this computer.",
+  "syErr_voice_empty": "The recording is empty.",
+  "syErr_voice_key_refused": "{name} refused the key: check it in Settings, Voice.",
+  "@syErr_voice_key_refused": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_voice_no_key": "{name} has no key yet: add it in Settings, Voice.",
+  "@syErr_voice_no_key": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_voice_no_service": "Rasgeth has no transcription service: choose one in Settings, Voice, Transcription.",
+  "syErr_voice_provider": "This provider cannot do it: choose another one.",
+  "syErr_voice_rate_limited": "{name} says too many requests or no credit left.",
+  "@syErr_voice_rate_limited": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_voice_service_error": "{name} answered with an error ({status}).",
+  "@syErr_voice_service_error": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_voice_timeout": "{name} took too long to answer.",
+  "@syErr_voice_timeout": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_voice_too_long": "The recording is too long.",
+  "syErr_voice_unreachable": "{name} cannot be reached: check that it is on and its address.",
+  "@syErr_voice_unreachable": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syErr_weak": "The password needs at least 10 characters.",
+  "syErr_wrong": "Wrong password or code.",
+  "syError": "Error",
+  "syFailed": "failed",
+  "syFbArch": "Architecture",
+  "syFbBackupBusy": "A backup is already running.",
+  "syFbBackupNow": "Make a backup now",
+  "syFbBackupQ": "Best on another disk: if this one breaks, the copy is still there.",
+  "syFbBackupStarted": "Backup started: it shows in Downloads and jobs.",
+  "syFbBackupTitle": "Backups",
+  "syFbCannotMount": "Cannot be mounted here",
+  "syFbContainerDisks": "Rasgeth OS runs in a container ({name}): the disks it sees are those of the machine hosting it and cannot be used from here.",
+  "@syFbContainerDisks": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbDaily": "Every day",
+  "syFbDataDir": "Folder",
+  "syFbDataQ": "Projects, conversations and settings are here.",
+  "syFbDataTitle": "The data",
+  "syFbDay": "Day",
+  "syFbDestDisk": "Backups go to the disk {label} ({path}).",
+  "@syFbDestDisk": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbDestFolder": "Backups go to the folder {path}.",
+  "@syFbDestFolder": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbDestNode": "Backups go to the node {name}, in the storage it lends.",
+  "@syFbDestNode": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbDestSftp": "Backups go to {machine}, in {path} (SFTP).",
+  "@syFbDestSftp": {
+    "placeholders": {
+      "machine": {
+        "type": "String"
+      },
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbDestSmb": "Backups go to the shared folder {path}, as {user}.",
+  "@syFbDestSmb": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      },
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbDisks": "Disks",
+  "syFbDisksTitle": "Removable disks",
+  "syFbErr_already": "The container already has a folder with that name.",
+  "syFbErr_auth": "The destination refused the sign-in: check the user and the password (or the machine's key).",
+  "syFbErr_bad_path": "Write a full folder path (/volume1/Rasgeth) or one from the home (~/backups).",
+  "syFbErr_denied": "The destination does not let this user write there.",
+  "syFbErr_disk_missing": "The backup disk is not connected: plug it in. Nothing was written elsewhere.",
+  "syFbErr_has_filesystem": "That disk is formatted already: it is never formatted again from here.",
+  "syFbErr_keychain_closed": "Open the keychain first: the password is kept there.",
+  "syFbErr_mismatch": "The copy arrived different from the original: it was not kept. Try again.",
+  "syFbErr_needs_format": "That disk is not formatted.",
+  "syFbErr_no_container": "There is no container with that id on the host.",
+  "syFbErr_no_destination": "Choose where backups go first.",
+  "syFbErr_no_disk": "That disk is not a removable disk of the host (any more).",
+  "syFbErr_not_found": "The folder or the destination is not there (any more).",
+  "syFbErr_not_proxmox": "That machine is not a Proxmox host.",
+  "syFbErr_not_trusted": "Test this machine once in Settings › Machines and trust its key first.",
+  "syFbErr_place_missing": "The folder from the host is not mounted now: nothing was written on the system disk.",
+  "syFbErr_smb_address": "Write the shared folder as \\\\host\\share\\folder (letters, digits, spaces, dots and dashes).",
+  "syFbErr_smb_bad_domain": "The domain is letters, digits, dots and dashes.",
+  "syFbErr_smb_bad_password": "This password cannot be used (no line breaks).",
+  "syFbErr_smb_bad_user": "This user name cannot be used.",
+  "syFbErr_smb_missing": "Shared folders need smbclient, which this installation does not have.",
+  "syFbErr_unreachable": "The destination does not answer: is it on and on the network? Nothing was written elsewhere.",
+  "syFbFolderLead": "A folder this machine can write to: a network share, a disk mounted by you. Not inside the data folder.",
+  "syFbFolderPath": "Folder",
+  "syFbFolderTitle": "Or a folder",
+  "syFbFreeOf": "{free} free",
+  "@syFbFreeOf": {
+    "placeholders": {
+      "free": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbFreeOfTotal": "{free} GB free of {total} GB",
+  "@syFbFreeOfTotal": {
+    "placeholders": {
+      "free": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbFri": "Fri",
+  "syFbHostBad_bad_device": "This disk's device cannot be used.",
+  "syFbHostBad_bad_id": "The container id is a number, like 105.",
+  "syFbHostBad_bad_mp": "No free mount point.",
+  "syFbHostBad_bad_name": "This disk's name cannot be used for a folder.",
+  "syFbHostId": "Container id on Proxmox",
+  "syFbHostIdHelp": "The number in Proxmox's list (this container is called {hostname}).",
+  "@syFbHostIdHelp": {
+    "placeholders": {
+      "hostname": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbHostKind": "The host",
+  "syFbHostLead": "From a container Rasgeth sees the host's disks but cannot mount them: the host mounts the disk and passes a folder in. Rasgeth notices it by itself.",
+  "syFbHostMany": "On this machine there are {n} removable disks: pick the one for backups.",
+  "@syFbHostMany": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbHostNone": "No removable disk of the host is in sight: plug it into the host, or use a folder on the network below.",
+  "syFbHostOne": "On this machine there is the disk {title}, {how}, {size}.",
+  "@syFbHostOne": {
+    "placeholders": {
+      "how": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbHostOther": "Other",
+  "syFbHostSteps": "To run on the host, as root",
+  "syFbHostTitle": "A disk of the host",
+  "syFbHostWatching": "Looking every few seconds: when {target} arrives it shows above, ready to use.",
+  "@syFbHostWatching": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbHour": "Hour",
+  "syFbKeep": "Backups kept",
+  "syFbKeepN": "keep {n}",
+  "@syFbKeepN": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbLastFailed": "The backup of {when} did not work: {why}",
+  "@syFbLastFailed": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbLastOk": "Last backup: {when}, read back and complete.",
+  "@syFbLastOk": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbListAgain": "Look again",
+  "syFbListEmpty": "No backup yet in {where}.",
+  "@syFbListEmpty": {
+    "placeholders": {
+      "where": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbListLead": "Each one can be brought back: what is new is added, nothing here is deleted.",
+  "syFbListShow": "Show the backups",
+  "syFbListTitle": "The backups there",
+  "syFbMachineTitle": "The machine",
+  "syFbMethod_helper": "Pick one: Rasgeth mounts it only for backups. System disks are never offered.",
+  "syFbMethod_none": "This installation cannot mount disks (for example plain Docker without privileges): use a disk already mounted, or a folder below.",
+  "syFbMethod_udisks": "Pick one: the system mounts it (udisks2). System disks are never offered.",
+  "syFbMissing_not_installed": "unknown: the program that tells is not installed",
+  "syFbMissing_unreadable": "could not be read",
+  "syFbMissing_unsupported": "not available on this system",
+  "syFbMon": "Mon",
+  "syFbNetAProxy": "a reverse proxy",
+  "syFbNetDns": "A DNS server on your network ({ip}): a name like rasgeth.home can point here.",
+  "@syFbNetDns": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbNetFolder": "Folder there",
+  "syFbNetFolderHelp": "A full path (/volume1/Rasgeth, E:\\Backup) or one from the home (~/RedGiant-backups). It is made if missing.",
+  "syFbNetLanOnly": "Local network only is a fine choice: skip this step.",
+  "syFbNetLead": "Nothing to mount: it works also in a container or in Docker. Each backup arrives under a temporary name and gets its real name only once complete and checked.",
+  "syFbNetName": "You reached Rasgeth by name: {name}.",
+  "@syFbNetName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbNetNoMachines": "No machine yet: add your NAS or another computer in Settings › Machines (SSH), test it once, then come back here.",
+  "syFbNetNoNodes": "No paired Rasgeth yet: pair one in Settings › Nodes (it must lend its storage).",
+  "syFbNetNode": "Another Rasgeth",
+  "syFbNetNotTrusted": "Test it in Settings › Machines first",
+  "syFbNetNothing": "Nothing found that already reaches this machine from outside.",
+  "syFbNetPick": "Use for backups",
+  "syFbNetProxies": "Running on this machine: {names}.",
+  "@syFbNetProxies": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbNetProxyFront": "There is already {name} in front of Rasgeth.",
+  "@syFbNetProxyFront": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbNetSftp": "One of your machines",
+  "syFbNetSmb": "Shared folder (SMB)",
+  "syFbNetTailscale": "Tailscale is already running here ({name}): you can use it.",
+  "@syFbNetTailscale": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbNetTailscaleOff": "Tailscale is installed here but not connected.",
+  "syFbNetTitle": "Or a folder on the network",
+  "syFbNoDisks": "No removable disk found. Plug one in and open this page again, or use a folder.",
+  "syFbNodeOffline": "Offline now",
+  "syFbNodeOnline": "Online",
+  "syFbOff": "Only when I ask",
+  "syFbOfferCloud": "Cloud models: always available.",
+  "syFbOfferLocalCpu": "Local models: yes, small ones on the processor, up to about {max} GB (slower than a card).",
+  "@syFbOfferLocalCpu": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbOfferLocalGpu": "Local models: yes, on the graphics card, up to about {max} GB.",
+  "@syFbOfferLocalGpu": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbOfferNoLocal": "Local models: not offered, too little memory here. You can still add one from Settings › Models.",
+  "syFbPairLater": "Write the main Rasgeth's address and the code it shows in Settings › Nodes › «Add a node». You can also do it later, from Settings.",
+  "syFbPassword": "Password",
+  "syFbPasswordAgain": "The same password again",
+  "syFbPasswordHelp": "At least 10 characters.",
+  "syFbPlaceFree": "{free} GB free of {total}",
+  "@syFbPlaceFree": {
+    "placeholders": {
+      "free": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPlaceNotWritable": "Rasgeth cannot write here",
+  "syFbPlacesLead": "Folders the machine hosting Rasgeth mounted under /var/lib/redgiant/backups (a Proxmox mount point, a network share).",
+  "syFbPlacesTitle": "Folders mounted for backups",
+  "syFbPveDo": "Pass it to Rasgeth",
+  "syFbPveDone": "Done: the folder {target} has arrived.",
+  "@syFbPveDone": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveFormat": "Not formatted: format and pass it",
+  "syFbPveFormatLabel": "Everything on it is erased. To go on, type its name: {title}",
+  "@syFbPveFormatLabel": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveFormatQ": "Format the disk {title}?",
+  "@syFbPveFormatQ": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveFormatYes": "Format and pass it",
+  "syFbPveGuess": "This container is {id}.",
+  "@syFbPveGuess": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveHost": "{name}: Proxmox {version}.",
+  "@syFbPveHost": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveLead": "If the Proxmox host is among your machines (Settings › Machines), Rasgeth can run these steps there itself. It asks you first, with every command in the request.",
+  "syFbPveLook": "Look for the Proxmox host",
+  "syFbPveNeedId": "Write the container id first.",
+  "syFbPveNoDisks": "No removable disk on that host.",
+  "syFbPveNone": "None of your {n} machines is a Proxmox host. Add the host in Settings › Machines (as root, with Rasgeth's key), test it, then look again.",
+  "@syFbPveNone": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveQ": "Pass the disk {title} of {host} to container {id}?",
+  "@syFbPveQ": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "id": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveRestart": "Done on the host. If {target} does not appear in a minute, restart the container from Proxmox.",
+  "@syFbPveRestart": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbPveText": "Rasgeth asks you again in your requests, with the exact commands, before running anything on the host.",
+  "syFbPveTitle": "Do it for me",
+  "syFbPveYes": "Ask me with the commands",
+  "syFbRamFree": "{gb} GB free now",
+  "@syFbRamFree": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbRamTotal": "{gb} GB in all",
+  "@syFbRamTotal": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbRemovable": "removable",
+  "syFbRestore": "Restore",
+  "syFbRestoreQ": "Restore the backup of {when}?",
+  "@syFbRestoreQ": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbRestoreText": "It is read back first, then projects, agents and conversations that are not here are added. Nothing here is deleted.",
+  "syFbRestoreYes": "Restore",
+  "syFbRoleFull": "Complete Rasgeth",
+  "syFbRoleFullText": "Agents, projects, chats and everything else, on this machine.",
+  "syFbRoleNode": "Node of another Rasgeth",
+  "syFbRoleNodeText": "This machine works for a Rasgeth you already have.",
+  "syFbRoleSettingsLead": "You can change it at any time: it asks first and says what changes.",
+  "syFbRoleTitle": "Role",
+  "syFbSat": "Sat",
+  "syFbSmbAddress": "Shared folder",
+  "syFbSmbAddressHelp": "As Windows writes it (\\\\nas\\backup\\Rasgeth) or smb://nas/backup/Rasgeth.",
+  "syFbSmbDomain": "Domain or workgroup",
+  "syFbSmbDomainHelp": "Only if your network needs one (often empty).",
+  "syFbSmbMissing": "Shared folders need smbclient, which this installation does not have (the Docker image and Rasgeth OS have it). On Windows use the folder field above with \\\\host\\share.",
+  "syFbSmbPassword": "Password",
+  "syFbSmbPasswordHelp": "It goes into the keychain only, never into a file or a log.",
+  "syFbSmbPasswordKept": "Kept in the keychain: leave it empty to keep it.",
+  "syFbSmbUser": "User",
+  "syFbSshAddKey": "Add this key",
+  "syFbSshContainer": "In a container ({name}) SSH reaches the container itself, at its own address, as the user redgiant.",
+  "@syFbSshContainer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbSshKey": "Public key",
+  "syFbSshKeyHelp": "One line starting with ssh-ed25519, ssh-rsa or ecdsa-sha2 (the .pub file).",
+  "syFbSshKeyPlaceholder": "ssh-ed25519 AAAA… me@laptop",
+  "syFbSshKeys": "{n} key(s) allowed",
+  "@syFbSshKeys": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbSshNeedKey": "Paste a public key first, then switch it on.",
+  "syFbSshOffHelp": "Paste a public key below, then switch it on.",
+  "syFbSshOn": "SSH on",
+  "syFbSshQ": "To work on the machine itself from a terminal. Off unless you switch it on; keys only, never passwords.",
+  "syFbSshTitle": "SSH",
+  "syFbSshWhy_no_helper": "This installation has no Rasgeth OS system helper: SSH is managed by the system hosting it.",
+  "syFbSshWhy_not_installed": "SSH (openssh-server) is not installed on this system.",
+  "syFbSshWhy_other": "SSH cannot be read here: the system helper answered «{why}».",
+  "@syFbSshWhy_other": {
+    "placeholders": {
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbSshWhy_timeout": "Rasgeth OS's system helper took too long to answer: try again in a moment.",
+  "syFbSshWhy_unreachable": "Rasgeth OS's system helper does not answer (redgiant-helper.socket): SSH cannot be read or changed now. Restarting the machine usually brings it back.",
+  "syFbSun": "Sun",
+  "syFbSystemLead": "The machine Rasgeth runs on, its role, where its data and backups live, and SSH.",
+  "syFbSystemQ": "System",
+  "syFbSystemSection": "System",
+  "syFbThu": "Thu",
+  "syFbToFullQ": "Make this a complete Rasgeth again?",
+  "syFbToFullText": "It stops working for the other Rasgeth; its own agents, projects and conversations come back as they were.",
+  "syFbToFullYes": "Make it complete",
+  "syFbToNodeQ": "Make this Rasgeth a node?",
+  "syFbToNodeText": "It will stop being a Rasgeth of its own once paired: its agents, projects and conversations stay saved, untouched, but they rest until you make it complete again.",
+  "syFbToNodeYes": "Make it a node",
+  "syFbTue": "Tue",
+  "syFbUseDisk": "Use for backups",
+  "syFbUseFolder": "Use this folder",
+  "syFbUsePlace": "Use for backups",
+  "syFbUseShare": "Use this shared folder",
+  "syFbVirt": "Runs on",
+  "syFbVirtContainer": "a container ({name})",
+  "@syFbVirtContainer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbVirtNone": "a physical machine",
+  "syFbVirtVm": "a virtual machine ({name})",
+  "@syFbVirtVm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syFbWed": "Wed",
+  "syFbWeekly": "Every week",
+  "syFbWhenTitle": "When",
+  "syFbWhyFs": "Format not supported",
+  "syFbWhyNoFs": "Not formatted",
+  "syFbWhyNoUuid": "Without an id",
+  "syFbWhyNotDisk": "Not a disk",
+  "syFbWhyNotRemovable": "Not removable",
+  "syFbWhySystem": "Holds the system",
+  "syFolder": "Folder",
+  "syGitGiteaAgain": "The same password again",
+  "syGitGiteaGuide": "Open «Your home services»",
+  "syGitGiteaMismatch": "The two passwords are different.",
+  "syInspector": "Inspector",
+  "syJob_pihole": "Starting Pi-hole",
+  "syJob_remote": "Opening access from outside",
+  "syJob_step_account": "Creating your account",
+  "syJob_step_arrive": "Waiting for the folder",
+  "syJob_step_ask": "Waiting for your yes",
+  "syJob_step_conversations": "Conversations",
+  "syJob_step_convert": "Converting",
+  "syJob_step_copy": "Copying the models",
+  "syJob_step_data": "Projects, agents and settings",
+  "syJob_step_download": "Downloading the model",
+  "syJob_step_draft": "With the small model",
+  "syJob_step_fetch": "Bringing the backup here",
+  "syJob_step_files": "The projects' files",
+  "syJob_step_gitea_image": "Downloading Gitea (only once)",
+  "syJob_step_gitea_start": "Starting Gitea",
+  "syJob_step_image": "Downloading the engine (only once)",
+  "syJob_step_image_download": "Downloading",
+  "syJob_step_load": "Loading the model into memory",
+  "syJob_step_look": "Looking at the host",
+  "syJob_step_model_download": "The model",
+  "syJob_step_model_prepare": "Preparing it for the page",
+  "syJob_step_move": "Copying to the new disk",
+  "syJob_step_ngram": "With the n-grams",
+  "syJob_step_node_check": "Checking the video (SHA-256)",
+  "syJob_step_node_copy": "Copying the files to {node}",
+  "@syJob_step_node_copy": {
+    "placeholders": {
+      "node": {
+        "type": "String"
+      }
+    }
+  },
+  "syJob_step_node_fetch": "Bringing the video back from {node}",
+  "@syJob_step_node_fetch": {
+    "placeholders": {
+      "node": {
+        "type": "String"
+      }
+    }
+  },
+  "syJob_step_node_ffmpeg": "Getting ffmpeg ready on {node}",
+  "@syJob_step_node_ffmpeg": {
+    "placeholders": {
+      "node": {
+        "type": "String"
+      }
+    }
+  },
+  "syJob_step_none": "The model alone",
+  "syJob_step_ocr_languages": "The languages",
+  "syJob_step_ocr_program": "The program",
+  "syJob_step_pihole_check": "Checking that it answers",
+  "syJob_step_pihole_image": "Downloading Pi-hole (only once)",
+  "syJob_step_pihole_start": "Starting Pi-hole",
+  "syJob_step_preload": "Reading the model once, so the first message does not wait for the disk",
+  "syJob_step_remote_cert": "Getting the certificate from Let's Encrypt",
+  "syJob_step_remote_connect": "Connecting to Cloudflare",
+  "syJob_step_remote_https": "Getting the safe address (HTTPS)",
+  "syJob_step_remote_image": "Downloading what is needed (only once)",
+  "syJob_step_remote_login": "Waiting for you to sign in to Tailscale",
+  "syJob_step_remote_start": "Starting it",
+  "syJob_step_restore": "Putting the engine back as it was",
+  "syJob_step_run": "Running the steps on the host",
+  "syJob_step_searxng_check": "Checking that it answers",
+  "syJob_step_searxng_image": "Downloading SearXNG (only once)",
+  "syJob_step_searxng_start": "Starting it",
+  "syJob_step_start": "Starting the engine",
+  "syJob_step_switch": "Starting the model on Windows",
+  "syJob_step_tool_download": "Downloading",
+  "syJob_step_tool_unpack": "Unpacking",
+  "syJob_step_try": "Trying an answer",
+  "syJob_step_tune": "Measuring this computer to pick the fastest setting",
+  "syJob_step_verify": "Reading the backup back",
+  "syJob_step_video_derive": "Making the file",
+  "syJob_step_video_probe": "Reading the file",
+  "syJob_step_video_render": "Rendering with ffmpeg",
+  "syJob_step_video_save": "Saving it in the project",
+  "syJob_step_video_silences": "Finding the silences",
+  "syJob_step_video_sound": "Taking the sound",
+  "syJob_step_video_transcribe": "Writing down the words",
+  "syJob_step_video_wait": "Waiting for the render before it",
+  "syKcImported": "{n} credentials added to the keychain.",
+  "@syKcImported": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syKcPassphrase": "Passphrase",
+  "syKcPassphraseHelp": "At least 8 characters. Keep it somewhere safe: it cannot be recovered.",
+  "syLmRecommended": "recommended",
+  "syLoginCode": "Code from the app (6 digits)",
+  "syMcAdd": "Add",
+  "syMcAuthKey": "Key",
+  "syMcAuthPassword": "Password",
+  "syMcChangedNow": "Now",
+  "syMcChangedText": "Another computer may be in the place of «{name}». Nothing was sent and the connection was refused. Trust the new key only if you know why it changed (the system was reinstalled, the machine was replaced).",
+  "@syMcChangedText": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syMcChangedTitle": "Danger: the machine answered with another key",
+  "syMcChangedWas": "Trusted",
+  "syMcCopied": "Copied",
+  "syMcCopy": "Copy",
+  "syMcCopyKey": "Copy the public key",
+  "syMcEdit": "Change",
+  "syMcEditorLead": "Where the machine is and who logs in. The key or the password goes straight into the keychain.",
+  "syMcEmpty": "No machine yet. Add one: Rasgeth makes a key for it, you copy its public half onto the machine.",
+  "syMcFolder": "Working folder",
+  "syMcFolderHelp": "Where commands start; deleting outside it always asks you. A full path (/srv/app, ~/app, or on Windows E:\\coding\\site). Leave empty for the home.",
+  "syMcFolderNone": "the home (every deletion asks you)",
+  "syMcHost": "Address",
+  "syMcHostHelp": "Its name or IP address on the network.",
+  "syMcHostKey": "Machine's key",
+  "syMcKeyGenerate": "Make a new key",
+  "syMcKeyGenerateHelp": "Rasgeth makes an ed25519 key: you will copy its public half into ~/.ssh/authorized_keys on the machine.",
+  "syMcKeyKeep": "Keep the key",
+  "syMcKeyKeepHelp": "The key kept in the keychain stays as it is.",
+  "syMcKeyPaste": "Paste a private key",
+  "syMcLead": "Other computers your agents reach over SSH: a server, a Raspberry Pi, a computer at the office. Keys and passwords stay in the keychain; the agents choose a machine by its name and never see them.",
+  "syMcLogin": "Login",
+  "syMcLoginGenerated": "key made by Rasgeth, in the keychain",
+  "syMcLoginImported": "your key, in the keychain",
+  "syMcLoginPassword": "password in the keychain",
+  "syMcName": "Name",
+  "syMcNameHelp": "How agents call it: letters, digits, dot, dash, no spaces (web, pi, office).",
+  "syMcNew": "Add a machine",
+  "syMcNewKey": "Make a new key",
+  "syMcNewKeyQ": "Make a new key for this machine?",
+  "syMcNewKeyText": "The old key stops working here: copy the new public key onto the machine and remove the old one.",
+  "syMcPassphrase": "Its passphrase (if it has one)",
+  "syMcPassword": "Password",
+  "syMcPasswordHelp": "Kept in the keychain. A key is safer: a password travels at every login.",
+  "syMcPasswordKept": "The password in the keychain stays unless you write a new one.",
+  "syMcPort": "Port",
+  "syMcPrivateKey": "Private key",
+  "syMcPrivateKeyHelp": "OpenSSH or PEM. It goes into the keychain and is never shown again.",
+  "syMcPrivateKeyPlaceholder": "-----BEGIN OPENSSH PRIVATE KEY-----",
+  "syMcProject": "project",
+  "syMcPublicKey": "Public key",
+  "syMcPublicKeyHelp": "Copy it into ~/.ssh/authorized_keys of the user on the machine (one line), then test the connection.",
+  "syMcRemoveQ": "Remove «{name}»?",
+  "@syMcRemoveQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syMcRemoveText": "Its key or password leaves the keychain; agents can no longer use it. Remove the public key from the machine too.",
+  "syMcReplaceQ": "Trust the new key of «{name}»?",
+  "@syMcReplaceQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syMcReplaceText": "Do it only if you know why the machine's key changed: otherwise someone could be reading what Rasgeth sends.",
+  "syMcReplaceYes": "Trust the new key",
+  "syMcSafety": "What happens there follows the same rules as here: sudo, switching the machine off, installing system programs, changing its system files and deleting outside its working folder always ask you, also with «Don't ask me anything».",
+  "syMcSave": "Save",
+  "syMcSection": "Machines",
+  "syMcStateFailed": "Last test failed",
+  "syMcStateNew": "Not checked yet",
+  "syMcStateTrusted": "Key trusted",
+  "syMcTest": "Test the connection",
+  "syMcTestAuth": "The machine refused the login: is the public key in ~/.ssh/authorized_keys (or the password right)?",
+  "syMcTestError": "It did not work: {message}",
+  "@syMcTestError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "syMcTestNoSecret": "There is no key or password in the keychain for this machine: change it and set one.",
+  "syMcTestOk": "Connected: {system}",
+  "@syMcTestOk": {
+    "placeholders": {
+      "system": {
+        "type": "String"
+      }
+    }
+  },
+  "syMcTestTimeout": "The machine did not answer in time.",
+  "syMcTestUnreachable": "The machine cannot be reached: check the address and that it is on.",
+  "syMcTesting": "Connecting…",
+  "syMcTitle": "Your machines",
+  "syMcTofuHow": "To see it on the machine: ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub",
+  "syMcTofuText": "Nothing was sent yet. If the fingerprint is the machine's, trust it: from now on Rasgeth connects only to a machine with this key.",
+  "syMcTofuTitle": "First connection: is this the machine's key?",
+  "syMcTrust": "Trust this key",
+  "syMcUser": "User",
+  "syMcWho": "Who may use it",
+  "syMcWhoAgents": "Agents",
+  "syMcWhoEveryone": "Every agent",
+  "syMcWhoEveryoneHelp": "God, the assistants and every project's agents.",
+  "syMcWhoLead": "The agents not chosen do not even see it.",
+  "syMcWhoNoAgents": "There are no agents yet.",
+  "syMcWhoNobody": "nobody yet",
+  "syMcWhoProjects": "Every agent of these projects",
+  "syNdAddButton": "Show a pairing code",
+  "syNdAddLead": "On the other machine, in its first start (role «Node of another Rasgeth») or in its Settings › Nodes, write this machine's address and the code below.",
+  "syNdAddTitle": "Add a node",
+  "syNdAddress": "The other Rasgeth's address",
+  "syNdAddressPh": "https://rasgeth.local or 192.168.1.10:3000",
+  "syNdAdmin": "uses and manages",
+  "syNdBackupDone": "Copied to the node: {name}",
+  "@syNdBackupDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdBackupNow": "Copy now",
+  "syNdBackupsOn": "Backups",
+  "syNdCode": "Pairing code",
+  "syNdCodeAddress": "This machine's address, as the other one reaches it (in the local network, through Tailscale or a proxy): {address}",
+  "@syNdCodeAddress": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdCodeExpires": "Valid once, for {min} more minutes.",
+  "@syNdCodeExpires": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdCodeField": "Its code",
+  "syNdCodePh": "ABCD-EFGH",
+  "syNdCodeStop": "Stop showing it",
+  "syNdCommandsOn": "Commands",
+  "syNdConfirm": "They match: confirm",
+  "syNdConnecting": "Connecting",
+  "syNdControl": "Control",
+  "syNdControlLead": "Never implicit: a machine commands another only with this grant, which the commanded machine keeps and can take away.",
+  "syNdControlTitle": "Who may command {name}",
+  "@syNdControlTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdController": "Which machine",
+  "syNdCpu": "{n} CPU",
+  "@syNdCpu": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdFingerprint": "Its key's fingerprint",
+  "syNdFree": "{n} GB free",
+  "@syNdFree": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdGive": "Give",
+  "syNdGrantsHere": "Who may command this machine",
+  "syNdGrantsLead": "Only these machines may use this one, each with what the person gave it. Taking it away works at once.",
+  "syNdHere": "Here",
+  "syNdJoinLead": "Pair this machine as a node of another Rasgeth: on that one, Settings › Nodes › «Add a node» shows its address and a code.",
+  "syNdJoinTitle": "Work for another Rasgeth",
+  "syNdLastSeen": "Last seen {when}",
+  "@syNdLastSeen": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdLead": "Other Rasgeth machines that work with this one: they lend commands, local models and room for projects and backups. Who may command whom is decided here, machine by machine.",
+  "syNdLoad": "load {n}%",
+  "@syNdLoad": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdModels": "{n} models",
+  "@syNdModels": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdName": "Name",
+  "syNdNameHelp": "How the other machines and the agents call it.",
+  "syNdNoContainer": "commands only for who manages it",
+  "syNdNoContainerHelp": "There is no container there (no Docker): it runs commands only for a machine that manages it, on the machine itself. With «use» alone, files, storage and models only.",
+  "syNdNoNodes": "No node yet.",
+  "syNdNoProjects": "No project yet.",
+  "syNdNoRights": "No permissions",
+  "syNdNoSandbox": "no commands",
+  "syNdNodeName": "Name of the node",
+  "syNdNodeNameHelp": "How you, the agents and the requests call it here. Empty: the name it gives itself.",
+  "syNdNotReady": "Nodes need the keychain: this machine's key lives only there. Open it in Settings › Keychain.",
+  "syNdOffline": "Offline",
+  "syNdOnline": "Online",
+  "syNdPair": "Pair",
+  "syNdPairing": "Pairing…",
+  "syNdParent": "Works for",
+  "syNdPending": "Waiting for the yes on the other machine",
+  "syNdPendingFromNode": "{name} wants to be a node of this machine",
+  "@syNdPendingFromNode": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdPendingFromPrincipal": "This machine will work for {name}",
+  "@syNdPendingFromPrincipal": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdPendingLead": "Both machines show the same six digits and each other's fingerprint. If they match on both screens, confirm on both: nothing is used before.",
+  "syNdPendingTitle": "Compare and confirm",
+  "syNdPlaces": "Where things run",
+  "syNdPlacesLead": "For each project: by default everything stays here. A node pinned for commands is where its agents' node_run goes; one for backups keeps copies of its files.",
+  "syNdQ": "Nodes",
+  "syNdRam": "{n} GB RAM",
+  "@syNdRam": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdReason": "Why",
+  "syNdRefused": "Refused: its key changed",
+  "syNdReject": "They do not match",
+  "syNdRename": "Rename",
+  "syNdRenameQ": "A name for {name}",
+  "@syNdRenameQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdRenderOn": "Videos",
+  "syNdRevoke": "Take away",
+  "syNdRevokeQ": "Take away what {name} may do here?",
+  "@syNdRevokeQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdRightAdmin": "Manage it",
+  "syNdRightAdminHelp": "Give and take away the control of this machine to other machines, and write outside the sandbox.",
+  "syNdRightUse": "Use it",
+  "syNdRightUseHelp": "Run its agents' commands in a sandbox here, use its models and keep files here.",
+  "syNdRights": "What it may do",
+  "syNdRightsTitle": "What {name} may do on this machine",
+  "@syNdRightsTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdSas": "The six digits",
+  "syNdSection": "Nodes",
+  "syNdTheirFp": "The other machine's fingerprint",
+  "syNdThis": "This machine",
+  "syNdTree": "The tree",
+  "syNdTreeLead": "This machine, its nodes and theirs. Control is separate: it is shown under each machine.",
+  "syNdUnpair": "Unpair",
+  "syNdUnpairQ": "Unpair {name}?",
+  "@syNdUnpairQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syNdUnpairText": "The two machines forget each other: links, grants and placements with it go. Its files stay where they are. To pair again, a new code.",
+  "syNdUse": "uses",
+  "syNdWho": "Who may command it",
+  "syNdWhoNobody": "Nobody but itself",
+  "syOiAddress": "Rasgeth's address in the network",
+  "syOiAddressHelp": "Where the proxy or the VPN finds Rasgeth; its port is {port}.",
+  "@syOiAddressHelp": {
+    "placeholders": {
+      "port": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiAuthCaddy": "Caddyfile with forward auth (Authelia), leaving out the app's paths",
+  "syOiAuthIf": "If you want it anyway, leave /api/ and /ws out of it: forward auth then guards the page, and Rasgeth's password everything else.",
+  "syOiAuthTitle": "Authelia, Authentik or another forward auth in front?",
+  "syOiAuthWhy": "Better not: Rasgeth has its own password, with limited tries and the optional code from an authenticator app, and a sign-in in front of it blocks the app, the command line, ACP agents, the browser extension and the webhooks (Telegram, WhatsApp, automations), which come in with their own tokens.",
+  "syOiCaddy": "Caddyfile: a site of its own",
+  "syOiCaddyReload": "Then reload Caddy (caddy reload, or restart its container).",
+  "syOiCaddyWildcard": "Caddyfile: inside a wildcard site you already have (*.{domain})",
+  "@syOiCaddyWildcard": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiCheck": "Check that it answers",
+  "syOiCheckAnswers": "Something answers at this address (the browser does not let the page read who): open it to see Rasgeth.",
+  "syOiCheckGo": "Check {url} from here",
+  "@syOiCheckGo": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiCheckLead": "From any computer: Rasgeth answers {lb}\"ok\":true,…{rb}.",
+  "syOiCheckNo": "No answer from this browser: check the name in the DNS, the proxy's block and, from outside, the VPN.",
+  "syOiCheckRedgiant": "Rasgeth answers at this address.",
+  "syOiClose": "Hide the guide",
+  "syOiCopied": "Copied",
+  "syOiCopy": "Copy",
+  "syOiDnsAdguard": "AdGuard Home: Filters › DNS rewrites: *.{domain} or the single name → {address}.",
+  "@syOiDnsAdguard": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiDnsLead": "A name instead of an address: point it to the proxy when there is one, otherwise to Rasgeth's address.",
+  "syOiDnsPihole": "Pi-hole: Settings › Local DNS › DNS Records: {name} → {address}.",
+  "@syOiDnsPihole": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiDnsRouter": "The router: its «static DNS», «local names» or DHCP reservation page (the name varies by router).",
+  "syOiDnsTs": "Away from home with Tailscale: add the home DNS in Tailscale's DNS › Nameservers, restricted to your domain, so the same names work outside too.",
+  "syOiDnsWildcard": "Pi-hole or dnsmasq, every name of *.{domain} at once (a file in /etc/dnsmasq.d/)",
+  "@syOiDnsWildcard": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiHomeAdguard": "AdGuard Home: Filters › DNS rewrites: {name} → {address}.",
+  "@syOiHomeAdguard": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiHomeDnsmasq": "dnsmasq (or a file in Pi-hole's /etc/dnsmasq.d/)",
+  "syOiHomeHosts": "Pi-hole's records or /etc/hosts, by hand",
+  "syOiHomeLookup": "On Rasgeth OS, what its DNS answers for the name",
+  "syOiHomePihole": "Pi-hole: Settings › Local DNS › DNS Records: {name} → {address}.",
+  "@syOiHomePihole": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiHomeRouter": "The router: its «static DNS» or «local names» page: {name} → {address}.",
+  "@syOiHomeRouter": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiHomeSeen": "Rasgeth asks the name server {dns}.",
+  "@syOiHomeSeen": {
+    "placeholders": {
+      "dns": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiHomeTitle": "Your home services (Gitea, NAS…) seen by Rasgeth",
+  "syOiHomeTs": "If your Pi-hole answers with Tailscale addresses (100.…), those work only for devices in Tailscale: add a local record with the address in your network as above, or let Rasgeth's machine use the router as DNS with the name there.",
+  "syOiHomeV6": "A router that answers «does not exist» to the IPv6 (AAAA) question for names added by hand: Rasgeth OS handles it already; on other systems with systemd-resolved, put Cache=no-negative in a file of /etc/systemd/resolved.conf.d/, or the name seems missing for a while.",
+  "syOiHomeWhat": "In the DNS Rasgeth uses, give the name that local address:",
+  "syOiHomeWhich": "Which DNS Rasgeth uses: on Rasgeth OS the console (or SSH) shows it with the command below, under «Current DNS Server»; on another computer it is that computer's DNS (its network settings, /etc/resolv.conf on Linux). «Try a name» asks the very DNS Rasgeth uses.",
+  "syOiHomeWhichCmd": "On Rasgeth OS, which DNS it uses",
+  "syOiHomeWhy": "Rasgeth reaches your Gitea, NAS or other services by name, through the DNS of the machine it runs on (often the router). A name your phone opens may be unknown there, or point to an address Rasgeth cannot reach: then «A Gitea you already have» fails even though the service works.",
+  "syOiLead": "A reverse proxy, a VPN, a home DNS: if you already reach your machines that way, Rasgeth goes behind them like any other service. Here are the blocks to copy.",
+  "syOiName": "Rasgeth's name",
+  "syOiNameHelp": "The name you will open, e.g. rasgeth.home.example.com.",
+  "syOiNpm1": "Hosts › Proxy Hosts › Add Proxy Host; Domain Names: {name}.",
+  "@syOiNpm1": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiNpm2": "Scheme http, Forward Hostname / IP {address}, Forward Port {port}.",
+  "@syOiNpm2": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "port": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiNpm3": "Switch on «Websockets Support» (Rasgeth's page lives on a WebSocket) and «Block Common Exploits».",
+  "syOiNpm4": "SSL: «Request a new SSL Certificate», «Force SSL», «HTTP/2 Support». Save.",
+  "syOiOpen": "Show the guide",
+  "syOiOtherVpn": "WireGuard, ZeroTier and the others",
+  "syOiOtherVpnLead": "The same idea: with the home network {subnet} in the peer's AllowedIPs (WireGuard) or as a managed route (ZeroTier), Rasgeth opens at its home address.",
+  "@syOiOtherVpnLead": {
+    "placeholders": {
+      "subnet": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiPart": "What you have",
+  "syOiPartDns": "Home DNS",
+  "syOiPartHome": "Your home services",
+  "syOiPartProxy": "Reverse proxy",
+  "syOiPartVpn": "Tailscale or another VPN",
+  "syOiProbe": "Try a name",
+  "syOiProbeBad": "That is not a name (for instance git.home.example.com).",
+  "syOiProbeDnsFailed": "The DNS Rasgeth uses did not answer for {name}. Check that it works, then try again.",
+  "@syOiProbeDnsFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeGo": "Try {name}",
+  "@syOiProbeGo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeLead": "Rasgeth looks the name up and opens https://{name} from where it runs, as it does for your Gitea. Nothing of the answer is kept or shown but its code.",
+  "@syOiProbeLead": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeNotFound": "The DNS Rasgeth uses does not know {name}. Add the name there (router, Pi-hole or AdGuard) with the proxy's local address, then try again.",
+  "@syOiProbeNotFound": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeOk": "Fine: here {name} is {address}, and https://{name} answered (HTTP {status}).",
+  "@syOiProbeOk": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeTailscale": "Here {name} is {address}: a Tailscale address, which Rasgeth cannot reach. In the DNS Rasgeth uses, give the name the proxy's local address.",
+  "@syOiProbeTailscale": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeTimeout": "Here {name} is {address}, but it did not answer in time: probably an address Rasgeth cannot reach (another network, a VPN).",
+  "@syOiProbeTimeout": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeTls": "Here {name} is {address} and answers, but with a certificate Rasgeth does not trust (made by hand?). Give the proxy a certificate from a public authority (Let's Encrypt).",
+  "@syOiProbeTls": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProbeUnreachable": "Here {name} is {address}, but nothing answers on https from Rasgeth. Check that it is the proxy's local address and that the proxy is running.",
+  "@syOiProbeUnreachable": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiProxyAddr": "The proxy's local address",
+  "syOiProxyAddrHelp": "The address in your network (192.168.…) of the proxy in front of the service, or of the service itself. Not a Tailscale address (100.…): Rasgeth reaches it only if it is in Tailscale too.",
+  "syOiProxyLead": "The proxy can be on another machine: it only needs to reach Rasgeth's address. It gets the certificate (HTTPS) and sends everything on, the WebSocket included.",
+  "syOiReachedAs": "You are reachable already as {host}.",
+  "@syOiReachedAs": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiReachedName": "This page came with a name of your network: at home it works already; from outside one of the ways below is needed (Tailscale, for instance).",
+  "syOiReachedProxy": "This page came through a reverse proxy of your network: the guide below is filled with what Rasgeth saw.",
+  "syOiSaid": "You said Rasgeth is reachable already your own way: it does not ask again to set up its ways.",
+  "syOiSaidUndo": "Ask again",
+  "syOiSaidUrl": "You said Rasgeth is reachable already at {url}: it does not ask again to set up its ways, and its links (Telegram…) use that address.",
+  "@syOiSaidUrl": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiService": "The service's name",
+  "syOiServiceHelp": "As you open it, e.g. git.home.example.com.",
+  "syOiSkip": "Skip: I am reachable already",
+  "syOiSkipNote": "Rasgeth stops asking to set up its own ways out (Tailscale, Cloudflare, its own domain); they stay here if you want one later.",
+  "syOiTitle": "Already have your own infrastructure",
+  "syOiTraefik": "Traefik: file provider (dynamic configuration)",
+  "syOiTraefikNote": "With Docker labels instead: the same rule and the URL as a service with loadbalancer.server.url. Use your entry point and certificate resolver names.",
+  "syOiTsHere": "Tailscale on Rasgeth's machine",
+  "syOiTsHereLead": "Install Tailscale on the machine and sign in (tailscale up): from your devices in the tailnet Rasgeth opens at http://<machine>:7600. For HTTPS with a real certificate:",
+  "syOiTsRunning": "Tailscale runs here already as {name}: from your devices in the tailnet Rasgeth opens with that name. For HTTPS with a real certificate:",
+  "@syOiTsRunning": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiTsServe": "On the machine",
+  "syOiTsSubnet": "Tailscale as a subnet router",
+  "syOiTsSubnetLead": "Tailscale on another device of the house (the router, a Pi, the proxy's machine) that shares the network {subnet}:",
+  "@syOiTsSubnetLead": {
+    "placeholders": {
+      "subnet": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiTsSubnetThen": "Approve the route in Tailscale's admin console (Machines › Edit route settings). Your phone then opens http://{address}:{port} from anywhere, and the names of your home DNS too if you add it in DNS › Nameservers (restricted to your domain).",
+  "@syOiTsSubnetThen": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "port": {
+        "type": "String"
+      }
+    }
+  },
+  "syOiWs": "Rasgeth keeps the page live through a WebSocket at /ws: Caddy and Traefik pass it on by themselves; Nginx needs the Upgrade headers (Websockets Support in Nginx Proxy Manager).",
+  "syOnline": "connected",
+  "syOpen": "open",
+  "syOsErr_bad_password": "A Wi-Fi password has 8 to 63 characters.",
+  "syOsErr_bad_ssid": "A network's name has 1 to 32 characters.",
+  "syOsErr_busy": "The machine is already joining a network: wait a moment.",
+  "syOsErr_cannot_https": "HTTPS is not managed by this installation.",
+  "syOsErr_cannot_reboot": "Restarts are not managed by this installation.",
+  "syOsErr_cannot_update": "Updates are not managed by this installation.",
+  "syOsErr_cannot_wifi": "Wi-Fi is not managed by this installation.",
+  "syOsErr_clean_install": "This version needs a clean install.",
+  "syOsErr_connect_failed": "The network refused to connect: check the password and try again.",
+  "syOsErr_failed": "That did not work. Try again in a moment.",
+  "syOsErr_https_failed": "Local HTTPS did not start.",
+  "syOsErr_https_off": "Local HTTPS is off: switch it on first.",
+  "syOsErr_manual": "This installation cannot update by itself.",
+  "syOsErr_no_wifi": "This machine has no Wi-Fi card.",
+  "syOsErr_not_found": "That network is not in reach now.",
+  "syOsErr_not_installed": "This system cannot do that.",
+  "syOsErr_not_trusted": "This device does not trust the certificate yet.",
+  "syOsErr_reboot_failed": "The restart could not be scheduled.",
+  "syOsErr_start_failed": "The update could not start.",
+  "syOsErr_timeout": "The machine took too long to answer.",
+  "syOsErr_tls_failed": "The certificate could not be made.",
+  "syOsErr_unreachable": "The machine's helper did not answer.",
+  "syOsErr_wifi_off": "Wi-Fi is not running on this machine.",
+  "syOsHttpsAddress": "Address",
+  "syOsHttpsCheck": "Check this device",
+  "syOsHttpsDevice": "Your device",
+  "syOsHttpsDownload": "Download the certificate",
+  "syOsHttpsFingerprint": "Certificate's fingerprint (SHA-256)",
+  "syOsHttpsFirefox": "Firefox on any system: Settings › Privacy & Security › Certificates › View Certificates › Authorities › Import, tick «Trust this CA to identify websites».",
+  "syOsHttpsHow_android": "Settings › Security (or Security & privacy) › More › Encryption & credentials › Install a certificate › CA certificate: «Install anyway», choose Rasgeth-CA.crt.",
+  "syOsHttpsHow_iphone": "Open the download in Safari, «Allow». Settings › General › VPN & Device Management: install the profile. Then Settings › General › About › Certificate Trust Settings: switch on «Rasgeth on …».",
+  "syOsHttpsHow_linux": "Debian/Ubuntu: sudo cp Rasgeth-CA.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates. Chrome and Firefox keep their own list: add it under the browser's certificate settings (Authorities, «Import»).",
+  "syOsHttpsHow_mac": "Open Rasgeth-CA.crt: Keychain Access adds it. Double-click «Rasgeth on …» in the login keychain, open «Trust», set «When using this certificate» to «Always Trust», close and type your password.",
+  "syOsHttpsHow_windows": "Open Rasgeth-CA.crt, «Install certificate…», «Current user», «Place all certificates in the following store», «Trusted Root Certification Authorities», Finish, Yes. Restart the browser.",
+  "syOsHttpsInFront": "You already reach Rasgeth over HTTPS through {name}: the local certificate is not needed for that address.",
+  "@syOsHttpsInFront": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsHttpsLocal": "HTTPS in the local network",
+  "syOsHttpsLocalOff": "Off: Rasgeth answers on http only (or through the HTTPS you set up yourself).",
+  "syOsHttpsLocalOn": "https://{name} and the machine's addresses answer with a certificate of this machine. http keeps working until you say it is trusted.",
+  "@syOsHttpsLocalOn": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsHttpsNotYet": "This device does not trust the certificate yet (or https://… does not answer): nothing has changed, http keeps working.",
+  "syOsHttpsNowOnly": "This device trusts it. From now on http goes to https for the machine's local name and addresses.",
+  "syOsHttpsOffQ": "Switch local HTTPS off?",
+  "syOsHttpsOffText": "Browsers that already went to https://rasgeth.local keep asking for https for up to 30 days: in those, open the machine by its address (http://192.168…:7600) until then.",
+  "syOsHttpsOffYes": "Switch off",
+  "syOsHttpsQ": "Should the browser show the padlock on your home network?",
+  "syOsHttpsQr": "QR code to download the certificate",
+  "syOsHttpsQrHelp": "On a phone on the same network, scan the code to download it.",
+  "syOsHttpsRedirect": "Always send to HTTPS",
+  "syOsHttpsRedirectOn": "http requests in your network go to https; browsers remember it (HSTS, 30 days). Devices without the certificate show a warning: install it there too.",
+  "syOsHttpsTitle": "HTTPS in your network",
+  "syOsHttpsTrustLead": "Download it on the device (phone: scan the code), install it as below, then press «Check this device». The certificate works only for this machine's local names and addresses, never for any website.",
+  "syOsHttpsTrustTitle": "Trust the certificate on each device",
+  "syOsHttpsUntil": "The machine's certificate renews itself before",
+  "syOsNetSub": "Network",
+  "syOsNetSubLead": "How the machine joins the network, and HTTPS for the pages of your home network.",
+  "syOsRebootNow": "Restart now",
+  "syOsRebootQ": "Restart the machine now?",
+  "syOsRebootText": "Rasgeth stops for two or three minutes while the machine restarts; agents working now are interrupted and pick up again from what was saved. This page comes back by itself.",
+  "syOsRebootYes": "Restart",
+  "syOsRebooting": "The machine restarts in a few seconds. This page comes back by itself.",
+  "syOsSecLast": "Last time",
+  "syOsSecLastAt": "{when}",
+  "@syOsSecLastAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsSecLastN": "{when}, {n} packages",
+  "@syOsSecLastN": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsSecNever": "Not yet (it runs once a day)",
+  "syOsSecNoReboot": "Nothing waits for a restart.",
+  "syOsSecQ": "The system installs Debian's security updates by itself, every day.",
+  "syOsSecReboot": "An update asks for a restart to finish",
+  "syOsSecTitle": "System security updates",
+  "syOsUpdApply": "Update to {version}",
+  "@syOsUpdApply": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsUpdApplyQ": "Update Rasgeth to {version}?",
+  "@syOsUpdApplyQ": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsUpdApplyText": "The machine downloads the new version while this one keeps working, then restarts Rasgeth: the page stops for a few minutes and comes back by itself. Nothing is lost, and if the new version does not start the previous one comes back.",
+  "syOsUpdApplyYes": "Update now",
+  "syOsUpdBreaking": "This version cannot be installed over the current one: Rasgeth guides you (backup on a USB disk, reinstall Rasgeth OS, restore).",
+  "syOsUpdChecked": "Last look",
+  "syOsUpdInstalled": "Installed",
+  "syOsUpdQ": "Is Rasgeth up to date on this machine?",
+  "syOsUpdState": "State",
+  "syOsUpdSub": "Updates",
+  "syOsUpdSubLead": "Rasgeth and the system it runs on, kept up to date.",
+  "syOsUpdTitle": "Rasgeth",
+  "syOsUpd_applying": "Updating to {version}",
+  "@syOsUpd_applying": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsUpd_available": "Rasgeth {version} is ready to install",
+  "@syOsUpd_available": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsUpd_breaking": "Rasgeth {version} needs a clean install",
+  "@syOsUpd_breaking": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsUpd_error": "The last update did not finish (the previous version is running)",
+  "syOsUpd_latest": "Up to date",
+  "syOsUpd_unknown": "Not looked yet",
+  "syOsUpd_unreachable": "Could not reach GitHub to look",
+  "syOsUpd_unsigned": "Rasgeth {version} is out, but without a signed package for Rasgeth OS yet: it comes with a later release",
+  "@syOsUpd_unsigned": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsWifi8021x": "company network (not from here)",
+  "syOsWifiConnectedTo": "Connected to «{name}» ({ip})",
+  "@syOsWifiConnectedTo": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsWifiForget": "Forget",
+  "syOsWifiForgetQ": "Forget «{name}»?",
+  "@syOsWifiForgetQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsWifiForgetText": "The machine stops joining this network and its password is erased. If it is the network in use and there is no cable, the page stops answering until the machine has another network.",
+  "syOsWifiGood": "good signal",
+  "syOsWifiHidden": "Hidden network…",
+  "syOsWifiHiddenName": "The network's name",
+  "syOsWifiInReach": "Networks in reach",
+  "syOsWifiInUse": "in use",
+  "syOsWifiJoin": "Join",
+  "syOsWifiJoined": "Connected to «{name}». If you are using this page over that network, it keeps working.",
+  "@syOsWifiJoined": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsWifiJoining": "Joining…",
+  "syOsWifiKnown": "saved",
+  "syOsWifiKnownAway": "Saved, not in reach now: {names}",
+  "@syOsWifiKnownAway": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsWifiLooking": "Looking…",
+  "syOsWifiNone": "No network found. Look again, or join a hidden network by its name.",
+  "syOsWifiNotConnected": "Not connected to a Wi-Fi network",
+  "syOsWifiNow": "Now",
+  "syOsWifiPassword": "Password of «{name}»",
+  "@syOsWifiPassword": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsWifiPasswordHelp": "8 to 63 characters. It is kept only on the machine, readable by the system alone; Rasgeth never stores or shows it.",
+  "syOsWifiQ": "Which wireless network does the machine join?",
+  "syOsWifiSaved": "«{name}» is saved: the machine joins it as soon as it is in reach.",
+  "@syOsWifiSaved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syOsWifiScan": "Look again",
+  "syOsWifiStrong": "strong signal",
+  "syOsWifiTitle": "Wi-Fi",
+  "syOsWifiWeak": "weak signal",
+  "syOsWifiWhy_failed": "Wi-Fi could not be read now. Try again in a moment.",
+  "syOsWifiWhy_no_helper": "Wi-Fi is managed by the system of this machine.",
+  "syOsWifiWhy_no_wifi": "This machine has no Wi-Fi card (or the system does not recognise it).",
+  "syOsWifiWhy_not_installed": "This system has no Wi-Fi tools.",
+  "syOsWifiWhy_wifi_off": "Wi-Fi is not running on this machine. Restart it, or connect a cable.",
+  "syOsWifiWired": "A cable is connected: the machine uses the cable, Wi-Fi stays as a spare.",
+  "syPiholeAdmin": "Pi-hole's own page, to see what it blocks and allow a site:",
+  "syPiholeAds": "About blocking ads",
+  "syPiholeAdsText": "Pi-hole blocks the names of well-known advertising and tracking services, for every device that uses it, phones and TVs included. Now and then a site or an app needs one of those names to work (some shop links, some streaming apps): it then looks broken.",
+  "syPiholeAllow": "If a site stops working: open the Pi-hole page, Query Log, find the blocked name and press Allow. To pause all blocking for a few minutes, use Disable blocking in the same page.",
+  "syPiholeAnswers": "At home, {domain} now leads to {ip}.",
+  "@syPiholeAnswers": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      },
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "syPiholeChanges": "What changes at home, and how to go back",
+  "syPiholeDevice": "If your router does not let you change the DNS (some providers' routers do not), set it on each device instead: in the Wi-Fi network's details on phones, in the network adapter's settings on computers.",
+  "syPiholeDomain": "Your domain (optional)",
+  "syPiholeDomainHelp": "The address you use from outside, like rasgeth.yourdomain.com: Pi-hole answers for it with the address above. Leave it empty to use Pi-hole only to block ads.",
+  "syPiholeDomainWrong": "It must be a name like rasgeth.yourdomain.com.",
+  "syPiholeIp": "This computer's address at home",
+  "syPiholeIpHelp": "Four numbers like 192.168.1.50. Find it on the router's page among the connected devices, or on this computer: \"ip a\" on Linux, \"ipconfig\" on Windows, System Settings, Network on Mac. Better if the router always gives this computer the same address (address reservation).",
+  "syPiholeIpWrong": "It must be four numbers from 0 to 255 separated by dots, like 192.168.1.50.",
+  "syPiholeNeed": "you reach Rasgeth from outside with your own domain, and at home the same link does not open. Many routers cannot send you back to your own house through the internet (the feature is called NAT loopback or hairpin, and theirs lacks it).",
+  "syPiholeNeedTitle": "You need it if",
+  "syPiholeNoNeed": "you use Tailscale or Cloudflare Tunnel: those links work the same at home and outside. You can still turn it on just to block ads, if you like.",
+  "syPiholeNoNeedTitle": "You do not need it if",
+  "syPiholeNowRouter": "Last step, yours: on your router (or on each device) set the DNS server to {ip}. Until then nothing at home uses Pi-hole.",
+  "@syPiholeNowRouter": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "syPiholeOff": "To go back: put the router's DNS back as it was (often \"automatic\") and turn Pi-hole off here. Nothing else on your computers changes.",
+  "syPiholeOn": "Pi-hole is on, at {ip}.",
+  "@syPiholeOn": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "syPiholeOpenAdmin": "Open Pi-hole",
+  "syPiholePort": "Technical details: port 53",
+  "syPiholePortText": "Pi-hole answers on port 53 (the DNS port) of this computer's home address only, not on the internet, and its own page on port 8053. If something on this computer already answers on port 53 (another DNS, or the system's own on some Linux systems), Pi-hole cannot start: Rasgeth says so and nothing changes.",
+  "syPiholeRouter": "For every device at once: open your router's page (its address is usually written under the router, like 192.168.1.1), find the DHCP or LAN settings and set the DNS server to this computer's home address. Devices pick it up the next time they connect (or restart them).",
+  "syPiholeSecond": "A second DNS: if this computer is off, devices that only know Pi-hole cannot open any site. As a second DNS you can put your router's address or a public one (1.1.1.1): everything keeps working when this computer is off, but devices may sometimes ask the second one and then see ads, or not find your domain at home.",
+  "syPiholeShowPassword": "Show its password",
+  "syPiholeStart": "Turn on Pi-hole",
+  "syPiholeStop": "Turn off Pi-hole",
+  "syPiholeTest": "How to check: connect your phone to the home Wi-Fi and open your Rasgeth link. If it opens, you do not need Pi-hole for this (you may still want it to block ads). If it does not, but works on mobile data, Pi-hole fixes it.",
+  "syPiholeTitle": "The home's own DNS, with Pi-hole (optional)",
+  "syPiholeWhat": "Every device at home asks a DNS server which number is behind a name (for example rasgeth.yourdomain.com). Usually your router or your internet provider answers. Pi-hole is a small DNS that Rasgeth can run on this computer: it answers for your domain with this computer's home address, so the link works at home too, and it also blocks advertising and tracking for every device that uses it.",
+  "syPwSignOutOthersQ": "Sign out your other devices too?",
+  "syPwSignOutOthersText": "The other browsers and the apps signed in with the old password stay in if you keep them. Sign them out if you changed it because someone else might know it.",
+  "syPwSignOutOthersYes": "Sign them out",
+  "syRemoteCaddy": "For experts: your domain pointing at home, ports 80 and 443 opened on the router. Anyone on the internet can reach the sign-in page.",
+  "syRemoteCloudflare": "An address on your own domain (about 10 euros a year), nothing opened on the router. A few more steps on Cloudflare's site.",
+  "syRemoteCode": "Second check (recommended)",
+  "syRemoteCodeConfirm": "Confirm",
+  "syRemoteCodeHint": "Besides the password, a 6-digit code from an app on your phone (Google Authenticator, Microsoft Authenticator, 2FAS…): someone who learns the password still cannot get in.",
+  "syRemoteCodeOff": "Second check off.",
+  "syRemoteCodeOn": "Second check on",
+  "syRemoteCodeQr": "Scan with the authenticator app",
+  "syRemoteCodeScan": "Scan the code with the app (or type the key below in it), then write here the 6 digits it shows.",
+  "syRemoteCodeStart": "Switch on the second check",
+  "syRemoteConnect": "Connect",
+  "syRemoteHow": "How to reach it",
+  "syRemoteNeedsPassword": "Set the password above first.",
+  "syRemoteNewPassword": "New password",
+  "syRemoteOff": "Switch off access from outside",
+  "syRemoteOn": "Rasgeth can be reached from outside at this address:",
+  "syRemoteOwnDomain": "Your domain, open router",
+  "syRemotePassword": "Your password",
+  "syRemotePasswordChange": "Change it",
+  "syRemotePasswordHint": "From outside, Rasgeth asks for this password (the link with the token stays for this computer). Choose one you use nowhere else.",
+  "syRemotePasswordRule": "At least 10 characters. A short sentence is easy to remember and hard to guess.",
+  "syRemotePasswordSaved": "Password saved.",
+  "syRemotePasswordSet": "A password is set",
+  "syRemotePurpose": "Use Rasgeth from your phone or another computer when you are away. First a password, then one of three ways; nothing is reachable from outside until you finish. Optional.",
+  "syRemoteSessions": "Signed-in browsers",
+  "syRemoteSessionsHint": "Each sign-in lasts 30 days. If you lost a phone, or think someone else got in (the Rasgeth apps are signed out too):",
+  "syRemoteSignOutAll": "Sign out everywhere",
+  "syRemoteSignedOut": "Signed out everywhere.",
+  "syRemoteTailscale": "A private network between your own devices: nothing opened on the router, free for personal use. You install Tailscale on your phone too.",
+  "syRemoteWaysFolded": "Rasgeth's own ways out",
+  "syRemove": "Remove",
+  "sySave": "Save",
+  "sySaved": "Saved",
+  "sySbBackupQ": "All of Rasgeth in one file",
+  "sySettings": "Settings",
+  "sySnCable": "I use the cable",
+  "sySnCableDone": "The cable works: Rasgeth is at {address}. Join your home network with this device and open http://{address}:7600 (or http://rasgeth.local:7600).",
+  "@sySnCableDone": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      }
+    }
+  },
+  "sySnFailed": "Rasgeth could not join «{name}»: {why}",
+  "@sySnFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "why": {
+        "type": "String"
+      }
+    }
+  },
+  "sySnHidden": "A hidden network",
+  "sySnHiddenName": "Network name",
+  "sySnJoin": "Use this network",
+  "sySnMaintQ": "Rasgeth could not find your home network, so it opened {ssid} again: choose the network it should use.",
+  "@sySnMaintQ": {
+    "placeholders": {
+      "ssid": {
+        "type": "String"
+      }
+    }
+  },
+  "sySnNone": "No network was seen around: use the cable, or type the name of a hidden network.",
+  "sySnPassword": "Password of «{name}»",
+  "@sySnPassword": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sySnQ": "You are on {ssid}, Rasgeth's temporary network: which network should Rasgeth use at home?",
+  "@sySnQ": {
+    "placeholders": {
+      "ssid": {
+        "type": "String"
+      }
+    }
+  },
+  "sySnTitle": "Your home network",
+  "sySnTrying": "Rasgeth is joining «{name}»: this temporary network closes now. Join your home network with this device and open http://rasgeth.local:7600. If it does not work, {ssid} comes back in a minute with the reason.",
+  "@sySnTrying": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "ssid": {
+        "type": "String"
+      }
+    }
+  },
+  "syStRemoteQ": "Rasgeth away from home",
+  "syStopped": "stopped",
+  "syTgQr": "Scan with your phone's camera",
+  "syTsApps": "Tailscale apps",
+  "syTsDns": "Tailscale DNS settings",
+  "syTsOpenSignIn": "Open Tailscale's sign-in page",
+  "syTsSignIn": "Tailscale wants you to sign in, to add Rasgeth to your network:",
+  "syTsSignUp": "Sign up on Tailscale",
+  "syTsStep1": "Make a free Tailscale account (with Google, Microsoft or GitHub is fine):",
+  "syTsStep2": "In Tailscale's DNS page switch on MagicDNS and HTTPS Certificates (they give Rasgeth a safe address):",
+  "syTsStep3": "Then here:",
+  "syTsStep4": "Install Tailscale on your phone and the other computers, signed in with the same account:",
+  "syUiAdvanced": "Advanced",
+  "syUiDone": "Done.",
+  "syUiNotNeeded": "not needed",
+  "syUpdBrkChecked": "{file} · {size} · {projects} projects, {conversations} conversations, memories and settings",
+  "@syUpdBrkChecked": {
+    "placeholders": {
+      "conversations": {
+        "type": "String"
+      },
+      "file": {
+        "type": "String"
+      },
+      "projects": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdBrkDockerCopy": "The folder is inside Rasgeth's data volume, which a clean install removes: copy the file out first, from Rasgeth's folder:",
+  "syUpdBrkDone": "Got it",
+  "syUpdBrkKeys": "Your keychain ({n} keys, the models', chats' and mailboxes' ones too) is not in the backup: it goes in only protected by a passphrase of yours.",
+  "@syUpdBrkKeys": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdBrkKeysAdd": "Add the keychain too",
+  "syUpdBrkKeysAgain": "Make the backup again with the keychain",
+  "syUpdBrkKeysIn": "The keychain is in the backup too, protected by your passphrase.",
+  "syUpdBrkLead": "Rasgeth {version} changed too much inside to update the usual way: installed over the old one it could break.",
+  "@syUpdBrkLead": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdBrkNext": "Go on",
+  "syUpdBrkRetry": "Try the backup again",
+  "syUpdBrkSaved": "Backup made and read back: it is in this folder",
+  "syUpdBrkStep1": "Remove the old Rasgeth",
+  "syUpdBrkStep1Docker": "In Rasgeth's folder remove the containers and their volumes:",
+  "syUpdBrkStep1Mac": "From the menu bar icon choose «Uninstall…» (or drag Rasgeth from Applications to the Bin).",
+  "syUpdBrkStep1Os": "Copy the backup to a USB disk (Settings › System › Backups): reinstalling Rasgeth OS erases this machine's disk.",
+  "syUpdBrkStep1Source": "Stop Rasgeth and move its data folder away.",
+  "syUpdBrkStep1Win": "Uninstall Rasgeth. When it asks whether to keep the data, you can answer No: everything is in the backup.",
+  "syUpdBrkStep2": "Install Rasgeth {version}",
+  "@syUpdBrkStep2": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdBrkStep3": "Restore",
+  "syUpdBrkStep3Docker": "Open Rasgeth, finish the setup and import the copied file in Settings › Backup › Import a backup.",
+  "syUpdBrkStep3Os": "Write the new Rasgeth OS (USB stick or image) and start the machine: the first start offers «Restore from the backup» and finds it on the USB disk.",
+  "syUpdBrkStep3Text": "At its first start the new Rasgeth offers «Restore from the backup»: it finds it in that folder by itself.",
+  "syUpdBrkSub": "Rasgeth {version} cannot be installed over the {installed}",
+  "@syUpdBrkSub": {
+    "placeholders": {
+      "installed": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdBrkSure": "Rasgeth closes and its uninstaller starts. The backup stays in {folder}.",
+  "@syUpdBrkSure": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdBrkTitle": "This version needs a clean install",
+  "syUpdBrkUninstall": "Uninstall Rasgeth",
+  "syUpdBrkUninstallYes": "Yes, uninstall",
+  "syUpdBrkUninstalling": "The uninstaller is starting on your desktop.",
+  "syUpdBrkWhy": "So it goes in three short steps: first a backup of everything (I am making it now, by myself), then you remove the old Rasgeth and install the new one, which puts everything back from the backup.",
+  "syUpdCopied": "Copied",
+  "syUpdCopy": "Copy",
+  "syUpdDownloadNew": "Download the new version",
+  "syUpdFoundDone": "Everything is back. Go on with the next steps to set up the models.",
+  "syUpdFoundKeys": "The passphrase you chose for the keychain. Without it everything else is restored, and the keys of models and chats are put in again from their pages.",
+  "syUpdFoundLead": "There is a backup of {date} (Rasgeth {version}): {projects} projects and {conversations} conversations. Put everything back now?",
+  "@syUpdFoundLead": {
+    "placeholders": {
+      "conversations": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "projects": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdFoundRestore": "Restore from the backup",
+  "syUpdFoundTitle": "Restore from the backup",
+  "syUpdLater": "Later",
+  "syUpdLook": "Look for updates",
+  "syUpdLooking": "Looking…",
+  "syUpdReqAgain": "Look again",
+  "syUpdReqClose": "Close Rasgeth",
+  "syUpdReqClosing": "Rasgeth is closing. You can close this page.",
+  "syUpdReqDocker": "On the computer where Rasgeth runs, in its folder, run:",
+  "syUpdReqInstaller": "If the update does not start, the whole installer is here:",
+  "syUpdReqInstallerLink": "Rasgeth-Setup.exe",
+  "syUpdReqLead": "This update cannot wait: Rasgeth {version} fixes something that the {installed} cannot keep doing safely.",
+  "@syUpdReqLead": {
+    "placeholders": {
+      "installed": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdReqMac": "Open the downloaded file and drag Rasgeth into Applications, replacing the old one; then open it again.",
+  "syUpdReqNow": "Update now",
+  "syUpdReqSafe": "Until you update, agents and automations wait. Your conversations, projects and settings are safe: nothing is lost.",
+  "syUpdReqSource": "Bring the code up to date (git pull), build it and start Rasgeth again.",
+  "syUpdReqSub": "Version {version} is needed (you have {installed})",
+  "@syUpdReqSub": {
+    "placeholders": {
+      "installed": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syUpdReqTitle": "Rasgeth must be updated",
+  "syUpdReqUpdating": "Rasgeth is downloading the update: follow the window on your desktop. It restarts by itself.",
+  "syUpdReqUpdatingOs": "Rasgeth OS is updating Rasgeth: the page stops for a few minutes and comes back by itself.",
+  "syWzBack": "Back",
+  "syWzCpu": "Processor",
+  "syWzFree": "free",
+  "syWzGpu": "Graphics card",
+  "syWzMemory": "Memory",
+  "syWzNoGpu": "None",
+  "syWzRecommended": "recommended",
+  "syWzRemote": "Access from outside home",
+  "syWzStorage": "Data and backups",
+  "syWzThreads": "{n} threads",
+  "@syWzThreads": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "syHubTitle": "System and access",
+  "syHubRemote": "Password, second check, Tailscale, Cloudflare, your own domain, Pi-hole",
+  "syHubSystem": "The machine, its role, data and backups, Wi-Fi, HTTPS, SSH, updates",
+  "syHubMachines": "Your computers the agents reach over SSH",
+  "syHubNodes": "Other machines working with this one",
+  "syHubBackup": "Everything in one file, and a file brought back",
+  "syGateOpen": "What to do",
+  "@syOiCheckLead": {
+    "placeholders": {
+      "lb": {
+        "type": "String"
+      },
+      "rb": {
+        "type": "String"
+      }
+    }
+  }
 }

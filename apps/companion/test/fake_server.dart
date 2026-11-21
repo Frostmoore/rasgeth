@@ -13,6 +13,7 @@ import 'fake_models.dart';
 import 'fake_portrait.dart';
 import 'fake_skills.dart';
 import 'fake_vault.dart';
+import 'fake_system.dart';
 import 'helpers.dart';
 
 class FakeRedGiant {
@@ -44,6 +45,9 @@ class FakeRedGiant {
 
   /// G42.12: the keychain in memory (null: no keychain routes).
   FakeVault? vault;
+
+  /// G42.14: the system's routes in memory (null: the canned answers below).
+  FakeSystem? system;
   bool codeOn = false;
   int appProtocol = 1;
   int wrongTries = 0;
@@ -994,6 +998,7 @@ class FakeRedGiant {
     if (modelsFake case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (extensions case final x? when await x.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (vault case final v? when await v.handle(r, path, (s, b) => _json(r, s, b))) return;
+    if (system case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;
     final own = routes['${r.method} $path'];
     if (own != null) return own(r);
     if (await automations.handle(r, path, (s, b) => _json(r, s, b))) return;
