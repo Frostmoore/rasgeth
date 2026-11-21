@@ -2,7 +2,17 @@
 // waveform asked for in order, signed links served with Range), the exact preview of a stretch
 // as a job (segments cached by hash, the same stretch again free, a small edit re-encodes only
 // what changed) and the cleaning of the caches.
-import { mkdir, mkdtemp, readdir, readFile, rm, stat, utimes, writeFile } from "node:fs/promises";
+import {
+  mkdir,
+  mkdtemp,
+  readdir,
+  readFile,
+  realpath,
+  rm,
+  stat,
+  utimes,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { isAbsolute, join } from "node:path";
 import { newRgVideo, type RgVideo, type VideoClip } from "@redgiant/protocol";
@@ -242,7 +252,12 @@ describe("video routes", () => {
         file,
       );
       expect(first.body).toEqual({ jobs: ["job-1"], silent: [] });
-      expect(analyze).toHaveBeenCalledWith("me", join(root, "clip.mp4"), "clip.mp4");
+      // The real path, as the server resolves it (macOS /private/var, Windows' long names).
+      expect(analyze).toHaveBeenCalledWith(
+        "me",
+        await realpath(join(root, "clip.mp4")),
+        "clip.mp4",
+      );
       cached.mockResolvedValue({
         transcript: {
           words: [
