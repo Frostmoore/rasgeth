@@ -1,11 +1,11 @@
 // Written by packaging/models/embed.mjs from packaging/models/catalog.json: do not edit by hand.
-// The catalog built into this RedGiant, used until a newer signed one is downloaded.
+// The catalog built into Rasgeth, used until a newer signed one is downloaded.
 import type { ModelsCatalog } from "@redgiant/protocol";
 
 export const BUILTIN_CATALOG: ModelsCatalog = {
   format: 1,
-  version: 1,
-  updatedAt: "2026-11-10",
+  version: 2,
+  updatedAt: "2026-11-21",
   providers: {
     anthropic: {
       sources: [
@@ -50,6 +50,7 @@ export const BUILTIN_CATALOG: ModelsCatalog = {
             cacheWrite1h: 8,
           },
           status: "current",
+          released: "2026-09-22",
         },
         "claude-sonnet-5-5": {
           name: "Claude Sonnet 5.5",
@@ -67,6 +68,7 @@ export const BUILTIN_CATALOG: ModelsCatalog = {
             cacheWrite1h: 4,
           },
           status: "current",
+          released: "2026-09-28",
         },
         "claude-haiku-5-5": {
           name: "Claude Haiku 5.5",
@@ -93,6 +95,7 @@ export const BUILTIN_CATALOG: ModelsCatalog = {
             },
           },
           status: "current",
+          released: "2026-10-07",
         },
         "claude-fable-5-1": {
           name: "Claude Fable 5.1",
@@ -110,6 +113,7 @@ export const BUILTIN_CATALOG: ModelsCatalog = {
             cacheWrite1h: 20,
           },
           status: "legacy",
+          released: "2026-09-01",
         },
         "claude-fable-5": {
           name: "Claude Fable 5",
@@ -127,6 +131,7 @@ export const BUILTIN_CATALOG: ModelsCatalog = {
             cacheWrite1h: 20,
           },
           status: "legacy",
+          released: "2026-06-09",
         },
         "claude-opus-5": {
           name: "Claude Opus 5",
@@ -144,6 +149,7 @@ export const BUILTIN_CATALOG: ModelsCatalog = {
             cacheWrite1h: 10,
           },
           status: "legacy",
+          released: "2026-07-24",
         },
         "claude-opus-4-8": {
           name: "Claude Opus 4.8",
@@ -160,6 +166,7 @@ export const BUILTIN_CATALOG: ModelsCatalog = {
             cacheWrite1h: 10,
           },
           status: "legacy",
+          released: "2026-05-28",
         },
         "claude-opus-4-7": {
           name: "Claude Opus 4.7",
@@ -176,6 +183,7 @@ export const BUILTIN_CATALOG: ModelsCatalog = {
             cacheWrite1h: 10,
           },
           status: "legacy",
+          released: "2026-04-16",
         },
         "claude-opus-4-6": {
           name: "Claude Opus 4.6",
@@ -192,6 +200,7 @@ export const BUILTIN_CATALOG: ModelsCatalog = {
             cacheWrite1h: 10,
           },
           status: "legacy",
+          released: "2026-02-05",
         },
         "claude-sonnet-5": {
           name: "Claude Sonnet 5",
@@ -208,6 +217,7 @@ export const BUILTIN_CATALOG: ModelsCatalog = {
             cacheWrite1h: 4,
           },
           status: "legacy",
+          released: "2026-06-30",
         },
         "claude-sonnet-4-6": {
           name: "Claude Sonnet 4.6",
@@ -224,6 +234,7 @@ export const BUILTIN_CATALOG: ModelsCatalog = {
             cacheWrite1h: 6,
           },
           status: "legacy",
+          released: "2026-02-17",
         },
         "claude-haiku-4-5": {
           name: "Claude Haiku 4.5",
@@ -240,6 +251,7 @@ export const BUILTIN_CATALOG: ModelsCatalog = {
             cacheWrite1h: 2,
           },
           status: "legacy",
+          released: "2025-10-15",
         },
       },
     },

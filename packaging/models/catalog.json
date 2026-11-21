@@ -1,8 +1,8 @@
 {
   "$comment": "RedGiant's models catalog (3.5.4). Data only from official sources (see each provider's sources). Raise 'version' with every change: an older catalog never replaces a newer one. After editing run `node packaging/models/embed.mjs` (the built-in copy) and the providers' tests. Published signed by release.yml and models-catalog.yml.",
   "format": 1,
-  "version": 1,
-  "updatedAt": "2026-11-10",
+  "version": 2,
+  "updatedAt": "2026-11-21",
   "providers": {
     "anthropic": {
       "sources": [
@@ -46,7 +46,8 @@
             "cacheWrite": 5.0,
             "cacheWrite1h": 8
           },
-          "status": "current"
+          "status": "current",
+          "released": "2026-09-22"
         },
         "claude-sonnet-5-5": {
           "name": "Claude Sonnet 5.5",
@@ -63,7 +64,8 @@
             "cacheWrite": 2.5,
             "cacheWrite1h": 4
           },
-          "status": "current"
+          "status": "current",
+          "released": "2026-09-28"
         },
         "claude-haiku-5-5": {
           "name": "Claude Haiku 5.5",
@@ -89,7 +91,8 @@
               }
             }
           },
-          "status": "current"
+          "status": "current",
+          "released": "2026-10-07"
         },
         "claude-fable-5-1": {
           "name": "Claude Fable 5.1",
@@ -106,7 +109,8 @@
             "cacheWrite": 12.5,
             "cacheWrite1h": 20
           },
-          "status": "legacy"
+          "status": "legacy",
+          "released": "2026-09-01"
         },
         "claude-fable-5": {
           "name": "Claude Fable 5",
@@ -123,7 +127,8 @@
             "cacheWrite": 12.5,
             "cacheWrite1h": 20
           },
-          "status": "legacy"
+          "status": "legacy",
+          "released": "2026-06-09"
         },
         "claude-opus-5": {
           "name": "Claude Opus 5",
@@ -140,7 +145,8 @@
             "cacheWrite": 6.25,
             "cacheWrite1h": 10
           },
-          "status": "legacy"
+          "status": "legacy",
+          "released": "2026-07-24"
         },
         "claude-opus-4-8": {
           "name": "Claude Opus 4.8",
@@ -156,7 +162,8 @@
             "cacheWrite": 6.25,
             "cacheWrite1h": 10
           },
-          "status": "legacy"
+          "status": "legacy",
+          "released": "2026-05-28"
         },
         "claude-opus-4-7": {
           "name": "Claude Opus 4.7",
@@ -172,7 +179,8 @@
             "cacheWrite": 6.25,
             "cacheWrite1h": 10
           },
-          "status": "legacy"
+          "status": "legacy",
+          "released": "2026-04-16"
         },
         "claude-opus-4-6": {
           "name": "Claude Opus 4.6",
@@ -188,7 +196,8 @@
             "cacheWrite": 6.25,
             "cacheWrite1h": 10
           },
-          "status": "legacy"
+          "status": "legacy",
+          "released": "2026-02-05"
         },
         "claude-sonnet-5": {
           "name": "Claude Sonnet 5",
@@ -204,7 +213,8 @@
             "cacheWrite": 2.5,
             "cacheWrite1h": 4
           },
-          "status": "legacy"
+          "status": "legacy",
+          "released": "2026-06-30"
         },
         "claude-sonnet-4-6": {
           "name": "Claude Sonnet 4.6",
@@ -220,7 +230,8 @@
             "cacheWrite": 3.75,
             "cacheWrite1h": 6
           },
-          "status": "legacy"
+          "status": "legacy",
+          "released": "2026-02-17"
         },
         "claude-haiku-4-5": {
           "name": "Claude Haiku 4.5",
@@ -236,7 +247,8 @@
             "cacheWrite": 1.25,
             "cacheWrite1h": 2
           },
-          "status": "legacy"
+          "status": "legacy",
+          "released": "2025-10-15"
         }
       }
     }
