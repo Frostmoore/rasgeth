@@ -834,7 +834,7 @@ function SettingsScreen() {
             >
               <span class="smp-row-val">{name || t("smpNoName")}</span>
             </SetRow>
-            <SetRow title="Telegram" onClick={() => setTelegram(true)}>
+            <SetRow title={t("telegram")} onClick={() => setTelegram(true)}>
               <span class={linked ? "smp-row-val" : "smp-row-act"}>
                 {t(linked ? "smpLinked" : "smpLink")}
               </span>
@@ -880,7 +880,7 @@ function SettingsScreen() {
         </div>
       </div>
       {telegram && (
-        <Modal title="Telegram" onClose={() => setTelegram(false)} wide>
+        <Modal title={t("telegram")} onClose={() => setTelegram(false)} wide>
           <Telegram />
         </Modal>
       )}
