@@ -6567,13 +6567,13 @@ const en = {
   emSection: "Emulators",
   emQ: "Emulators and phones",
   emLead:
-    "Android emulators, Android phones on USB or Wi-Fi, and iOS simulators: what this machine and your nodes have, and what is missing. Here Rasgeth only looks: nothing is installed or started.",
+    "Android emulators, Android phones on USB or Wi-Fi, and iOS simulators: what this machine and your nodes have, and what is missing. Here {product} only looks: nothing is installed or started.",
   emHere: "This machine",
   emLooking: "Looking…",
   emLookAgain: "Look again",
   emReady: "Ready: emulators can run here ({count} virtual devices).",
   emContainer:
-    "Rasgeth runs in a container here, so emulators cannot run on this machine: they come from a node with Android Studio or the SDK (a Windows, Mac or Linux computer paired in Settings › Nodes).",
+    "{product} runs in a container here, so emulators cannot run on this machine: they come from a node with Android Studio or the SDK (a Windows, Mac or Linux computer paired in Settings › Nodes).",
   emNoSdk:
     "No Android SDK found. Choose its folder below if you have one, or install Android Studio (or the SDK alone); a guided install will come, and always asks you first.",
   emNotReady: "Not ready yet: see what is missing below.",
@@ -6608,7 +6608,7 @@ const en = {
   emUnauthorized: "waiting for your yes on the phone",
   emOffline: "not responding",
   emAdbIdle:
-    "adb is not running, so running emulators and phones are not known: Rasgeth does not start it just to look.",
+    "adb is not running, so running emulators and phones are not known: {product} does not start it just to look.",
   emNoneAttached: "No emulator running and no phone attached.",
   emSimulators: "iOS simulators",
   emMissing: "What is missing",
@@ -6620,13 +6620,13 @@ const en = {
   emMiss_system_image: "A system image for this processor.",
   emMiss_avd: "A virtual device that can start here.",
   emMiss_accel: "Hardware acceleration: without it emulators are too slow.",
-  emMiss_emulator_old: "The emulator is old: Rasgeth can propose the update, which you approve.",
+  emMiss_emulator_old: "The emulator is old: {product} can propose the update, which you approve.",
   emMiss_xcode: "Xcode, for iOS simulators (from the App Store).",
   emMiss_ios_bridge: "A bridge for touches on iOS simulators (comes with 3.11.1).",
-  emLooked: "Where Rasgeth looked",
+  emLooked: "Where {product} looked",
   emFolder: "Folder of the Android SDK",
   emFolderLead:
-    "Only if the SDK is somewhere Rasgeth does not look by itself. It looks at ANDROID_HOME, ANDROID_SDK_ROOT, Android Studio's settings, Android Studio's usual place and adb on the PATH.",
+    "Only if the SDK is somewhere {product} does not look by itself. It looks at ANDROID_HOME, ANDROID_SDK_ROOT, Android Studio's settings, Android Studio's usual place and adb on the PATH.",
   emFolderLabel: "Full path of the SDK folder",
   emFolderHelp: "The folder with platform-tools, emulator or system-images inside.",
   emFolderSave: "Use this folder",
@@ -14326,13 +14326,13 @@ const it: Record<Key, string> = {
   emSection: "Emulatori",
   emQ: "Emulatori e telefoni",
   emLead:
-    "Emulatori Android, telefoni Android via USB o Wi-Fi e simulatori iOS: cosa hanno questa macchina e i tuoi nodi, e cosa manca. Qui Rasgeth guarda soltanto: non installa e non avvia niente.",
+    "Emulatori Android, telefoni Android via USB o Wi-Fi e simulatori iOS: cosa hanno questa macchina e i tuoi nodi, e cosa manca. Qui {product} guarda soltanto: non installa e non avvia niente.",
   emHere: "Questa macchina",
   emLooking: "Sto guardando…",
   emLookAgain: "Guarda di nuovo",
   emReady: "Pronta: qui possono girare gli emulatori ({count} dispositivi virtuali).",
   emContainer:
-    "Qui Rasgeth gira in un container, quindi gli emulatori non possono girare su questa macchina: arrivano da un nodo con Android Studio o l'SDK (un computer Windows, Mac o Linux collegato in Impostazioni › Nodi).",
+    "Qui {product} gira in un container, quindi gli emulatori non possono girare su questa macchina: arrivano da un nodo con Android Studio o l'SDK (un computer Windows, Mac o Linux collegato in Impostazioni › Nodi).",
   emNoSdk:
     "Nessun SDK Android trovato. Se ce l'hai, scegli qui sotto la sua cartella, oppure installa Android Studio (o solo l'SDK); arriverà un'installazione guidata, che chiede sempre prima a te.",
   emNotReady: "Non ancora pronta: qui sotto c'è cosa manca.",
@@ -14367,7 +14367,7 @@ const it: Record<Key, string> = {
   emUnauthorized: "aspetta il tuo sì sul telefono",
   emOffline: "non risponde",
   emAdbIdle:
-    "adb non è in funzione, quindi emulatori accesi e telefoni non si conoscono: Rasgeth non lo avvia solo per guardare.",
+    "adb non è in funzione, quindi emulatori accesi e telefoni non si conoscono: {product} non lo avvia solo per guardare.",
   emNoneAttached: "Nessun emulatore acceso e nessun telefono collegato.",
   emSimulators: "Simulatori iOS",
   emMissing: "Cosa manca",
@@ -14381,13 +14381,13 @@ const it: Record<Key, string> = {
   emMiss_avd: "Un dispositivo virtuale che possa partire qui.",
   emMiss_accel: "L'accelerazione hardware: senza, gli emulatori sono troppo lenti.",
   emMiss_emulator_old:
-    "L'emulatore è vecchio: Rasgeth può proporti l'aggiornamento, che approvi tu.",
+    "L'emulatore è vecchio: {product} può proporti l'aggiornamento, che approvi tu.",
   emMiss_xcode: "Xcode, per i simulatori iOS (dall'App Store).",
   emMiss_ios_bridge: "Un ponte per i tocchi sui simulatori iOS (arriva con la 3.11.1).",
-  emLooked: "Dove ha guardato Rasgeth",
+  emLooked: "Dove ha guardato {product}",
   emFolder: "Cartella dell'SDK Android",
   emFolderLead:
-    "Solo se l'SDK sta in un posto dove Rasgeth non guarda da solo. Guarda ANDROID_HOME, ANDROID_SDK_ROOT, le impostazioni di Android Studio, il posto solito di Android Studio e adb nel PATH.",
+    "Solo se l'SDK sta in un posto dove {product} non guarda da solo. Guarda ANDROID_HOME, ANDROID_SDK_ROOT, le impostazioni di Android Studio, il posto solito di Android Studio e adb nel PATH.",
   emFolderLabel: "Percorso completo della cartella dell'SDK",
   emFolderHelp: "La cartella che contiene platform-tools, emulator o system-images.",
   emFolderSave: "Usa questa cartella",

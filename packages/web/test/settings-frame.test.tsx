@@ -71,13 +71,13 @@ describe("Settings drawn as the wizard", () => {
     // 23 with Machines (G38.2), 24 with External agents (ACP, G38.6), 25 with Voice (G38.4).
     // 26 with System (the machine, the role, data and backups, G39.3), 27 with Nodes (G39.4),
     // 28 with Devices (RGCompanion, G40.1), 29 with Portrait (3.9.4).
-    expect(nav.querySelectorAll(".st-nav-item")).toHaveLength(29);
+    expect(nav.querySelectorAll(".st-nav-item")).toHaveLength(30);
     expect(nav.querySelectorAll(".wz-grp")).toHaveLength(5);
     expect(nav.querySelector(".st-nav-item.cur")?.textContent).toBe("Telegram");
     expect(r.container.querySelector(".st-pick")?.textContent).toContain("Telegram");
     fireEvent.click(r.container.querySelector(".st-pick") as HTMLElement);
     const sheet = r.container.querySelector(".ui-modal") as HTMLElement;
-    expect(sheet.querySelectorAll(".st-nav-item")).toHaveLength(29);
+    expect(sheet.querySelectorAll(".st-nav-item")).toHaveLength(30);
     // Rasgeth's named systems (3.10.3): the name, and under it what it is in the person's words.
     const named = [...nav.querySelectorAll(".st-nav-item .sys")].map((x) => [
       x.querySelector(".sys-name")?.textContent,
