@@ -80,8 +80,8 @@ void main() {
   testWidgets('the wizard: every step in order, saved when left, then «Finish»', (tester) async {
     await start(tester);
     await push(tester, const SetupWizardScreen());
-    // A password was there already: its step is not offered (14 steps, standard mode).
-    expect(find.text('1 di 14'), findsOneWidget);
+    // A password was there already: its step is not offered (15 steps, standard mode).
+    expect(find.text('1 di 15'), findsOneWidget);
     expect(find.text('Ciao. Prepariamo Rasgeth.'), findsOneWidget);
     await tap(tester, 'wz-next');
     expect(fake.saved, contains('languages it'));
@@ -94,7 +94,7 @@ void main() {
     await tap(tester, 'wz-pick-advanced');
     await tap(tester, 'wz-next');
     expect(fake.saved, contains('mode advanced'));
-    expect(find.text('5 di 15'), findsOneWidget);
+    expect(find.text('5 di 16'), findsOneWidget);
     // The counter opens every step: jump to the names.
     await tap(tester, 'wz-counter');
     expect(find.byKey(const Key('wz-jump')), findsOneWidget);
@@ -123,7 +123,7 @@ void main() {
     server.routes['GET /api/auth/methods'] = (q) =>
         server.answer(q, 200, {'password': false, 'code': false});
     await push(tester, const SetupWizardScreen(start: 'wzAccount'));
-    expect(find.text('3 di 15'), findsOneWidget);
+    expect(find.text('3 di 16'), findsOneWidget);
     await tester.enterText(find.byKey(const Key('wz-password')), 'corta');
     await tester.enterText(find.byKey(const Key('wz-password-again')), 'corta');
     await tap(tester, 'wz-next');
@@ -242,7 +242,7 @@ void main() {
   testWidgets('what is new on a computer: the window of the page, only what is newer, once', (
     tester,
   ) async {
-    final prefs = MemoryAppPrefs()..values['newsSeen'] = '3.10.3';
+    final prefs = MemoryAppPrefs()..values['newsSeen'] = '3.10.5';
     Future<AppController> open() async {
       final app = AppController(
         tokens: MemoryTokenStore(),
@@ -265,10 +265,10 @@ void main() {
     expect(find.byKey(const Key('news-band')), findsNothing);
     // Only the releases after the one this device saw, newest first.
     expect(find.text('Le novità di Rasgeth $newsVersion'), findsOneWidget);
-    expect(find.text('Versione 3.10.4'), findsOneWidget);
-    expect(find.text('Versione 3.10.3'), findsNothing);
-    expect(find.byKey(const Key('news-news3104Reading')), findsOneWidget);
-    expect(find.byKey(const Key('news-news3103Names')), findsNothing);
+    expect(find.text('Versione 3.12.0'), findsOneWidget);
+    expect(find.text('Versione 3.10.4'), findsNothing);
+    expect(find.byKey(const Key('news-news3120Simple')), findsOneWidget);
+    expect(find.byKey(const Key('news-news3104Reading')), findsNothing);
     final ok = find.byKey(const Key('news-ok'));
     await tester.scrollUntilVisible(
       ok,
