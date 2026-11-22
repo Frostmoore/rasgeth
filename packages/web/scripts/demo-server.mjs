@@ -4076,6 +4076,154 @@ if (process.env.DEMO_CLAUDE_ENGINE) {
     }),
   );
 }
+// 3.12, DEMO_TOPICS=1: God's topics for the simple interface, as its board (tavole-semplice/
+// b-assistente.html): a trip waiting for the person's answer (a question, not awaited: nothing
+// hangs), a gift ready, a site at work (an open task), the bills in the archive. The installation
+// opens with the simple interface and greets Riccardo.
+if (process.env.DEMO_TOPICS) {
+  await setup.saveInterface("simple");
+  await setup.savePersonName("Riccardo");
+  const it = (process.env.DEMO_TOPICS_LANG ?? "it") === "it";
+  const at = (sessionId, body) =>
+    core.store.append({ ownerId: "local", projectId: null, agentId: god.id, sessionId, body });
+  const said = (text) => ({
+    type: "message.assistant",
+    payload: {
+      parts: [{ type: "text", text }],
+      metrics: {
+        inputTokens: 900,
+        outputTokens: 120,
+        cacheReadTokens: 0,
+        cacheWriteTokens: 0,
+        contextUsed: 1020,
+        contextWindow: 200000,
+        ms: 1800,
+      },
+      costUsd: 0,
+      model: "claude-opus-5-5",
+      provider: "claude-subscription",
+      stopReason: "end_turn",
+    },
+  });
+  const topic = async (title, summary, exchange, o = {}) => {
+    const id = await core.topics.open("local", title, "router", { origin: "today" });
+    for (const [i, [person, answer]] of exchange.entries()) {
+      await at(id, {
+        type: "topic.routed",
+        payload: {
+          via: i === 0 ? "router" : "here",
+          reason: i === 0 ? "new_topic" : "written_here",
+          ...(o.unsure && i === 0 && { uncertain: true, confidence: 0.45 }),
+        },
+      });
+      await at(id, { type: "message.user", payload: { text: person } });
+      if (answer) await at(id, said(answer));
+    }
+    await core.db.query(
+      "UPDATE rg_sessions SET summary = $2, last_at = now() - ($3 || ' minutes')::interval, person_at = now() - ($3 || ' minutes')::interval WHERE id = $1",
+      [id, summary, String(o.ago ?? 5)],
+    );
+    return id;
+  };
+  const trip = await topic(
+    it ? "Vacanza in Sardegna" : "Holiday in Sardinia",
+    it ? "Ho trovato 3 voli per il 14 luglio" : "I found 3 flights for July 14",
+    [
+      [
+        it
+          ? "Mi trovi un volo per Cagliari il 14 luglio? Partiamo in due da Roma."
+          : "Can you find a flight to Cagliari on July 14? Two of us from Rome.",
+        it
+          ? "Ne ho trovati tre. Il più comodo parte alle **9:40** e arriva alle **10:50**: **89 € a testa** con il bagaglio a mano.\n\nGli altri due partono più tardi e costano un po' meno, ma arrivano dopo pranzo."
+          : "I found three. The handiest leaves at **9:40** and lands at **10:50**: **€89 each** with hand luggage.\n\nThe other two leave later and cost a little less, but land after lunch.",
+      ],
+    ],
+    { ago: 3, unsure: true },
+  );
+  // As ask_user does: the question in the log first, then asked of the person (not awaited).
+  const bookIt = [
+    {
+      question: it ? "Vuoi che lo prenoti?" : "Shall I book it?",
+      options: [
+        { label: it ? "Sì, prenota" : "Yes, book it" },
+        { label: it ? "Mostrami gli altri" : "Show me the others" },
+      ],
+      multiSelect: false,
+    },
+  ];
+  await at(trip, {
+    type: "question.asked",
+    payload: { requestId: "demo_trip", questions: bookIt },
+  });
+  void core.person.ask(
+    core.registry.get(god.id),
+    {
+      requestId: "demo_trip",
+      sessionId: trip,
+      agentId: god.id,
+      agentName: "God",
+      projectId: null,
+      questions: bookIt,
+      createdAt: new Date().toISOString(),
+    },
+    undefined,
+    "question",
+  );
+  await topic(
+    it ? "Regalo per la mamma" : "A present for mum",
+    it ? "Idee sotto i 50 €" : "Ideas under €50",
+    [
+      [
+        it
+          ? "Idee per il compleanno della mamma, massimo 50 euro?"
+          : "Ideas for mum's birthday, €50 at most?",
+        it
+          ? "## Tre idee\n\n- **Una pianta da fiore** in un bel vaso: 35 €\n- **Un corso di ceramica** di una sera: 45 €\n- **Un libro di ricette** della sua regione: 28 €\n\nSe mi dici cosa le piace di più, restringo la scelta."
+          : "## Three ideas\n\n- **A flowering plant** in a nice pot: €35\n- **An evening pottery class**: €45\n- **A cookbook** from her region: €28\n\nTell me what she likes most and I'll narrow it down.",
+      ],
+    ],
+    { ago: 40 },
+  );
+  const site = await topic(
+    it ? "Sito per lo zio" : "Uncle's website",
+    it ? "Sto preparando la prima versione" : "I'm preparing the first version",
+    [
+      [
+        it
+          ? "Mi fai un sito semplice per l'officina dello zio?"
+          : "Can you make a simple site for my uncle's garage?",
+        it
+          ? "Certo: preparo una prima versione con orari, servizi e contatti."
+          : "Sure: I'm preparing a first version with hours, services and contacts.",
+      ],
+    ],
+    { ago: 90 },
+  );
+  await core.tasks.open(
+    coder,
+    await core.startSession("local", coder.id),
+    it ? "Prima versione del sito" : "First version of the site",
+    { agentId: god.id, sessionId: site, name: "God" },
+    undefined,
+    { brief: it ? "Orari, servizi e contatti." : "Hours, services and contacts." },
+  );
+  const bills = await topic(
+    it ? "Bollette" : "Bills",
+    it
+      ? "La luce di novembre è più alta del solito"
+      : "November's electricity is higher than usual",
+    [
+      [
+        it ? "Guardi la bolletta della luce?" : "Can you look at the electricity bill?",
+        it
+          ? "Novembre è più alta del 18%: è il riscaldamento elettrico."
+          : "November is 18% higher: it's the electric heating.",
+      ],
+    ],
+    { ago: 4 * 24 * 60 },
+  );
+  await core.topics.archive("local", bills, "person");
+}
 const running = await serve(core, new TokenAuth({ [token]: "local" }), {
   port,
   host: process.env.DEMO_HOST ?? "0.0.0.0",
