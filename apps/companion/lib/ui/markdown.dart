@@ -264,6 +264,8 @@ class HeadingBarBuilder extends MarkdownElementBuilder {
   /// An answer being written: its cursor without the flicker («Reduce motion»).
   final bool still;
 
+  int _headings = 0;
+
   @override
   bool isBlockElement() => true;
 
@@ -305,7 +307,9 @@ class HeadingBarBuilder extends MarkdownElementBuilder {
     final style = preferredStyle ?? const TextStyle();
     final span = TextSpan(style: style, children: _spans(element.children, style));
     return Container(
-      key: Key('md-heading-${element.tag}'),
+      // One key per heading: several of the same level in one answer (3.10.5: the same key twice
+      // turned a whole answer into Flutter's red error box).
+      key: Key('md-heading-${element.tag}-${_headings++}'),
       margin: const EdgeInsets.only(top: 2, bottom: 4),
       padding: const EdgeInsets.only(left: 12),
       decoration: BoxDecoration(

@@ -114,7 +114,7 @@ void main() {
             expect(h.fontSize, size, reason: tag);
             expect(h.fontWeight, FontWeight.w700, reason: tag);
             expect(h.color, c.text, reason: tag);
-            final box = tester.widget<Container>(find.byKey(Key('md-heading-$tag')));
+            final box = tester.widget<Container>(find.byKey(Key('md-heading-$tag-0')));
             final side = (box.decoration! as BoxDecoration).border! as Border;
             expect(side.left.color, c.accent, reason: tag);
             expect(side.left.width, bar, reason: tag);
@@ -130,8 +130,21 @@ void main() {
       await _pump(tester, const SafeMarkdown(_answer, selectable: false));
       expect(_styleOf(tester, 'Un paragrafo').fontSize, 15);
       expect(_styleOf(tester, 'Il piano').fontSize, 21);
-      expect(find.byKey(const Key('md-heading-h1')), findsNothing);
+      expect(find.byKey(const Key('md-heading-h1-0')), findsNothing);
     });
+  });
+
+  testWidgets('several headings of one level in one answer draw (3.10.5: was a red box)', (
+    tester,
+  ) async {
+    const text =
+        '### Come presentarti\n\nUna riga.\n\n> una citazione\n\n### Le foto\n\n'
+        '1. **Prima:** uno\n2. **Seconda:** due\n\n### Per finire\n\n- *punto* uno\n- **punto** due\n';
+    await _pump(tester, const SafeMarkdown(text, reading: true));
+    expect(tester.takeException(), isNull);
+    for (var i = 0; i < 3; i++) {
+      expect(find.byKey(Key('md-heading-h3-$i')), findsOneWidget);
+    }
   });
 
   group('the accent colour', () {
