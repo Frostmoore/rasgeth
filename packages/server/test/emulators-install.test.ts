@@ -765,9 +765,11 @@ describe("the install runs only with the person's yes", () => {
         .map((f) => f.slice(s.root.length).split(sep).join("/")),
     ).toEqual(["/elsewhere/keep.txt"]);
     expect(await findCmdline(HOST_OS, s.target)).toBe(join(s.target, "cmdline-tools", "latest"));
-    expect(
-      (await stat(join(s.target, "cmdline-tools", "latest", "bin", "sdkmanager"))).mode & 0o111,
-    ).toBeTruthy();
+    // Windows has no execute bit: the install makes the tools runnable only elsewhere.
+    if (HOST_OS !== "windows")
+      expect(
+        (await stat(join(s.target, "cmdline-tools", "latest", "bin", "sdkmanager"))).mode & 0o111,
+      ).toBeTruthy();
     // The work folder is gone.
     expect(files.some((f) => f.includes(".rasgeth-install"))).toBe(false);
     // This fake machine does not see the new SDK by itself: its folder is remembered.
