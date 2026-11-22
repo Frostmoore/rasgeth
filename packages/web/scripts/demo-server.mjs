@@ -1694,7 +1694,10 @@ const researcher = await core.registry.create(
     },
   );
   const wsid = await core.startSession("local", webmaster.id);
-  await (await core.send("local", wsid, "Give me a quick tour of the site.")).done;
+  // DEMO_TOPICS (3.12): not this tour; on this branch it loops (a summary after each round
+  // drops the tools' results, the demo model asks for them again).
+  if (!process.env.DEMO_TOPICS)
+    await (await core.send("local", wsid, "Give me a quick tour of the site.")).done;
 }
 // The agents' browser (G24.14b), real, when asked: DEMO_BROWSER=1 (Docker, this container's network).
 if (process.env.DEMO_BROWSER === "1") {
