@@ -82,6 +82,7 @@ import {
   type DocFile,
   docKey,
   EditorSettings,
+  EmulatorSettings,
   type Event,
   type ImagePart,
   isCriticalId,
@@ -242,6 +243,7 @@ import {
   type MailboxInput,
   type MailSender,
 } from "./email.js";
+import { EMULATOR_SETTINGS_OWNER, EmulatorMachine } from "./emulators/machine.js";
 import { engineTranscripts, fingerprints, rewriteTranscript, tainted } from "./erase-message.js";
 import { FileTriggers } from "./file-triggers.js";
 import type { GitHosts } from "./git-hosts.js";
@@ -438,6 +440,8 @@ export interface CoreOptions {
     /** G41.7: this machine's ffmpeg, cards and NVENC (tests: `fixedMachine`). */
     machine?: MediaMachineLike;
   };
+  /** Emulators (3.11): tests give a machine with fixed facts; by default this machine is read. */
+  emulators?: EmulatorMachine;
   /** The editor's timings (G37.1): tests save at once and hold the person's place briefly. */
   editor?: Pick<EditorHostOptions, "saveDelayMs" | "lockMs" | "watchMs" | "now">;
   /** What applies the document editor's actions on the server (tests: a fake; LibreOffice otherwise). */
@@ -1431,6 +1435,20 @@ export class RedGiantCore implements OrchestrationHost {
       (o.videoMedia?.tools
         ? fixedMachine(undefined, { download: false, nvenc: false, encoder: "libx264" })
         : new MediaMachine({ dataDir: dirname(o.workspacesDir) }));
+    this.emulatorSettings = new OwnerSettings(
+      o.db,
+      "emulators",
+      EmulatorSettings,
+      EmulatorSettings.parse({}),
+    );
+    this.emulators =
+      o.emulators ??
+      new EmulatorMachine({
+        settings: {
+          get: () => this.emulatorSettings.get(EMULATOR_SETTINGS_OWNER),
+          set: (v) => this.emulatorSettings.set(EMULATOR_SETTINGS_OWNER, v),
+        },
+      });
     this.nodes = new Nodes({
       db: o.db,
       vault: () => this.vault,
@@ -1441,6 +1459,7 @@ export class RedGiantCore implements OrchestrationHost {
           machine: this.mediaMachine,
           ...(o.videoMedia?.run && { run: o.videoMedia.run }),
         },
+        emulators: () => this.emulators.report(),
         providers: o.providers,
         sandboxKind: this.sandbox.kind,
         sandbox: async (_ownerId, key, dir) =>
@@ -1716,6 +1735,7 @@ export class RedGiantCore implements OrchestrationHost {
     await core.commandSettings.load();
     await core.requestSettings.load();
     await core.editorSettings.load();
+    await core.emulatorSettings.load();
     await core.acpWorkers.load();
     await core.tasks.rebuild();
     // Echo (3.9.6): the conversations' index catches up with the log, then follows it.
@@ -5555,6 +5575,10 @@ export class RedGiantCore implements OrchestrationHost {
   private videoRendersCache: VideoRenders | undefined;
   /** G41.7: this machine's ffmpeg, cards and encoder. */
   readonly mediaMachine: MediaMachineLike;
+  /** 3.11: this machine's Android SDK, emulators, phones and simulators (Settings › Emulators). */
+  readonly emulators: EmulatorMachine;
+  /** The machine's emulator settings, one value in `rg_settings` (owner `machine`). */
+  readonly emulatorSettings: OwnerSettings<EmulatorSettings>;
 
   /** The machines a video can be rendered on (G41.7): this one first, then the nodes. */
   async renderMachines(owner: string): Promise<RenderMachine[]> {
