@@ -24192,6 +24192,8 @@ fieldset.saved-filter legend {
   --smp-shadow-big: 0 4px 18px color-mix(in srgb, var(--text) 10%, transparent);
   --smp-soft: color-mix(in srgb, var(--accent) 9%, var(--panel-2));
   --smp-soft-ink: color-mix(in srgb, var(--text) 78%, var(--accent));
+  /* Satellite's lilac (3.12.1): the Chat's send button and name. */
+  --smp-chat: #8f7cf0;
   background: var(--smp-bg);
 }
 html[data-theme="dark"] .app-simple {
@@ -24286,7 +24288,7 @@ html[data-theme="dark"] .app-simple {
   opacity: 0.7;
   pointer-events: none;
 }
-.smp-giant {
+.smp-orbiter {
   position: absolute;
   left: 50%;
   top: 10px;
@@ -24294,6 +24296,40 @@ html[data-theme="dark"] .app-simple {
   height: 260px;
   margin-left: -130px;
   will-change: transform, filter;
+}
+.smp-orbiter.back {
+  cursor: pointer;
+}
+.smp-giant {
+  width: 100%;
+  height: 100%;
+}
+/* The names under the stage: tap one to bring it in front. */
+.smp-names {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: -4px;
+}
+.smp-names button {
+  background: none;
+  border: 1.5px solid var(--line);
+  color: var(--dim);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.smp-names button.on {
+  color: var(--text);
+  border-color: var(--accent);
+}
+.smp-names button.chat.on {
+  border-color: var(--smp-chat);
+}
+.smp-today.with-chat .smp-send {
+  background: var(--smp-chat);
 }
 .smp-giant-float,
 .smp-giant-act {
@@ -24474,7 +24510,8 @@ html[data-theme="dark"] .app-simple {
 }
 @media (prefers-reduced-motion: reduce) {
   .smp-giant *,
-  .smp-giant {
+  .smp-giant,
+  .smp-orbiter {
     animation: none !important;
     transition: none !important;
   }
@@ -24483,7 +24520,7 @@ html[data-theme="dark"] .app-simple {
   .smp-stage {
     height: 236px;
   }
-  .smp-giant {
+  .smp-orbiter {
     width: 210px;
     height: 210px;
     margin-left: -105px;

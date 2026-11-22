@@ -19317,4 +19317,33 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get smpMoodWorried => 'preoccupato, qualcosa non va';
+
+  @override
+  String get smpSatellite => 'Satellite';
+
+  @override
+  String get smpSatelliteChat => 'Satellite · Chat';
+
+  @override
+  String get smpChatLead => 'Due chiacchiere? Sono qui.';
+
+  @override
+  String get smpChatHint => 'Scrivi a Satellite...';
+
+  @override
+  String get smpRecentChats => 'LE ULTIME CHIACCHIERE';
+
+  @override
+  String get smpNoChats => 'Ancora nessuna chiacchierata: scrivi qui e ne cominciamo una.';
+
+  @override
+  String get smpUntitledChat => 'Una nuova chiacchierata';
+
+  @override
+  String smpTodayAt(String time) {
+    return 'Oggi, $time';
+  }
+
+  @override
+  String get smpYesterday => 'Ieri';
 }

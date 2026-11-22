@@ -138,6 +138,7 @@ const holdsOf = (kind: AgentKind, tool: number): string =>
  * its parent's mascot (it looks like it), the rest from its own seed. God is drawn by hand.
  */
 export function mascotSpec(seed: string, kind: AgentKind, parent?: MascotSpec): MascotSpec {
+  if (seed === SATELLITE_SEED) return satelliteSpec(kind);
   const r = rng(seed);
   let body = pick(r, BODIES.length);
   let eyes = pick(r, EYES.length);
@@ -208,6 +209,48 @@ export function mascotSpec(seed: string, kind: AgentKind, parent?: MascotSpec): 
           ? "M50 41.13a24.23 24.23 0 1 1 0 48.45a24.23 24.23 0 1 1 0-48.45Z"
           : at(BODIES, body).d,
     colors: { light: colorsOf(hue, chroma, "light"), dark: colorsOf(hue, chroma, "dark") },
+  };
+}
+
+/**
+ * Satellite (3.12.1, tavole-mascotte-chat/luna.html): the Chat's mascot, drawn by hand like God,
+ * a lilac moon with craters for freckles that goes round God on the same orbit. Its seed is
+ * reserved: the registry gives it to the person's Chat agent, whatever its saved seed.
+ */
+export const SATELLITE_SEED = "rg:satellite";
+const SATELLITE_HUE = 285;
+const SATELLITE_CHROMA = 0.11;
+/** Satellite's moon: a circle a little bigger than God's, lower so the signs fit above. */
+const SAT = { x: 50, y: 58, r: 31 };
+
+function satelliteSpec(kind: AgentKind): MascotSpec {
+  return {
+    v: 1,
+    seed: SATELLITE_SEED,
+    kind,
+    handDrawn: true,
+    body: 0,
+    eyes: 9,
+    mouth: 0,
+    head: 0,
+    pattern: 0,
+    tool: 0,
+    cheeks: true,
+    hue: SATELLITE_HUE,
+    chroma: SATELLITE_CHROMA,
+    parts: {
+      body: "satellite",
+      eyes: at(EYES, 9).n,
+      mouth: at(MOUTHS, 0).n,
+      head: "none",
+      pattern: "craters",
+      holds: "nothing",
+    },
+    bodyPath: `M${SAT.x} ${SAT.y - SAT.r}a${SAT.r} ${SAT.r} 0 1 1 0 ${2 * SAT.r}a${SAT.r} ${SAT.r} 0 1 1 0-${2 * SAT.r}Z`,
+    colors: {
+      light: colorsOf(SATELLITE_HUE, SATELLITE_CHROMA, "light"),
+      dark: colorsOf(SATELLITE_HUE, SATELLITE_CHROMA, "dark"),
+    },
   };
 }
 
@@ -530,6 +573,66 @@ function godSvg(state: MascotState, size: number, id: string): string {
   }${CORE}${back}<circle cx="50" cy="61" r="28.5" fill="url(#${id}b)" stroke="#a3200f" stroke-width="${compact ? 2.6 : 1.6}"/>${compact ? "" : LAVA(id)}<ellipse cx="37" cy="44" rx="7" ry="3.6" fill="#fff" opacity=".3" transform="rotate(-35 37 44)"/>${godEyes(state, 57, 11.5, tiny)}${godCheeks(65.5, "#ff5f5f", 0.55)}${tiny ? mouth : mouthSvg(mouth, 66, state)}${front}${godCrown(id, crownS)}${compact ? "" : godGlint(...crownTip(crownS))}${compact ? "" : extrasSvg(state, 66, 24)}</g></g>`;
 }
 
+/** Satellite's eyes: each its own group (`eye l`, `eye r`) inside the blinking one, so it winks. */
+function satelliteEyes(state: MascotState, tiny: boolean): string {
+  const y = 55;
+  const mode =
+    state === "idle" ? "sleep" : state === "error" ? "x" : state === "think" ? "up" : "open";
+  const one = (side: "l" | "r", x: number, m: string, own = true) => {
+    let d: string;
+    if (m === "sleep")
+      d = `<path d="M${x - 4.6} ${y - 0.4}Q${x} ${y + 4.4} ${x + 4.6} ${y - 0.4}" fill="none" stroke="${INK}" stroke-width="2.8" stroke-linecap="round"/>`;
+    else if (m === "x")
+      d = `<path d="M${x - 3.6} ${y - 3.6}l7.2 7.2m0 -7.2l-7.2 7.2" stroke="${INK}" stroke-width="2.8" stroke-linecap="round"/>`;
+    else {
+      const up = m === "up" ? -1.8 : 0;
+      d = `<ellipse cx="${x}" cy="${y + up}" rx="4.6" ry="5.7" fill="${INK}"/><circle cx="${+(x + 1.6).toFixed(2)}" cy="${+(y + up - 2.2).toFixed(2)}" r="1.7" fill="#fff"/>`;
+    }
+    // Only the eyes in sight are groups of their own (the hidden copy stays plain shapes: the
+    // app cuts every group as a layer).
+    return own ? `<g class="eye ${side}" style="transform-origin:${x}px ${y}px">${d}</g>` : d;
+  };
+  const pair = (m: string, own = true) => one("l", 39.5, m, own) + one("r", 60.5, m, own);
+  let out = group("eyes", 50, y, pair(mode));
+  if (state === "idle" && !tiny) out += group("eyw", 50, y, pair("open", false), 0);
+  return out;
+}
+
+function satelliteSvg(state: MascotState, size: number, id: string): string {
+  const compact = size <= 32;
+  const tiny = size <= 20;
+  const { x, y, r } = SAT;
+  const my = 66;
+  const mouth = godMouthOf(state, my);
+  // The craters: the moon's freckles (fewer when small).
+  const craters = (
+    compact
+      ? [[66, 43, 4.2, 0.7]]
+      : [
+          [66, 43, 4.2, 0.7],
+          [32, 46, 3, 0.6],
+          [64, 78, 3.5, 0.55],
+          [38, 80, 2.3, 0.5],
+          [74, 62, 1.8, 0.45],
+        ]
+  )
+    .map(
+      ([cx, cy, cr, op]) =>
+        `<circle cx="${cx}" cy="${cy}" r="${cr}" fill="#a996f0" opacity="${op}"/><path d="M${(cx as number) - (cr as number) * 0.7} ${(cy as number) + (cr as number) * 0.35}a${cr} ${cr} 0 0 0 ${(cr as number) * 1.4} 0" fill="none" stroke="#8a74e0" stroke-width=".9" opacity="${op}"/>`,
+    )
+    .join("");
+  return `<defs><radialGradient id="${id}b" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#f4efff"/><stop offset=".6" stop-color="#cbbcff"/><stop offset="1" stop-color="#9d88ee"/></radialGradient><radialGradient id="${id}h"><stop offset=".55" stop-color="#b9a6ff" stop-opacity=".45"/><stop offset="1" stop-color="#b9a6ff" stop-opacity="0"/></radialGradient></defs>${
+    compact
+      ? ""
+      : group(
+          "hal",
+          x,
+          y,
+          `<circle cx="${x}" cy="${y}" r="${r + 12}" fill="url(#${id}h)" opacity=".8"/>`,
+        )
+  }${CORE}<circle cx="${x}" cy="${y}" r="${r}" fill="url(#${id}b)" stroke="#5b4bb0" stroke-width="${compact ? 3.2 : 2.6}"/>${tiny ? "" : craters}<ellipse cx="38.5" cy="39" rx="8.6" ry="4.3" fill="#fff" opacity=".55" transform="rotate(-25 38.5 39)"/>${satelliteEyes(state, tiny)}${tiny ? "" : `<ellipse cx="31.5" cy="64.5" rx="4.4" ry="2.7" fill="#ff8fa3" opacity=".55"/><ellipse cx="68.5" cy="64.5" rx="4.4" ry="2.7" fill="#ff8fa3" opacity=".55"/>`}${tiny ? "" : mouthSvg(mouth, my, state)}${compact ? "" : extrasSvg(state, my, 26)}</g></g>`;
+}
+
 /** The Demigod: God's drawing at 0.85 around the feet (as a subagent's), so it reads as God's child. */
 const DEMI_SCALE = 0.85;
 const DEMI_G = `<g transform="translate(${+(50 - 50 * DEMI_SCALE).toFixed(2)} ${+(90 - 90 * DEMI_SCALE).toFixed(2)}) scale(${DEMI_SCALE})">`;
@@ -691,11 +794,13 @@ export function mascotSvg(spec: MascotSpec, options: MascotSvgOptions = {}): str
   const small = size <= 20;
   const id = options.idPrefix ?? `rgm${++uid}`;
   let content =
-    spec.kind === "god"
-      ? godSvg(state, size, id)
-      : spec.kind === "demigod"
-        ? demigodSvg(state, size, id, spec.hue)
-        : bodySvg(spec, state, size, id);
+    spec.parts.body === "satellite"
+      ? satelliteSvg(state, size, id)
+      : spec.kind === "god"
+        ? godSvg(state, size, id)
+        : spec.kind === "demigod"
+          ? demigodSvg(state, size, id, spec.hue)
+          : bodySvg(spec, state, size, id);
   if (!small) content += marks(state);
   const a11y = options.label
     ? `role="img" aria-label="${escapeAttr(options.label)}"`

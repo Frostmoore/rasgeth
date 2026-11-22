@@ -134,4 +134,26 @@ describe("mascot seeds", () => {
       HierarchyError,
     );
   });
+
+  it("draws the person's Chat as Satellite, whatever its seed, and never changes it (3.12.1)", async () => {
+    const { god } = await team();
+    const chat = await registry.create(human, {
+      kind: "assistant",
+      parentId: god.id,
+      name: "Chat",
+    });
+    expect(registry.mascotOf(chat.id)?.parts.body).not.toBe("satellite");
+    registry.setChatAgent("me", chat.id);
+    const spec = registry.mascotOf(chat.id);
+    expect(spec?.parts.body).toBe("satellite");
+    expect(spec?.handDrawn).toBe(true);
+    await expect(registry.changeMascot(human, chat.id)).rejects.toThrow(/Satellite/);
+    // Another assistant keeps its own face.
+    const other = await registry.create(human, {
+      kind: "assistant",
+      parentId: god.id,
+      name: "Ricercatore",
+    });
+    expect(registry.mascotOf(other.id)?.parts.body).not.toBe("satellite");
+  });
 });

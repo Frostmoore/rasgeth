@@ -14,6 +14,7 @@ import {
   mascotSpec,
   mascotSvg,
   oklchHex,
+  SATELLITE_SEED,
   THEMES,
 } from "../src/index.js";
 
@@ -129,6 +130,37 @@ describe("seed and choices", () => {
     expect(d).toContain('transform="translate(7.5 13.5) scale(0.85)"');
     expect(d).toContain('fill="#e5371f"');
     expect(d).not.toContain('class="orbf"');
+  });
+
+  it("draws Satellite, the Chat's lilac moon, by hand: craters, cheeks, eyes that can wink (3.12.1)", () => {
+    const sat = mascotSpec(SATELLITE_SEED, "assistant");
+    expect(MascotSpecSchema.parse(sat)).toEqual(sat);
+    expect([sat.parts.body, sat.parts.pattern, sat.handDrawn]).toEqual([
+      "satellite",
+      "craters",
+      true,
+    ]);
+    // Any kind with that seed is the same drawing.
+    expect({ ...mascotSpec(SATELLITE_SEED, "agent"), kind: "assistant" }).toEqual(sat);
+    const big = mascotSvg(sat, { state: "active", size: 128, idPrefix: "s" });
+    expect(big).toContain('stroke="#5b4bb0"');
+    expect(big).toContain('fill="#a996f0"');
+    expect(big).toContain('fill="#ff8fa3"');
+    expect(big).toContain('class="eye l"');
+    expect(big).toContain('class="eye r"');
+    expect(big).toContain('class="eyes"');
+    expect(big).not.toContain('class="orbf"');
+    for (const state of MASCOT_STATES)
+      for (const size of [16, 24, 48, 128]) {
+        const svg = mascotSvg(sat, { state, size, label: "Satellite" });
+        const doc = parses(svg);
+        const ids = [...doc.querySelectorAll("[id]")].map((e) => e.id);
+        expect(new Set(ids).size).toBe(ids.length);
+      }
+    expect(mascotSvg(sat, { state: "idle", size: 128 })).toContain('class="eyw"');
+    expect(mascotSvg(sat, { state: "error", size: 128 })).toContain('class="mk err"');
+    // Small: no craters' rims, no halo.
+    expect(mascotSvg(sat, { state: "active", size: 20 })).not.toContain('class="hal"');
   });
 
   it("keeps only body, face and crown (diadem) at 32 px and less", () => {

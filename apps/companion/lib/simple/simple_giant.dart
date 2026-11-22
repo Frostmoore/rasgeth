@@ -60,12 +60,20 @@ class GiantMascot extends StatefulWidget {
     super.key,
     required this.agent,
     required this.mood,
+    this.name,
     this.gestures = godGestures,
     this.size = 220,
+    this.still = false,
     this.rand,
   });
 
   final Agent? agent;
+
+  /// Its name for screen readers, when not the agent's (Satellite).
+  final String? name;
+
+  /// Behind on the orbit: no gestures.
+  final bool still;
   final GiantMood mood;
   final List<IdleGesture> gestures;
   final double size;
@@ -108,7 +116,7 @@ class GiantMascotState extends State<GiantMascot> with SingleTickerProviderState
   @override
   void didUpdateWidget(GiantMascot oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.mood != widget.mood) _sync();
+    if (oldWidget.mood != widget.mood || oldWidget.still != widget.still) _sync();
   }
 
   void _sync() {
@@ -118,7 +126,7 @@ class GiantMascotState extends State<GiantMascot> with SingleTickerProviderState
       return;
     }
     if (!_motion.isAnimating) unawaited(_motion.repeat());
-    if (widget.mood == GiantMood.rest) {
+    if (widget.mood == GiantMood.rest && !widget.still) {
       if (_timer == null) _nextGesture();
     } else {
       _stopGestures();
@@ -223,7 +231,7 @@ class GiantMascotState extends State<GiantMascot> with SingleTickerProviderState
       spec: a?.mascot,
       state: giantState(widget.mood),
       size: widget.size,
-      label: l.smpMascotOf(a?.name ?? 'God', moodWord(l, widget.mood)),
+      label: l.smpMascotOf(widget.name ?? a?.name ?? 'God', moodWord(l, widget.mood)),
     );
     return SizedBox(
       key: Key('simple-giant-${widget.mood.name}'),
@@ -240,36 +248,253 @@ class GiantMascotState extends State<GiantMascot> with SingleTickerProviderState
   }
 }
 
-/// «Oggi»'s stage: God, giant, on its orbit.
-class SimpleStage extends StatelessWidget {
+/// Satellite's mood: the Chat's live state, and the person writing to it.
+GiantMood satelliteMood(AppController app) {
+  final id = app.chatAgentId;
+  final live = id == null ? MascotState.idle : app.live.mascotStateOf(id);
+  final s = app.simple;
+  return giantMood(
+    typing: s.typing && s.front == StageFront.chat,
+    routing: s.chatSending || live == MascotState.think,
+    working: live == MascotState.work,
+    waiting: live == MascotState.wait,
+    error: live == MascotState.error,
+  );
+}
+
+/// «Oggi»'s stage: God, giant, and Satellite behind him on the same orbit. A swipe, a tap on the
+/// one behind or on the names bring the other in front; with reduced motion at once.
+class SimpleStage extends StatefulWidget {
   const SimpleStage({super.key});
+
+  @override
+  State<SimpleStage> createState() => _SimpleStageState();
+}
+
+class _SimpleStageState extends State<SimpleStage> with SingleTickerProviderStateMixin {
+  late final AppController _app = AppScope.read(context);
+  late final AnimationController _turn = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+  )..addListener(() => setState(() {}));
+  Map<StageFront, double> _from = const {};
+  Map<StageFront, double> _to = const {};
+
+  @override
+  void initState() {
+    super.initState();
+    final f = _app.simple.front;
+    _to = {
+      StageFront.god: f == StageFront.god ? 0 : orbitBack,
+      StageFront.chat: f == StageFront.chat ? 0 : orbitBack,
+    };
+    _from = _to;
+    // Satellite is the Chat's face: the Chat agent is made on first use (as its screen does).
+    if (_app.chatAgentId == null) unawaited(_app.ensureChatAgent());
+  }
+
+  @override
+  void dispose() {
+    _turn.dispose();
+    super.dispose();
+  }
+
+  double _theta(StageFront who) {
+    final e = Curves.easeInOutCubic.transform(_turn.value);
+    final a = _from[who] ?? 0, b = _to[who] ?? 0;
+    return a + (b - a) * e;
+  }
+
+  void _rotate(int dir) {
+    final s = _app.simple;
+    final now = s.front;
+    final back = now == StageFront.god ? StageFront.chat : StageFront.god;
+    final from = {for (final k in StageFront.values) k: _theta(k)};
+    s.bringFront(back);
+    final reduced =
+        (MediaQuery.maybeDisableAnimationsOf(context) ?? false) ||
+        (MascotScope.maybeOf(context)?.reduceMotion ?? false);
+    final end = {now: dir * orbitBack, back: 0.0};
+    if (reduced) {
+      setState(() {
+        _from = end;
+        _to = end;
+      });
+      return;
+    }
+    // The one coming in front goes all the way round to 0, on the side of the swipe.
+    var b = from[back]!;
+    if (dir > 0 && b < 0) b += 2 * math.pi;
+    if (dir < 0 && b > 0) b -= 2 * math.pi;
+    _from = {now: from[now]!, back: b};
+    _to = {now: dir * orbitBack, back: dir > 0 ? 2 * math.pi : -2 * math.pi};
+    unawaited(
+      _turn.forward(from: 0).then((_) {
+        if (!mounted) return;
+        setState(() {
+          _from = end;
+          _to = end;
+          _turn.value = 0;
+        });
+      }),
+    );
+  }
+
+  void bring(StageFront who) {
+    if (_app.simple.front == who) return;
+    _rotate(_theta(who) > 0 ? -1 : 1);
+  }
 
   @override
   Widget build(BuildContext context) {
     final app = AppScope.of(context);
+    final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
-    final wide = MediaQuery.sizeOf(context).width > 640;
-    final size = wide ? 260.0 : 210.0;
+    final width = MediaQuery.sizeOf(context).width;
+    final size = width > 640 ? 260.0 : 210.0;
+    final radius = math.max(110.0, math.min(240.0, width * 0.36));
     return ListenableBuilder(
       listenable: Listenable.merge([app.simple, app.live]),
-      builder: (context, _) => SizedBox(
-        key: const Key('simple-stage'),
-        height: size + 30,
-        child: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Positioned(
-              top: size * 0.75,
-              child: CustomPaint(
-                size: Size(math.min(560, MediaQuery.sizeOf(context).width * 0.92), size * 0.33),
-                painter: _OrbitPainter(c.dim.withValues(alpha: 0.35)),
+      builder: (context, _) {
+        final front = app.simple.front;
+        Widget orbiter(StageFront who) {
+          final p = orbitPlace(_theta(who), radius);
+          final isFront = front == who;
+          final mascot = who == StageFront.god
+              ? GiantMascot(agent: app.god, mood: godMood(app), size: size, still: !isFront)
+              : GiantMascot(
+                  agent: app.chatAgent,
+                  name: l.smpSatellite,
+                  mood: satelliteMood(app),
+                  gestures: IdleGesture.values,
+                  size: size,
+                  still: !isFront,
+                );
+          return Positioned(
+            key: Key('simple-orbiter-${who.name}'),
+            top: 10,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Transform.translate(
+                offset: Offset(p.x, p.y),
+                child: Transform.scale(
+                  scale: p.scale,
+                  child: GestureDetector(
+                    onTap: isFront ? null : () => bring(who),
+                    child: ColorFiltered(
+                      colorFilter: ColorFilter.matrix(_dim(p.light)),
+                      child: mascot,
+                    ),
+                  ),
+                ),
               ),
             ),
-            Positioned(
-              top: 10,
-              child: GiantMascot(agent: app.god, mood: godMood(app), size: size),
+          );
+        }
+
+        final order = [...StageFront.values]
+          ..sort(
+            (a, b) => orbitPlace(_theta(a), radius).z.compareTo(orbitPlace(_theta(b), radius).z),
+          );
+        return Column(
+          children: [
+            GestureDetector(
+              key: const Key('simple-stage'),
+              behavior: HitTestBehavior.opaque,
+              onHorizontalDragEnd: (d) {
+                final v = d.primaryVelocity ?? 0;
+                if (v.abs() > 100) _rotate(v > 0 ? 1 : -1);
+              },
+              child: SizedBox(
+                height: size + 30,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Positioned(
+                      top: size * 0.75,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: CustomPaint(
+                          size: Size(math.min(560, width * 0.92), size * 0.33),
+                          painter: _OrbitPainter(c.dim.withValues(alpha: 0.35)),
+                        ),
+                      ),
+                    ),
+                    for (final who in order) orbiter(who),
+                  ],
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _Name(
+                  key: const Key('simple-front-god'),
+                  text: app.god?.name ?? 'God',
+                  on: front == StageFront.god,
+                  color: c.accent,
+                  onTap: () => bring(StageFront.god),
+                ),
+                const SizedBox(width: 10),
+                _Name(
+                  key: const Key('simple-front-chat'),
+                  text: l.smpSatelliteChat,
+                  on: front == StageFront.chat,
+                  color: satelliteLilac,
+                  onTap: () => bring(StageFront.chat),
+                ),
+              ],
             ),
           ],
+        );
+      },
+    );
+  }
+}
+
+/// Satellite's lilac (the page's `--smp-chat`).
+const satelliteLilac = Color(0xFF8F7CF0);
+
+/// Dimmer behind (the page's `brightness`).
+List<double> _dim(double k) => [
+  k, 0, 0, 0, 0, //
+  0, k, 0, 0, 0, //
+  0, 0, k, 0, 0, //
+  0, 0, 0, 1, 0, //
+];
+
+class _Name extends StatelessWidget {
+  const _Name({
+    super.key,
+    required this.text,
+    required this.on,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String text;
+  final bool on;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    return Semantics(
+      button: true,
+      selected: on,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(999),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(999),
+            border: Border.all(color: on ? color : c.line, width: 1.5),
+          ),
+          child: Text(text, style: TextStyle(fontSize: 13, color: on ? c.text : c.dim)),
         ),
       ),
     );

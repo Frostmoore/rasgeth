@@ -33,7 +33,7 @@ class MascotFixture {
   final String compact;
 
   String svgOf(MascotTheme t, MascotState s) => svg[t.name]![s.name]!;
-  String get slug => seed.toLowerCase().replaceAll(' ', '-');
+  String get slug => seed.toLowerCase().replaceAll(RegExp('[ :]'), '-');
 }
 
 List<MascotFixture> loadMascots() {

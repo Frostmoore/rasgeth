@@ -99,7 +99,11 @@ class AskBox extends StatefulWidget {
     required this.onSend,
     this.big = false,
     this.onTyping,
+    this.send,
   });
+
+  /// The send button's colour (Satellite's lilac for the Chat); default the accent.
+  final Color? send;
 
   final String hint;
   final Future<bool> Function(String text) onSend;
@@ -182,7 +186,7 @@ class _AskBoxState extends State<AskBox> {
             button: true,
             label: l.smpSend,
             child: Material(
-              color: c.accent,
+              color: widget.send ?? c.accent,
               borderRadius: BorderRadius.circular(12),
               child: InkWell(
                 key: Key(widget.big ? 'simple-ask-send' : 'simple-reply-send'),
@@ -223,6 +227,104 @@ String _greeting(AppLocalizations l, String name) {
     'smpAfternoon' => l.smpAfternoonName(name),
     _ => l.smpEveningName(name),
   };
+}
+
+/// A conversation with the Chat (Satellite, 3.12.1), read as a document like a topic.
+Future<void> openChat(BuildContext context, String id, String title) => Navigator.of(context).push(
+  MaterialPageRoute<void>(
+    builder: (_) => TopicScreen(id: id, title: title, chat: true),
+  ),
+);
+
+String _shortTitle(String text) {
+  final t = text.trim();
+  return t.length > 48 ? '${t.substring(0, 47)}…' : t;
+}
+
+/// Satellite's list: the Chat's latest conversations, newest first.
+class _RecentChats extends StatelessWidget {
+  const _RecentChats({required this.app});
+
+  final AppController app;
+
+  String _when(AppLocalizations l, String iso) {
+    final at = DateTime.tryParse(iso)?.toLocal();
+    if (at == null) return '';
+    final now = DateTime.now();
+    final days = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).difference(DateTime(at.year, at.month, at.day)).inDays;
+    String two(int v) => v.toString().padLeft(2, '0');
+    if (days == 0) return l.smpTodayAt('${two(at.hour)}:${two(at.minute)}');
+    if (days == 1) return l.smpYesterday;
+    return '${at.day}/${at.month}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final rows = recentChats(app.live.sessions, app.chatAgentId);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
+          child: Text(
+            l.smpRecentChats,
+            style: TextStyle(
+              fontSize: 13,
+              color: c.dim,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ),
+        if (rows.isEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 24),
+            child: Text(l.smpNoChats, style: TextStyle(color: c.dim, fontSize: 15)),
+          )
+        else
+          for (final r in rows)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Material(
+                color: c.panel,
+                borderRadius: BorderRadius.circular(14),
+                child: InkWell(
+                  key: Key('chat-${r.id}'),
+                  borderRadius: BorderRadius.circular(14),
+                  onTap: () => openChat(context, r.id, r.title ?? l.smpUntitledChat),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          r.title ?? l.smpUntitledChat,
+                          style: TextStyle(
+                            color: c.text,
+                            fontSize: 15.5,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          _when(l, r.lastAt ?? r.createdAt),
+                          style: TextStyle(color: c.dim, fontSize: 13),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+      ],
+    );
+  }
 }
 
 Future<void> openTopic(BuildContext context, String id, String title) {
@@ -287,6 +389,8 @@ class _TodayScreenState extends State<TodayScreen> {
               final s = app.simple;
               final other = waitingElsewhere(app.live, s.topics);
               final others = other.approvals.length + other.questions.length;
+              // Satellite in front (3.12.1): the Chat's words, box and latest conversations.
+              final chat = s.front == StageFront.chat;
               return SingleChildScrollView(
                 child: _Column(
                   width: 980,
@@ -338,7 +442,7 @@ class _TodayScreenState extends State<TodayScreen> {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              l.smpHeroLead,
+                              chat ? l.smpChatLead : l.smpHeroLead,
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 15.5, color: c.dim),
                             ),
@@ -346,10 +450,22 @@ class _TodayScreenState extends State<TodayScreen> {
                         ),
                       ),
                       AskBox(
+                        key: Key('simple-ask-${s.front.name}'),
                         big: true,
-                        hint: l.smpAskHint,
+                        hint: chat ? l.smpChatHint : l.smpAskHint,
+                        send: chat ? satelliteLilac : null,
                         onTyping: s.typed,
                         onSend: (text) async {
+                          if (chat) {
+                            final sid = await s.askChat(
+                              text,
+                              chatAgent: app.ensureChatAgent,
+                              send: app.send,
+                            );
+                            if (sid == null || !context.mounted) return false;
+                            unawaited(openChat(context, sid, _shortTitle(text)));
+                            return true;
+                          }
                           final r = await s.ask(text);
                           if (r == null || !context.mounted) return false;
                           unawaited(openTopic(context, r.sessionId, r.routed.title));
@@ -357,7 +473,8 @@ class _TodayScreenState extends State<TodayScreen> {
                         },
                       ),
                       if (s.error != null) _ErrorLine(s.error!),
-                      if (others > 0)
+                      if (chat) _RecentChats(app: app),
+                      if (!chat && others > 0)
                         _WaitingLine(
                           text: others == 1 ? l.smpOtherOne : l.smpOtherMany('$others'),
                           onTap: () => Navigator.of(context).push(
@@ -365,20 +482,23 @@ class _TodayScreenState extends State<TodayScreen> {
                           ),
                         ),
                       // The ready-made assistants (3.12, still to be defined): none, nothing shown.
-                      if (s.assistants.isNotEmpty) _Assistants(list: s.assistants),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
-                        child: Text(
-                          l.smpInProgress,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: c.dim,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.5,
+                      if (!chat && s.assistants.isNotEmpty) _Assistants(list: s.assistants),
+                      if (!chat)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
+                          child: Text(
+                            l.smpInProgress,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: c.dim,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
+                            ),
                           ),
                         ),
-                      ),
-                      if (s.topics.isEmpty && s.trouble != null)
+                      if (chat)
+                        const SizedBox.shrink()
+                      else if (s.topics.isEmpty && s.trouble != null)
                         _TopicsTrouble(why: s.trouble!)
                       else if (s.topics.isEmpty)
                         Padding(
@@ -390,23 +510,26 @@ class _TodayScreenState extends State<TodayScreen> {
                         )
                       else
                         _Cards(topics: s.topics),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 6, 20, 24),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: TextButton.icon(
-                            key: const Key('simple-archive'),
-                            onPressed: () => Navigator.of(context).push(
-                              MaterialPageRoute<void>(builder: (_) => const SimpleArchiveScreen()),
-                            ),
-                            icon: RgIcon(RgIcons.archive, size: 16, color: c.accent2),
-                            label: Text(
-                              l.smpArchive('${s.archivedCount}'),
-                              style: TextStyle(color: c.accent2, fontSize: 14.5),
+                      if (!chat)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(12, 6, 20, 24),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: TextButton.icon(
+                              key: const Key('simple-archive'),
+                              onPressed: () => Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (_) => const SimpleArchiveScreen(),
+                                ),
+                              ),
+                              icon: RgIcon(RgIcons.archive, size: 16, color: c.accent2),
+                              label: Text(
+                                l.smpArchive('${s.archivedCount}'),
+                                style: TextStyle(color: c.accent2, fontSize: 14.5),
+                              ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -761,10 +884,13 @@ class _Top extends StatelessWidget {
 
 /// A topic, read as a document; its decisions in a box; «Rispondi…» at the bottom.
 class TopicScreen extends StatefulWidget {
-  const TopicScreen({super.key, required this.id, required this.title});
+  const TopicScreen({super.key, required this.id, required this.title, this.chat = false});
 
   final String id;
   final String title;
+
+  /// A conversation with the Chat (3.12.1): no topic menu, replies go to the same conversation.
+  final bool chat;
 
   @override
   State<TopicScreen> createState() => _TopicScreenState();
@@ -840,8 +966,11 @@ class _TopicScreenState extends State<TopicScreen> {
             child: ListenableBuilder(
               listenable: Listenable.merge([_view, _app.live, _app.simple]),
               builder: (context, _) {
-                final t = _app.simple.topic(widget.id);
-                final title = t?.title ?? widget.title;
+                final t = widget.chat ? null : _app.simple.topic(widget.id);
+                final row = widget.chat
+                    ? _app.live.sessions.where((r) => r.id == widget.id).firstOrNull
+                    : null;
+                final title = t?.title ?? row?.title ?? widget.title;
                 final items = documentItems(_view.items);
                 final approvals = [
                   for (final r in _app.live.approvals)
@@ -862,14 +991,16 @@ class _TopicScreenState extends State<TopicScreen> {
                   children: [
                     _Top(
                       title: title,
-                      trailing: Builder(
-                        builder: (ctx) => IconButton(
-                          key: const Key('topic-more'),
-                          tooltip: l.smpMore,
-                          onPressed: () => unawaited(_menu(ctx, t, title)),
-                          icon: RgIcon(RgIcons.more, size: 20, color: c.text),
-                        ),
-                      ),
+                      trailing: widget.chat
+                          ? null
+                          : Builder(
+                              builder: (ctx) => IconButton(
+                                key: const Key('topic-more'),
+                                tooltip: l.smpMore,
+                                onPressed: () => unawaited(_menu(ctx, t, title)),
+                                icon: RgIcon(RgIcons.more, size: 20, color: c.text),
+                              ),
+                            ),
                     ),
                     Expanded(
                       child: ListView(
@@ -902,6 +1033,11 @@ class _TopicScreenState extends State<TopicScreen> {
                     AskBox(
                       hint: l.smpReplyHint,
                       onSend: (text) async {
+                        if (widget.chat) {
+                          final ok = await _app.send(widget.id, text);
+                          _toEnd();
+                          return ok;
+                        }
                         final r = await _app.simple.ask(text, topicId: widget.id);
                         _toEnd();
                         return r != null;

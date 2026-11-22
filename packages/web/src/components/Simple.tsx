@@ -35,29 +35,36 @@ import {
   archivedCount,
   archivedTopics,
   archiveTopic,
+  askChat,
   askGod,
   attempt,
   buildItems,
   type ChatItem,
+  chatAgentId,
   documentItems,
   getApi,
   getLive,
   greetingKey,
   lastError,
   moveExchange,
+  openChat,
   openTopic,
   personName,
   projects,
   questions,
+  recentChats,
   refreshTopics,
   restoreTopic,
   searchArchive,
+  sendInChat,
+  sessionRows,
   sessionView,
   setUiMode,
   signOut,
   simpleAssistants,
   simpleScreen,
   simpleTyping,
+  stageFront,
   TOPIC_STATE_WORDS,
   topics,
   topicsLoaded,
@@ -98,6 +105,7 @@ export function SimpleApp() {
       )}
       {s.kind === "today" && <Today />}
       {s.kind === "topic" && <TopicScreen key={s.id} id={s.id} title={s.title} />}
+      {s.kind === "chat" && <TopicScreen key={s.id} id={s.id} title={s.title} chat />}
       {s.kind === "archive" && <ArchiveScreen />}
       {s.kind === "requests" && <RequestsScreen />}
       {s.kind === "settings" && <SettingsScreen />}
@@ -192,8 +200,10 @@ function Today() {
   const list = topics.value;
   const elsewhere = waitingElsewhere();
   const others = elsewhere.approvals.length + elsewhere.questions.length;
+  // Satellite in front (3.12.1): the Chat's words, box and latest conversations.
+  const chat = stageFront.value === "chat";
   return (
-    <div class="smp-screen smp-today">
+    <div class={`smp-screen smp-today${chat ? " with-chat" : ""}`}>
       <div class="smp-wrap">
         <header class="smp-bar">
           <span class="smp-brand">
@@ -212,10 +222,17 @@ function Today() {
         <SimpleStage />
         <div class="smp-hero">
           <h1>{name ? t(`${key}Name`, { name }) : t(key)}</h1>
-          <p>{t("smpHeroLead")}</p>
+          <p>{t(chat ? "smpChatLead" : "smpHeroLead")}</p>
         </div>
-        <AskBox big listened hint={t("smpAskHint")} onSend={(text) => askGod(text)} />
-        {others > 0 && (
+        <AskBox
+          key={chat ? "chat" : "god"}
+          big
+          listened
+          hint={t(chat ? "smpChatHint" : "smpAskHint")}
+          onSend={(text) => (chat ? askChat(text) : askGod(text))}
+        />
+        {chat ? <RecentChats /> : null}
+        {!chat && others > 0 && (
           <button
             type="button"
             class="smp-waiting-line"
@@ -226,7 +243,7 @@ function Today() {
           </button>
         )}
         {/* The ready-made assistants (3.12, to be defined with the person): none yet, nothing shown. */}
-        {simpleAssistants.value.length > 0 && (
+        {!chat && simpleAssistants.value.length > 0 && (
           <div class="smp-assistants">
             {simpleAssistants.value.map((a) => (
               <button
@@ -241,8 +258,8 @@ function Today() {
             ))}
           </div>
         )}
-        <div class="smp-lbl">{t("smpInProgress")}</div>
-        {list.length === 0 && topicsTrouble.value ? (
+        {!chat && <div class="smp-lbl">{t("smpInProgress")}</div>}
+        {chat ? null : list.length === 0 && topicsTrouble.value ? (
           <TopicsTrouble why={topicsTrouble.value} />
         ) : list.length === 0 ? (
           <p class="smp-empty">{t(topicsLoaded.value ? "smpNoTopics" : "smpLoading")}</p>
@@ -253,18 +270,62 @@ function Today() {
             ))}
           </div>
         )}
-        <div class="smp-foot">
-          <button
-            type="button"
-            class="smp-link"
-            onClick={() => (simpleScreen.value = { kind: "archive" })}
-          >
-            <IconArchive size={15} /> {t("smpArchive", { n: String(archivedCount.value) })}
-          </button>
-        </div>
+        {!chat && (
+          <div class="smp-foot">
+            <button
+              type="button"
+              class="smp-link"
+              onClick={() => (simpleScreen.value = { kind: "archive" })}
+            >
+              <IconArchive size={15} /> {t("smpArchive", { n: String(archivedCount.value) })}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
+}
+
+/** Satellite's list: the Chat's latest conversations, newest first. */
+function RecentChats() {
+  const rows = recentChats(sessionRows.value, chatAgentId.value);
+  return (
+    <>
+      <div class="smp-lbl">{t("smpRecentChats")}</div>
+      {rows.length === 0 ? (
+        <p class="smp-empty">{t("smpNoChats")}</p>
+      ) : (
+        <div class="smp-cards">
+          {rows.map((r) => (
+            <button
+              type="button"
+              key={r.id}
+              class="smp-card chat"
+              onClick={() => openChat(r.id, r.title ?? t("smpUntitledChat"))}
+            >
+              <span class="smp-card-t">{r.title ?? t("smpUntitledChat")}</span>
+              <span class="smp-card-p">{whenSaid(r.lastAt ?? r.createdAt)}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
+/** When a chat was last used, in plain words («Oggi, 13:05», «Ieri», a date). */
+function whenSaid(iso: string): string {
+  const at = new Date(iso);
+  const now = new Date();
+  const day = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const days = Math.round((day(now) - day(at)) / 86_400_000);
+  const locale = lang.value === "it" ? "it-IT" : "en-GB";
+  if (days === 0)
+    return t("smpTodayAt", {
+      time: at.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }),
+    });
+  if (days === 1) return t("smpYesterday");
+  return at.toLocaleDateString(locale, { day: "numeric", month: "long" });
 }
 
 /**
@@ -346,7 +407,7 @@ function TopBar({
 }
 
 /** A topic, read as a document; its decisions in a box; «Rispondi…» at the bottom. */
-function TopicScreen({ id, title }: { id: string; title: string }) {
+function TopicScreen({ id, title, chat = false }: { id: string; title: string; chat?: boolean }) {
   const scroller = useRef<HTMLDivElement>(null);
   const follow = useFollow(scroller, id);
   const [menu, setMenu] = useState(false);
@@ -359,7 +420,7 @@ function TopicScreen({ id, title }: { id: string; title: string }) {
   const view = sessionView(id).value;
   const items = documentItems(buildItems(view.events));
   const known = topics.value.find((x) => x.id === id);
-  const name = known?.title ?? title;
+  const name = (chat ? sessionRows.value.find((r) => r.id === id)?.title : known?.title) ?? title;
   const waiting = waitingIn(id);
   // Questions of an agent under God: not in this log, shown with the rest of the decisions.
   const askedHere = new Set(items.flatMap((i) => (i.kind === "question" ? [i.requestId] : [])));
@@ -369,17 +430,19 @@ function TopicScreen({ id, title }: { id: string; title: string }) {
     <div class="smp-screen smp-topic">
       <div class="smp-wrap">
         <TopBar title={name}>
-          <button
-            type="button"
-            class="smp-icon"
-            aria-label={t("smpMore")}
-            title={t("smpMore")}
-            aria-expanded={menu}
-            onClick={() => setMenu(!menu)}
-          >
-            <IconMore size={20} />
-          </button>
-          {menu && (
+          {!chat && (
+            <button
+              type="button"
+              class="smp-icon"
+              aria-label={t("smpMore")}
+              title={t("smpMore")}
+              aria-expanded={menu}
+              onClick={() => setMenu(!menu)}
+            >
+              <IconMore size={20} />
+            </button>
+          )}
+          {!chat && menu && (
             <TopicMenu id={id} title={name} pinned={!!known?.pinned} close={() => setMenu(false)} />
           )}
         </TopBar>
@@ -416,7 +479,9 @@ function TopicScreen({ id, title }: { id: string; title: string }) {
         <AskBox
           hint={t("smpReplyHint")}
           onSend={async (text) => {
-            const r = await askGod(text, { topicId: id });
+            const r = chat
+              ? sendInChat(id, text) || undefined
+              : await askGod(text, { topicId: id });
             follow.toBottom();
             return r;
           }}

@@ -33260,6 +33260,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'worried, something went wrong'**
   String get smpMoodWorried;
+
+  /// No description provided for @smpSatellite.
+  ///
+  /// In en, this message translates to:
+  /// **'Satellite'**
+  String get smpSatellite;
+
+  /// No description provided for @smpSatelliteChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Satellite · Chat'**
+  String get smpSatelliteChat;
+
+  /// No description provided for @smpChatLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Fancy a chat? I\'m here.'**
+  String get smpChatLead;
+
+  /// No description provided for @smpChatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write to Satellite...'**
+  String get smpChatHint;
+
+  /// No description provided for @smpRecentChats.
+  ///
+  /// In en, this message translates to:
+  /// **'LATEST CHATS'**
+  String get smpRecentChats;
+
+  /// No description provided for @smpNoChats.
+  ///
+  /// In en, this message translates to:
+  /// **'No chats yet: write here and we start one.'**
+  String get smpNoChats;
+
+  /// No description provided for @smpUntitledChat.
+  ///
+  /// In en, this message translates to:
+  /// **'A new chat'**
+  String get smpUntitledChat;
+
+  /// No description provided for @smpTodayAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Today, {time}'**
+  String smpTodayAt(String time);
+
+  /// No description provided for @smpYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get smpYesterday;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

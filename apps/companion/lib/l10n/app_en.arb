@@ -13346,5 +13346,21 @@
   "smpMoodWork": "at work",
   "smpMoodWait": "waiting for you",
   "smpMoodHappy": "happy, something is done",
-  "smpMoodWorried": "worried, something went wrong"
+  "smpMoodWorried": "worried, something went wrong",
+  "smpSatellite": "Satellite",
+  "smpSatelliteChat": "Satellite · Chat",
+  "smpChatLead": "Fancy a chat? I'm here.",
+  "smpChatHint": "Write to Satellite...",
+  "smpRecentChats": "LATEST CHATS",
+  "smpNoChats": "No chats yet: write here and we start one.",
+  "smpUntitledChat": "A new chat",
+  "smpTodayAt": "Today, {time}",
+  "@smpTodayAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "smpYesterday": "Yesterday"
 }

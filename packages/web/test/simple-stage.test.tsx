@@ -8,8 +8,12 @@ import { act, cleanup, fireEvent, render, waitFor } from "@testing-library/preac
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { lang } from "../src/i18n.js";
 
-const { fake } = vi.hoisted(() => ({
-  fake: { impl: {} as Record<string, (...a: never[]) => unknown> },
+const { fake, sent } = vi.hoisted(() => ({
+  fake: {
+    impl: {} as Record<string, (...a: never[]) => unknown>,
+    calls: [] as [string, unknown[]][],
+  },
+  sent: [] as Record<string, unknown>[],
 }));
 vi.mock("../src/api.js", async (orig) => {
   const real = await orig<typeof import("../src/api.js")>();
@@ -22,6 +26,7 @@ vi.mock("../src/api.js", async (orig) => {
           get:
             (_t, name: string) =>
             (...args: unknown[]) => {
+              fake.calls.push([name, args]);
               const f = fake.impl[name] as ((...a: unknown[]) => unknown) | undefined;
               return Promise.resolve(f ? f(...args) : []);
             },
@@ -30,7 +35,9 @@ vi.mock("../src/api.js", async (orig) => {
     }
   }
   class Live {
-    send() {}
+    send(m: Record<string, unknown>) {
+      sent.push(m);
+    }
     close() {}
   }
   return { ...real, Api, Live };
@@ -104,6 +111,11 @@ beforeEach(() => {
   state.godRouting.value = false;
   state.giantCheer.value = false;
   state.simpleScreen.value = { kind: "today" };
+  state.stageFront.value = "god";
+  state.chatAgentId.value = null;
+  state.sessionRows.value = [];
+  fake.calls.length = 0;
+  sent.length = 0;
 });
 afterEach(() => {
   cleanup();
@@ -238,5 +250,109 @@ describe("«Oggi»'s stage", () => {
     const r = render(<SimpleStage />);
     await act(() => vi.advanceTimersByTime(60_000));
     expect(r.container.querySelector(".smp-giant")?.getAttribute("data-gesture")).toBeNull();
+  });
+});
+
+const row = (id: string, o: Partial<import("../src/state.js").SessionRow> = {}) =>
+  ({
+    id,
+    agentId: "chat",
+    projectId: null,
+    createdAt: "2026-11-20T10:00:00.000Z",
+    lastAt: null,
+    title: null,
+    pinned: false,
+    archived: false,
+    running: false,
+    ...o,
+  }) as import("../src/state.js").SessionRow;
+
+describe("Satellite, the Chat, on the same orbit (3.12.1)", () => {
+  it("places the one in front big in the middle, the one behind small, dim and higher (pure)", () => {
+    const front = state.orbitPlace(0, 200);
+    expect(front).toEqual({ x: 0, y: 0, scale: 1, z: 200, light: 1, blur: 0 });
+    const back = state.orbitPlace(state.ORBIT_BACK, 200);
+    expect(back.scale).toBeLessThan(0.5);
+    expect(back.z).toBeLessThan(front.z);
+    expect(back.y).toBeLessThan(-60);
+    expect(back.light).toBeLessThan(0.6);
+    expect(state.orbitPlace(-state.ORBIT_BACK, 200).x).toBe(-back.x);
+  });
+
+  it("lists the Chat's latest conversations, newest first (pure)", () => {
+    const rows = [
+      row("a", { lastAt: "2026-11-21T10:00:00.000Z" }),
+      row("b", { lastAt: "2026-11-22T10:00:00.000Z" }),
+      row("c", { archived: true }),
+      row("d", { agentId: "god" }),
+    ];
+    expect(state.recentChats(rows, "chat").map((r) => r.id)).toEqual(["b", "a"]);
+    expect(state.recentChats(rows, null)).toEqual([]);
+  });
+
+  it("sits behind God; its name brings it in front, and the screen becomes the Chat's", () => {
+    state.chatAgentId.value = "chat";
+    state.sessionRows.value = [row("s1", { title: "Ricetta della carbonara" })];
+    const r = render(<SimpleApp />);
+    expect(r.container.querySelector(".smp-orbiter.god.front")).not.toBeNull();
+    expect(r.container.querySelector(".smp-orbiter.chat.back")).not.toBeNull();
+    expect(r.getByRole("img", { name: "Satellite: qui per te" })).toBeTruthy();
+    expect(r.container.textContent).not.toMatch(/Luna/);
+    fireEvent.click(r.getByRole("button", { name: "Satellite · Chat" }));
+    expect(state.stageFront.value).toBe("chat");
+    expect(r.container.querySelector(".smp-orbiter.chat.front")).not.toBeNull();
+    expect(r.getByText("Due chiacchiere? Sono qui.")).toBeTruthy();
+    expect(r.getByPlaceholderText("Scrivi a Satellite...")).toBeTruthy();
+    expect(r.getByText("LE ULTIME CHIACCHIERE")).toBeTruthy();
+    expect(r.getByText("Ricetta della carbonara")).toBeTruthy();
+    expect(r.queryByText("IN CORSO")).toBeNull();
+    // Back to God with his name.
+    fireEvent.click(r.getByRole("button", { name: "God" }));
+    expect(state.stageFront.value).toBe("god");
+    expect(r.getByText("IN CORSO")).toBeTruthy();
+  });
+
+  it("turns with a swipe either way, or a tap on the one behind", () => {
+    const r = render(<SimpleStage />);
+    const stage = r.container.querySelector(".smp-stage") as HTMLElement;
+    fireEvent.pointerDown(stage, { clientX: 300 });
+    fireEvent.pointerUp(stage, { clientX: 120 });
+    expect(state.stageFront.value).toBe("chat");
+    fireEvent.pointerDown(stage, { clientX: 120 });
+    fireEvent.pointerUp(stage, { clientX: 300 });
+    expect(state.stageFront.value).toBe("god");
+    // A short move is a tap: on the one behind, it comes in front.
+    const back = r.container.querySelector(".smp-orbiter.back") as HTMLElement;
+    fireEvent.pointerDown(back, { clientX: 200 });
+    fireEvent.pointerUp(back, { clientX: 205 });
+    expect(state.stageFront.value).toBe("chat");
+  });
+
+  it("writing there talks to the Chat agent: a new conversation, the message, then it opens", async () => {
+    fake.impl.chatAgent = () => ({ id: "chat", name: "Chat", kind: "assistant", parentId: "god" });
+    fake.impl.startSession = () => ({ sessionId: "s9" });
+    state.stageFront.value = "chat";
+    const r = render(<SimpleApp />);
+    fireEvent.input(r.getByPlaceholderText("Scrivi a Satellite..."), {
+      target: { value: "Che film vedo stasera?" },
+    });
+    fireEvent.click(r.getByRole("button", { name: "Invia" }));
+    await waitFor(() => expect(state.simpleScreen.value).toMatchObject({ kind: "chat", id: "s9" }));
+    expect(fake.calls.find(([n]) => n === "startSession")?.[1]).toEqual(["chat"]);
+    expect(fake.calls.some(([n]) => n === "godMessage")).toBe(false);
+    expect(sent).toContainEqual(
+      expect.objectContaining({
+        type: "session.send",
+        sessionId: "s9",
+        text: "Che film vedo stasera?",
+      }),
+    );
+    // Inside, a reply goes to the same conversation, never to God.
+    sent.length = 0;
+    fireEvent.input(r.getByPlaceholderText("Rispondi…"), { target: { value: "E domani?" } });
+    fireEvent.click(r.getByRole("button", { name: "Invia" }));
+    expect(sent).toContainEqual(
+      expect.objectContaining({ type: "session.send", sessionId: "s9", text: "E domani?" }),
+    );
   });
 });

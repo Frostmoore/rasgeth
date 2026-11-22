@@ -19259,4 +19259,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get smpMoodWorried => 'worried, something went wrong';
+
+  @override
+  String get smpSatellite => 'Satellite';
+
+  @override
+  String get smpSatelliteChat => 'Satellite · Chat';
+
+  @override
+  String get smpChatLead => 'Fancy a chat? I\'m here.';
+
+  @override
+  String get smpChatHint => 'Write to Satellite...';
+
+  @override
+  String get smpRecentChats => 'LATEST CHATS';
+
+  @override
+  String get smpNoChats => 'No chats yet: write here and we start one.';
+
+  @override
+  String get smpUntitledChat => 'A new chat';
+
+  @override
+  String smpTodayAt(String time) {
+    return 'Today, $time';
+  }
+
+  @override
+  String get smpYesterday => 'Yesterday';
 }

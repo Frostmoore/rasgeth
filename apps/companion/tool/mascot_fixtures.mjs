@@ -30,6 +30,8 @@ const cases = [
   ["Ricercatore", "agent"],
   ["Assistente mail", "assistant"],
   ["Revisore", "inspector"],
+  // 3.12.1: Satellite, the Chat's hand-drawn moon (the registry gives the Chat this seed).
+  ["rg:satellite", "assistant"],
 ];
 
 const out = cases.map(([seed, kind, p]) => {

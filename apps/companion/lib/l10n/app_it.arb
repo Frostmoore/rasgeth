@@ -5527,5 +5527,14 @@
   "smpMoodWork": "al lavoro",
   "smpMoodWait": "ti aspetta",
   "smpMoodHappy": "contento, qualcosa è pronto",
-  "smpMoodWorried": "preoccupato, qualcosa non va"
+  "smpMoodWorried": "preoccupato, qualcosa non va",
+  "smpSatellite": "Satellite",
+  "smpSatelliteChat": "Satellite · Chat",
+  "smpChatLead": "Due chiacchiere? Sono qui.",
+  "smpChatHint": "Scrivi a Satellite...",
+  "smpRecentChats": "LE ULTIME CHIACCHIERE",
+  "smpNoChats": "Ancora nessuna chiacchierata: scrivi qui e ne cominciamo una.",
+  "smpUntitledChat": "Una nuova chiacchierata",
+  "smpTodayAt": "Oggi, {time}",
+  "smpYesterday": "Ieri"
 }

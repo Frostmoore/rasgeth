@@ -308,6 +308,44 @@ void main() {
       await done(tester);
     });
 
+    testWidgets('3.12.1: Satellite behind God; its name brings it in front, the Chat\'s screen', (
+      tester,
+    ) async {
+      server.sessionMadeElsewhere('chat', title: 'Ricetta della carbonara');
+      await open(tester);
+      expect(app.simple.front, StageFront.god);
+      expect(find.bySemanticsLabel(RegExp('^Satellite: ')), findsOneWidget);
+      expect(find.textContaining('Luna'), findsNothing);
+      await tap(tester, find.byKey(const Key('simple-front-chat')));
+      await tester.pump(const Duration(seconds: 1));
+      expect(app.simple.front, StageFront.chat);
+      expect(find.text('Due chiacchiere? Sono qui.'), findsOneWidget);
+      expect(find.text('Scrivi a Satellite...'), findsOneWidget);
+      expect(find.text('LE ULTIME CHIACCHIERE'), findsOneWidget);
+      expect(find.text('Ricetta della carbonara'), findsOneWidget);
+      expect(find.text('IN CORSO'), findsNothing);
+      // Writing there talks to the Chat agent: a new conversation of its own, then it opens.
+      final before = server.sessions.length;
+      await tester.enterText(find.byKey(const Key('simple-ask')), 'Che film vedo stasera?');
+      await tap(tester, find.byKey(const Key('simple-ask-send')));
+      expect(server.sessions.length, before + 1);
+      expect(server.sessions.last['agentId'], 'chat');
+      expect(find.byType(TopicScreen), findsOneWidget);
+      expect(topics.calls.where((c) => c.startsWith('POST /api/god/messages')), isEmpty);
+      await done(tester);
+    });
+
+    testWidgets('3.12.1: a swipe turns the orbit either way', (tester) async {
+      await open(tester);
+      await tester.fling(find.byKey(const Key('simple-stage')), const Offset(-300, 0), 1200);
+      await tester.pump(const Duration(seconds: 1));
+      expect(app.simple.front, StageFront.chat);
+      await tester.fling(find.byKey(const Key('simple-stage')), const Offset(300, 0), 1200);
+      await tester.pump(const Duration(seconds: 1));
+      expect(app.simple.front, StageFront.god);
+      await done(tester);
+    });
+
     testWidgets('3.12.1: a server before 3.12 (no topics routes) is said, the full view offered', (
       tester,
     ) async {
@@ -415,6 +453,33 @@ void main() {
     expect(tester.state<GiantMascotState>(find.byType(GiantMascot)).gesture, isNull);
     expect(tester.state<GiantMascotState>(find.byType(GiantMascot)).moving, isFalse);
     await tester.pumpWidget(const SizedBox());
+  });
+
+  test('3.12.1: the orbit\'s places and the Chat\'s latest conversations', () {
+    final front = orbitPlace(0, 200);
+    expect([front.x, front.y, front.scale, front.z, front.light], [0, 0, 1, 200, 1]);
+    final back = orbitPlace(orbitBack, 200);
+    expect(back.scale, lessThan(0.5));
+    expect(back.z, lessThan(front.z));
+    expect(orbitPlace(-orbitBack, 200).x, -back.x);
+    SessionRow row(String id, {String agent = 'chat', String? at, bool archived = false}) =>
+        SessionRow.fromJson({
+          'id': id,
+          'agentId': agent,
+          'createdAt': '2026-11-20T10:00:00.000Z',
+          'lastAt': at,
+          'title': null,
+          'archived': archived,
+          'running': false,
+        });
+    final rows = [
+      row('a', at: '2026-11-21T10:00:00.000Z'),
+      row('b', at: '2026-11-22T10:00:00.000Z'),
+      row('c', archived: true),
+      row('d', agent: 'god'),
+    ];
+    expect(recentChats(rows, 'chat').map((r) => r.id), ['b', 'a']);
+    expect(recentChats(rows, null), isEmpty);
   });
 
   test('3.12.1: a 404 is an old server, the rest is not', () {

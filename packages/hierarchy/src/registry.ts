@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { EventStore, SqlClient } from "@redgiant/events";
-import { hasOwnMascot, MascotBook, mascotSpec } from "@redgiant/mascot";
+import { hasOwnMascot, MascotBook, mascotSpec, SATELLITE_SEED } from "@redgiant/mascot";
 import {
   type AgentSpec,
   LOCAL_OWNER_ID,
@@ -297,6 +297,8 @@ export class AgentRegistry {
   mascotOf(id: string): MascotSpec | undefined {
     const a = this.cache.get(id);
     if (!a || !hasOwnMascot(a)) return undefined;
+    // The person's Chat is Satellite (3.12.1), drawn by hand, whatever seed it kept.
+    if (this.chats.get(a.ownerId) === a.id) return mascotSpec(SATELLITE_SEED, a.kind);
     return mascotSpec(a.mascotSeed ?? a.id, a.kind);
   }
 
@@ -340,6 +342,8 @@ export class AgentRegistry {
     if (!a) throw new HierarchyError(`Unknown agent "${id}"`);
     if (actor.type !== "human") throw new HierarchyError("Only the person changes a mascot");
     if (a.kind === "god") throw new HierarchyError("God's mascot is drawn by hand");
+    if (this.chats.get(a.ownerId) === id)
+      throw new HierarchyError("The Chat's mascot, Satellite, is drawn by hand");
     if (!hasOwnMascot(a)) throw new HierarchyError("A sub-agent has no mascot of its own");
     const book = this.mascotBook(a.ownerId);
     const base = `${a.name}~${randomUUID().slice(0, 6)}`;

@@ -2,10 +2,12 @@
 // for «Oggi», the archive's search and the actions (ask God, move, archive, restore, read), with
 // the pure rules the page has (`effectiveUi`, `greetingKey`).
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 
 import '../api/client.dart';
+import '../api/conversation.dart' show SessionRow;
 import '../api/topics.dart';
 import '../api/types.dart' show MascotState;
 
@@ -84,6 +86,36 @@ bool finishedWork(List<TopicView> before, List<TopicView> after) {
   return after.any((x) => x.state == TopicState.ready && was[x.id] == TopicState.working);
 }
 
+// ---------- Satellite and the Chat on «Oggi» (3.12.1, the page's `stageFront`) ----------
+
+/// Who is in front on the orbit: God or Satellite (the Chat).
+enum StageFront { god, chat }
+
+/// How far round the orbit the one behind sits (radians, the page's `ORBIT_BACK`).
+const double orbitBack = 2.55;
+
+/// Where a mascot at [theta] on the orbit is drawn (the page's `orbitPlace`).
+({double x, double y, double scale, int z, double light}) orbitPlace(double theta, double radius) {
+  final z = math.cos(theta);
+  final near = (z + 1) / 2;
+  double r(double v) => (v * 100).round() / 100;
+  return (
+    x: r(math.sin(theta) * radius * 0.95),
+    y: r((1 - z) * -38),
+    scale: r(0.42 + 0.58 * near),
+    z: (z * 100).round() + 100,
+    light: r(0.55 + 0.45 * near),
+  );
+}
+
+/// The Chat's latest conversations, newest first (the page's `recentChats`).
+List<SessionRow> recentChats(List<SessionRow> rows, String? chatId, [int n = 5]) {
+  if (chatId == null) return const [];
+  final list = rows.where((r) => r.agentId == chatId && !r.archived).toList()
+    ..sort((a, b) => (b.lastAt ?? b.createdAt).compareTo(a.lastAt ?? a.createdAt));
+  return list.take(n).toList();
+}
+
 /// A ready-made assistant for everyday life (3.12, «Assistenti pronti»: still to be defined with
 /// the person). «Oggi» shows them when [SimpleModel.assistants] has some; empty, nothing shows.
 class SimpleAssistant {
@@ -130,6 +162,42 @@ class SimpleModel extends ChangeNotifier {
 
   /// A message to God is being routed (the giant thinks).
   bool routing = false;
+
+  /// Who is in front on «Oggi»'s orbit (3.12.1).
+  StageFront front = StageFront.god;
+
+  void bringFront(StageFront who) {
+    if (front == who) return;
+    front = who;
+    typing = false;
+    notifyListeners();
+  }
+
+  /// A message to the Chat is on its way (Satellite thinks).
+  bool chatSending = false;
+
+  /// From «Oggi» with Satellite in front: a new conversation with the Chat agent and its first
+  /// message (sent by [send], the app's own way). The conversation's id, or null.
+  Future<String?> askChat(
+    String text, {
+    required Future<String?> Function() chatAgent,
+    required Future<bool> Function(String sessionId, String text) send,
+  }) async {
+    final words = text.trim();
+    if (words.isEmpty) return null;
+    chatSending = true;
+    notifyListeners();
+    try {
+      final id = await chatAgent();
+      if (id == null) return null;
+      final sid = await _try((c) => c.newSession(id));
+      if (sid == null) return null;
+      return await send(sid, words) ? sid : null;
+    } finally {
+      chatSending = false;
+      notifyListeners();
+    }
+  }
 
   /// A piece of work just finished (the giant is happy for a few seconds).
   bool cheer = false;

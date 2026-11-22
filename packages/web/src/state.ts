@@ -2869,6 +2869,8 @@ export type SimpleScreen =
   | { kind: "archive" }
   /** Requests and questions that belong to no topic (an automation's). */
   | { kind: "requests" }
+  /** A conversation with the Chat (Satellite, 3.12.1), read as a document like a topic. */
+  | { kind: "chat"; id: string; title: string }
   | { kind: "settings" };
 export const simpleScreen = signal<SimpleScreen>({ kind: "today" });
 
@@ -3196,4 +3198,107 @@ export function cheerGiant(ms = 4000): void {
 export function finishedWork(before: readonly TopicView[], after: readonly TopicView[]): boolean {
   const was = new Map(before.map((x) => [x.id, x.state]));
   return after.some((x) => x.state === "ready" && was.get(x.id) === "working");
+}
+
+// ---------- Satellite and the Chat on «Oggi» (3.12.1, tavole-mascotte-chat/luna.html) ----------
+//
+// Satellite, the Chat's mascot, goes round God on the same orbit: a swipe, a tap on the one behind
+// or on the names under it bring the other in front, and the screen below follows (greeting, box,
+// the list: God's topics or the latest chats). Writing there talks to the Chat agent.
+
+export type StageFront = "god" | "chat";
+export const stageFront = signal<StageFront>("god");
+
+/** How far round the orbit the one behind sits (radians, the board's). */
+export const ORBIT_BACK = 2.55;
+
+/**
+ * Where a mascot at [theta] on the orbit is drawn (0: in front, in the middle): its shift, its
+ * size and how far back it is (dimmer and a little blurred behind). Pure.
+ */
+export function orbitPlace(
+  theta: number,
+  radius: number,
+): { x: number; y: number; scale: number; z: number; light: number; blur: number } {
+  const z = Math.cos(theta);
+  const near = (z + 1) / 2;
+  const r = (v: number) => Math.round(v * 100) / 100 || 0;
+  return {
+    x: r(Math.sin(theta) * radius * 0.95),
+    y: r((1 - z) * -38),
+    scale: r(0.42 + 0.58 * near),
+    z: Math.round(z * 100) + 100,
+    light: r(0.55 + 0.45 * near),
+    blur: r((1 - z) * 0.9),
+  };
+}
+
+/** The Chat's latest conversations, newest first (the list under Satellite). */
+export function recentChats(
+  rows: readonly SessionRow[],
+  chatId: string | null,
+  n = 5,
+): SessionRow[] {
+  if (!chatId) return [];
+  return rows
+    .filter((r) => r.agentId === chatId && !r.archived)
+    .sort((a, b) => (b.lastAt ?? b.createdAt).localeCompare(a.lastAt ?? a.createdAt))
+    .slice(0, n);
+}
+
+/** A message to the Chat is on its way (Satellite thinks). */
+export const chatSending = signal(false);
+
+/** The Chat agent's id, made by the server the first time. */
+export async function ensureChatAgent(): Promise<string> {
+  if (chatAgentId.value) return chatAgentId.value;
+  const a = await getApi().chatAgent();
+  chatAgentId.value = a.id;
+  if (!agents.value.some((x) => x.id === a.id)) agents.value = [...agents.value, a];
+  return a.id;
+}
+
+/** Opens a conversation with the Chat in the simple interface. */
+export function openChat(id: string, title: string): void {
+  simpleScreen.value = { kind: "chat", id, title };
+}
+
+/**
+ * From «Oggi» with Satellite in front: a new conversation with the Chat, its first message sent,
+ * and it opens. Undefined when it failed (the error is in the banner).
+ */
+export async function askChat(text: string): Promise<{ sessionId: string } | undefined> {
+  const words = text.trim();
+  if (!words) return undefined;
+  chatSending.value = true;
+  const r = await attempt(async () => {
+    const id = await ensureChatAgent();
+    const { sessionId } = await getApi().startSession(id);
+    getLive().send({
+      type: "session.send",
+      sessionId,
+      text: words,
+      clientId: `p${Date.now()}${Math.random().toString(36).slice(2, 6)}`,
+    });
+    return { sessionId };
+  }).finally(() => {
+    chatSending.value = false;
+  });
+  if (!r) return undefined;
+  openChat(r.sessionId, words.length > 48 ? `${words.slice(0, 47)}…` : words);
+  void refreshConversations().catch(() => {});
+  return r;
+}
+
+/** A message inside an open conversation with the Chat. */
+export function sendInChat(sessionId: string, text: string): boolean {
+  const words = text.trim();
+  if (!words) return false;
+  getLive().send({
+    type: "session.send",
+    sessionId,
+    text: words,
+    clientId: `p${Date.now()}${Math.random().toString(36).slice(2, 6)}`,
+  });
+  return true;
 }
