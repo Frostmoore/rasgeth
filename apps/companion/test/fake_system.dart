@@ -3,7 +3,8 @@
 // job, «reachable already», «Try a name», Pi-hole), Settings › System (the machine, the role, the
 // storage and the backups' destinations, SSH, Wi-Fi, HTTPS, the OS's updates and restart), the SSH
 // machines (the first key shown, trusted, a changed key refused), the nodes (a code, a pair
-// waiting with its six digits, grants, placements), the backup file (made, downloaded, sent,
+// waiting with its six digits, grants, placements), the emulators (3.11: a report, a folder refused,
+// how many at once), the backup file (made, downloaded, sent,
 // imported) and the updates' gate (the safety backup). Every action is recorded in [calls] with
 // its body; nothing reaches a real machine.
 import 'dart:convert';
@@ -254,6 +255,99 @@ class FakeSystem {
     'code': ?code_,
   };
 
+  // ---- emulators (3.11) ----
+  Map<String, dynamic> emulatorSettings = {'sdkPath': null, 'maxRunning': 2};
+  Map<String, dynamic> emulatorReport = {
+    'os': 'windows',
+    'arch': 'x64',
+    'container': false,
+    'android': {
+      'sdk': {
+        'root': r'D:\Android\Sdk',
+        'source': 'studio',
+        'emulator': '35.2.10',
+        'platformTools': '37.0.1',
+        'cmdlineTools': true,
+        'images': ['android-35/google_apis_playstore/x86_64'],
+      },
+      'looked': [
+        {'path': r'D:\Android\Sdk', 'source': 'studio'},
+      ],
+      'avds': [
+        {'name': 'Medium_Phone_API_35', 'api': 35, 'abi': 'x86_64', 'playStore': true},
+      ],
+      'attached': [
+        {
+          'serial': 'emulator-5554',
+          'kind': 'emulator',
+          'state': 'device',
+          'avd': 'Medium_Phone_API_35',
+        },
+        {'serial': '192.168.1.40:5555', 'kind': 'phone', 'state': 'unauthorized', 'link': 'wifi'},
+      ],
+      'accel': {'ok': true, 'kind': 'whpx'},
+    },
+    'missing': ['emulator-old'],
+    'ready': true,
+    'maxRunning': 2,
+    'at': '2026-11-22T10:00:00.000Z',
+  };
+  List<Map<String, dynamic>> emulatorNodes = [
+    {
+      'id': 'SHA256:macMacMac',
+      'name': 'Mac mini',
+      'online': true,
+      'report': {
+        'os': 'macos',
+        'arch': 'arm64',
+        'container': false,
+        'android': {
+          'looked': [
+            {'path': '/Users/ana/Library/Android/sdk', 'source': 'standard'},
+          ],
+          'avds': <Object>[],
+          'attached': <Object>[],
+          'adbIdle': true,
+          'accel': {'ok': true, 'kind': 'hvf'},
+        },
+        'ios': {
+          'xcode': '27.2',
+          'simulators': [
+            {'name': 'iPhone 18', 'udid': 'U1', 'runtime': 'iOS 27.2', 'state': 'shutdown'},
+          ],
+        },
+        'missing': ['sdk', 'ios-bridge'],
+        'ready': false,
+        'maxRunning': 2,
+        'at': '2026-11-22T10:00:00.000Z',
+      },
+    },
+    {'id': 'SHA256:oldOldOld', 'name': 'Vecchio', 'online': false},
+  ];
+
+  Map<String, dynamic> _emulators() => {
+    'here': {
+      'id': 'here',
+      'name': 'Severino',
+      'online': true,
+      'report': {
+        ...emulatorReport,
+        'maxRunning': emulatorSettings['maxRunning'],
+        if (emulatorSettings['sdkPath'] != null)
+          'android': {
+            ...(emulatorReport['android'] as Map<String, dynamic>),
+            'sdk': {
+              ...((emulatorReport['android'] as Map)['sdk'] as Map<String, dynamic>),
+              'root': emulatorSettings['sdkPath'],
+              'source': 'custom',
+            },
+          },
+      },
+    },
+    'settings': emulatorSettings,
+    'nodes': emulatorNodes,
+  };
+
   Future<bool> handle(
     HttpRequest r,
     String path,
@@ -267,6 +361,7 @@ class FakeSystem {
         path.startsWith('/api/auth/') && path != '/api/auth/login' ||
         path.startsWith('/api/settings/machines') ||
         path.startsWith('/api/nodes') ||
+        path.startsWith('/api/emulators') ||
         path.startsWith('/api/backup/') ||
         path == '/api/update/safety-backup' ||
         path == '/api/vault' ||
@@ -547,6 +642,22 @@ class FakeSystem {
     }
     // ---- nodes ----
     switch (key) {
+      // ---- emulators (3.11) ----
+      case 'GET /api/emulators':
+        return ok(_emulators());
+      case 'PUT /api/emulators/settings':
+        if (b.containsKey('sdkPath')) {
+          final p = b['sdkPath'];
+          if (p is String && !p.toLowerCase().contains('sdk')) {
+            return no(
+              400,
+              'No Android SDK in that folder (no platform-tools, emulator, cmdline-tools or system-images)',
+            );
+          }
+          emulatorSettings['sdkPath'] = p;
+        }
+        if (b['maxRunning'] is int) emulatorSettings['maxRunning'] = b['maxRunning'];
+        return ok(_emulators());
       case 'GET /api/nodes':
         return ok(_nodes());
       case 'POST /api/nodes/code':

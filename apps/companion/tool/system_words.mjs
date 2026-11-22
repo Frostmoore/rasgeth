@@ -46,6 +46,7 @@ const files = [
   "Nodes.tsx",
   "Backup.tsx",
   "BackupTargets.tsx",
+  "Emulators.tsx",
 ];
 const families = [
   "fbMissing_",
@@ -67,6 +68,7 @@ const extra = [
   "fbSystemSection",
   "mcSection",
   "ndSection",
+  "emSection",
   "backup",
   "remove",
   "cancel",

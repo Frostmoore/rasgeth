@@ -30854,6 +30854,426 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The context of every conversation with a local model is saved on disk: coming back to it, even after a restart, does not read it all again.'**
   String get moSysPersistarLine;
+
+  /// No description provided for @syEmAccel.
+  ///
+  /// In en, this message translates to:
+  /// **'Acceleration'**
+  String get syEmAccel;
+
+  /// No description provided for @syEmAccelOk.
+  ///
+  /// In en, this message translates to:
+  /// **'{kind} works'**
+  String syEmAccelOk(String kind);
+
+  /// No description provided for @syEmAccel_container.
+  ///
+  /// In en, this message translates to:
+  /// **'none in a container'**
+  String get syEmAccel_container;
+
+  /// No description provided for @syEmAccel_disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'virtualization is switched off (BIOS) or the hypervisor is missing'**
+  String get syEmAccel_disabled;
+
+  /// No description provided for @syEmAccel_kvm_denied.
+  ///
+  /// In en, this message translates to:
+  /// **'KVM is there but this user may not use it (add it to the kvm group)'**
+  String get syEmAccel_kvm_denied;
+
+  /// No description provided for @syEmAccel_no_kvm.
+  ///
+  /// In en, this message translates to:
+  /// **'No KVM: turn on virtualization in the BIOS and load the KVM module'**
+  String get syEmAccel_no_kvm;
+
+  /// No description provided for @syEmAccel_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'unknown until the emulator is installed'**
+  String get syEmAccel_unknown;
+
+  /// No description provided for @syEmAdb.
+  ///
+  /// In en, this message translates to:
+  /// **'adb (platform-tools)'**
+  String get syEmAdb;
+
+  /// No description provided for @syEmAdbIdle.
+  ///
+  /// In en, this message translates to:
+  /// **'adb is not running, so running emulators and phones are not known: Rasgeth does not start it just to look.'**
+  String get syEmAdbIdle;
+
+  /// No description provided for @syEmApi.
+  ///
+  /// In en, this message translates to:
+  /// **'API {api}'**
+  String syEmApi(String api);
+
+  /// No description provided for @syEmAttached.
+  ///
+  /// In en, this message translates to:
+  /// **'Running now'**
+  String get syEmAttached;
+
+  /// No description provided for @syEmAvds.
+  ///
+  /// In en, this message translates to:
+  /// **'Virtual devices'**
+  String get syEmAvds;
+
+  /// No description provided for @syEmContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth runs in a container here, so emulators cannot run on this machine: they come from a node with Android Studio or the SDK (a Windows, Mac or Linux computer paired in Settings › Nodes).'**
+  String get syEmContainer;
+
+  /// No description provided for @syEmEmulator.
+  ///
+  /// In en, this message translates to:
+  /// **'Emulator'**
+  String get syEmEmulator;
+
+  /// No description provided for @syEmFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder of the Android SDK'**
+  String get syEmFolder;
+
+  /// No description provided for @syEmFolderForget.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget it'**
+  String get syEmFolderForget;
+
+  /// No description provided for @syEmFolderHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The folder with platform-tools, emulator or system-images inside.'**
+  String get syEmFolderHelp;
+
+  /// No description provided for @syEmFolderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full path of the SDK folder'**
+  String get syEmFolderLabel;
+
+  /// No description provided for @syEmFolderLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Only if the SDK is somewhere Rasgeth does not look by itself. It looks at ANDROID_HOME, ANDROID_SDK_ROOT, Android Studio\'s settings, Android Studio\'s usual place and adb on the PATH.'**
+  String get syEmFolderLead;
+
+  /// No description provided for @syEmFolderSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this folder'**
+  String get syEmFolderSave;
+
+  /// No description provided for @syEmHere.
+  ///
+  /// In en, this message translates to:
+  /// **'This machine'**
+  String get syEmHere;
+
+  /// No description provided for @syEmImageMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'image missing'**
+  String get syEmImageMissing;
+
+  /// No description provided for @syEmImages.
+  ///
+  /// In en, this message translates to:
+  /// **'System images'**
+  String get syEmImages;
+
+  /// No description provided for @syEmLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Android emulators, Android phones on USB or Wi-Fi, and iOS simulators: what this machine and your nodes have, and what is missing. Here Rasgeth only looks: nothing is installed or started.'**
+  String get syEmLead;
+
+  /// No description provided for @syEmLookAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Look again'**
+  String get syEmLookAgain;
+
+  /// No description provided for @syEmLooked.
+  ///
+  /// In en, this message translates to:
+  /// **'Where Rasgeth looked'**
+  String get syEmLooked;
+
+  /// No description provided for @syEmLooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking…'**
+  String get syEmLooking;
+
+  /// No description provided for @syEmMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Emulators at once'**
+  String get syEmMax;
+
+  /// No description provided for @syEmMaxLead.
+  ///
+  /// In en, this message translates to:
+  /// **'How many emulators may run together on this machine: each one takes 2 to 4 GB of memory.'**
+  String get syEmMaxLead;
+
+  /// No description provided for @syEmMiss_accel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hardware acceleration: without it emulators are too slow.'**
+  String get syEmMiss_accel;
+
+  /// No description provided for @syEmMiss_avd.
+  ///
+  /// In en, this message translates to:
+  /// **'A virtual device that can start here.'**
+  String get syEmMiss_avd;
+
+  /// No description provided for @syEmMiss_cmdline_tools.
+  ///
+  /// In en, this message translates to:
+  /// **'cmdline-tools (sdkmanager, avdmanager), to download images and create virtual devices.'**
+  String get syEmMiss_cmdline_tools;
+
+  /// No description provided for @syEmMiss_emulator.
+  ///
+  /// In en, this message translates to:
+  /// **'The Android Emulator package of the SDK.'**
+  String get syEmMiss_emulator;
+
+  /// No description provided for @syEmMiss_emulator_old.
+  ///
+  /// In en, this message translates to:
+  /// **'The emulator is old: Rasgeth can propose the update, which you approve.'**
+  String get syEmMiss_emulator_old;
+
+  /// No description provided for @syEmMiss_ios_bridge.
+  ///
+  /// In en, this message translates to:
+  /// **'A bridge for touches on iOS simulators (comes with 3.11.1).'**
+  String get syEmMiss_ios_bridge;
+
+  /// No description provided for @syEmMiss_platform_tools.
+  ///
+  /// In en, this message translates to:
+  /// **'platform-tools (adb), to talk to emulators and phones.'**
+  String get syEmMiss_platform_tools;
+
+  /// No description provided for @syEmMiss_sdk.
+  ///
+  /// In en, this message translates to:
+  /// **'An Android SDK (Android Studio installs it; or choose its folder below).'**
+  String get syEmMiss_sdk;
+
+  /// No description provided for @syEmMiss_system_image.
+  ///
+  /// In en, this message translates to:
+  /// **'A system image for this processor.'**
+  String get syEmMiss_system_image;
+
+  /// No description provided for @syEmMiss_xcode.
+  ///
+  /// In en, this message translates to:
+  /// **'Xcode, for iOS simulators (from the App Store).'**
+  String get syEmMiss_xcode;
+
+  /// No description provided for @syEmMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'What is missing'**
+  String get syEmMissing;
+
+  /// No description provided for @syEmNoNodes.
+  ///
+  /// In en, this message translates to:
+  /// **'No nodes paired. Pair a computer with Android Studio in Settings › Nodes to use its emulators from here.'**
+  String get syEmNoNodes;
+
+  /// No description provided for @syEmNoSdk.
+  ///
+  /// In en, this message translates to:
+  /// **'No Android SDK found. Choose its folder below if you have one, or install Android Studio (or the SDK alone); a guided install will come, and always asks you first.'**
+  String get syEmNoSdk;
+
+  /// No description provided for @syEmNodeOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'offline'**
+  String get syEmNodeOffline;
+
+  /// No description provided for @syEmNodeOld.
+  ///
+  /// In en, this message translates to:
+  /// **'This node has not said what it has: it is offline or older than 3.11.'**
+  String get syEmNodeOld;
+
+  /// No description provided for @syEmNodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Your nodes'**
+  String get syEmNodes;
+
+  /// No description provided for @syEmNodesLead.
+  ///
+  /// In en, this message translates to:
+  /// **'What the machines paired with this one have, as each one last said.'**
+  String get syEmNodesLead;
+
+  /// No description provided for @syEmNone.
+  ///
+  /// In en, this message translates to:
+  /// **'none'**
+  String get syEmNone;
+
+  /// No description provided for @syEmNoneAttached.
+  ///
+  /// In en, this message translates to:
+  /// **'No emulator running and no phone attached.'**
+  String get syEmNoneAttached;
+
+  /// No description provided for @syEmNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Not ready yet: see what is missing below.'**
+  String get syEmNotReady;
+
+  /// No description provided for @syEmOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'not responding'**
+  String get syEmOffline;
+
+  /// No description provided for @syEmPhoneUsb.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone over USB'**
+  String get syEmPhoneUsb;
+
+  /// No description provided for @syEmPhoneWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone over Wi-Fi'**
+  String get syEmPhoneWifi;
+
+  /// No description provided for @syEmPlayStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Play Store'**
+  String get syEmPlayStore;
+
+  /// No description provided for @syEmQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Emulators and phones'**
+  String get syEmQ;
+
+  /// No description provided for @syEmReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready: emulators can run here ({count} virtual devices).'**
+  String syEmReady(String count);
+
+  /// No description provided for @syEmRunningEmu.
+  ///
+  /// In en, this message translates to:
+  /// **'Emulator'**
+  String get syEmRunningEmu;
+
+  /// No description provided for @syEmSdk.
+  ///
+  /// In en, this message translates to:
+  /// **'Android SDK'**
+  String get syEmSdk;
+
+  /// No description provided for @syEmSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Emulators'**
+  String get syEmSection;
+
+  /// No description provided for @syEmSimulators.
+  ///
+  /// In en, this message translates to:
+  /// **'iOS simulators'**
+  String get syEmSimulators;
+
+  /// No description provided for @syEmSrc_ANDROID_HOME.
+  ///
+  /// In en, this message translates to:
+  /// **'from ANDROID_HOME'**
+  String get syEmSrc_ANDROID_HOME;
+
+  /// No description provided for @syEmSrc_ANDROID_SDK_ROOT.
+  ///
+  /// In en, this message translates to:
+  /// **'from ANDROID_SDK_ROOT'**
+  String get syEmSrc_ANDROID_SDK_ROOT;
+
+  /// No description provided for @syEmSrc_custom.
+  ///
+  /// In en, this message translates to:
+  /// **'the folder you chose'**
+  String get syEmSrc_custom;
+
+  /// No description provided for @syEmSrc_path.
+  ///
+  /// In en, this message translates to:
+  /// **'around adb or the emulator on the PATH'**
+  String get syEmSrc_path;
+
+  /// No description provided for @syEmSrc_standard.
+  ///
+  /// In en, this message translates to:
+  /// **'Android Studio\'s usual place'**
+  String get syEmSrc_standard;
+
+  /// No description provided for @syEmSrc_studio.
+  ///
+  /// In en, this message translates to:
+  /// **'from Android Studio\'s settings'**
+  String get syEmSrc_studio;
+
+  /// No description provided for @syEmSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get syEmSystem;
+
+  /// No description provided for @syEmUnauthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'waiting for your yes on the phone'**
+  String get syEmUnauthorized;
+
+  /// No description provided for @syEmXcode.
+  ///
+  /// In en, this message translates to:
+  /// **'Xcode'**
+  String get syEmXcode;
+
+  /// No description provided for @syOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'offline'**
+  String get syOffline;
+
+  /// No description provided for @syHubEmulators.
+  ///
+  /// In en, this message translates to:
+  /// **'Android emulators, phones and iOS simulators, here and on the nodes'**
+  String get syHubEmulators;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

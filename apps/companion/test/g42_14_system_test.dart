@@ -22,6 +22,7 @@ import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
 import 'package:rgcompanion/screens/server_settings_screen.dart';
 import 'package:rgcompanion/settings/system/backup_screen.dart';
+import 'package:rgcompanion/settings/system/emulators_screen.dart';
 import 'package:rgcompanion/settings/system/machines_screen.dart';
 import 'package:rgcompanion/settings/system/nodes_screen.dart';
 import 'package:rgcompanion/settings/system/os_panels.dart' show httpsTrustedHere;
@@ -293,6 +294,50 @@ void main() {
     await tap(tester, 'sy-mc-replace');
     await tap(tester, 'dialog-no');
     expect(sys.calls.where((c) => c.endsWith('/trust')), hasLength(1));
+    await done(tester);
+  });
+
+  testWidgets('emulators: the report, a folder refused then used, how many at once, the nodes', (
+    tester,
+  ) async {
+    await start(tester);
+    await push(tester, const EmulatorsScreen());
+    expect(find.textContaining('Pronta: qui possono girare gli emulatori (1'), findsOneWidget);
+    expect(
+      find.textContaining(r'D:\Android\Sdk · dalle impostazioni di Android Studio'),
+      findsOneWidget,
+    );
+    expect(find.text('Emulatore · Medium_Phone_API_35'), findsOneWidget);
+    expect(find.text('Telefono via Wi-Fi · aspetta il tuo sì sul telefono'), findsOneWidget);
+    expect(find.textContaining("L'emulatore è vecchio"), findsOneWidget);
+    // The nodes: a Mac with Xcode and no SDK, and one older than 3.11.
+    expect(find.text('Mac mini'), findsOneWidget);
+    expect(find.text('iPhone 18 (iOS 27.2)'), findsOneWidget);
+    expect(find.textContaining('Un ponte per i tocchi'), findsOneWidget);
+    expect(find.textContaining('più vecchio della 3.11'), findsOneWidget);
+    // A folder without an SDK is refused in the server's words; then one is used and forgotten.
+    await type(tester, 'sy-em-path', r'E:\vuota');
+    await tap(tester, 'sy-em-path-save');
+    expect(find.textContaining('No Android SDK in that folder'), findsOneWidget);
+    await type(tester, 'sy-em-path', r'E:\android-sdk');
+    await tap(tester, 'sy-em-path-save');
+    expect(sys.bodies['PUT /api/emulators/settings'], {'sdkPath': r'E:\android-sdk'});
+    expect(find.textContaining('la cartella che hai scelto'), findsOneWidget);
+    await tap(tester, 'sy-em-path-forget');
+    expect(sys.bodies['PUT /api/emulators/settings'], {'sdkPath': null});
+    await tap(tester, 'sy-em-max-3');
+    expect(sys.bodies['PUT /api/emulators/settings'], {'maxRunning': 3});
+    final before = sys.calls.where((c) => c == 'GET /api/emulators').length;
+    await calm(tester);
+    await tester.ensureVisible(find.byKey(const Key('sy-em-again')));
+    await calm(tester);
+    expect(
+      tester.widget<ButtonStyleButton>(find.byKey(const Key('sy-em-again'))).onPressed,
+      isNotNull,
+    );
+    await tap(tester, 'sy-em-again', 16);
+    expect(sys.calls.where((c) => c == 'GET /api/emulators').length, before + 1);
+    expect(find.byType(Checkbox), findsNothing);
     await done(tester);
   });
 

@@ -54,6 +54,7 @@ import '../settings/channels/chats_screen.dart' show openChatPlatforms;
 import '../settings/channels/telegram_screen.dart' show openTelegramSettings;
 import '../settings/models/models_screen.dart' show openModelsSettings;
 import '../settings/system/backup_screen.dart' show openBackupSettings;
+import '../settings/system/emulators_screen.dart' show openEmulatorsSettings;
 import '../settings/system/machines_screen.dart' show openMachinesSettings;
 import '../settings/system/nodes_screen.dart' show openNodesSettings;
 import '../settings/system/remote_screen.dart' show openRemoteSettings;
@@ -713,6 +714,14 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       l.syNdSection,
                       l.syHubNodes,
                       () => openNodesSettings(context),
+                    ),
+                    _hub(
+                      c,
+                      'emulators',
+                      RgIcons.emulator,
+                      l.syEmSection,
+                      l.syHubEmulators,
+                      () => openEmulatorsSettings(context),
                     ),
                     _hub(
                       c,

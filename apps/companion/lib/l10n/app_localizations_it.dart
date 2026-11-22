@@ -17991,4 +17991,236 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get moSysPersistarLine =>
       'Il contesto di ogni conversazione con un modello locale è salvato su disco: tornandoci, anche dopo un riavvio, non si rilegge tutto da capo.';
+
+  @override
+  String get syEmAccel => 'Accelerazione';
+
+  @override
+  String syEmAccelOk(String kind) {
+    return '$kind funziona';
+  }
+
+  @override
+  String get syEmAccel_container => 'nessuna in un container';
+
+  @override
+  String get syEmAccel_disabled => 'la virtualizzazione è spenta (BIOS) o manca l\'hypervisor';
+
+  @override
+  String get syEmAccel_kvm_denied =>
+      'KVM c\'è ma questo utente non può usarlo (aggiungilo al gruppo kvm)';
+
+  @override
+  String get syEmAccel_no_kvm =>
+      'Niente KVM: accendi la virtualizzazione nel BIOS e carica il modulo KVM';
+
+  @override
+  String get syEmAccel_unknown => 'non si sa finché l\'emulatore non è installato';
+
+  @override
+  String get syEmAdb => 'adb (platform-tools)';
+
+  @override
+  String get syEmAdbIdle =>
+      'adb non è in funzione, quindi emulatori accesi e telefoni non si conoscono: Rasgeth non lo avvia solo per guardare.';
+
+  @override
+  String syEmApi(String api) {
+    return 'API $api';
+  }
+
+  @override
+  String get syEmAttached => 'Accesi adesso';
+
+  @override
+  String get syEmAvds => 'Dispositivi virtuali';
+
+  @override
+  String get syEmContainer =>
+      'Qui Rasgeth gira in un container, quindi gli emulatori non possono girare su questa macchina: arrivano da un nodo con Android Studio o l\'SDK (un computer Windows, Mac o Linux collegato in Impostazioni › Nodi).';
+
+  @override
+  String get syEmEmulator => 'Emulatore';
+
+  @override
+  String get syEmFolder => 'Cartella dell\'SDK Android';
+
+  @override
+  String get syEmFolderForget => 'Dimenticala';
+
+  @override
+  String get syEmFolderHelp => 'La cartella che contiene platform-tools, emulator o system-images.';
+
+  @override
+  String get syEmFolderLabel => 'Percorso completo della cartella dell\'SDK';
+
+  @override
+  String get syEmFolderLead =>
+      'Solo se l\'SDK sta in un posto dove Rasgeth non guarda da solo. Guarda ANDROID_HOME, ANDROID_SDK_ROOT, le impostazioni di Android Studio, il posto solito di Android Studio e adb nel PATH.';
+
+  @override
+  String get syEmFolderSave => 'Usa questa cartella';
+
+  @override
+  String get syEmHere => 'Questa macchina';
+
+  @override
+  String get syEmImageMissing => 'immagine mancante';
+
+  @override
+  String get syEmImages => 'Immagini di sistema';
+
+  @override
+  String get syEmLead =>
+      'Emulatori Android, telefoni Android via USB o Wi-Fi e simulatori iOS: cosa hanno questa macchina e i tuoi nodi, e cosa manca. Qui Rasgeth guarda soltanto: non installa e non avvia niente.';
+
+  @override
+  String get syEmLookAgain => 'Guarda di nuovo';
+
+  @override
+  String get syEmLooked => 'Dove ha guardato Rasgeth';
+
+  @override
+  String get syEmLooking => 'Sto guardando…';
+
+  @override
+  String get syEmMax => 'Emulatori insieme';
+
+  @override
+  String get syEmMaxLead =>
+      'Quanti emulatori possono girare insieme su questa macchina: ognuno usa da 2 a 4 GB di memoria.';
+
+  @override
+  String get syEmMiss_accel => 'L\'accelerazione hardware: senza, gli emulatori sono troppo lenti.';
+
+  @override
+  String get syEmMiss_avd => 'Un dispositivo virtuale che possa partire qui.';
+
+  @override
+  String get syEmMiss_cmdline_tools =>
+      'cmdline-tools (sdkmanager, avdmanager), per scaricare immagini e creare dispositivi virtuali.';
+
+  @override
+  String get syEmMiss_emulator => 'Il pacchetto Android Emulator dell\'SDK.';
+
+  @override
+  String get syEmMiss_emulator_old =>
+      'L\'emulatore è vecchio: Rasgeth può proporti l\'aggiornamento, che approvi tu.';
+
+  @override
+  String get syEmMiss_ios_bridge =>
+      'Un ponte per i tocchi sui simulatori iOS (arriva con la 3.11.1).';
+
+  @override
+  String get syEmMiss_platform_tools =>
+      'platform-tools (adb), per parlare con emulatori e telefoni.';
+
+  @override
+  String get syEmMiss_sdk =>
+      'Un SDK Android (lo installa Android Studio; oppure scegli qui sotto la sua cartella).';
+
+  @override
+  String get syEmMiss_system_image => 'Un\'immagine di sistema per questo processore.';
+
+  @override
+  String get syEmMiss_xcode => 'Xcode, per i simulatori iOS (dall\'App Store).';
+
+  @override
+  String get syEmMissing => 'Cosa manca';
+
+  @override
+  String get syEmNoNodes =>
+      'Nessun nodo collegato. Collega in Impostazioni › Nodi un computer con Android Studio per usarne gli emulatori da qui.';
+
+  @override
+  String get syEmNoSdk =>
+      'Nessun SDK Android trovato. Se ce l\'hai, scegli qui sotto la sua cartella, oppure installa Android Studio (o solo l\'SDK); arriverà un\'installazione guidata, che chiede sempre prima a te.';
+
+  @override
+  String get syEmNodeOffline => 'non in linea';
+
+  @override
+  String get syEmNodeOld =>
+      'Questo nodo non ha detto cosa ha: è spento o è più vecchio della 3.11.';
+
+  @override
+  String get syEmNodes => 'I tuoi nodi';
+
+  @override
+  String get syEmNodesLead =>
+      'Cosa hanno le macchine collegate a questa, come l\'ha detto ognuna l\'ultima volta.';
+
+  @override
+  String get syEmNone => 'nessuno';
+
+  @override
+  String get syEmNoneAttached => 'Nessun emulatore acceso e nessun telefono collegato.';
+
+  @override
+  String get syEmNotReady => 'Non ancora pronta: qui sotto c\'è cosa manca.';
+
+  @override
+  String get syEmOffline => 'non risponde';
+
+  @override
+  String get syEmPhoneUsb => 'Telefono via USB';
+
+  @override
+  String get syEmPhoneWifi => 'Telefono via Wi-Fi';
+
+  @override
+  String get syEmPlayStore => 'Play Store';
+
+  @override
+  String get syEmQ => 'Emulatori e telefoni';
+
+  @override
+  String syEmReady(String count) {
+    return 'Pronta: qui possono girare gli emulatori ($count dispositivi virtuali).';
+  }
+
+  @override
+  String get syEmRunningEmu => 'Emulatore';
+
+  @override
+  String get syEmSdk => 'SDK Android';
+
+  @override
+  String get syEmSection => 'Emulatori';
+
+  @override
+  String get syEmSimulators => 'Simulatori iOS';
+
+  @override
+  String get syEmSrc_ANDROID_HOME => 'da ANDROID_HOME';
+
+  @override
+  String get syEmSrc_ANDROID_SDK_ROOT => 'da ANDROID_SDK_ROOT';
+
+  @override
+  String get syEmSrc_custom => 'la cartella che hai scelto';
+
+  @override
+  String get syEmSrc_path => 'intorno ad adb o all\'emulatore nel PATH';
+
+  @override
+  String get syEmSrc_standard => 'il posto solito di Android Studio';
+
+  @override
+  String get syEmSrc_studio => 'dalle impostazioni di Android Studio';
+
+  @override
+  String get syEmSystem => 'Sistema';
+
+  @override
+  String get syEmUnauthorized => 'aspetta il tuo sì sul telefono';
+
+  @override
+  String get syEmXcode => 'Xcode';
+
+  @override
+  String get syOffline => 'non collegato';
+
+  @override
+  String get syHubEmulators => 'Emulatori Android, telefoni e simulatori iOS, qui e sui nodi';
 }

@@ -3,7 +3,7 @@
 // `revokeSessions`, `startRemote`, `stopRemote`, `setReachable`, `setupNet`, `probeName`,
 // `startPihole`, `stopPihole`, `piholePassword`), Settings › System (`setupRole`, `setupStorage`,
 // the backups' destinations, `setupSsh`, `setupWifi…`, `setupHttps`, `setupReboot`), the SSH
-// machines (`machines`…), the nodes (`nodes`…), the backup file (`exportBackup`, `uploadBackup`,
+// machines (`machines`…), the nodes (`nodes`…), the emulators (`emulators`, `setEmulatorSettings`), the backup file (`exportBackup`, `uploadBackup`,
 // `importBackup`), the updates' gate (`updateAct`, `safetyBackup`, `foundBackups`). Passwords and
 // keys go to the server and are never kept here.
 import 'dart:typed_data';
@@ -29,6 +29,66 @@ Found _found(Object? o) {
   return j.containsKey('value')
       ? (value: j['value'], missing: null)
       : (value: null, missing: _s(j['missing']) ?? 'unsupported');
+}
+
+/// `EmulatorReport` (3.11): what a machine has for emulators, phones and simulators.
+class EmulatorReport {
+  EmulatorReport(Map<String, dynamic> j)
+    : os = _s(j['os']) ?? 'linux',
+      arch = _s(j['arch']) ?? 'x64',
+      container = j['container'] == true,
+      sdk = _m(_m(j['android'])['sdk']).isEmpty ? null : _m(_m(j['android'])['sdk']),
+      looked = _l(_m(j['android'])['looked']),
+      avds = _l(_m(j['android'])['avds']),
+      attached = _l(_m(j['android'])['attached']),
+      adbIdle = _m(j['android'])['adbIdle'] == true,
+      accel = _m(_m(j['android'])['accel']),
+      ios = _m(j['ios']).isEmpty ? null : _m(j['ios']),
+      missing = _ss(j['missing']),
+      ready = j['ready'] == true,
+      maxRunning = _i(j['maxRunning']);
+
+  final String os, arch;
+  final bool container, adbIdle, ready;
+
+  /// `{root, source, emulator?, platformTools?, cmdlineTools, images}`.
+  final Map<String, dynamic>? sdk;
+  final List<Map<String, dynamic>> looked, avds, attached;
+
+  /// `{ok, kind?, reason?}`.
+  final Map<String, dynamic> accel;
+
+  /// `{xcode?, simulators, bridge?}` (macOS only).
+  final Map<String, dynamic>? ios;
+  final List<String> missing;
+  final int maxRunning;
+}
+
+/// `EmulatorMachineView`: this machine or a node, with its report when it gave one.
+class EmulatorMachineView {
+  EmulatorMachineView(Map<String, dynamic> j)
+    : id = _s(j['id']) ?? '',
+      name = _s(j['name']) ?? '',
+      online = j['online'] == true,
+      report = _m(j['report']).isEmpty ? null : EmulatorReport(_m(j['report']));
+
+  final String id, name;
+  final bool online;
+  final EmulatorReport? report;
+}
+
+/// `EmulatorsState`: Settings › Emulators.
+class EmulatorsState {
+  EmulatorsState(Map<String, dynamic> j)
+    : here = EmulatorMachineView(_m(j['here'])),
+      sdkPath = _s(_m(j['settings'])['sdkPath']),
+      maxRunning = _m(j['settings'])['maxRunning'] is num ? _i(_m(j['settings'])['maxRunning']) : 2,
+      nodes = [for (final n in _l(j['nodes'])) EmulatorMachineView(n)];
+
+  final EmulatorMachineView here;
+  final String? sdkPath;
+  final int maxRunning;
+  final List<EmulatorMachineView> nodes;
 }
 
 /// `BlockDisk`.
@@ -384,6 +444,23 @@ extension SystemApi on RedGiantClient {
       _do('POST', '/api/settings/machines/${_e(id)}/test');
   Future<void> trustMachine(String id, String fingerprint) =>
       callJson('POST', '/api/settings/machines/${_e(id)}/trust', {'fingerprint': fingerprint});
+
+  // ---- emulators (3.11) ----
+
+  Future<EmulatorsState> emulators({bool fresh = false}) async =>
+      EmulatorsState(objectOf(await getJson('/api/emulators', fresh ? {'fresh': '1'} : null)));
+
+  /// `PUT /api/emulators/settings`: the SDK folder (`null` forgets it) and how many at once.
+  Future<EmulatorsState> setEmulatorSettings({
+    bool setPath = false,
+    String? sdkPath,
+    int? maxRunning,
+  }) async => EmulatorsState(
+    await _do('PUT', '/api/emulators/settings', {
+      if (setPath) 'sdkPath': sdkPath,
+      'maxRunning': ?maxRunning,
+    }),
+  );
 
   // ---- nodes ----
 

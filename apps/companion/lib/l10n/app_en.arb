@@ -12694,5 +12694,96 @@
   "hfWakeErrServer": "Rasgeth could not download the speech model",
   "hfWakeErrChecksum": "the recogniser that arrived is not the expected one, so it was not kept",
   "hfWakeErrBroken": "the speech model did not start on this device; download it again",
-  "moSysPersistarLine": "The context of every conversation with a local model is saved on disk: coming back to it, even after a restart, does not read it all again."
+  "moSysPersistarLine": "The context of every conversation with a local model is saved on disk: coming back to it, even after a restart, does not read it all again.",
+  "syEmAccel": "Acceleration",
+  "syEmAccelOk": "{kind} works",
+  "@syEmAccelOk": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "syEmAccel_container": "none in a container",
+  "syEmAccel_disabled": "virtualization is switched off (BIOS) or the hypervisor is missing",
+  "syEmAccel_kvm_denied": "KVM is there but this user may not use it (add it to the kvm group)",
+  "syEmAccel_no_kvm": "No KVM: turn on virtualization in the BIOS and load the KVM module",
+  "syEmAccel_unknown": "unknown until the emulator is installed",
+  "syEmAdb": "adb (platform-tools)",
+  "syEmAdbIdle": "adb is not running, so running emulators and phones are not known: Rasgeth does not start it just to look.",
+  "syEmApi": "API {api}",
+  "@syEmApi": {
+    "placeholders": {
+      "api": {
+        "type": "String"
+      }
+    }
+  },
+  "syEmAttached": "Running now",
+  "syEmAvds": "Virtual devices",
+  "syEmContainer": "Rasgeth runs in a container here, so emulators cannot run on this machine: they come from a node with Android Studio or the SDK (a Windows, Mac or Linux computer paired in Settings › Nodes).",
+  "syEmEmulator": "Emulator",
+  "syEmFolder": "Folder of the Android SDK",
+  "syEmFolderForget": "Forget it",
+  "syEmFolderHelp": "The folder with platform-tools, emulator or system-images inside.",
+  "syEmFolderLabel": "Full path of the SDK folder",
+  "syEmFolderLead": "Only if the SDK is somewhere Rasgeth does not look by itself. It looks at ANDROID_HOME, ANDROID_SDK_ROOT, Android Studio's settings, Android Studio's usual place and adb on the PATH.",
+  "syEmFolderSave": "Use this folder",
+  "syEmHere": "This machine",
+  "syEmImageMissing": "image missing",
+  "syEmImages": "System images",
+  "syEmLead": "Android emulators, Android phones on USB or Wi-Fi, and iOS simulators: what this machine and your nodes have, and what is missing. Here Rasgeth only looks: nothing is installed or started.",
+  "syEmLookAgain": "Look again",
+  "syEmLooked": "Where Rasgeth looked",
+  "syEmLooking": "Looking…",
+  "syEmMax": "Emulators at once",
+  "syEmMaxLead": "How many emulators may run together on this machine: each one takes 2 to 4 GB of memory.",
+  "syEmMiss_accel": "Hardware acceleration: without it emulators are too slow.",
+  "syEmMiss_avd": "A virtual device that can start here.",
+  "syEmMiss_cmdline_tools": "cmdline-tools (sdkmanager, avdmanager), to download images and create virtual devices.",
+  "syEmMiss_emulator": "The Android Emulator package of the SDK.",
+  "syEmMiss_emulator_old": "The emulator is old: Rasgeth can propose the update, which you approve.",
+  "syEmMiss_ios_bridge": "A bridge for touches on iOS simulators (comes with 3.11.1).",
+  "syEmMiss_platform_tools": "platform-tools (adb), to talk to emulators and phones.",
+  "syEmMiss_sdk": "An Android SDK (Android Studio installs it; or choose its folder below).",
+  "syEmMiss_system_image": "A system image for this processor.",
+  "syEmMiss_xcode": "Xcode, for iOS simulators (from the App Store).",
+  "syEmMissing": "What is missing",
+  "syEmNoNodes": "No nodes paired. Pair a computer with Android Studio in Settings › Nodes to use its emulators from here.",
+  "syEmNoSdk": "No Android SDK found. Choose its folder below if you have one, or install Android Studio (or the SDK alone); a guided install will come, and always asks you first.",
+  "syEmNodeOffline": "offline",
+  "syEmNodeOld": "This node has not said what it has: it is offline or older than 3.11.",
+  "syEmNodes": "Your nodes",
+  "syEmNodesLead": "What the machines paired with this one have, as each one last said.",
+  "syEmNone": "none",
+  "syEmNoneAttached": "No emulator running and no phone attached.",
+  "syEmNotReady": "Not ready yet: see what is missing below.",
+  "syEmOffline": "not responding",
+  "syEmPhoneUsb": "Phone over USB",
+  "syEmPhoneWifi": "Phone over Wi-Fi",
+  "syEmPlayStore": "Play Store",
+  "syEmQ": "Emulators and phones",
+  "syEmReady": "Ready: emulators can run here ({count} virtual devices).",
+  "@syEmReady": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "syEmRunningEmu": "Emulator",
+  "syEmSdk": "Android SDK",
+  "syEmSection": "Emulators",
+  "syEmSimulators": "iOS simulators",
+  "syEmSrc_ANDROID_HOME": "from ANDROID_HOME",
+  "syEmSrc_ANDROID_SDK_ROOT": "from ANDROID_SDK_ROOT",
+  "syEmSrc_custom": "the folder you chose",
+  "syEmSrc_path": "around adb or the emulator on the PATH",
+  "syEmSrc_standard": "Android Studio's usual place",
+  "syEmSrc_studio": "from Android Studio's settings",
+  "syEmSystem": "System",
+  "syEmUnauthorized": "waiting for your yes on the phone",
+  "syEmXcode": "Xcode",
+  "syOffline": "offline",
+  "syHubEmulators": "Android emulators, phones and iOS simulators, here and on the nodes"
 }
