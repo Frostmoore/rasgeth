@@ -408,6 +408,35 @@ const brain = (req) => {
         "2. [Bialetti, Venus](https://www.bialetti.com/it_it/venus)\n" +
         "3. [Caffè e moka, prova della Brikka](https://www.example.com/brikka)",
     };
+  // 3.12 (DEMO_RULES): a magic rule's conversation ends in God's proposal beside it.
+  if (/margine settimanale/i.test(said) && !results)
+    return {
+      text: "Ho fatto due regole in una: ti avviso a +5 e fermo gli agenti a +2. Ecco la proposta.",
+      toolCalls: [
+        {
+          name: "propose_rule",
+          input: {
+            rule: {
+              name: "Margine settimanale",
+              description: "Avvisami a +5, ferma tutti a +2",
+              when: { event: "usage" },
+              if: [
+                { field: "window", op: "eq", value: "7d" },
+                { field: "marginPct", op: "lte", value: 2 },
+              ],
+              actions: [{ do: "notify" }, { do: "stop", scope: "all", resume: "person" }],
+              examples: {
+                fire: { window: "7d", marginPct: 1 },
+                pass: { window: "7d", marginPct: 9 },
+              },
+            },
+            summary:
+              "Quando il margine della settimana scende a +2 o meno ti avviso e fermo gli agenti dopo che hanno salvato.",
+            missing: [],
+          },
+        },
+      ],
+    };
   // G42.9 (DEMO_MAGIC_AUTOMATION): a magic automation's conversation ends in God's proposal, with a chat
   // still to link, so the preview, its needs and the yes show (the app's and the page's shots).
   if (/Revolut/.test(said) && !/^Magic (integration|extension): /.test(said) && !results)
@@ -3754,6 +3783,51 @@ if (process.env.DEMO_MAGIC_AUTOMATION) {
     if ((await core.magic.get("local", revolut.id)).status === "ready") break;
     await new Promise((r) => setTimeout(r, 50));
   }
+}
+// DEMO_RULES=1 (3.12): the person's rules: a few rules, a stop in place, a magic rule proposed.
+if (process.env.DEMO_RULES) {
+  await core.rules.create(
+    "local",
+    {
+      name: "Niente push la domenica",
+      description: "Il fine settimana niente codice online",
+      when: { event: "tool" },
+      if: [{ field: "command", op: "matches", value: "git push*" }],
+      actions: [{ do: "block", text: "oggi no" }, { do: "notify" }],
+      examples: { fire: { command: "git push origin main" }, pass: { command: "git status" } },
+    },
+    { enable: true },
+  );
+  await core.rules.create("local", {
+    name: "Mai file .env",
+    when: { event: "file" },
+    if: [{ field: "path", op: "matches", value: "*.env" }],
+    actions: [{ do: "ask", text: "contiene chiavi" }],
+    examples: { fire: { path: "app/.env" }, pass: { path: "app/main.ts" } },
+  });
+  const m = await core.magicRules.create(
+    "local",
+    "Tieni d'occhio il margine settimanale: avvisami a +5 e ferma tutti a +2",
+  );
+  for (let i = 0; i < 400; i++) {
+    if ((await core.magicRules.get("local", m.id)).status === "ready") break;
+    await new Promise((r) => setTimeout(r, 50));
+  }
+  await core.rules.addTemplate("local", "weekly-margin", { enable: true });
+  const now = Date.now();
+  await core.rules.usage(
+    "local",
+    [
+      {
+        provider: "claude-subscription",
+        windows: [
+          { id: "7d", usedPct: 69, resetsAt: new Date(now + 0.3 * 7 * 86_400_000).toISOString() },
+        ],
+      },
+    ],
+    now,
+  );
+  await core.rules.settled();
 }
 await debugLog.configure({ dir: join(dir, "logs") });
 await setup.applyAtStartup();

@@ -1251,6 +1251,8 @@ export type SideView =
 
 export type SettingsSection =
   | "general"
+  /** The person's own rules (3.12): when, if, then. */
+  | "rules"
   /** The machine, the role, storage and backups, SSH (G39.3). */
   | "system"
   | "setup"

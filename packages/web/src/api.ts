@@ -38,6 +38,13 @@ import {
   type MachineTest,
   type MachineView,
   type MagicAutomation,
+  type MagicRule,
+  type PersonRule,
+  type RuleDraftInput,
+  type RuleFire,
+  type RuleHold,
+  type RuleTrial,
+  type RuleVersion,
   type MagicExtension,
   type MagicExtKind,
   type Mailbox as MailboxInfo,
@@ -1827,6 +1834,41 @@ export class Api {
   rejectMagic = (id: string, reason?: string) =>
     this.call<MagicAutomation>("POST", `/api/magic/${id}/reject`, reason ? { reason } : {});
   dismissMagic = (id: string) => this.call("DELETE", `/api/magic/${id}`);
+  /** The person's rules (3.12, Settings > Rules). */
+  rules = () =>
+    this.call<{ rules: PersonRule[]; holds: RuleHold[]; fires: RuleFire[] }>("GET", "/api/rules");
+  createRule = (rule: RuleDraftInput, enable = false) =>
+    this.call<PersonRule>("POST", "/api/rules", { rule, enable });
+  updateRule = (id: string, rule: RuleDraftInput) =>
+    this.call<PersonRule>("PUT", `/api/rules/${id}`, { rule });
+  enableRule = (id: string, enabled: boolean) =>
+    this.call<PersonRule>("POST", `/api/rules/${id}/enabled`, { enabled });
+  removeRule = (id: string) => this.call("DELETE", `/api/rules/${id}`);
+  undoRule = (id: string) =>
+    this.call<{ rule: PersonRule | null }>("POST", `/api/rules/${id}/undo`, {});
+  tryRule = (rule: RuleDraftInput) => this.call<RuleTrial>("POST", "/api/rules/try", { rule });
+  ruleHistory = (id?: string) =>
+    this.call<RuleVersion[]>(
+      "GET",
+      `/api/rules/history${id ? `?id=${encodeURIComponent(id)}` : ""}`,
+    );
+  addRuleTemplate = (template: "weekly-margin", enable = false) =>
+    this.call<PersonRule[]>("POST", "/api/rules/template", { template, enable });
+  resumeRules = (ruleId?: string) =>
+    this.call<{ holds: RuleHold[] }>("POST", "/api/rules/resume", ruleId ? { ruleId } : {});
+  magicRules = () => this.call<MagicRule[]>("GET", "/api/magic-rules");
+  magicRule = (id: string) => this.call<MagicRule>("GET", `/api/magic-rules/${id}`);
+  startMagicRule = (request: string) =>
+    this.call<MagicRule>("POST", "/api/magic-rules", { request });
+  approveMagicRule = (id: string, rule?: RuleDraftInput) =>
+    this.call<{ magic: MagicRule; rule: PersonRule }>(
+      "POST",
+      `/api/magic-rules/${id}/approve`,
+      rule ? { rule } : {},
+    );
+  rejectMagicRule = (id: string, reason?: string) =>
+    this.call<MagicRule>("POST", `/api/magic-rules/${id}/reject`, reason ? { reason } : {});
+  dismissMagicRule = (id: string) => this.call("DELETE", `/api/magic-rules/${id}`);
   /** Magic integrations and extensions (G38.3): a conversation with God that ends in a package. */
   magicExts = () => this.call<MagicExtension[]>("GET", "/api/magic-ext");
   magicExt = (id: string) => this.call<MagicExtension>("GET", `/api/magic-ext/${id}`);

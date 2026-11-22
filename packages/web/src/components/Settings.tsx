@@ -35,6 +35,7 @@ import {
   IconTree,
   IconUpload,
   IconUser,
+  IconZap,
 } from "../icons.js";
 import { openTab, type SettingsSection } from "../state.js";
 import { SysTitle, type SystemId, sysName } from "../systems.js";
@@ -61,6 +62,7 @@ import { PortraitPage } from "./Portrait.js";
 import { ProjectsPage } from "./ProjectArchive.js";
 import { RemoteSettings } from "./RemoteSettings.js";
 import { RequestsPage } from "./RequestsPage.js";
+import { Rules } from "./Rules.js";
 import { Setup } from "./Setup.js";
 import { SharedMemoryPage } from "./SharedMemory.js";
 import { Subscriptions } from "./Subscriptions.js";
@@ -111,6 +113,8 @@ export const GROUPS: { title: () => string; sections: Section[] }[] = [
       { id: "tools", label: () => t("toolsSection"), icon: <IconTool size={20} /> },
       { id: "commands", label: () => t("cmdSection"), icon: <IconTerminal size={20} /> },
       named("requests", "eventHorizon", <IconBell size={20} />),
+      // The person's rules (3.12), beside the safety pages, not inside the automations.
+      { id: "rules", label: () => t("rlSection"), icon: <IconZap size={20} /> },
       { id: "keychain", label: () => t("kcSection"), icon: <IconKey size={20} /> },
     ],
   },
@@ -228,6 +232,7 @@ export function Settings({ section = "general" }: { section?: SettingsSection | 
         {section === "tools" && <ToolsPage />}
         {section === "commands" && <CommandLimits />}
         {section === "requests" && <RequestsPage />}
+        {section === "rules" && <Rules />}
         {section === "keychain" && <Keychain />}
         {section === "telegram" && <Telegram />}
         {section === "chats" && <ChatPlatforms />}
