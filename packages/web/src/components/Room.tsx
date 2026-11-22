@@ -89,7 +89,7 @@ function Message({ e }: { e: Event }) {
       <div class="room-author">
         {kindIcon(a)} <strong>{p.name}</strong>
       </div>
-      <div class="md" dangerouslySetInnerHTML={{ __html: renderAnswer(p.text) }} />
+      <div class="md md-read" dangerouslySetInnerHTML={{ __html: renderAnswer(p.text) }} />
     </div>
   );
 }

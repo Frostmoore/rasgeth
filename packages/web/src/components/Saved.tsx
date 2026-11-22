@@ -311,7 +311,7 @@ function SavedCard({
       </header>
       {item.markdown ? (
         <div
-          class="md saved-body"
+          class="md md-read saved-body"
           // Sanitised: every rendered Markdown goes through DOMPurify.
           dangerouslySetInnerHTML={{ __html: renderMarkdown(item.markdown) }}
         />

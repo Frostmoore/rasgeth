@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import type { ChatEntry, ChatSummary } from "../api.js";
 import { lang, t } from "../i18n.js";
 import {
+  IconArrowDown,
   IconChat,
   IconEye,
   IconFile,
@@ -26,6 +27,7 @@ import {
 import { flashPassage, QuotePicker } from "./ChatTools.js";
 import { type Attachment, Composer } from "./Composer.js";
 import { askConfirm } from "./dialogs.js";
+import { useFollow } from "./follow-hook.js";
 import { Images } from "./Images.js";
 import { Mascot } from "./Mascot.js";
 import { MetricsBar } from "./MetricsBar.js";
@@ -86,7 +88,9 @@ function Entry({ e, chatId }: { e: ChatEntry; chatId: string | null }) {
             ))}
           </div>
         )}
-        {text && <div class="md" dangerouslySetInnerHTML={{ __html: renderAnswer(text) }} />}
+        {text && (
+          <div class="md md-read" dangerouslySetInnerHTML={{ __html: renderAnswer(text) }} />
+        )}
         {e.metrics && text && (
           <MetricsBar
             m={e.metrics}
@@ -258,7 +262,6 @@ export function DailyChat({
   } | null>(null);
   const [settings, setSettings] = useState(false);
   const [grouping, setGrouping] = useState(false);
-  const bottom = useRef<HTMLDivElement>(null);
 
   /** This chat goes on as a group (G24.14c): the chosen agent gets it as earlier context. */
   const toGroup = async (agentId: string) => {
@@ -287,9 +290,10 @@ export function DailyChat({
     if (open) void attempt(() => getApi().chat(open)).then((e) => e && setEntries(e));
     else setEntries([]);
   }, [open]);
-  useEffect(() => bottom.current?.scrollIntoView({ block: "end" }), [entries, live]);
   // A saved passage opened from «Salvati» (G40.14): there, once its message shows.
   const scroller = useRef<HTMLDivElement>(null);
+  // Follows the newest text only while the person lets it (3.10.4, follow.ts).
+  const follow = useFollow(scroller, open);
   const body = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const j = pendingJump.value;
@@ -299,11 +303,13 @@ export function DailyChat({
     );
     if (!bubble) return;
     pendingJump.value = null;
+    follow.stop();
     setTimeout(() => flashPassage(bubble, { text: j.text }), 60);
   }, [entries, pendingJump.value, open]);
 
   const send = async (text: string, attachments: Attachment[]) => {
     if (live) return;
+    follow.toBottom();
     let id = open;
     if (!id) {
       const created = await attempt(() => getApi().createChat(projectId));
@@ -465,7 +471,7 @@ export function DailyChat({
               )}
               {live.text ? (
                 <div
-                  class="md"
+                  class="md md-read"
                   dangerouslySetInnerHTML={{ __html: renderStreamingMarkdown(live.text) }}
                 />
               ) : (
@@ -473,8 +479,18 @@ export function DailyChat({
               )}
             </div>
           )}
-          <div ref={bottom} />
         </div>
+        {follow.away && (
+          <button
+            type="button"
+            class={`to-bottom${follow.unseen ? " unseen" : ""}`}
+            title={t("toBottom")}
+            onClick={follow.toBottom}
+          >
+            <IconArrowDown />
+            {follow.unseen && <span>{t("newText")}</span>}
+          </button>
+        )}
       </div>
       <Composer
         lang={lang.value}

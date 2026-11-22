@@ -31,6 +31,7 @@ import {
 } from "../icons.js";
 import { attempt, getApi, signOut } from "../state.js";
 import { setTheme, theme } from "../theme.js";
+import { AccentPicker } from "./AccentPicker.js";
 import { explain } from "./Brain.js";
 import { askConfirm } from "./dialogs.js";
 import { AgentLanguagePicker } from "./LanguagePicker.js";
@@ -484,6 +485,9 @@ export function General() {
               ["dark", [<IconMoon key="i" size={18} />, " ", t("themeDark")]],
             ]}
           />
+        </Row>
+        <Row title={t("accentTitle")} help={t("accentHelp")}>
+          <AccentPicker />
         </Row>
         <Row title={t("uiLangTitle")} help={t("uiLangHelp")}>
           <Seg

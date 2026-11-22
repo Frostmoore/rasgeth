@@ -93,6 +93,7 @@ import {
 import { CommandStrip } from "./CommandStrip.js";
 import { Composer, packMessage } from "./Composer.js";
 import { askText } from "./dialogs.js";
+import { useFollow } from "./follow-hook.js";
 import { Images } from "./Images.js";
 import { MailRequestPreview, MailToolCard, mailSummary } from "./MailCards.js";
 import { Mascot } from "./Mascot.js";
@@ -123,7 +124,11 @@ function Parts({ parts }: { parts: AssistantPart[] }) {
             </details>
           ) : null
         ) : p.type === "text" ? (
-          <div class="md" key={i} dangerouslySetInnerHTML={{ __html: renderAnswer(p.text) }} />
+          <div
+            class="md md-read"
+            key={i}
+            dangerouslySetInnerHTML={{ __html: renderAnswer(p.text) }}
+          />
         ) : null,
       )}
     </>
@@ -1360,11 +1365,7 @@ function SubagentView({
   const lastSeq = v.events.at(-1)?.seq ?? 0;
   useEffect(() => markSubSeen(tab.childSessionId, lastSeq), [lastSeq, tab.childSessionId]);
   const scroller = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = scroller.current;
-    if (el && el.scrollHeight - el.scrollTop - el.clientHeight < 160)
-      el.scrollTop = el.scrollHeight;
-  });
+  const follow = useFollow(scroller, tab.childSessionId);
   const tools = items.value.filter((i) => i.kind === "tool").length;
   const tokens = mine.value.reduce(
     (n, e) =>
@@ -1404,7 +1405,7 @@ function SubagentView({
             <div class="bubble assistant streaming">
               {v.text ? (
                 <div
-                  class="md"
+                  class="md md-read"
                   dangerouslySetInnerHTML={{
                     __html: renderStreamingMarkdown(streamingWithoutWidgets(v.text)),
                   }}
@@ -1430,6 +1431,17 @@ function SubagentView({
             <PermissionCard key={r.requestId} r={r} />
           ))}
         </div>
+        {follow.away && (
+          <button
+            type="button"
+            class={`to-bottom${follow.unseen ? " unseen" : ""}`}
+            title={t("toBottom")}
+            onClick={follow.toBottom}
+          >
+            <IconArrowDown />
+            {follow.unseen && <span>{t("newText")}</span>}
+          </button>
+        )}
       </div>
       <div class="sub-bar" aria-live="polite">
         <span class={`sub-dot ${status}`} />
@@ -1489,7 +1501,8 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
   }, [items.value]);
   const scroller = useRef<HTMLDivElement>(null);
   const body = useRef<HTMLDivElement>(null);
-  const [atBottom, setAtBottom] = useState(true);
+  // Follows the newest text only while the person lets it (3.10.4, follow.ts).
+  const follow = useFollow(scroller, sessionId);
   const agent = agents.value.find((a) => a.id === agentId);
   const waiting = approvals.value.filter((r) => r.agentId === agentId);
   // Passages being answered (G36.22) and the «Intanto» panel (G36.24), per conversation.
@@ -1506,19 +1519,13 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
     return () => live.send({ type: "session.unfollow", sessionId });
   }, [sessionId]);
 
-  // Follow the bottom while the user is near it.
-  useEffect(() => {
-    const el = scroller.current;
-    if (el && atBottom) el.scrollTop = el.scrollHeight;
-  });
-
   // A saved passage opened from «Salvati» (G40.14): there, once its message shows.
   useEffect(() => {
     const j = pendingJump.value;
     if (!j || !("sessionId" in j) || j.sessionId !== sessionId) return;
     if (!items.value.some((i) => i.kind === "assistant" && i.seq === j.seq)) return;
     pendingJump.value = null;
-    setAtBottom(false);
+    follow.stop();
     const { sessionId: _s, ...quote } = j;
     setTimeout(() => jumpToQuote(quote), 60);
   }, [items.value, pendingJump.value, sessionId]);
@@ -1556,14 +1563,7 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
           onPick={(q) => setDrafts((d) => addQuote(d, q))}
           onSave={(p) => (saveDraft.value = sessionSave(sessionId, p))}
         />
-        <div
-          class="chat-scroll"
-          ref={scroller}
-          onScroll={(e) => {
-            const el = e.currentTarget as HTMLDivElement;
-            setAtBottom(el.scrollHeight - el.scrollTop - el.clientHeight < 120);
-          }}
-        >
+        <div class="chat-scroll" ref={scroller}>
           {items.value.length === 0 && !v.text && (
             <div class="empty">{t("startConversation", { name: agent?.name ?? "" })}</div>
           )}
@@ -1617,7 +1617,7 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
               )}
               {v.text && (
                 <div
-                  class="md"
+                  class="md md-read"
                   dangerouslySetInnerHTML={{
                     __html: renderStreamingMarkdown(streamingWithoutWidgets(v.text)),
                   }}
@@ -1655,17 +1655,15 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
           )}
           <OtherWork sessionId={sessionId} agentId={agentId} />
         </div>
-        {!atBottom && (
+        {follow.away && (
           <button
             type="button"
-            class="to-bottom"
+            class={`to-bottom${follow.unseen ? " unseen" : ""}`}
             title={t("toBottom")}
-            onClick={() => {
-              const el = scroller.current;
-              if (el) el.scrollTop = el.scrollHeight;
-            }}
+            onClick={follow.toBottom}
           >
             <IconArrowDown />
+            {follow.unseen && <span>{t("newText")}</span>}
           </button>
         )}
         {asideOpen && (
@@ -1712,6 +1710,8 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
             clientId,
           });
           setDrafts([]);
+          // A message sent: following the conversation again (3.10.4).
+          follow.toBottom();
           if (v.state === "running")
             setPending((p) => [
               ...p,

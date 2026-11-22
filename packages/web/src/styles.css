@@ -79,6 +79,95 @@ html[data-theme="dark"] {
     --mLl: 0.87;
   }
 }
+/* The accent colour chosen in Settings (3.10.4, `accent.ts`): red is `:root`'s own. Each shade is
+   checked for contrast: white on --accent at least 4.5:1 (light) and 3.5:1 (dark), --accent on the
+   dark panel and --accent-2 (links) on the background at least 4.5:1. Mirrored in the app's RgAccent. */
+html[data-accent="amber"] {
+  --accent: #a8640c;
+  --accent-2: #8f5208;
+  --accent-soft: #f8e3c4;
+  --accent-dim: #eabf7f;
+  --user: #efe8dc;
+}
+html[data-accent="amber"][data-theme="dark"] {
+  --accent: #bd7810;
+  --accent-2: #eb9a2a;
+  --accent-soft: #2e2516;
+  --accent-dim: #45331a;
+  --user: #2b241a;
+}
+html[data-accent="green"] {
+  --accent: #2c8156;
+  --accent-2: #226f49;
+  --accent-soft: #c3f0da;
+  --accent-dim: #7bd8aa;
+  --user: #ddece5;
+}
+html[data-accent="green"][data-theme="dark"] {
+  --accent: #22985d;
+  --accent-2: #3ec27f;
+  --accent-soft: #182a21;
+  --accent-dim: #1e3c2d;
+  --user: #1c2822;
+}
+html[data-accent="blue"] {
+  --accent: #3273bf;
+  --accent-2: #2563ab;
+  --accent-soft: #d9e7f9;
+  --accent-dim: #a9c9ec;
+  --user: #e3e9f1;
+}
+html[data-accent="blue"][data-theme="dark"] {
+  --accent: #3587e4;
+  --accent-2: #5fa5f7;
+  --accent-soft: #1c2735;
+  --accent-dim: #223750;
+  --user: #1e2630;
+}
+html[data-accent="violet"] {
+  --accent: #8a59cb;
+  --accent-2: #7c41cb;
+  --accent-soft: #ebe2f8;
+  --accent-dim: #d2bded;
+  --user: #ebe7f2;
+}
+html[data-accent="violet"][data-theme="dark"] {
+  --accent: #9f6ce3;
+  --accent-2: #b98ef2;
+  --accent-soft: #2d213b;
+  --accent-dim: #412c5e;
+  --user: #2a2233;
+}
+@media (prefers-color-scheme: dark) {
+  html[data-accent="amber"][data-theme="system"] {
+    --accent: #bd7810;
+    --accent-2: #eb9a2a;
+    --accent-soft: #2e2516;
+    --accent-dim: #45331a;
+    --user: #2b241a;
+  }
+  html[data-accent="green"][data-theme="system"] {
+    --accent: #22985d;
+    --accent-2: #3ec27f;
+    --accent-soft: #182a21;
+    --accent-dim: #1e3c2d;
+    --user: #1c2822;
+  }
+  html[data-accent="blue"][data-theme="system"] {
+    --accent: #3587e4;
+    --accent-2: #5fa5f7;
+    --accent-soft: #1c2735;
+    --accent-dim: #223750;
+    --user: #1e2630;
+  }
+  html[data-accent="violet"][data-theme="system"] {
+    --accent: #9f6ce3;
+    --accent-2: #b98ef2;
+    --accent-soft: #2d213b;
+    --accent-dim: #412c5e;
+    --user: #2a2233;
+  }
+}
 * {
   box-sizing: border-box;
 }
@@ -1333,6 +1422,74 @@ button.bar-settings {
   border-left: 3px solid var(--line);
   color: var(--dim);
 }
+/* Answers to read (3.10.4, the person's choice «Lettura comoda», memory/decisioni.md): bigger text
+   with room between lines, paragraphs and list items; headings in the text's colour with a bar of
+   the accent on their left; bold simply full weight; bullets, numbers and links in the accent
+   (links in --accent-2, which keeps 4.5:1 on the panel in every accent). Mirrored in the app's
+   `SafeMarkdown` (lib/ui/markdown.dart). */
+.md.md-read {
+  font-size: 17px;
+  line-height: 1.55;
+}
+.md-read p {
+  margin: 0 0 16px;
+}
+.md-read strong,
+.md-read b {
+  font-weight: 700;
+}
+.md-read :is(h1, h2, h3) {
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 18px 0 10px;
+  padding-left: 12px;
+  border-left: 4px solid var(--accent);
+}
+.md-read h1 {
+  font-size: 24px;
+}
+.md-read h2 {
+  font-size: 20.5px;
+}
+.md-read h3 {
+  font-size: 18.5px;
+  border-left-width: 3px;
+}
+.md-read :is(h4, h5, h6) {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 16px 0 8px;
+}
+.md-read :is(ul, ol) {
+  padding-left: 24px;
+  margin: 0 0 16px;
+}
+.md-read li {
+  margin: 6px 0;
+}
+.md-read li :is(ul, ol) {
+  margin: 6px 0 0;
+}
+.md-read li::marker {
+  color: var(--accent-2);
+}
+.md-read a {
+  color: var(--accent-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.md-read :not(pre) > code {
+  font-size: 0.86em;
+}
+.md-read blockquote {
+  margin: 0 0 16px;
+  padding: 2px 0 2px 12px;
+  border-left: 3px solid color-mix(in srgb, var(--text) 20%, transparent);
+  color: color-mix(in srgb, var(--text) 85%, var(--panel));
+}
+.md-read .code {
+  margin: 0 0 16px;
+}
 .thinking summary {
   cursor: pointer;
   color: var(--dim);
@@ -1764,6 +1921,20 @@ button.bar-settings {
   background: var(--panel-2);
   box-shadow: 0 4px 14px rgb(0 0 0 / 0.25);
   padding: 0;
+  color: var(--text);
+}
+/* Text came below while the person reads higher up (3.10.4): the button says so. */
+.to-bottom.unseen {
+  width: auto;
+  display: flex;
+  gap: 6px;
+  padding: 0 14px 0 10px;
+  border-radius: 20px;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
 }
 .chat-head {
   display: flex;
@@ -23795,4 +23966,51 @@ fieldset.saved-filter legend {
 }
 .sys-line h3 {
   margin: 0 0 4px;
+}
+/* The accent colour's swatches (3.10.4, Settings > General): drawn, never native radio buttons. */
+.accent-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-inline-size: 0;
+}
+.accent-sw {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 64px;
+  padding: 6px 4px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: none;
+  color: var(--dim);
+  font-size: 12px;
+  cursor: pointer;
+}
+.accent-sw:hover {
+  background: var(--panel-2);
+}
+.accent-sw.on {
+  border-color: var(--line);
+  background: var(--panel-2);
+  color: var(--text);
+  font-weight: 600;
+}
+.accent-dot {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: #fff;
+  box-shadow: 0 0 0 2px var(--panel);
+}
+.accent-sw.on .accent-dot {
+  box-shadow:
+    0 0 0 2px var(--panel),
+    0 0 0 4px currentColor;
 }

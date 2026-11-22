@@ -1,10 +1,12 @@
 import { render } from "preact";
 import { App } from "./components/App.js";
 import "./styles.css";
+import { applyAccent } from "./accent.js";
 import { listenPreviewLinks } from "./preview-links.js";
 import { applyTheme } from "./theme.js";
 
 applyTheme();
+applyAccent();
 listenPreviewLinks();
 
 const root = document.getElementById("app");
