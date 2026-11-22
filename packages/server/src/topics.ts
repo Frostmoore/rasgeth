@@ -124,6 +124,13 @@ export class Topics {
   private readonly known = new Map<string, { ownerId: string; title: string }>();
   private readonly ready = new Map<string, Promise<void>>();
   private readonly summarizing = new Set<string>();
+  /** The chats' /new (and /nuovo): the next message from a chat opens a topic of its own. */
+  private readonly freshNext = new Set<string>();
+
+  /** The chats' /new: their next message opens a new topic (nothing is forgotten). */
+  newFromChat(ownerId: string): void {
+    this.freshNext.add(ownerId);
+  }
 
   constructor(
     private readonly core: RedGiantCore,
@@ -249,7 +256,8 @@ export class Topics {
       await db.query(
         `INSERT INTO rg_settings (owner_id, key, value) VALUES ($1, 'topics_migrated', $2)
          ON CONFLICT (owner_id, key) DO UPDATE SET value = EXCLUDED.value`,
-        [ownerId, JSON.stringify(new Date(now).toISOString())],
+        // An object: a bare string in jsonb does not survive a backup's JSON round trip.
+        [ownerId, JSON.stringify({ at: new Date(now).toISOString() })],
       );
     }
     for (const r of await db.query<{ id: string; title: string | null }>(
@@ -476,6 +484,7 @@ export class Topics {
     },
   ): Promise<TopicRouted> {
     await this.prepare(ownerId);
+    if (m.origin === "chat" && this.freshNext.delete(ownerId)) m = { ...m, newTopic: true };
     const { rows, active } = await this.ruleTopics(ownerId);
     // A chosen or replied topic must be one of God's (an archived one comes back).
     const own = async (id: string | undefined) =>
@@ -674,10 +683,14 @@ export class Topics {
     o: { human: boolean; taskReport: boolean },
   ): Promise<string[]> {
     if (!this.known.has(sessionId)) return [];
-    if (o.human)
-      await this.core.db.query("UPDATE rg_sessions SET person_at = now() WHERE id = $1", [
-        sessionId,
-      ]);
+    const [named] = await this.core.db.query<{ title: string | null }>(
+      o.human
+        ? "UPDATE rg_sessions SET person_at = now() WHERE id = $1 RETURNING title"
+        : "SELECT title FROM rg_sessions WHERE id = $1",
+      [sessionId],
+    );
+    // Named by its first message (a conversation made the old way): the labels say it too.
+    if (named?.title) this.renamed(sessionId, named.title);
     await this.restore(ownerId, sessionId, o.taskReport ? "report" : "message");
     const events = await this.core.store.list({ sessionId });
     const notes: string[] = [];
@@ -713,12 +726,11 @@ export class Topics {
   /** The other active topics, for a routing God may correct (level 3). */
   private async topicsBlock(ownerId: string, sessionId: string): Promise<string> {
     const others = (await this.rows(ownerId, false)).filter((r) => r.id !== sessionId);
+    if (others.length === 0) return "";
     return [
       "<topics>",
       "No router was available: this message came to this topic as the most likely one. If it belongs to another topic, or is a new subject, call route_message first (it moves it and you answer there).",
-      ...(others.length
-        ? others.slice(0, ROUTER_TOPICS).map((r) => `- ${r.id}: ${clip(r.title ?? "", 60)}`)
-        : ["(no other topics)"]),
+      ...others.slice(0, ROUTER_TOPICS).map((r) => `- ${r.id}: ${clip(r.title ?? "", 60)}`),
       "</topics>",
     ].join("\n");
   }
