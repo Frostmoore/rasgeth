@@ -643,7 +643,13 @@ async function setup(
   const outside = join(root, "elsewhere");
   await mkdir(outside, { recursive: true });
   await writeFile(join(outside, "keep.txt"), "untouched");
-  const target = join(home, "Android", "Sdk");
+  // Where Android Studio puts the SDK on this system (detect.ts `standardSdk`).
+  const target =
+    HOST_OS === "windows"
+      ? join(home, "AppData", "Local", "Android", "Sdk")
+      : HOST_OS === "macos"
+        ? join(home, "Library", "Android", "sdk")
+        : join(home, "Android", "Sdk");
   const avdHome = join(home, ".android", "avd");
   const runs: FakeRun[] = [];
   const { zip, archive } = toolsZip();
