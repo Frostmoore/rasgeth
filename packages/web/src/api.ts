@@ -12,6 +12,8 @@ import {
   type DeviceView,
   type Event,
   type FoundBackup,
+  type GodMessageRequest,
+  type GodMessageResponse,
   type ImportApply,
   type ImportPreview,
   type ImportRecord,
@@ -43,6 +45,8 @@ import {
   type Mailbox as MailboxInfo,
   type MascotSpec,
   type ModelsCatalogStatus,
+  type MoveRequest,
+  type MoveResponse,
   type NameProbe,
   type NetDetected,
   type NodeGrant,
@@ -78,6 +82,7 @@ import {
   type SshAccess,
   type StorageInfo,
   type SystemInfo,
+  type TopicList,
   type UpdateStatus,
   type VaultBrowser,
   type VaultBrowserCode,
@@ -149,6 +154,10 @@ export interface SetupState {
     defaultModel?: { provider: string; model: string; effort?: string };
     keyProviders?: string[];
     mode?: "standard" | "advanced";
+    /** The interface new devices open with (3.12); absent: the full one. */
+    ui?: "simple" | "full";
+    /** What the person likes to be called (3.12). */
+    personName?: string;
     git?: {
       github?: { login: string };
       gitea?: { user: string; publicUrl: string; external?: boolean };
@@ -1192,6 +1201,31 @@ export class Api {
   setupInstructions = (text: string) => this.call("PUT", "/api/setup/instructions", { text });
   setupBackupModel = (model: { provider: string; model: string; effort?: string } | null) =>
     this.call("PUT", "/api/setup/backup-model", { model });
+  /** The interface new devices open with (3.12): simple or full. */
+  setupInterface = (ui: "simple" | "full") => this.call("PUT", "/api/setup/interface", { ui });
+  /** What the person likes to be called (3.12, the simple interface's greeting). */
+  setupPerson = (name: string | null) => this.call("PUT", "/api/setup/person", { name });
+  // ---- God's topics (3.12, `topics.ts` in the protocol) ----
+  /** «Oggi»'s topics: the active ones; `archived` the archive, `q` words in titles and summaries. */
+  topics = (o: { archived?: boolean; q?: string } = {}) => {
+    const q = new URLSearchParams();
+    if (o.archived) q.set("archived", "true");
+    if (o.q?.trim()) q.set("q", o.q.trim());
+    const s = q.toString();
+    return this.call<TopicList>("GET", `/api/god/topics${s ? `?${s}` : ""}`);
+  };
+  /** A message to God, routed to a topic (or written inside one with `topicId`). */
+  godMessage = (b: GodMessageRequest) =>
+    this.call<GodMessageResponse>("POST", "/api/god/messages", b);
+  /** «Move» an exchange (the person's message at `seq`) to another topic or a new one. */
+  moveMessage = (sessionId: string, seq: number, b: MoveRequest) =>
+    this.call<MoveResponse>(
+      "POST",
+      `/api/sessions/${encodeURIComponent(sessionId)}/messages/${seq}/move`,
+      b,
+    );
+  topicAction = (id: string, what: "archive" | "restore" | "read") =>
+    this.call<{ ok: true }>("POST", `/api/god/topics/${encodeURIComponent(id)}/${what}`);
   /** The conversation an agent works in for the chats (the same on every platform). */
   workSession = (agentId: string) =>
     this.call<{ sessionId: string }>("POST", `/api/agents/${agentId}/work-session`);

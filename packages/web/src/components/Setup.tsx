@@ -44,7 +44,18 @@ import {
   IconZap,
   Logo,
 } from "../icons.js";
-import { agents, attempt, getApi, lastError, openAgent, openTab, refresh } from "../state.js";
+import {
+  agents,
+  attempt,
+  getApi,
+  lastError,
+  openAgent,
+  openTab,
+  personName,
+  refresh,
+  type UiMode,
+  uiDefault,
+} from "../state.js";
 import { SysTitle } from "../systems.js";
 import { setTheme, theme } from "../theme.js";
 import {
@@ -925,6 +936,7 @@ const VIEWS: Record<StepKey, () => JSX.Element> = {
   wzAccount: AccountStep,
   wzMachine: MachineStep,
   wzMode: Mode,
+  wzLook: Look,
   wzBrain: BrainStep,
   wzLocal: LocalStep,
   wzNames: Names,
@@ -973,6 +985,59 @@ function JumpList({
         ))}
       </ul>
     </Modal>
+  );
+}
+
+/**
+ * The interface (3.12): the simple one (first, chosen already) or the full one, for every device
+ * that does not choose its own; this device takes it at once. And what the person is called.
+ */
+function Look() {
+  const { s } = useWz();
+  const [ui, setUi] = useState<UiMode>(s.config.ui ?? "simple");
+  const [name, setName] = useState(s.config.personName ?? "");
+  useOnNext(async () => {
+    const saved = await attempt(async () => {
+      if (s.config.ui !== ui) await getApi().setupInterface(ui);
+      if ((s.config.personName ?? "") !== name.trim())
+        await getApi().setupPerson(name.trim() || null);
+      return true;
+    });
+    if (saved === undefined) return false;
+    uiDefault.value = ui;
+    personName.value = name.trim();
+    return true;
+  });
+  return (
+    <div class="wz-inner">
+      <Head q={t("wzLookQ")} lead={t("wzLookLead")} />
+      <div class="wz-two">
+        <Tile
+          on={ui === "simple"}
+          icon={<IconHome />}
+          title={t("wzLookSimple")}
+          badge={t("wzRecommended")}
+          text={t("wzLookSimpleText")}
+          onClick={() => setUi("simple")}
+        />
+        <Tile
+          on={ui === "full"}
+          icon={<IconSliders />}
+          title={t("wzLookFull")}
+          text={t("wzLookFullText")}
+          onClick={() => setUi("full")}
+        />
+      </div>
+      <h2 class="wz-sub">{t("wzLookName")}</h2>
+      <input
+        class="wz-field"
+        value={name}
+        maxLength={40}
+        placeholder={t("wzLookNameHint")}
+        aria-label={t("wzLookName")}
+        onInput={(e) => setName((e.target as HTMLInputElement).value)}
+      />
+    </div>
   );
 }
 

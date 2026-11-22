@@ -24014,3 +24014,697 @@ fieldset.saved-filter legend {
     0 0 0 2px var(--panel),
     0 0 0 4px currentColor;
 }
+
+/* ---------- The simple interface (3.12, «B · Assistente», tavole-semplice/b-assistente.html) ----------
+   For everyday people: a greeting and one big box, the topics as cards with their state in words, a
+   topic read as a clean document with its decisions in an evident box, a few settings in groups. The
+   person's accent and «Lettura comoda» (.md-read) apply; light and dark through the theme's variables. */
+.app-simple {
+  --smp-bg: linear-gradient(color-mix(in srgb, var(--accent) 4%, var(--bg)), var(--panel));
+  --smp-card: var(--panel);
+  --smp-shadow: 0 2px 10px color-mix(in srgb, var(--text) 8%, transparent);
+  --smp-shadow-big: 0 4px 18px color-mix(in srgb, var(--text) 10%, transparent);
+  --smp-soft: color-mix(in srgb, var(--accent) 9%, var(--panel-2));
+  --smp-soft-ink: color-mix(in srgb, var(--text) 78%, var(--accent));
+  background: var(--smp-bg);
+}
+html[data-theme="dark"] .app-simple {
+  --smp-bg: var(--bg);
+  --smp-shadow: 0 0 0 1px var(--line);
+  --smp-shadow-big: 0 0 0 1px var(--line);
+}
+.smp {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  color: var(--text);
+}
+.smp-screen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.smp-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  max-width: 760px;
+  width: 100%;
+  margin: 0 auto;
+}
+.smp-today .smp-wrap {
+  overflow-y: auto;
+  max-width: 980px;
+}
+.smp-error {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: color-mix(in srgb, var(--err) 14%, var(--panel));
+  color: var(--text);
+  font-size: 14.5px;
+}
+.smp-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 0 20px;
+}
+.smp-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--dim);
+}
+.smp-icon {
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex: none;
+}
+.smp-icon:hover,
+.smp-icon[aria-expanded="true"] {
+  background: var(--panel-2);
+}
+.smp-hero {
+  padding: 18px 20px 14px;
+}
+.smp-hero h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.smp-hero p {
+  margin: 6px 0 0;
+  color: var(--dim);
+  font-size: 15.5px;
+}
+.smp-ask {
+  margin: 6px 16px 14px;
+  background: var(--smp-card);
+  border-radius: 20px;
+  box-shadow: var(--smp-shadow-big);
+  padding: 8px 8px 8px 16px;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.smp-ask.big {
+  padding: 12px 12px 12px 18px;
+}
+.smp-ask textarea {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  resize: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 16.5px;
+  line-height: 1.45;
+  padding: 8px 0;
+  min-height: 24px;
+}
+.smp-ask.big textarea {
+  min-height: 48px;
+}
+.smp-ask textarea::placeholder {
+  color: color-mix(in srgb, var(--dim) 85%, transparent);
+}
+.smp-ask:focus-within {
+  box-shadow:
+    var(--smp-shadow-big),
+    0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.smp-send {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.smp-send:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.smp-lbl {
+  padding: 8px 20px 4px;
+  font-size: 13px;
+  color: var(--dim);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.smp-cards {
+  padding: 6px 16px 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  gap: 10px;
+}
+@media (max-width: 560px) {
+  .smp-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.smp-card {
+  text-align: left;
+  border: 0;
+  font: inherit;
+  color: var(--text);
+  background: var(--smp-card);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: var(--smp-shadow);
+  min-height: 116px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+}
+.smp-card:hover {
+  box-shadow:
+    var(--smp-shadow),
+    0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.smp-card-t {
+  font-weight: 700;
+  font-size: 15.5px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  overflow-wrap: anywhere;
+}
+.smp-card-t svg {
+  color: var(--dim);
+  flex: none;
+}
+.smp-card-p {
+  font-size: 13.5px;
+  color: var(--dim);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.smp-card-from {
+  font-size: 12.5px;
+  color: var(--dim);
+  font-style: italic;
+}
+.smp-pill {
+  margin-top: auto;
+  align-self: flex-start;
+  font-size: 12px;
+  padding: 3px 9px;
+  border-radius: 10px;
+  background: var(--smp-soft);
+  color: var(--smp-soft-ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.smp-pill.waiting {
+  background: var(--accent);
+  color: #fff;
+}
+.smp-new {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.smp-empty {
+  padding: 10px 20px;
+  color: var(--dim);
+  font-size: 15px;
+  line-height: 1.45;
+}
+.smp-foot {
+  padding: 10px 20px 24px;
+  display: flex;
+  gap: 16px;
+}
+.smp-link {
+  border: 0;
+  background: transparent;
+  color: var(--accent-2);
+  font: inherit;
+  font-size: 14.5px;
+  cursor: pointer;
+  padding: 2px 0;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+.smp-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.smp-waiting-line {
+  margin: 0 16px 10px;
+  border: 0;
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: var(--smp-card);
+  border-left: 4px solid var(--accent);
+  box-shadow: var(--smp-shadow);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.smp-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+}
+.smp-assistants {
+  display: flex;
+  gap: 10px;
+  padding: 0 16px 8px;
+  overflow-x: auto;
+}
+.smp-assistant {
+  border: 0;
+  font: inherit;
+  text-align: left;
+  background: var(--smp-card);
+  color: var(--text);
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow: var(--smp-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 170px;
+  cursor: pointer;
+}
+.smp-assistant span {
+  font-size: 13px;
+  color: var(--dim);
+}
+/* The top of a screen: back, the title, more. */
+.smp-top {
+  position: relative;
+  padding: 10px 10px 10px 6px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.smp-top h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.smp-back {
+  color: var(--accent-2);
+}
+.smp-menu {
+  position: absolute;
+  right: 10px;
+  top: 54px;
+  z-index: 20;
+  background: var(--panel);
+  border-radius: 14px;
+  box-shadow: 0 8px 28px color-mix(in srgb, #000 22%, transparent);
+  border: 1px solid var(--line);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  min-width: 210px;
+}
+.smp-menu button {
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  padding: 11px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.smp-menu button:hover {
+  background: var(--panel-2);
+}
+/* A topic read as a document. */
+.smp-doc {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px 20px 18px;
+  outline: 0;
+}
+.smp-me-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin: 6px 0 14px;
+}
+.smp-me {
+  background: var(--smp-soft);
+  border-radius: 14px;
+  padding: 10px 14px;
+  max-width: 85%;
+  font-size: 16.5px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.smp-move-link {
+  border: 0;
+  background: transparent;
+  color: var(--dim);
+  font: inherit;
+  font-size: 13px;
+  padding: 4px 2px 0;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.smp-me-row:hover .smp-move-link,
+.smp-move-link:focus-visible {
+  opacity: 1;
+}
+@media (hover: none) {
+  .smp-move-link {
+    opacity: 0.8;
+  }
+}
+.smp-note {
+  font-size: 13px;
+  color: var(--dim);
+  margin-bottom: 4px;
+}
+.smp-routed {
+  margin: 0 0 4px;
+  font-size: 13.5px;
+  color: var(--dim);
+  text-align: right;
+}
+.smp-routed b {
+  color: var(--text);
+  font-weight: 600;
+}
+.smp-routed .smp-link {
+  font-size: 13.5px;
+}
+.smp-routed.unsure {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  text-align: right;
+  margin-left: auto;
+  width: fit-content;
+  max-width: 100%;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--text);
+}
+.smp-routed.moved {
+  text-align: center;
+  margin: 8px 0 14px;
+}
+.smp-routed.moved .smp-link {
+  color: var(--dim);
+}
+.smp-answer {
+  margin: 0 0 8px;
+}
+.smp-answer.md.md-read p:last-child {
+  margin-bottom: 8px;
+}
+.smp-working {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: var(--dim);
+  font-size: 15.5px;
+}
+.smp-dots {
+  display: inline-flex;
+  gap: 4px;
+}
+.smp-dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: smp-dot 1.2s infinite ease-in-out;
+}
+.smp-dots i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.smp-dots i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes smp-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .smp-dots i {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+/* A decision: evident, with its buttons. */
+.smp-decide {
+  background: var(--panel);
+  border: 2px solid var(--accent);
+  border-radius: 16px;
+  padding: 12px 14px;
+  margin: 8px 0 14px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.smp-decide > b {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 16.5px;
+}
+.smp-decide > p {
+  margin: 0 0 10px;
+}
+.smp-decide ul {
+  margin: 0 0 10px;
+  padding-left: 22px;
+}
+.smp-decide.critical {
+  border-color: var(--critical);
+  background: var(--critical-soft);
+}
+.smp-decide.critical > b {
+  color: var(--critical-text);
+}
+.smp-decide .question-card {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+}
+.smp-decided .question-card {
+  margin: 0 0 12px;
+}
+.smp-decide-acts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.smp-decide-acts.arming {
+  opacity: 0.6;
+}
+.smp-btn {
+  border: 0;
+  font: inherit;
+  font-size: 15px;
+  padding: 9px 16px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+.smp-decide.critical .smp-btn:not(.soft) {
+  background: var(--critical);
+  color: var(--critical-ink);
+}
+.smp-btn.soft {
+  background: var(--smp-soft);
+  color: var(--smp-soft-ink);
+}
+.smp-topic .smp-ask {
+  margin: 0 12px 12px;
+}
+/* Settings in groups; the archive's list uses the same rows. */
+.smp-set {
+  padding: 6px 16px 24px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+.smp-lead {
+  color: var(--dim);
+  margin: 4px 4px 12px;
+  font-size: 15px;
+  line-height: 1.45;
+}
+.smp-grp {
+  background: var(--smp-card);
+  border-radius: 16px;
+  margin: 8px 0 12px;
+  padding: 2px 14px;
+  box-shadow: var(--smp-shadow);
+}
+.smp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 0;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  font: inherit;
+  font-size: 15.5px;
+  color: var(--text);
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+button.smp-row {
+  cursor: pointer;
+}
+.smp-row:last-child {
+  border-bottom: 0;
+}
+.smp-row > span:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.smp-row-sub {
+  font-size: 13px;
+  color: var(--dim);
+  line-height: 1.35;
+}
+.smp-row-val {
+  color: var(--dim);
+  flex: none;
+}
+.smp-row-act {
+  color: var(--accent-2);
+  font-weight: 600;
+  flex: none;
+}
+.smp-row .wz-seg {
+  flex: none;
+}
+.smp-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--smp-card);
+  border-radius: 14px;
+  padding: 0 12px;
+  box-shadow: var(--smp-shadow);
+  color: var(--dim);
+  margin: 0 0 10px;
+}
+.smp-search input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 15.5px;
+  padding: 12px 0;
+}
+.smp-modal .smp-search {
+  box-shadow: none;
+  border: 1px solid var(--line);
+  margin: 10px 0;
+}
+.smp-move-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-radius: 12px;
+  padding: 11px 12px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 15.5px;
+  cursor: pointer;
+}
+.smp-move-row:hover {
+  background: var(--panel-2);
+}
+.smp-move-row span {
+  font-size: 13px;
+  color: var(--dim);
+}
+.smp-move-row.new {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-2);
+  font-weight: 600;
+}
+.smp-modal .smp-lbl {
+  padding: 12px 12px 4px;
+}
+@media (max-width: 760px) {
+  .smp-row .wz-seg button {
+    padding-inline: 9px;
+  }
+  .smp-settings .smp-row:has(.wz-seg) {
+    flex-wrap: wrap;
+  }
+}
+fieldset.smp-decide {
+  min-width: 0;
+}

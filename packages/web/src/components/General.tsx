@@ -29,7 +29,7 @@ import {
   IconTool,
   IconTrash,
 } from "../icons.js";
-import { attempt, getApi, signOut } from "../state.js";
+import { attempt, getApi, setUiMode, signOut, uiMode } from "../state.js";
 import { setTheme, theme } from "../theme.js";
 import { AccentPicker } from "./AccentPicker.js";
 import { explain } from "./Brain.js";
@@ -483,6 +483,18 @@ export function General() {
               ["system", [<IconMonitor key="i" size={18} />, " ", t("themeSystem")]],
               ["light", [<IconSun key="i" size={18} />, " ", t("themeLight")]],
               ["dark", [<IconMoon key="i" size={18} />, " ", t("themeDark")]],
+            ]}
+          />
+        </Row>
+        {/* The simple interface (3.12): this device's own choice. */}
+        <Row title={t("uiTitle")} help={t("uiHelp")}>
+          <Seg
+            label={t("uiTitle")}
+            value={uiMode.value}
+            onChange={setUiMode}
+            options={[
+              ["simple", t("uiSimple")],
+              ["full", t("uiFull")],
             ]}
           />
         </Row>

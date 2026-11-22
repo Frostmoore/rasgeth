@@ -952,6 +952,11 @@ function Item({
       );
     case "compaction":
       return <CompactionMark item={item} sessionId={sessionId} />;
+    // God's topics (3.12): the routing line belongs to the simple view; a move is said here too.
+    case "routed":
+      return null;
+    case "moved":
+      return <div class="notice info">{t("smpMovedElsewhere")}</div>;
     case "cache":
       return (
         <div class="notice warn">
@@ -1032,7 +1037,7 @@ const MODES = ["manual", "auto", "plan", "readonly"] as const;
 
 /** A live conversation with one agent. */
 /** A file an agent sent (G25.2): pictures, videos and sounds in place; anything opens or saves. */
-function FileCard({ item }: { item: Extract<ChatItem, { kind: "file" }> }) {
+export function FileCard({ item }: { item: Extract<ChatItem, { kind: "file" }> }) {
   const kind = canvasKind({ kind: "file", scope: item.scope, path: item.path });
   // Pictures load by themselves (ChatImage); videos and sounds play from their link.
   const inline = kind === "video" || kind === "audio";

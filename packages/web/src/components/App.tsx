@@ -57,6 +57,7 @@ import {
   takeFromLink,
   toggleExplorer,
   token,
+  uiMode,
 } from "../state.js";
 import { useSwipeAway } from "../swipe.js";
 import { Bell } from "./Bell.js";
@@ -73,6 +74,7 @@ import { RenameNotice } from "./RenameNotice.js";
 import { SaveDialogHost, SavedPage } from "./Saved.js";
 import { preloadCanvas, SideArea } from "./SideArea.js";
 import { Sidebar } from "./Sidebar.js";
+import { SimpleApp } from "./Simple.js";
 import { UpdateGate } from "./UpdateGate.js";
 import { VoiceIndicator } from "./VoiceIndicator.js";
 import { WhatsNew } from "./WhatsNew.js";
@@ -445,6 +447,17 @@ export function App() {
         {/* A mandatory update holds the wizard too (G36.19). */}
         <UpdateGate />
         <Dialogs />
+      </div>
+    );
+
+  // The simple interface (3.12), chosen on this device or by the installation.
+  if (uiMode.value === "simple")
+    return (
+      <div class="app app-simple">
+        <SimpleApp />
+        <UpdateGate />
+        <Dialogs />
+        <ConnectionLost />
       </div>
     );
 

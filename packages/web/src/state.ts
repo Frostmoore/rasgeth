@@ -1,4 +1,4 @@
-import { type Signal, signal } from "@preact/signals";
+import { computed, type Signal, signal } from "@preact/signals";
 import type {
   Answers,
   AsideView,
@@ -14,6 +14,10 @@ import type {
   Question,
   QuestionRequestInfo,
   ServerMessage,
+  TopicRouted,
+  TopicState,
+  TopicVia,
+  TopicView,
   TurnQueueView,
 } from "@redgiant/protocol";
 import {
@@ -73,6 +77,8 @@ export type ChatItem =
   | {
       kind: "user";
       key: string;
+      /** Its `message.user` event: what «Move» moves (3.12). */
+      seq: number;
       text: string;
       ts: string;
       images: ImagePart[];
@@ -81,6 +87,28 @@ export type ChatItem =
       quotes?: MessageQuote[];
       /** Sent by a button in an artifact or a widget (3.5.9). */
       via?: "artifact" | "voice";
+      /** Moved here from another of God's topics by the person (3.12). */
+      movedFrom?: { sessionId: string; seq: number };
+    }
+  /**
+   * Why the person's next message came to this topic of God (3.12, `topic.routed`): «in: Title ·
+   * Move», prominent when the router was unsure. `userSeq`: that message, once it is in the log.
+   */
+  | {
+      kind: "routed";
+      key: string;
+      seq: number;
+      via: TopicVia;
+      uncertain: boolean;
+      userSeq?: number;
+    }
+  /** An exchange moved to another topic (3.12, `message.moved`): «Moved to Title». */
+  | {
+      kind: "moved";
+      key: string;
+      seq: number;
+      throughSeq: number;
+      toSessionId: string;
     }
   | {
       kind: "assistant";
@@ -287,6 +315,8 @@ export function buildItems(events: Event[]): ChatItem[] {
   const asked = new Map<string, Extract<ChatItem, { kind: "question" }>>();
   /** The last closing summary at the step limit: a message after it takes its «Continue» away. */
   let limited: Extract<ChatItem, { kind: "assistant" }> | undefined;
+  /** A routing line still waiting for its message (3.12). */
+  let routing: Extract<ChatItem, { kind: "routed" }> | undefined;
   for (const e of events) {
     const key = `e${e.seq}`;
     if (e.payload === null) {
@@ -301,9 +331,14 @@ export function buildItems(events: Event[]): ChatItem[] {
           delete limited.stepLimit;
           limited = undefined;
         }
+        if (routing) {
+          routing.userSeq = e.seq;
+          routing = undefined;
+        }
         items.push({
           kind: "user",
           key,
+          seq: e.seq,
           // Said by voice (G38.4): the note for the model at its end is not the person's words.
           text: e.payload.via === "voice" ? stripVoiceHint(e.payload.text) : e.payload.text,
           ts: e.ts,
@@ -311,6 +346,27 @@ export function buildItems(events: Event[]): ChatItem[] {
           ...(e.payload.from && { from: e.payload.from }),
           ...(e.payload.quotes?.length && { quotes: e.payload.quotes }),
           ...(e.payload.via && { via: e.payload.via }),
+          ...(e.payload.movedFrom && { movedFrom: e.payload.movedFrom }),
+        });
+        break;
+      // God's topics (3.12): how a message got here, and an exchange moved elsewhere.
+      case "topic.routed":
+        routing = {
+          kind: "routed",
+          key,
+          seq: e.seq,
+          via: e.payload.via,
+          uncertain: e.payload.uncertain === true,
+        };
+        items.push(routing);
+        break;
+      case "message.moved":
+        items.push({
+          kind: "moved",
+          key,
+          seq: e.payload.seq,
+          throughSeq: e.payload.throughSeq,
+          toSessionId: e.payload.toSessionId,
         });
         break;
       case "session.forked":
@@ -939,6 +995,14 @@ export function applyMessage(m: ServerMessage): void {
         notifyHidden(`${m.name}: ${m.text.slice(0, 200)}`, m.runId);
       }
       return;
+    // God's topics changed (3.12): «Oggi» reads them again.
+    case "topics.changed":
+      if (api) refreshTopicsSoon();
+      return;
+    case "session.routed":
+      lastRouted.value = { ...lastRouted.value, [m.sessionId]: m.routed };
+      if (api) refreshTopicsSoon();
+      return;
     case "platform.changed":
       platformVersion.value++;
       // A project archived or restored (here, by God or on another page) moves at once.
@@ -1195,7 +1259,9 @@ export async function signIn(t: string, o: { keep?: boolean } = {}): Promise<voi
   // Asked together with the rest (3.5.11).
   const setup = api.setup().catch(() => ({ config: { completed: true } }));
   await refresh();
-  firstRun.value = !(await setup).config.completed;
+  const config = (await setup).config as { completed: boolean; ui?: UiMode; personName?: string };
+  firstRun.value = !config.completed;
+  setupLoaded(config);
 }
 
 export function signOut(): void {
@@ -2709,3 +2775,249 @@ export function setVideoEdit(key: string, patch: Partial<VideoEditState>): void 
 
 /** Clips copied (Ctrl+C), for any timeline open (Ctrl+V pastes on the same tracks). */
 export const videoClipboard = signal<import("@redgiant/protocol").VideoClip[]>([]);
+
+// ---------- The simple interface (3.12, «B · Assistente», memory/plan_god_argomenti.md) ----------
+//
+// For everyday people: «Oggi» (a greeting, one big box for God, the topics in progress), a topic
+// read as a clean document with its decisions in a box, a few settings and «Full view». No agents,
+// tools or figures in sight. Built on God's topics (`topics.ts` in the protocol).
+
+export type UiMode = "simple" | "full";
+const UI_KEY = "rg.ui";
+const savedUi = typeof localStorage !== "undefined" ? localStorage.getItem(UI_KEY) : null;
+/** This device's own choice; null: not chosen yet, the installation's default applies. */
+export const uiChoice = signal<UiMode | null>(
+  savedUi === "simple" || savedUi === "full" ? savedUi : null,
+);
+/** The installation's default for devices that never chose (the first-start wizard's answer). */
+export const uiDefault = signal<UiMode | null>(null);
+
+/** The interface to show: the device's choice, else the installation's, else the full one. Pure. */
+export function effectiveUi(device: UiMode | null, installed: UiMode | null | undefined): UiMode {
+  return device ?? installed ?? "full";
+}
+export const uiMode = computed(() => effectiveUi(uiChoice.value, uiDefault.value));
+
+/** Switches this device's interface, remembered on it (the other devices keep theirs). */
+export function setUiMode(m: UiMode): void {
+  uiChoice.value = m;
+  localStorage.setItem(UI_KEY, m);
+  if (m === "simple") simpleScreen.value = { kind: "today" };
+}
+
+/** What the person likes to be called (the greeting); "" for no name. */
+export const personName = signal("");
+
+/** The installation's interface and the person's name, from the setup's state. */
+export function setupLoaded(config: { ui?: UiMode | undefined; personName?: string | undefined }) {
+  uiDefault.value = config.ui ?? null;
+  personName.value = config.personName ?? "";
+}
+
+/** The simple interface's screens. */
+export type SimpleScreen =
+  | { kind: "today" }
+  | { kind: "topic"; id: string; title: string }
+  /** The archived topics, with their search. */
+  | { kind: "archive" }
+  /** Requests and questions that belong to no topic (an automation's). */
+  | { kind: "requests" }
+  | { kind: "settings" };
+export const simpleScreen = signal<SimpleScreen>({ kind: "today" });
+
+/**
+ * Ready-made assistants for everyday life (3.12, «Assistenti pronti»: Ricercatore, Segretario,
+ * Messaggi…): still to be defined with the person. The simple interface shows them in «Oggi» when
+ * this list has some; empty, nothing is shown.
+ */
+export interface SimpleAssistant {
+  id: string;
+  name: string;
+  /** One line about what it does, in plain words. */
+  line: string;
+  /** The first message to God that puts it to work. */
+  ask: string;
+}
+export const simpleAssistants = signal<readonly SimpleAssistant[]>([]);
+
+/** God's active topics («Oggi»), pinned first, then by latest activity (as the server sends). */
+export const topics = signal<TopicView[]>([]);
+/** How many are archived («Archive (n)»). */
+export const archivedCount = signal(0);
+/** The first list arrived. */
+export const topicsLoaded = signal(false);
+/** What the router decided last for each topic (`session.routed`, live). */
+export const lastRouted = signal<Record<string, TopicRouted>>({});
+
+export async function refreshTopics(): Promise<void> {
+  const list = await getApi().topics();
+  topics.value = list.topics;
+  archivedCount.value = list.archived;
+  topicsLoaded.value = true;
+}
+
+let topicsTimer: ReturnType<typeof setTimeout> | undefined;
+function refreshTopicsSoon(): void {
+  if (topicsTimer) return;
+  topicsTimer = setTimeout(() => {
+    topicsTimer = undefined;
+    void refreshTopics().catch(() => {});
+  }, 200);
+}
+
+/** The archive's topics for some words (titles and summaries). */
+export const archivedTopics = signal<TopicView[]>([]);
+export async function searchArchive(q: string): Promise<void> {
+  const list = await getApi().topics({ archived: true, q });
+  archivedTopics.value = list.topics;
+}
+
+/** The greeting's words for the hour of the day. Pure. */
+export function greetingKey(hour: number): "smpMorning" | "smpAfternoon" | "smpEvening" {
+  return hour >= 5 && hour < 13
+    ? "smpMorning"
+    : hour >= 13 && hour < 18
+      ? "smpAfternoon"
+      : "smpEvening";
+}
+
+/** A topic's state in words («ti aspetto», «al lavoro», «pronto»). */
+export const TOPIC_STATE_WORDS: Record<TopicState, "smpWaiting" | "smpWorking" | "smpReady"> = {
+  waiting: "smpWaiting",
+  working: "smpWorking",
+  ready: "smpReady",
+};
+
+/** A topic's title as the page knows it (active or found in the archive). */
+export function topicTitle(id: string): string | undefined {
+  return (
+    topics.value.find((x) => x.id === id)?.title ??
+    archivedTopics.value.find((x) => x.id === id)?.title
+  );
+}
+
+/** An item's own event, where it has one. */
+const seqOf = (i: ChatItem): number | undefined =>
+  "seq" in i && typeof i.seq === "number"
+    ? i.seq
+    : Number(/^e(\d+)/.exec(i.key)?.[1] ?? Number.NaN);
+
+/** What the simple interface shows of a conversation: the words, the decisions, what was found. */
+const DOCUMENT_KINDS = new Set<ChatItem["kind"]>([
+  "user",
+  "assistant",
+  "question",
+  "products",
+  "file",
+  "widget",
+  "routed",
+  "moved",
+]);
+
+/**
+ * A topic as a document (3.12, pure): the person's messages, the answers, the questions, what was
+ * found and shown; no tools, figures or technical notices. An exchange moved elsewhere leaves only
+ * its «Moved to» line; a routing line «written here» says nothing new and goes too.
+ */
+export function documentItems(items: ChatItem[]): ChatItem[] {
+  const moved = items.flatMap((i) => (i.kind === "moved" ? [[i.seq, i.throughSeq] as const] : []));
+  const gone = (at: number | undefined) =>
+    at !== undefined && !Number.isNaN(at) && moved.some(([from, to]) => at >= from && at <= to);
+  return items.filter((i) => {
+    if (!DOCUMENT_KINDS.has(i.kind)) return false;
+    // A routing line goes with its message: moved together.
+    if (i.kind === "routed") return i.via !== "here" && !gone(i.userSeq ?? i.seq);
+    if (i.kind === "moved") return true;
+    if (i.kind === "assistant" && !i.parts.some((p) => p.type === "text" && p.text.trim()))
+      return false;
+    return !gone(seqOf(i));
+  });
+}
+
+/** Requests and questions waiting in a topic (God's own, or of an agent under him). */
+export function waitingIn(topicId: string): {
+  approvals: PermissionRequestInfo[];
+  questions: QuestionRequestInfo[];
+} {
+  return {
+    approvals: approvals.value.filter((r) => r.topic?.id === topicId || r.sessionId === topicId),
+    questions: questions.value.filter((q) => q.topic?.id === topicId || q.sessionId === topicId),
+  };
+}
+
+/** Requests and questions of no topic (an automation's): «Oggi» shows a line for them. */
+export function waitingElsewhere(): {
+  approvals: PermissionRequestInfo[];
+  questions: QuestionRequestInfo[];
+} {
+  const known = new Set(topics.value.map((x) => x.id));
+  const mine = (topic: { id: string } | undefined, sessionId?: string) =>
+    (topic && known.has(topic.id)) || (sessionId !== undefined && known.has(sessionId));
+  return {
+    approvals: approvals.value.filter((r) => !mine(r.topic, r.sessionId)),
+    questions: questions.value.filter((q) => !mine(q.topic, q.sessionId)),
+  };
+}
+
+/** Opens a topic; its news counts as read. */
+export function openTopic(id: string, title: string): void {
+  simpleScreen.value = { kind: "topic", id, title };
+  const known = topics.value.find((x) => x.id === id);
+  if (known && known.unread > 0) {
+    topics.value = topics.value.map((x) => (x.id === id ? { ...x, unread: 0 } : x));
+    void getApi()
+      .topicAction(id, "read")
+      .catch(() => {});
+  }
+}
+
+/**
+ * A message to God: from «Oggi» it is routed (and its topic opens), inside a topic it stays there.
+ * Returns where it went, or undefined when it failed (the error is in the banner).
+ */
+export async function askGod(
+  text: string,
+  o: { topicId?: string; newTopic?: boolean; title?: string } = {},
+): Promise<{ sessionId: string; routed: TopicRouted } | undefined> {
+  const words = text.trim();
+  if (!words) return undefined;
+  const r = await attempt(() => getApi().godMessage({ text: words, ...o }));
+  if (!r) return undefined;
+  lastRouted.value = { ...lastRouted.value, [r.sessionId]: r.routed };
+  if (o.topicId === undefined) openTopic(r.sessionId, r.routed.title);
+  refreshTopicsSoon();
+  return r;
+}
+
+/** «Move» an exchange to another topic ("new": a topic of its own); God answers there again. */
+export async function moveExchange(
+  sessionId: string,
+  seq: number,
+  to: string,
+  title?: string,
+): Promise<boolean> {
+  const r = await attempt(() =>
+    getApi().moveMessage(sessionId, seq, { to, ...(title?.trim() && { title: title.trim() }) }),
+  );
+  if (!r) return false;
+  openTopic(r.sessionId, r.routed.title);
+  refreshTopicsSoon();
+  return true;
+}
+
+/** Archives a topic by hand (it comes back by itself when it is needed again). */
+export async function archiveTopic(id: string): Promise<void> {
+  if ((await attempt(() => getApi().topicAction(id, "archive"))) === undefined) return;
+  topics.value = topics.value.filter((x) => x.id !== id);
+  archivedCount.value++;
+  simpleScreen.value = { kind: "today" };
+  refreshTopicsSoon();
+}
+
+/** Takes a topic back from the archive and opens it. */
+export async function restoreTopic(id: string, title: string): Promise<void> {
+  if ((await attempt(() => getApi().topicAction(id, "restore"))) === undefined) return;
+  archivedTopics.value = archivedTopics.value.filter((x) => x.id !== id);
+  await refreshTopics().catch(() => {});
+  openTopic(id, title);
+}

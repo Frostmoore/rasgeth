@@ -16,6 +16,8 @@ export type StepKey =
   /** What the machine is, and what it can run (G39.3). */
   | "wzMachine"
   | "wzMode"
+  /** The simple interface or the full one (3.12), and the person's name. */
+  | "wzLook"
   | "wzBrain"
   | "wzLocal"
   | "wzNames"
@@ -60,6 +62,7 @@ export const stepsFor = (
           "wzAccount",
           "wzMachine",
           "wzMode",
+          "wzLook",
           "wzBrain",
           ...(o.local === false ? [] : (["wzLocal"] as const)),
           "wzNames",
