@@ -262,7 +262,9 @@ class _TodayScreenState extends State<TodayScreen> {
     final c = RgColors.of(context);
     return Scaffold(
       key: const Key('simple-today'),
-      body: DecoratedBox(
+      body: Container(
+        // As tall as the window: the wash goes to the bottom, however few the topics.
+        constraints: const BoxConstraints.expand(),
         decoration: _wash(context),
         child: SafeArea(
           child: ListenableBuilder(
@@ -539,92 +541,99 @@ class TopicCard extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final t = topic;
     final waiting = t.state == TopicState.waiting;
-    return Material(
-      color: c.panel,
-      borderRadius: BorderRadius.circular(18),
-      child: InkWell(
-        key: Key('topic-${t.id}'),
+    // The shadow outside the card, the ripple inside it.
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: c.panel,
         borderRadius: BorderRadius.circular(18),
-        onTap: () => unawaited(openTopic(context, t.id, t.title)),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 116),
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: _shadow(context),
-            border: _ring(context),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  if (t.pinned) ...[
-                    RgIcon(RgIcons.pin, size: 13, color: c.dim),
-                    const SizedBox(width: 6),
-                  ],
-                  Expanded(
-                    child: Text(
-                      t.title,
-                      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15.5, color: c.text),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              Text(
-                t.summary ?? l.smpJustStarted,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 13.5, color: c.dim, height: 1.35),
-              ),
-              if (t.from != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    l.smpFrom(t.from!),
-                    style: TextStyle(fontSize: 12.5, color: c.dim, fontStyle: FontStyle.italic),
-                  ),
-                ),
-              const SizedBox(height: 10),
-              Container(
-                key: Key('topic-state-${t.id}'),
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
-                decoration: BoxDecoration(
-                  color: waiting ? c.accent : Color.lerp(c.panel2, c.accent, 0.09),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+        boxShadow: _shadow(context),
+        border: _ring(context),
+      ),
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          key: Key('topic-${t.id}'),
+          borderRadius: BorderRadius.circular(18),
+          onTap: () => unawaited(openTopic(context, t.id, t.title)),
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 116),
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Flexible(
+                    if (t.pinned) ...[
+                      RgIcon(RgIcons.pin, size: 13, color: c.dim),
+                      const SizedBox(width: 6),
+                    ],
+                    Expanded(
                       child: Text(
-                        stateWord(l, t.state),
-                        overflow: TextOverflow.ellipsis,
+                        t.title,
                         style: TextStyle(
-                          fontSize: 12,
-                          color: waiting ? Colors.white : Color.lerp(c.text, c.accent, 0.22),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15.5,
+                          color: c.text,
                         ),
                       ),
                     ),
-                    if (t.unread > 0) ...[
-                      const SizedBox(width: 6),
-                      Semantics(
-                        label: l.smpUnread,
-                        child: Container(
-                          width: 7,
-                          height: 7,
-                          decoration: BoxDecoration(
-                            color: waiting ? Colors.white : c.accent,
-                            shape: BoxShape.circle,
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  t.summary ?? l.smpJustStarted,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 13.5, color: c.dim, height: 1.35),
+                ),
+                if (t.from != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      l.smpFrom(t.from!),
+                      style: TextStyle(fontSize: 12.5, color: c.dim, fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                const SizedBox(height: 10),
+                Container(
+                  key: Key('topic-state-${t.id}'),
+                  padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: waiting ? c.accent : Color.lerp(c.panel2, c.accent, 0.09),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          stateWord(l, t.state),
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: waiting ? Colors.white : Color.lerp(c.text, c.accent, 0.22),
                           ),
                         ),
                       ),
+                      if (t.unread > 0) ...[
+                        const SizedBox(width: 6),
+                        Semantics(
+                          label: l.smpUnread,
+                          child: Container(
+                            width: 7,
+                            height: 7,
+                            decoration: BoxDecoration(
+                              color: waiting ? Colors.white : c.accent,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -1443,6 +1452,7 @@ class _Group extends StatelessWidget {
         border: _ring(context),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           for (var i = 0; i < children.length; i++) ...[
             if (i > 0) Divider(height: 1, color: c.line.withValues(alpha: 0.7)),
