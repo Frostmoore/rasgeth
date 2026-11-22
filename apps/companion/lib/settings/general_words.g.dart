@@ -4,10 +4,13 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.10.3';
+const newsVersion = '3.10.4';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.10.4', 'news3104Reading', 'news3104ReadingText'),
+  NewsRow('3.10.4', 'news3104Accent', 'news3104AccentText'),
+  NewsRow('3.10.4', 'news3104Follow', 'news3104FollowText'),
   NewsRow('3.10.3', 'news3103Names', 'news3103NamesText'),
   NewsRow('3.10.2', 'news3102Tray', 'news3102TrayText'),
   NewsRow('3.10.2', 'news3102Wake', 'news3102WakeText'),
@@ -404,6 +407,12 @@ const generalWords = <String, Map<String, String>>{
     'news3102WakeText': 'La voce a mani libere ascolta la sua parola di attivazione anche su Android, Windows e Linux, sul dispositivo stesso; il modello vocale si scarica solo quando la accendi, con la sua barra vera. Su Mac e iPhone per ora resta «Parla ora».',
     'news3103Names': 'Un nome per i sistemi di Rasgeth',
     'news3103NamesText': 'Le funzioni che ha solo Rasgeth ora portano il loro nome, con accanto che cosa sono: Constellation (la squadra di agenti a livelli, con i permessi), Event Horizon (le protezioni: le richieste davvero pericolose arrivano sempre a te), Nebula (il Canvas, con editor veri condivisi con l\'agente), Deep Field (modelli locali più grandi della scheda video), Filament (lo stesso prefisso per tutta la conversazione, così la cache regge) e Persistar (il contesto dei modelli locali salvato su disco). Il resto tiene il suo nome di sempre.',
+    'news3104Accent': 'Il colore d\'accento lo scegli tu',
+    'news3104AccentText': 'Rosso Rasgeth, ambra, verde, azzurro o viola: in Impostazioni > Generale (nell\'app: Tu > Aspetto). Pulsanti, link e titoli lo seguono, nel tema chiaro e in quello scuro.',
+    'news3104Follow': 'Leggi mentre scrive',
+    'news3104FollowText': 'Una risposta segue il testo nuovo solo finché sei in fondo. Tocca o scorri in su e resta dove sei; «Nuovo testo» ti riporta giù.',
+    'news3104Reading': 'Risposte più facili da leggere',
+    'news3104ReadingText': 'Testo più grande, con più spazio tra le righe e i paragrafi; i titoli si vedono con una barra nel colore d\'accento, i grassetti sono grassetti veri, pallini, numeri e link sono nel colore d\'accento.',
     'news321Linux': 'Strato dopo in anticipo anche su Linux',
     'news321LinuxText': 'L\'interruttore sperimentale «Strato dopo in anticipo» di SSD stream ora funziona anche su Linux con una scheda NVIDIA, con un\'immagine del motore tutta sua scaricata solo quando lo accendi.',
     'news321Settings': 'Le Impostazioni nello stile della configurazione',
@@ -739,6 +748,12 @@ const generalWords = <String, Map<String, String>>{
     'news3102WakeText': 'Hands-free voice now listens for its wake word on Android, Windows and Linux, on the device itself; the voice model is downloaded only when you turn it on, with a real progress bar. On the Mac and the iPhone «Speak now» stays for now.',
     'news3103Names': 'Names for Rasgeth\'s own systems',
     'news3103NamesText': 'The features only Rasgeth has now carry their name, with what they are beside it: Constellation (the team of agents in levels, with permissions), Event Horizon (the protections: truly dangerous requests always reach you), Nebula (the Canvas, with real editors shared with the agent), Deep Field (local models bigger than the graphics card), Filament (the same prefix for the whole conversation, so the cache holds) and Persistar (local models\' context saved on disk). Everything else keeps its plain name.',
+    'news3104Accent': 'Choose your accent colour',
+    'news3104AccentText': 'Rasgeth red, amber, green, blue or violet: in Settings > General (in the app: You > Appearance). Buttons, links and headings follow it, in the light and the dark theme.',
+    'news3104Follow': 'Read while it writes',
+    'news3104FollowText': 'A reply follows the newest text only while you are at the bottom. Touch or scroll up and it stays where you are; «New text» takes you back down.',
+    'news3104Reading': 'Answers easier to read',
+    'news3104ReadingText': 'Bigger text with more room between lines and paragraphs; headings stand out with a bar in the accent colour, bold is really bold, list marks and links are in the accent.',
     'news321Linux': 'Next layer ahead on Linux too',
     'news321LinuxText': 'The experimental «Next layer ahead» switch of SSD stream now works on Linux with an NVIDIA card too, with an engine image of its own downloaded only when you turn it on.',
     'news321Settings': 'Settings in the setup\'s style',

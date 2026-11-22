@@ -2497,6 +2497,15 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news3104Reading: "Answers easier to read",
+  news3104ReadingText:
+    "Bigger text with more room between lines and paragraphs; headings stand out with a bar in the accent colour, bold is really bold, list marks and links are in the accent.",
+  news3104Accent: "Choose your accent colour",
+  news3104AccentText:
+    "Rasgeth red, amber, green, blue or violet: in Settings > General (in the app: You > Appearance). Buttons, links and headings follow it, in the light and the dark theme.",
+  news3104Follow: "Read while it writes",
+  news3104FollowText:
+    "A reply follows the newest text only while you are at the bottom. Touch or scroll up and it stays where you are; «New text» takes you back down.",
   news3103Names: "Names for Rasgeth's own systems",
   news3103NamesText:
     "The features only Rasgeth has now carry their name, with what they are beside it: Constellation (the team of agents in levels, with permissions), Event Horizon (the protections: truly dangerous requests always reach you), Nebula (the Canvas, with real editors shared with the agent), Deep Field (local models bigger than the graphics card), Filament (the same prefix for the whole conversation, so the cache holds) and Persistar (local models' context saved on disk). Everything else keeps its plain name.",
@@ -10152,6 +10161,15 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news3104Reading: "Risposte più facili da leggere",
+  news3104ReadingText:
+    "Testo più grande, con più spazio tra le righe e i paragrafi; i titoli si vedono con una barra nel colore d'accento, i grassetti sono grassetti veri, pallini, numeri e link sono nel colore d'accento.",
+  news3104Accent: "Il colore d'accento lo scegli tu",
+  news3104AccentText:
+    "Rosso Rasgeth, ambra, verde, azzurro o viola: in Impostazioni > Generale (nell'app: Tu > Aspetto). Pulsanti, link e titoli lo seguono, nel tema chiaro e in quello scuro.",
+  news3104Follow: "Leggi mentre scrive",
+  news3104FollowText:
+    "Una risposta segue il testo nuovo solo finché sei in fondo. Tocca o scorri in su e resta dove sei; «Nuovo testo» ti riporta giù.",
   news3103Names: "Un nome per i sistemi di Rasgeth",
   news3103NamesText:
     "Le funzioni che ha solo Rasgeth ora portano il loro nome, con accanto che cosa sono: Constellation (la squadra di agenti a livelli, con i permessi), Event Horizon (le protezioni: le richieste davvero pericolose arrivano sempre a te), Nebula (il Canvas, con editor veri condivisi con l'agente), Deep Field (modelli locali più grandi della scheda video), Filament (lo stesso prefisso per tutta la conversazione, così la cache regge) e Persistar (il contesto dei modelli locali salvato su disco). Il resto tiene il suo nome di sempre.",

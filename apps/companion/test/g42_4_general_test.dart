@@ -203,6 +203,8 @@ void main() {
       expect(find.text('Come vuoi Rasgeth?'), findsOneWidget);
       expect(find.text('Français'), findsOneWidget);
       expect(find.text('Francese · cambia'), findsOneWidget);
+      // 3.10.4: the accent's swatches push the tiles a little further down.
+      await show(tester, const Key('general-tile-instructions'));
       expect(find.text('scritte'), findsOneWidget);
       // Voice messages are on (the fake's local whisper), pictures are not.
       await show(tester, const Key('general-tile-images'));

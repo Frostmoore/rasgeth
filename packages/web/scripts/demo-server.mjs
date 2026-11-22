@@ -2758,6 +2758,73 @@ if (process.env.DEMO_CONV) {
     `DEMO_CONV session ${sid}, fork ${fork} (agent ${dev.id}), sub-agent ${child.sessionId}`,
   );
 }
+/** 3.10.4, DEMO_READING: a long answer to read. */
+const READING_ANSWER = `# Il rilascio di dicembre
+
+Il piano tiene conto di **tre cose**: i test sulle tre piattaforme, le note per chi aggiorna e il sito dei download. Il resto può aspettare gennaio.
+
+## Cosa resta da fare
+
+- **Correzioni**: le due segnalazioni aperte sul login e la cache che non si svuota.
+- **Prove**: la suite completa su Linux, Windows e macOS, con il [registro della CI](https://example.com/ci).
+- **Note**: una pagina breve, *senza gergo*, per chi aggiorna da una versione vecchia.
+
+### In che ordine
+
+1. Chiudere le correzioni e far girare \`pnpm test\` su tutte e tre.
+2. Scrivere le note e farle leggere a chi non ha seguito il lavoro.
+3. Pubblicare, poi controllare il sito dei download.
+
+> Un rilascio si rimanda volentieri: un rilascio sbagliato costa molto di più.
+
+## Il comando
+
+\`\`\`sh
+git tag v3.10.4 && git push github v3.10.4
+\`\`\`
+
+Se qualcosa non torna, **fermati prima del tag**: dopo, ogni correzione è un rilascio in più.`;
+// 3.10.4, DEMO_READING=1: one long answer with headings, bold, lists, links, a quote and code, to look
+// at the answers' «Lettura comoda» in every accent (scripts/reading-shots.mjs, the app's shots).
+if (process.env.DEMO_READING) {
+  const rsid = await core.startSession("local", orch.id);
+  const put = (body) =>
+    core.store.append({
+      ownerId: "local",
+      projectId: "demo",
+      agentId: orch.id,
+      sessionId: rsid,
+      body,
+    });
+  const now = Date.now();
+  const iso = (s) => new Date(now - 600_000 + s * 1000).toISOString();
+  await put({ type: "message.user", payload: { text: "Come organizzo il rilascio di dicembre?" } });
+  await put({
+    type: "message.assistant",
+    payload: {
+      parts: [{ type: "text", text: READING_ANSWER }],
+      stopReason: "end_turn",
+      provider: "fake",
+      model: "demo-model",
+      metrics: {
+        startedAt: iso(0),
+        firstTokenAt: iso(1),
+        endedAt: iso(9),
+        inputTokens: 4200,
+        cachedReadTokens: 3900,
+        cacheWriteTokens: 300,
+        outputTokens: 620,
+        contextUsed: 4820,
+        contextWindow: 200_000,
+        tokPerSec: 77.5,
+        source: "client",
+      },
+      costUsd: 0.0182,
+    },
+  });
+  await core.updateSession("local", rsid, { title: "Rilascio di dicembre" });
+  console.log(JSON.stringify({ reading: rsid }));
+}
 // p3.5.4, DEMO_CRITICAL=1: a truly dangerous request (a PDF's redaction) next to an ordinary one,
 // both waiting for the person: the red card in the chat and in the bell.
 // G38.1, DEMO_MAIL=1: a mailbox in the process (Hoodiecrow IMAP and smtp-server, the tests' own),
