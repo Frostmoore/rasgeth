@@ -60,6 +60,7 @@ import {
   TOPIC_STATE_WORDS,
   topics,
   topicsLoaded,
+  topicsTrouble,
   topicTitle,
   waitingElsewhere,
   waitingIn,
@@ -219,7 +220,9 @@ function Today() {
           </div>
         )}
         <div class="smp-lbl">{t("smpInProgress")}</div>
-        {list.length === 0 ? (
+        {list.length === 0 && topicsTrouble.value ? (
+          <TopicsTrouble why={topicsTrouble.value} />
+        ) : list.length === 0 ? (
           <p class="smp-empty">{t(topicsLoaded.value ? "smpNoTopics" : "smpLoading")}</p>
         ) : (
           <div class="smp-cards">
@@ -237,6 +240,36 @@ function Today() {
             <IconArchive size={15} /> {t("smpArchive", { n: String(archivedCount.value) })}
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The topics did not come (3.12.1): a server before 3.12 is said in words, with the full interface
+ * offered; any other error offers to try again. Never «Un momento…» for ever.
+ */
+function TopicsTrouble({ why }: { why: "old" | "failed" }) {
+  return (
+    <div class="smp-trouble" role="status">
+      <p>{t(why === "old" ? "smpOldServer" : "smpTopicsFailed")}</p>
+      <div class="smp-trouble-do">
+        {why === "failed" && (
+          <button
+            type="button"
+            class="smp-btn"
+            onClick={() => void refreshTopics().catch(() => {})}
+          >
+            {t("smpTryAgain")}
+          </button>
+        )}
+        <button
+          type="button"
+          class={why === "old" ? "smp-btn" : "smp-btn soft"}
+          onClick={() => setUiMode("full")}
+        >
+          {t("smpFullView")}
+        </button>
       </div>
     </div>
   );

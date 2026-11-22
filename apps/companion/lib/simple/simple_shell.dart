@@ -357,7 +357,9 @@ class _TodayScreenState extends State<TodayScreen> {
                           ),
                         ),
                       ),
-                      if (s.topics.isEmpty)
+                      if (s.topics.isEmpty && s.trouble != null)
+                        _TopicsTrouble(why: s.trouble!)
+                      else if (s.topics.isEmpty)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                           child: Text(
@@ -391,6 +393,65 @@ class _TodayScreenState extends State<TodayScreen> {
             },
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// The topics did not come (3.12.1, the page's `TopicsTrouble`): a server before 3.12 is said in
+/// words, with the full interface offered; any other error offers to try again.
+class _TopicsTrouble extends StatelessWidget {
+  const _TopicsTrouble({required this.why});
+
+  final String why;
+
+  @override
+  Widget build(BuildContext context) {
+    final app = AppScope.read(context);
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final old = why == 'old';
+    ButtonStyle style(bool main) => FilledButton.styleFrom(
+      backgroundColor: main ? c.accent : Color.lerp(c.panel2, c.accent, 0.09),
+      foregroundColor: main ? Colors.white : c.text,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    );
+    return Container(
+      key: Key('simple-trouble-$why'),
+      margin: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Color.lerp(c.panel2, c.accent, 0.09),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            old ? l.smpOldServer : l.smpTopicsFailed,
+            style: TextStyle(color: c.text, fontSize: 15, height: 1.45),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              if (!old)
+                FilledButton(
+                  key: const Key('simple-trouble-retry'),
+                  style: style(true),
+                  onPressed: () => unawaited(app.simple.refresh()),
+                  child: Text(l.smpTryAgain),
+                ),
+              FilledButton(
+                key: const Key('simple-trouble-full'),
+                style: style(old),
+                onPressed: () => app.setUi('full'),
+                child: Text(l.smpFullView),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

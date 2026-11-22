@@ -24426,6 +24426,24 @@ html[data-theme="dark"] .app-simple {
   font-size: 15px;
   line-height: 1.45;
 }
+/* 3.12.1: the topics did not come (a server before 3.12, or an error), said in words. */
+.smp-trouble {
+  margin: 4px 20px 8px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--smp-soft);
+  color: var(--smp-soft-ink);
+  font-size: 15px;
+  line-height: 1.45;
+}
+.smp-trouble p {
+  margin: 0 0 12px;
+}
+.smp-trouble-do {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 .smp-foot {
   padding: 10px 20px 24px;
   display: flex;

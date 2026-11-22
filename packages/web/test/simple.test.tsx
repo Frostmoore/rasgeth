@@ -229,8 +229,9 @@ afterEach(cleanup);
 const called = (name: string) => fake.calls.filter(([n]) => n === name).map(([, a]) => a);
 
 describe("the simple interface's rules (pure)", () => {
-  it("shows the device's choice, else the installation's, else the full one", () => {
-    expect(state.effectiveUi(null, undefined)).toBe("full");
+  it("shows the device's choice, else the installation's, else the simple one", () => {
+    expect(state.effectiveUi(null, undefined)).toBe("simple");
+    expect(state.effectiveUi(null, "full")).toBe("full");
     expect(state.effectiveUi(null, "simple")).toBe("simple");
     expect(state.effectiveUi("full", "simple")).toBe("full");
     expect(state.effectiveUi("simple", "full")).toBe("simple");
@@ -319,6 +320,48 @@ describe("«Oggi»", () => {
     fireEvent.click(r.getByText("Vacanza in Sardegna"));
     await waitFor(() => expect(called("topicAction")).toContainEqual(["t_trip", "read"]));
     expect(sent).toContainEqual({ type: "session.follow", sessionId: "t_trip" });
+  });
+});
+
+describe("a server before 3.12 (3.12.1)", () => {
+  const fresh = () => {
+    state.topics.value = [];
+    state.topicsLoaded.value = false;
+    state.topicsTrouble.value = null;
+  };
+  it("says in words that the server must be updated, and offers the full interface", async () => {
+    fresh();
+    // No God's topics on that server: its answer is a 404.
+    fake.impl.topics = () => {
+      throw Object.assign(new Error("Not found"), { status: 404 });
+    };
+    const r = render(<SimpleApp />);
+    await waitFor(() => expect(r.getByText(/aggiornare il server alla 3\.12/)).toBeTruthy());
+    expect(r.queryByText("Un momento…")).toBeNull();
+    fireEvent.click(r.getByRole("button", { name: "Vista completa" }));
+    expect(state.uiMode.value).toBe("full");
+  });
+
+  it("any other error offers to try again, and the topics come", async () => {
+    fresh();
+    let fail = true;
+    fake.impl.topics = () => {
+      if (fail) throw Object.assign(new Error("Bad gateway"), { status: 502 });
+      return server.list();
+    };
+    const r = render(<SimpleApp />);
+    await waitFor(() => expect(r.getByText(/non sono arrivati/)).toBeTruthy());
+    fail = false;
+    fireEvent.click(r.getByRole("button", { name: "Riprova" }));
+    await waitFor(() => expect(r.getByText("Vacanza in Sardegna")).toBeTruthy());
+    expect(r.queryByText(/non sono arrivati/)).toBeNull();
+  });
+
+  it("tells a 404 from the rest (pure)", () => {
+    expect(state.topicsMissing({ status: 404 })).toBe(true);
+    expect(state.topicsMissing({ status: 500 })).toBe(false);
+    expect(state.topicsMissing(new Error("x"))).toBe(false);
+    expect(state.topicsMissing(null)).toBe(false);
   });
 });
 

@@ -901,6 +901,8 @@ class FakeRedGiant {
   Map<String, dynamic> setup = {
     'config': {
       'completed': true,
+      // 3.12.1: an installation that never chose opens simple; the fake one chose the full one.
+      'ui': 'full',
       'language': 'it',
       'defaultModel': {'provider': 'anthropic', 'model': 'claude-sonnet-5', 'effort': 'medium'},
       'transcription': {'api': 'local', 'url': ''},

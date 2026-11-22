@@ -267,8 +267,9 @@ describe("the setup wizard", () => {
       string,
       unknown
     >;
-    // Installations from before say nothing: devices open the full interface.
+    // A new installation says nothing: devices open the simple interface (3.12.1); settled once.
     expect(before.ui).toBeUndefined();
+    expect(before.uiSettled).toBe(true);
     expect((await api("PUT", "/api/setup/interface", { ui: "simple" })).status).toBe(200);
     expect((await api("PUT", "/api/setup/interface", { ui: "tiny" })).status).toBe(400);
     expect((await api("PUT", "/api/setup/person", { name: "  Riccardo " })).status).toBe(200);
@@ -387,6 +388,9 @@ describe("the setup wizard", () => {
       keyProviders: ["anthropic"],
       server: { baseUrl: "http://llm.local:8080/v1" },
       defaultModel: { provider: "server", model: "qwen3-8b" },
+      // Set up before 3.12.1 without choosing: it keeps the full interface it had.
+      ui: "full",
+      uiSettled: true,
     });
     expect(state.config).not.toHaveProperty("openaiBaseUrl");
     // The file of before moved into the keychain and is gone.

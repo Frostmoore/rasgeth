@@ -48,6 +48,11 @@ class FakeSetup {
       saved.add('mode ${config['mode']}');
       return ok(q);
     };
+    r['PUT /api/setup/interface'] = (q) async {
+      config['ui'] = (await body(q))['ui'];
+      saved.add('interface ${config['ui']}');
+      return ok(q);
+    };
     r['PUT /api/setup/role'] = (q) async {
       config['role'] = (await body(q))['role'];
       return ok(q);

@@ -7823,6 +7823,10 @@ const en = {
   smpInProgress: "IN PROGRESS",
   smpNoTopics: "Nothing in progress. Write above what you need: I'll take care of it.",
   smpLoading: "Loading…",
+  smpOldServer:
+    "This simple interface needs {product} 3.12 or newer on the server, and this one is older. Ask whoever looks after it to update the server to 3.12; meanwhile the full interface works.",
+  smpTopicsFailed: "Your topics did not arrive. Try again in a moment, or use the full interface.",
+  smpTryAgain: "Try again",
   smpArchive: "Archive ({n})",
   smpJustStarted: "Just started",
   smpFrom: "from {name}",
@@ -8109,6 +8113,11 @@ const it: Record<Key, string> = {
   smpInProgress: "IN CORSO",
   smpNoTopics: "Niente in corso. Scrivi qui sopra cosa ti serve: ci penso io.",
   smpLoading: "Un momento…",
+  smpOldServer:
+    "Questa interfaccia semplice ha bisogno di {product} 3.12 o più recente sul server, e questo è più vecchio. Chiedi a chi lo gestisce di aggiornare il server alla 3.12; intanto l'interfaccia completa funziona.",
+  smpTopicsFailed:
+    "I tuoi argomenti non sono arrivati. Riprova fra un momento, o usa l'interfaccia completa.",
+  smpTryAgain: "Riprova",
   smpArchive: "Archivio ({n})",
   smpJustStarted: "Appena iniziato",
   smpFrom: "da {name}",

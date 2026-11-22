@@ -399,7 +399,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
       // 3.12: the simple interface (first, chosen already) or the full one, and the person's name.
       case 'wzLook':
         return _LookStep(
-          ui: (config['ui'] as String?) ?? 'simple',
+          ui: config['ui'] as String?,
           name: (config['personName'] as String?) ?? '',
           register: (f) => _save = f,
         );
@@ -657,7 +657,8 @@ class _PickStepState extends State<_PickStep> {
 class _LookStep extends StatefulWidget {
   const _LookStep({required this.ui, required this.name, required this.register});
 
-  final String ui;
+  /// The installation's saved choice; null: never chosen (the simple one is preselected and saved).
+  final String? ui;
   final String name;
   final void Function(_Save) register;
 
@@ -681,7 +682,7 @@ class _LookStepState extends State<_LookStep> {
     return _PickStep(
       title: w('wzLookQ'),
       lead: w('wzLookLead'),
-      value: widget.ui,
+      value: widget.ui ?? 'simple',
       options: [
         ('simple', w('wzLookSimple'), w('wzLookSimpleText')),
         ('full', w('wzLookFull'), w('wzLookFullText')),

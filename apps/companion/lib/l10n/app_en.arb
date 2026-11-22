@@ -13325,5 +13325,8 @@
     }
   },
   "syEiUpdate": "Update the emulator",
-  "syUiDetails": "Details for whoever helps you"
+  "syUiDetails": "Details for whoever helps you",
+  "smpOldServer": "This simple interface needs Rasgeth 3.12 or newer on the server, and this one is older. Ask whoever looks after it to update the server to 3.12; meanwhile the full interface works.",
+  "smpTopicsFailed": "Your topics did not arrive. Try again in a moment, or use the full interface.",
+  "smpTryAgain": "Try again"
 }

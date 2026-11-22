@@ -34,7 +34,8 @@ Map<String, dynamic> _words(String what) => {
 
 void main() {
   test('the rules, as the page\'s', () {
-    expect(effectiveUi(null, null), 'full');
+    expect(effectiveUi(null, null), 'simple');
+    expect(effectiveUi(null, 'full'), 'full');
     expect(effectiveUi(null, 'simple'), 'simple');
     expect(effectiveUi('full', 'simple'), 'full');
     expect([4, 5, 12, 13, 17, 18, 23].map(greetingKey).toList(), [
@@ -286,5 +287,41 @@ void main() {
       expect(find.byType(SimpleShell), findsNothing);
       await done(tester);
     });
+
+    testWidgets('3.12.1: a server before 3.12 (no topics routes) is said, the full view offered', (
+      tester,
+    ) async {
+      server.topics = null;
+      await open(tester);
+      expect(find.byKey(const Key('simple-trouble-old')), findsOneWidget);
+      expect(find.textContaining('aggiornare il server alla 3.12'), findsOneWidget);
+      expect(find.text('Un momento…'), findsNothing);
+      await tap(tester, find.byKey(const Key('simple-trouble-full')));
+      expect(app.simpleUi, isFalse);
+      expect(find.byType(SimpleShell), findsNothing);
+      await done(tester);
+    });
+
+    testWidgets('3.12.1: any other error offers to try again, then the topics come', (
+      tester,
+    ) async {
+      final kept = server.topics;
+      server.topics = null;
+      server.routes['GET /api/god/topics'] = (q) => server.answer(q, 502, {'error': 'Bad gateway'});
+      await open(tester);
+      expect(find.byKey(const Key('simple-trouble-failed')), findsOneWidget);
+      server.routes.remove('GET /api/god/topics');
+      server.topics = kept;
+      await tap(tester, find.byKey(const Key('simple-trouble-retry')));
+      expect(find.byKey(const Key('simple-trouble-failed')), findsNothing);
+      expect(find.text('Vacanza in Sardegna'), findsOneWidget);
+      await done(tester);
+    });
+  });
+
+  test('3.12.1: a 404 is an old server, the rest is not', () {
+    expect(topicsMissing(404), isTrue);
+    expect(topicsMissing(502), isFalse);
+    expect(topicsMissing(0), isFalse);
   });
 }

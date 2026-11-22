@@ -118,6 +118,29 @@ void main() {
     await done(tester);
   });
 
+  testWidgets('3.12.1: a fresh install has «Semplice» preselected, and leaving saves it', (
+    tester,
+  ) async {
+    final app = await start(tester);
+    (server.setup['config'] as Map<String, dynamic>).remove('ui');
+    await push(tester, const SetupWizardScreen(start: 'wzLook'));
+    expect(find.text('Come vuoi vedere Rasgeth?'), findsOneWidget);
+    await tap(tester, 'wz-next');
+    expect(fake.saved, contains('interface simple'));
+    expect(app.uiDefault, 'simple');
+    await done(tester);
+  });
+
+  testWidgets('3.12.1: an installation that already chose the full one keeps it', (tester) async {
+    (server.setup['config'] as Map<String, dynamic>)['ui'] = 'full';
+    final app = await start(tester);
+    await push(tester, const SetupWizardScreen(start: 'wzLook'));
+    await tap(tester, 'wz-next');
+    expect(fake.saved, isNot(contains('interface simple')));
+    expect(app.simpleUi, isFalse);
+    await done(tester);
+  });
+
   testWidgets('a password too short is said, never sent', (tester) async {
     await start(tester);
     server.routes['GET /api/auth/methods'] = (q) =>

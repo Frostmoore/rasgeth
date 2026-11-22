@@ -8,8 +8,12 @@ import 'package:flutter/foundation.dart';
 import '../api/client.dart';
 import '../api/topics.dart';
 
-/// The interface to show: the device's choice, else the installation's, else the full one.
-String effectiveUi(String? device, String? installed) => device ?? installed ?? 'full';
+/// The interface to show: the device's choice, else the installation's, else the simple one
+/// (3.12.1: an installation that never chose opens with the simple interface).
+String effectiveUi(String? device, String? installed) => device ?? installed ?? 'simple';
+
+/// A server before 3.12 answers 404 to God's topics (the page's `topicsMissing`).
+bool topicsMissing(int status) => status == 404;
 
 /// The greeting's words for the hour (the page's `greetingKey`).
 String greetingKey(int hour) => hour >= 5 && hour < 13
@@ -52,6 +56,10 @@ class SimpleModel extends ChangeNotifier {
   /// The last error, in the server's words (shown once by the screen).
   String? error;
 
+  /// Why the topics did not come (3.12.1, the page's `topicsTrouble`): `old`, a server before 3.12
+  /// (no `/api/god/topics`, 404); `failed`, any other error. Null while they come, or once they came.
+  String? trouble;
+
   Timer? _soon;
 
   Future<void> refresh() async {
@@ -62,9 +70,15 @@ class SimpleModel extends ChangeNotifier {
       topics = l.topics;
       archivedCount = l.archived;
       loaded = true;
+      trouble = null;
       notifyListeners();
-    } on ApiException {
-      // The next change tries again.
+    } on ApiException catch (e) {
+      // Never «Un momento…» for ever: say why (the screen offers what to do); the next change
+      // tries again.
+      if (!loaded) {
+        trouble = topicsMissing(e.status) ? 'old' : 'failed';
+        notifyListeners();
+      }
     }
   }
 
@@ -165,6 +179,7 @@ class SimpleModel extends ChangeNotifier {
     archived = const [];
     archivedCount = 0;
     loaded = false;
+    trouble = null;
     notifyListeners();
   }
 

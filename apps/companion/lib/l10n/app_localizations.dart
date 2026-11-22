@@ -33194,6 +33194,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Details for whoever helps you'**
   String get syUiDetails;
+
+  /// No description provided for @smpOldServer.
+  ///
+  /// In en, this message translates to:
+  /// **'This simple interface needs Rasgeth 3.12 or newer on the server, and this one is older. Ask whoever looks after it to update the server to 3.12; meanwhile the full interface works.'**
+  String get smpOldServer;
+
+  /// No description provided for @smpTopicsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your topics did not arrive. Try again in a moment, or use the full interface.'**
+  String get smpTopicsFailed;
+
+  /// No description provided for @smpTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get smpTryAgain;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

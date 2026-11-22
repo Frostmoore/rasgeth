@@ -333,9 +333,12 @@ export interface SetupConfig {
   mode?: "standard" | "advanced";
   /**
    * The interface a device opens with until it chooses its own (3.12): the simple one for everyday
-   * people or the full one. Asked by the first-start wizard; absent (installations from before): full.
+   * people or the full one. Asked by the first-start wizard; absent: the simple one (3.12.1). An
+   * installation set up before 3.12.1 that never chose keeps the full one (`migrate`, once).
    */
   ui?: "simple" | "full";
+  /** `migrate` already settled the interface of installations from before 3.12.1. */
+  uiSettled?: boolean;
   /** What the person likes to be called (3.12, the simple interface's greeting); absent: no name. */
   personName?: string;
   /** Where the code lives: GitHub and/or Gitea (their tokens are in the secrets). */
@@ -1040,6 +1043,13 @@ export class SetupService {
     if (s.openaiImagesKey && !c.media?.image) {
       s.mediaKeys = { openai: s.openaiImagesKey, ...s.mediaKeys };
       c.media = { ...c.media, image: { provider: "openai", model: c.imagesModel ?? IMAGE_MODEL } };
+      changed = true;
+    }
+    // The simple interface is the default from 3.12.1, on the first start only: an installation
+    // already set up that never chose keeps the full one it had (the person's choice, 2026-11-23).
+    if (!c.uiSettled) {
+      if (c.completed && !c.ui) c.ui = "full";
+      c.uiSettled = true;
       changed = true;
     }
     return changed;

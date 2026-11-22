@@ -2836,9 +2836,12 @@ export const uiChoice = signal<UiMode | null>(
 /** The installation's default for devices that never chose (the first-start wizard's answer). */
 export const uiDefault = signal<UiMode | null>(null);
 
-/** The interface to show: the device's choice, else the installation's, else the full one. Pure. */
+/**
+ * The interface to show: the device's choice, else the installation's, else the simple one (3.12.1:
+ * an installation that never chose opens with the simple interface). Pure.
+ */
 export function effectiveUi(device: UiMode | null, installed: UiMode | null | undefined): UiMode {
-  return device ?? installed ?? "full";
+  return device ?? installed ?? "simple";
 }
 export const uiMode = computed(() => effectiveUi(uiChoice.value, uiDefault.value));
 
@@ -2893,11 +2896,29 @@ export const topicsLoaded = signal(false);
 /** What the router decided last for each topic (`session.routed`, live). */
 export const lastRouted = signal<Record<string, TopicRouted>>({});
 
+/**
+ * Why the topics did not come (3.12.1): `old`, a server before 3.12 (no `/api/god/topics`, 404);
+ * `failed`, any other error. Null while they come, or once they came.
+ */
+export const topicsTrouble = signal<"old" | "failed" | null>(null);
+
 export async function refreshTopics(): Promise<void> {
-  const list = await getApi().topics();
-  topics.value = list.topics;
-  archivedCount.value = list.archived;
-  topicsLoaded.value = true;
+  try {
+    const list = await getApi().topics();
+    topics.value = list.topics;
+    archivedCount.value = list.archived;
+    topicsLoaded.value = true;
+    topicsTrouble.value = null;
+  } catch (e) {
+    // Never «Un momento…» for ever: say why, in words (the screen offers what to do).
+    if (!topicsLoaded.value) topicsTrouble.value = topicsMissing(e) ? "old" : "failed";
+    throw e;
+  }
+}
+
+/** A server before 3.12 answers 404 to God's topics. Pure. */
+export function topicsMissing(e: unknown): boolean {
+  return (e as { status?: unknown } | null)?.status === 404;
 }
 
 let topicsTimer: ReturnType<typeof setTimeout> | undefined;

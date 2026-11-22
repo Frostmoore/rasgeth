@@ -19222,4 +19222,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syUiDetails => 'Details for whoever helps you';
+
+  @override
+  String get smpOldServer =>
+      'This simple interface needs Rasgeth 3.12 or newer on the server, and this one is older. Ask whoever looks after it to update the server to 3.12; meanwhile the full interface works.';
+
+  @override
+  String get smpTopicsFailed =>
+      'Your topics did not arrive. Try again in a moment, or use the full interface.';
+
+  @override
+  String get smpTryAgain => 'Try again';
 }
