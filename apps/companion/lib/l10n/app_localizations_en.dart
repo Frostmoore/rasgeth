@@ -18248,4 +18248,185 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syDsState_unauthorized => 'waiting for your yes on the phone';
+
+  @override
+  String get syEiAvdName => 'Name of the virtual phone';
+
+  @override
+  String get syEiAvdNameHelp => 'Letters, digits, dot, dash and underscore.';
+
+  @override
+  String get syEiBlock_container =>
+      'Rasgeth runs in a container here, and emulators cannot run inside it. Pair a node (a computer with Rasgeth) and its emulators appear here.';
+
+  @override
+  String get syEiBlock_emulators_running =>
+      'An emulator is running: switch it off first, then update.';
+
+  @override
+  String get syEiBlock_folder_not_empty =>
+      'That folder already holds other things and is not an Android SDK: choose a new or empty folder.';
+
+  @override
+  String get syEiBlock_folder_relative => 'The folder must be a full path.';
+
+  @override
+  String syEiBlock_java_old(String major) {
+    return 'The Java found is version $major: Android\'s tools need 17 or newer. Install a Java 17 or set JAVA_HOME to one, then look again.';
+  }
+
+  @override
+  String get syEiBlock_no_accel =>
+      'This computer has no hardware acceleration for virtual machines: an emulator would be far too slow to use. Nothing is installed; a node on a computer that has it is better.';
+
+  @override
+  String get syEiBlock_no_java =>
+      'Android\'s tools need Java 17 or newer, and none was found (JAVA_HOME, the PATH, Android Studio). Install a Java 17 (for example Eclipse Temurin or OpenLogic) or Android Studio, then look again. Rasgeth does not install Java by itself.';
+
+  @override
+  String get syEiBlock_nothing => 'Nothing is missing here.';
+
+  @override
+  String get syEiBlock_offline =>
+      'Google\'s list of packages (with the licences) could not be read. Check the internet connection and try again.';
+
+  @override
+  String get syEiBlock_unsupported =>
+      'Google makes no Android emulator for this system and processor. A node on another computer can bring one.';
+
+  @override
+  String get syEiCancelled => 'Stopped. You can start again whenever you like.';
+
+  @override
+  String get syEiClose => 'Close';
+
+  @override
+  String get syEiDone => 'Done. The report of this machine has been read again.';
+
+  @override
+  String get syEiFailed =>
+      'The install did not finish. What is already in the folder stays; you can try again.';
+
+  @override
+  String get syEiFolder => 'Folder';
+
+  @override
+  String get syEiFolderApply => 'Plan again';
+
+  @override
+  String get syEiFolderHelp =>
+      'A full path; a new or empty folder, or an Android SDK already there.';
+
+  @override
+  String get syEiFolderOther => 'Another folder or name';
+
+  @override
+  String get syEiFolderStandard => 'the standard place on this system';
+
+  @override
+  String get syEiInstall => 'Install what is missing';
+
+  @override
+  String syEiJava(String major) {
+    return 'With Java $major:';
+  }
+
+  @override
+  String get syEiLead =>
+      'Rasgeth downloads them from Google only now, with your yes, and puts everything in this folder (the virtual phone goes where the emulator keeps them). Nothing else on the computer changes.';
+
+  @override
+  String get syEiLicenceAccept => 'I read and accept these licences';
+
+  @override
+  String get syEiLicenceHelp =>
+      'Rasgeth says yes on your behalf only to these, only for this install.';
+
+  @override
+  String get syEiLicences => 'Licences';
+
+  @override
+  String get syEiLicencesLead =>
+      'Google\'s terms for these pieces, in full. Read them: the install starts only once you accept them.';
+
+  @override
+  String get syEiNote_bios =>
+      'Virtualization is switched off: switch it on in the BIOS/UEFI (VT-x or AMD-V) and, on Windows, the Windows Hypervisor Platform feature.';
+
+  @override
+  String get syEiNote_ios_bridge =>
+      'iOS: the bridge for touches comes with Rasgeth 3.11.1; there is nothing to install now.';
+
+  @override
+  String get syEiNote_kvm_group =>
+      'Linux: /dev/kvm is there but this user may not use it. An administrator can add the user to the kvm group, then log in again.';
+
+  @override
+  String get syEiNote_node => 'Settings › Nodes: pair a computer that can run emulators.';
+
+  @override
+  String get syEiNote_xcode =>
+      'iOS simulators need Xcode, from the App Store: Rasgeth does not install it. iOS comes with Rasgeth 3.11.1.';
+
+  @override
+  String get syEiReading => 'Reading Google\'s list of packages…';
+
+  @override
+  String get syEiRunning => 'Starting…';
+
+  @override
+  String get syEiStart => 'Install';
+
+  @override
+  String get syEiStartUpdate => 'Update';
+
+  @override
+  String syEiStep_avd(String name) {
+    return 'The virtual phone $name';
+  }
+
+  @override
+  String syEiStep_cmdline_tools(String version) {
+    return 'Android\'s command-line tools $version (sdkmanager, avdmanager)';
+  }
+
+  @override
+  String get syEiStep_emulator => 'The Android emulator';
+
+  @override
+  String syEiStep_emulator_update(String version) {
+    return 'The emulator, at its latest version $version';
+  }
+
+  @override
+  String get syEiStep_licences => 'The licences you read and accepted';
+
+  @override
+  String get syEiStep_platform_tools => 'Platform tools (adb)';
+
+  @override
+  String get syEiStep_system_image => 'Android 15 (API 35) for this processor';
+
+  @override
+  String get syEiSteps => 'What it will do';
+
+  @override
+  String get syEiStopNow => 'Stop';
+
+  @override
+  String get syEiTitle => 'Install the Android pieces';
+
+  @override
+  String get syEiTitleUpdate => 'Update the emulator';
+
+  @override
+  String syEiTotal(String size) {
+    return 'To download: $size';
+  }
+
+  @override
+  String get syEiUpdate => 'Update the emulator';
+
+  @override
+  String get syUiDetails => 'Details for whoever helps you';
 }

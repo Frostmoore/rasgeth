@@ -64,6 +64,37 @@ class EmulatorReport {
   final int maxRunning;
 }
 
+/// `EmuInstallPlan` (3.11 phase 5): the guided install's steps, folder, sizes, licences; a
+/// `planId` only when it can start.
+class EmuInstallPlan {
+  EmuInstallPlan(Map<String, dynamic> j)
+    : planId = _s(j['planId']),
+      target = _s(j['target']) ?? '',
+      targetStandard = j['targetStandard'] == true,
+      steps = _l(j['steps']),
+      licences = _l(j['licences']),
+      bytes = _i(j['bytes']),
+      blocked = _s(j['blocked']),
+      notes = _ss(j['notes']),
+      java = _m(j['java']).isEmpty ? null : _m(j['java']);
+
+  final String? planId;
+  final String target;
+  final bool targetStandard;
+
+  /// `{id, package?, bytes?, version?, avd?}`.
+  final List<Map<String, dynamic>> steps;
+
+  /// `{id, text}`: the full text to read and accept.
+  final List<Map<String, dynamic>> licences;
+  final int bytes;
+  final String? blocked;
+  final List<String> notes;
+
+  /// `{path, major}`.
+  final Map<String, dynamic>? java;
+}
+
 /// `EmulatorMachineView`: this machine or a node, with its report when it gave one.
 class EmulatorMachineView {
   EmulatorMachineView(Map<String, dynamic> j)
@@ -101,6 +132,7 @@ class EmuDeviceView {
       state = _s(j['state']) ?? 'off',
       serial = _s(j['serial']),
       link = _s(j['link']),
+      machine = _s(j['machine']),
       ours = j['ours'] == true;
 
   final String id, name;
@@ -111,6 +143,9 @@ class EmuDeviceView {
   /// off | starting | on | unauthorized | offline.
   final String state;
   final String? serial, link;
+
+  /// On a node (3.11 phase 4): its name; the id ends with `@<fingerprint>`.
+  final String? machine;
 
   /// Rasgeth started it.
   final bool ours;
@@ -497,6 +532,33 @@ extension SystemApi on RedGiantClient {
     for (final d in _l((await _do('POST', '/api/emulators/devices/stop', {'id': id}))['devices']))
       EmuDeviceView(d),
   ];
+
+  /// `POST /api/emulators/install/plan` (3.11 phase 5): what the guided install would do here.
+  Future<EmuInstallPlan> emulatorInstallPlan({
+    String? target,
+    String? avdName,
+    String? only,
+  }) async => EmuInstallPlan(
+    await _do('POST', '/api/emulators/install/plan', {
+      'target': ?target,
+      'avdName': ?avdName,
+      'only': ?only,
+    }),
+  );
+
+  /// `POST /api/emulators/install/start`: the person's yes; the job's id.
+  Future<String> startEmulatorInstall(String planId, {required bool licenceAccepted}) async =>
+      _s(
+        (await _do('POST', '/api/emulators/install/start', {
+          'planId': planId,
+          'licenceAccepted': licenceAccepted,
+        }))['jobId'],
+      ) ??
+      '';
+
+  /// `POST /api/jobs/:id/cancel`.
+  Future<void> cancelEmulatorInstall(String jobId) =>
+      callJson('POST', '/api/jobs/${_e(jobId)}/cancel', const {});
 
   // ---- nodes ----
 

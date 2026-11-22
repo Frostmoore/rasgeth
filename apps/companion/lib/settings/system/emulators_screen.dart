@@ -16,6 +16,7 @@ import '../../theme/colors.dart';
 import '../../ui/icons.dart';
 import '../../ui/settings_kit.dart';
 import '../api/system_api.dart';
+import 'emulator_install.dart';
 import 'system_kit.dart';
 
 Future<void> openEmulatorsSettings(BuildContext context) =>
@@ -146,6 +147,8 @@ class _EmulatorsScreenState extends State<EmulatorsScreen> {
             key: const Key('sy-em-here'),
             children: [
               if (here != null) EmulatorReportView(r: here) else SysText(l.syEmLooking),
+              if (here != null)
+                EmulatorInstall(r: here, onDone: () => unawaited(_load(fresh: true))),
               SysActs(
                 start: true,
                 children: [
@@ -279,6 +282,7 @@ class _DeviceRow extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
     final help = [
+      ?d.machine,
       d.kind == 'phone' ? (d.link == 'wifi' ? l.syEmPhoneWifi : l.syEmPhoneUsb) : l.syEmRunningEmu,
       sw(l, 'dsState_${d.state}'),
       ?d.serial,
@@ -326,7 +330,11 @@ class _DeviceRow extends StatelessWidget {
             key: Key('sy-em-open-${d.id}'),
             onPressed: d.state == 'unauthorized' || d.state == 'offline'
                 ? null
-                : () => openDeviceScreen(context, d.id, d.name),
+                : () => openDeviceScreen(
+                    context,
+                    d.id,
+                    d.machine == null ? d.name : '${d.name} · ${d.machine}',
+                  ),
             child: Text(l.syEmOpen),
           ),
           if (d.kind == 'emulator' && d.state == 'on') ...[

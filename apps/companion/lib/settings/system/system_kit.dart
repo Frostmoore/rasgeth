@@ -919,9 +919,21 @@ class SysRow extends StatelessWidget {
 /// (`job_<kind>`) and each step (`job_step_<id>`) with its mark and a download's bar; «Done.» or
 /// what went wrong. [onEnd] hears the job end once, with its values (`vars`).
 class SysJob extends StatefulWidget {
-  const SysJob({super.key, required this.id, this.onEnd, this.onUpdate, this.showDone = true});
+  const SysJob({
+    super.key,
+    required this.id,
+    this.onEnd,
+    this.onUpdate,
+    this.showDone = true,
+    this.title,
+    this.stepName,
+  });
 
   final String id;
+
+  /// A title and step words of the caller's own (the guided install's `ei…` words).
+  final String? title;
+  final String? Function(String step)? stepName;
   final void Function(String state, Map<String, String> vars)? onEnd;
 
   /// Every reading while it runs (the sign-in address a job gives on the way).
@@ -1009,7 +1021,7 @@ class _SysJobState extends State<SysJob> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            syWord(l, 'job_${j.kind}', _vars) ?? j.kind,
+            widget.title ?? syWord(l, 'job_${j.kind}', _vars) ?? j.kind,
             style: TextStyle(fontWeight: FontWeight.w700, color: c.text),
           ),
           const SizedBox(height: 6),
@@ -1046,7 +1058,9 @@ class _SysJobState extends State<SysJob> {
                       children: [
                         Text(
                           [
-                            syWord(l, 'job_step_${s.id}', _vars) ?? s.id,
+                            widget.stepName?.call(s.id) ??
+                                syWord(l, 'job_step_${s.id}', _vars) ??
+                                s.id,
                             if (s.state == 'skipped') l.syUiNotNeeded,
                           ].join(' · '),
                           style: TextStyle(

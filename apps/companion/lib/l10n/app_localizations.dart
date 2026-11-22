@@ -31418,6 +31418,312 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'waiting for your yes on the phone'**
   String get syDsState_unauthorized;
+
+  /// No description provided for @syEiAvdName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name of the virtual phone'**
+  String get syEiAvdName;
+
+  /// No description provided for @syEiAvdNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Letters, digits, dot, dash and underscore.'**
+  String get syEiAvdNameHelp;
+
+  /// No description provided for @syEiBlock_container.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth runs in a container here, and emulators cannot run inside it. Pair a node (a computer with Rasgeth) and its emulators appear here.'**
+  String get syEiBlock_container;
+
+  /// No description provided for @syEiBlock_emulators_running.
+  ///
+  /// In en, this message translates to:
+  /// **'An emulator is running: switch it off first, then update.'**
+  String get syEiBlock_emulators_running;
+
+  /// No description provided for @syEiBlock_folder_not_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'That folder already holds other things and is not an Android SDK: choose a new or empty folder.'**
+  String get syEiBlock_folder_not_empty;
+
+  /// No description provided for @syEiBlock_folder_relative.
+  ///
+  /// In en, this message translates to:
+  /// **'The folder must be a full path.'**
+  String get syEiBlock_folder_relative;
+
+  /// No description provided for @syEiBlock_java_old.
+  ///
+  /// In en, this message translates to:
+  /// **'The Java found is version {major}: Android\'s tools need 17 or newer. Install a Java 17 or set JAVA_HOME to one, then look again.'**
+  String syEiBlock_java_old(String major);
+
+  /// No description provided for @syEiBlock_no_accel.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer has no hardware acceleration for virtual machines: an emulator would be far too slow to use. Nothing is installed; a node on a computer that has it is better.'**
+  String get syEiBlock_no_accel;
+
+  /// No description provided for @syEiBlock_no_java.
+  ///
+  /// In en, this message translates to:
+  /// **'Android\'s tools need Java 17 or newer, and none was found (JAVA_HOME, the PATH, Android Studio). Install a Java 17 (for example Eclipse Temurin or OpenLogic) or Android Studio, then look again. Rasgeth does not install Java by itself.'**
+  String get syEiBlock_no_java;
+
+  /// No description provided for @syEiBlock_nothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is missing here.'**
+  String get syEiBlock_nothing;
+
+  /// No description provided for @syEiBlock_offline.
+  ///
+  /// In en, this message translates to:
+  /// **'Google\'s list of packages (with the licences) could not be read. Check the internet connection and try again.'**
+  String get syEiBlock_offline;
+
+  /// No description provided for @syEiBlock_unsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Google makes no Android emulator for this system and processor. A node on another computer can bring one.'**
+  String get syEiBlock_unsupported;
+
+  /// No description provided for @syEiCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped. You can start again whenever you like.'**
+  String get syEiCancelled;
+
+  /// No description provided for @syEiClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get syEiClose;
+
+  /// No description provided for @syEiDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done. The report of this machine has been read again.'**
+  String get syEiDone;
+
+  /// No description provided for @syEiFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The install did not finish. What is already in the folder stays; you can try again.'**
+  String get syEiFailed;
+
+  /// No description provided for @syEiFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get syEiFolder;
+
+  /// No description provided for @syEiFolderApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan again'**
+  String get syEiFolderApply;
+
+  /// No description provided for @syEiFolderHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A full path; a new or empty folder, or an Android SDK already there.'**
+  String get syEiFolderHelp;
+
+  /// No description provided for @syEiFolderOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Another folder or name'**
+  String get syEiFolderOther;
+
+  /// No description provided for @syEiFolderStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'the standard place on this system'**
+  String get syEiFolderStandard;
+
+  /// No description provided for @syEiInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Install what is missing'**
+  String get syEiInstall;
+
+  /// No description provided for @syEiJava.
+  ///
+  /// In en, this message translates to:
+  /// **'With Java {major}:'**
+  String syEiJava(String major);
+
+  /// No description provided for @syEiLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth downloads them from Google only now, with your yes, and puts everything in this folder (the virtual phone goes where the emulator keeps them). Nothing else on the computer changes.'**
+  String get syEiLead;
+
+  /// No description provided for @syEiLicenceAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'I read and accept these licences'**
+  String get syEiLicenceAccept;
+
+  /// No description provided for @syEiLicenceHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth says yes on your behalf only to these, only for this install.'**
+  String get syEiLicenceHelp;
+
+  /// No description provided for @syEiLicences.
+  ///
+  /// In en, this message translates to:
+  /// **'Licences'**
+  String get syEiLicences;
+
+  /// No description provided for @syEiLicencesLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Google\'s terms for these pieces, in full. Read them: the install starts only once you accept them.'**
+  String get syEiLicencesLead;
+
+  /// No description provided for @syEiNote_bios.
+  ///
+  /// In en, this message translates to:
+  /// **'Virtualization is switched off: switch it on in the BIOS/UEFI (VT-x or AMD-V) and, on Windows, the Windows Hypervisor Platform feature.'**
+  String get syEiNote_bios;
+
+  /// No description provided for @syEiNote_ios_bridge.
+  ///
+  /// In en, this message translates to:
+  /// **'iOS: the bridge for touches comes with Rasgeth 3.11.1; there is nothing to install now.'**
+  String get syEiNote_ios_bridge;
+
+  /// No description provided for @syEiNote_kvm_group.
+  ///
+  /// In en, this message translates to:
+  /// **'Linux: /dev/kvm is there but this user may not use it. An administrator can add the user to the kvm group, then log in again.'**
+  String get syEiNote_kvm_group;
+
+  /// No description provided for @syEiNote_node.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings › Nodes: pair a computer that can run emulators.'**
+  String get syEiNote_node;
+
+  /// No description provided for @syEiNote_xcode.
+  ///
+  /// In en, this message translates to:
+  /// **'iOS simulators need Xcode, from the App Store: Rasgeth does not install it. iOS comes with Rasgeth 3.11.1.'**
+  String get syEiNote_xcode;
+
+  /// No description provided for @syEiReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading Google\'s list of packages…'**
+  String get syEiReading;
+
+  /// No description provided for @syEiRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting…'**
+  String get syEiRunning;
+
+  /// No description provided for @syEiStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Install'**
+  String get syEiStart;
+
+  /// No description provided for @syEiStartUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get syEiStartUpdate;
+
+  /// No description provided for @syEiStep_avd.
+  ///
+  /// In en, this message translates to:
+  /// **'The virtual phone {name}'**
+  String syEiStep_avd(String name);
+
+  /// No description provided for @syEiStep_cmdline_tools.
+  ///
+  /// In en, this message translates to:
+  /// **'Android\'s command-line tools {version} (sdkmanager, avdmanager)'**
+  String syEiStep_cmdline_tools(String version);
+
+  /// No description provided for @syEiStep_emulator.
+  ///
+  /// In en, this message translates to:
+  /// **'The Android emulator'**
+  String get syEiStep_emulator;
+
+  /// No description provided for @syEiStep_emulator_update.
+  ///
+  /// In en, this message translates to:
+  /// **'The emulator, at its latest version {version}'**
+  String syEiStep_emulator_update(String version);
+
+  /// No description provided for @syEiStep_licences.
+  ///
+  /// In en, this message translates to:
+  /// **'The licences you read and accepted'**
+  String get syEiStep_licences;
+
+  /// No description provided for @syEiStep_platform_tools.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform tools (adb)'**
+  String get syEiStep_platform_tools;
+
+  /// No description provided for @syEiStep_system_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Android 15 (API 35) for this processor'**
+  String get syEiStep_system_image;
+
+  /// No description provided for @syEiSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'What it will do'**
+  String get syEiSteps;
+
+  /// No description provided for @syEiStopNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get syEiStopNow;
+
+  /// No description provided for @syEiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Install the Android pieces'**
+  String get syEiTitle;
+
+  /// No description provided for @syEiTitleUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update the emulator'**
+  String get syEiTitleUpdate;
+
+  /// No description provided for @syEiTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'To download: {size}'**
+  String syEiTotal(String size);
+
+  /// No description provided for @syEiUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update the emulator'**
+  String get syEiUpdate;
+
+  /// No description provided for @syUiDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details for whoever helps you'**
+  String get syUiDetails;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

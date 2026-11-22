@@ -12823,5 +12823,98 @@
   "syDsState_offline": "not responding",
   "syDsState_on": "on",
   "syDsState_starting": "starting…",
-  "syDsState_unauthorized": "waiting for your yes on the phone"
+  "syDsState_unauthorized": "waiting for your yes on the phone",
+  "syEiAvdName": "Name of the virtual phone",
+  "syEiAvdNameHelp": "Letters, digits, dot, dash and underscore.",
+  "syEiBlock_container": "Rasgeth runs in a container here, and emulators cannot run inside it. Pair a node (a computer with Rasgeth) and its emulators appear here.",
+  "syEiBlock_emulators_running": "An emulator is running: switch it off first, then update.",
+  "syEiBlock_folder_not_empty": "That folder already holds other things and is not an Android SDK: choose a new or empty folder.",
+  "syEiBlock_folder_relative": "The folder must be a full path.",
+  "syEiBlock_java_old": "The Java found is version {major}: Android's tools need 17 or newer. Install a Java 17 or set JAVA_HOME to one, then look again.",
+  "@syEiBlock_java_old": {
+    "placeholders": {
+      "major": {
+        "type": "String"
+      }
+    }
+  },
+  "syEiBlock_no_accel": "This computer has no hardware acceleration for virtual machines: an emulator would be far too slow to use. Nothing is installed; a node on a computer that has it is better.",
+  "syEiBlock_no_java": "Android's tools need Java 17 or newer, and none was found (JAVA_HOME, the PATH, Android Studio). Install a Java 17 (for example Eclipse Temurin or OpenLogic) or Android Studio, then look again. Rasgeth does not install Java by itself.",
+  "syEiBlock_nothing": "Nothing is missing here.",
+  "syEiBlock_offline": "Google's list of packages (with the licences) could not be read. Check the internet connection and try again.",
+  "syEiBlock_unsupported": "Google makes no Android emulator for this system and processor. A node on another computer can bring one.",
+  "syEiCancelled": "Stopped. You can start again whenever you like.",
+  "syEiClose": "Close",
+  "syEiDone": "Done. The report of this machine has been read again.",
+  "syEiFailed": "The install did not finish. What is already in the folder stays; you can try again.",
+  "syEiFolder": "Folder",
+  "syEiFolderApply": "Plan again",
+  "syEiFolderHelp": "A full path; a new or empty folder, or an Android SDK already there.",
+  "syEiFolderOther": "Another folder or name",
+  "syEiFolderStandard": "the standard place on this system",
+  "syEiInstall": "Install what is missing",
+  "syEiJava": "With Java {major}:",
+  "@syEiJava": {
+    "placeholders": {
+      "major": {
+        "type": "String"
+      }
+    }
+  },
+  "syEiLead": "Rasgeth downloads them from Google only now, with your yes, and puts everything in this folder (the virtual phone goes where the emulator keeps them). Nothing else on the computer changes.",
+  "syEiLicenceAccept": "I read and accept these licences",
+  "syEiLicenceHelp": "Rasgeth says yes on your behalf only to these, only for this install.",
+  "syEiLicences": "Licences",
+  "syEiLicencesLead": "Google's terms for these pieces, in full. Read them: the install starts only once you accept them.",
+  "syEiNote_bios": "Virtualization is switched off: switch it on in the BIOS/UEFI (VT-x or AMD-V) and, on Windows, the Windows Hypervisor Platform feature.",
+  "syEiNote_ios_bridge": "iOS: the bridge for touches comes with Rasgeth 3.11.1; there is nothing to install now.",
+  "syEiNote_kvm_group": "Linux: /dev/kvm is there but this user may not use it. An administrator can add the user to the kvm group, then log in again.",
+  "syEiNote_node": "Settings › Nodes: pair a computer that can run emulators.",
+  "syEiNote_xcode": "iOS simulators need Xcode, from the App Store: Rasgeth does not install it. iOS comes with Rasgeth 3.11.1.",
+  "syEiReading": "Reading Google's list of packages…",
+  "syEiRunning": "Starting…",
+  "syEiStart": "Install",
+  "syEiStartUpdate": "Update",
+  "syEiStep_avd": "The virtual phone {name}",
+  "@syEiStep_avd": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syEiStep_cmdline_tools": "Android's command-line tools {version} (sdkmanager, avdmanager)",
+  "@syEiStep_cmdline_tools": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syEiStep_emulator": "The Android emulator",
+  "syEiStep_emulator_update": "The emulator, at its latest version {version}",
+  "@syEiStep_emulator_update": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syEiStep_licences": "The licences you read and accepted",
+  "syEiStep_platform_tools": "Platform tools (adb)",
+  "syEiStep_system_image": "Android 15 (API 35) for this processor",
+  "syEiSteps": "What it will do",
+  "syEiStopNow": "Stop",
+  "syEiTitle": "Install the Android pieces",
+  "syEiTitleUpdate": "Update the emulator",
+  "syEiTotal": "To download: {size}",
+  "@syEiTotal": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "syEiUpdate": "Update the emulator",
+  "syUiDetails": "Details for whoever helps you"
 }

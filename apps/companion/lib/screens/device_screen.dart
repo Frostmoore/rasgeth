@@ -161,7 +161,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
                     Flexible(
                       flex: 0,
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: narrow ? 190 : 320),
+                        constraints: BoxConstraints(maxWidth: narrow ? 240 : 320),
                         child: mine
                             ? OutlinedButton(
                                 key: const Key('dv-take'),
@@ -281,7 +281,8 @@ class _DeviceScreenState extends State<DeviceScreen> {
         decoration: BoxDecoration(
           color: const Color(0xFF15171C),
           borderRadius: BorderRadius.circular(26),
-          border: Border.all(color: mine ? c.accent : const Color(0xFF2A2D34), width: 2),
+          // A lighter edge so the phone stands out on the dark theme too.
+          border: Border.all(color: mine ? c.accent : const Color(0xFF4A4F5A), width: 2),
         ),
         child: AspectRatio(
           aspectRatio: ratio,

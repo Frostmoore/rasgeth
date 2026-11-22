@@ -288,6 +288,38 @@ class FakeSystem {
     },
   ];
   Map<String, dynamic> emulatorSettings = {'sdkPath': null, 'maxRunning': 2};
+
+  /// The guided install's plan (3.11 phase 5): everything for a machine without an SDK.
+  Map<String, dynamic> emulatorInstallPlan = {
+    'planId': 'P1',
+    'target': r'C:\Users\Ada\AppData\Local\Android\Sdk',
+    'targetStandard': true,
+    'steps': [
+      {'id': 'cmdline-tools', 'bytes': 155655386, 'version': '22.0'},
+      {'id': 'licences'},
+      {'id': 'platform-tools', 'package': 'platform-tools', 'bytes': 8188601},
+      {'id': 'emulator', 'package': 'emulator', 'bytes': 456613348},
+      {
+        'id': 'system-image',
+        'package': 'system-images;android-35;google_apis;x86_64',
+        'bytes': 1738815903,
+      },
+      {
+        'id': 'avd',
+        'package': 'system-images;android-35;google_apis;x86_64',
+        'avd': 'Rasgeth_Phone_API_35',
+      },
+    ],
+    'licences': [
+      {
+        'id': 'android-sdk-license',
+        'text': 'Terms and Conditions\n\nAndroid SDK License Agreement',
+      },
+    ],
+    'bytes': 2359273238,
+    'notes': <String>[],
+    'java': {'path': r'C:\Program Files\OpenLogic\jdk-17\bin\java.exe', 'major': 17},
+  };
   Map<String, dynamic> emulatorReport = {
     'os': 'windows',
     'arch': 'x64',
@@ -696,6 +728,50 @@ class FakeSystem {
               x,
         ];
         return ok({'devices': emulatorDevices});
+      case 'POST /api/emulators/install/plan':
+        if (b['only'] == 'emulator-update') {
+          return ok({
+            ...emulatorInstallPlan,
+            'target': r'D:\Android\Sdk',
+            'targetStandard': false,
+            'steps': [
+              {'id': 'licences'},
+              {'id': 'emulator-update', 'package': 'emulator', 'version': '37.3.10'},
+            ],
+            'bytes': 456613348,
+          });
+        }
+        return ok(emulatorInstallPlan);
+      case 'POST /api/emulators/install/start':
+        if (b['planId'] != emulatorInstallPlan['planId']) {
+          return no(400, 'This plan is not known any more: look again', 'no-plan');
+        }
+        if (b['licenceAccepted'] != true) {
+          return no(400, 'The licences must be read and accepted first', 'licence');
+        }
+        final id = 'job${++_n}';
+        jobs[id] = {
+          'id': id,
+          'kind': 'emulator_install',
+          'state': 'done',
+          'vars': <String, String>{},
+          'reads': 2,
+          'steps': [
+            {
+              'id': 'cmdline-tools',
+              'state': 'running',
+              'progress': {
+                'done': 77827693,
+                'total': 155655386,
+                'rate': 12500000,
+                'secondsLeft': 6,
+              },
+            },
+            for (final st in ['licences', 'platform-tools', 'emulator', 'system-image', 'avd'])
+              {'id': st, 'state': 'waiting'},
+          ],
+        };
+        return ok({'jobId': id});
       case 'PUT /api/emulators/settings':
         if (b.containsKey('sdkPath')) {
           final p = b['sdkPath'];

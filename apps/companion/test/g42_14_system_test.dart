@@ -345,6 +345,71 @@ void main() {
     await done(tester);
   });
 
+  testWidgets('emulators: the guided install, only with the licences accepted (3.11 phase 5)', (
+    tester,
+  ) async {
+    sys.emulatorReport = {
+      ...sys.emulatorReport,
+      'android': {
+        'looked': [
+          {'path': r'C:\Users\Ada\AppData\Local\Android\Sdk', 'source': 'standard'},
+        ],
+        'avds': <Object>[],
+        'attached': <Object>[],
+        'accel': {'ok': false, 'reason': 'unknown'},
+      },
+      'missing': ['sdk'],
+      'ready': false,
+    };
+    await start(tester);
+    await push(tester, const EmulatorsScreen());
+    expect(find.byKey(const Key('ei-update')), findsNothing);
+    await tap(tester, 'ei-install', 16);
+    expect(sys.bodies['POST /api/emulators/install/plan'], <String, dynamic>{});
+    expect(find.textContaining(r'C:\Users\Ada\AppData\Local\Android\Sdk'), findsOneWidget);
+    expect(find.text('il posto standard di questo sistema'), findsOneWidget);
+    expect(find.textContaining('Gli strumenti a riga di comando di Android 22.0'), findsOneWidget);
+    expect(find.textContaining('Il telefono virtuale Rasgeth_Phone_API_35'), findsOneWidget);
+    expect(find.textContaining('Da scaricare: '), findsOneWidget);
+    expect(find.textContaining('Android SDK License Agreement'), findsOneWidget);
+    // Install waits for the licences accepted (our switch, never a checkbox).
+    await calm(tester);
+    await tester.ensureVisible(find.byKey(const Key('ei-start')));
+    expect(tester.widget<ButtonStyleButton>(find.byKey(const Key('ei-start'))).onPressed, isNull);
+    expect(find.byType(Checkbox), findsNothing);
+    await tap(tester, 'ei-accept');
+    expect(
+      tester.widget<ButtonStyleButton>(find.byKey(const Key('ei-start'))).onPressed,
+      isNotNull,
+    );
+    await tap(tester, 'ei-start', 16);
+    expect(sys.bodies['POST /api/emulators/install/start'], {
+      'planId': 'P1',
+      'licenceAccepted': true,
+    });
+    // The job's bar: bytes, speed and time left.
+    expect(find.byType(LinearProgressIndicator), findsOneWidget);
+    expect(find.textContaining('/s'), findsWidgets);
+    expect(find.byKey(const Key('ei-stop')), findsOneWidget);
+    final before = sys.calls.where((c) => c == 'GET /api/emulators').length;
+    await jobs(tester);
+    await calm(tester);
+    expect(find.textContaining('Fatto. Il resoconto'), findsOneWidget);
+    // The report is read again at the end.
+    expect(sys.calls.where((c) => c == 'GET /api/emulators').length, greaterThan(before));
+    await done(tester);
+  });
+
+  testWidgets('emulators: the update of an old emulator asks for its own plan', (tester) async {
+    await start(tester);
+    await push(tester, const EmulatorsScreen());
+    await tap(tester, 'ei-update', 16);
+    expect(sys.bodies['POST /api/emulators/install/plan'], {'only': 'emulator-update'});
+    expect(find.textContaining("L'emulatore, all'ultima versione 37.3.10"), findsOneWidget);
+    expect(find.byKey(const Key('ei-folder')), findsNothing);
+    await done(tester);
+  });
+
   testWidgets('nodes: a code, a pair confirmed with its digits, renamed, unpaired', (tester) async {
     final app = await start(tester);
     app.projects = [

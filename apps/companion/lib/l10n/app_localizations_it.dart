@@ -18302,4 +18302,186 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get syDsState_unauthorized => 'aspetta il tuo sì sul telefono';
+
+  @override
+  String get syEiAvdName => 'Nome del telefono virtuale';
+
+  @override
+  String get syEiAvdNameHelp => 'Lettere, cifre, punto, trattino e trattino basso.';
+
+  @override
+  String get syEiBlock_container =>
+      'Qui Rasgeth gira in un container, e lì dentro gli emulatori non possono girare. Collega un nodo (un computer con Rasgeth) e i suoi emulatori compaiono qui.';
+
+  @override
+  String get syEiBlock_emulators_running =>
+      'C\'è un emulatore acceso: spegnilo prima, poi aggiorna.';
+
+  @override
+  String get syEiBlock_folder_not_empty =>
+      'Quella cartella contiene già altre cose e non è un SDK Android: scegline una nuova o vuota.';
+
+  @override
+  String get syEiBlock_folder_relative => 'La cartella deve essere un percorso completo.';
+
+  @override
+  String syEiBlock_java_old(String major) {
+    return 'Il Java trovato è la versione $major: gli strumenti di Android vogliono la 17 o più nuova. Installa un Java 17 o fai puntare JAVA_HOME a uno, poi guarda di nuovo.';
+  }
+
+  @override
+  String get syEiBlock_no_accel =>
+      'Questo computer non ha l\'accelerazione hardware per le macchine virtuali: un emulatore sarebbe troppo lento per usarlo. Non installo niente; meglio un nodo su un computer che ce l\'ha.';
+
+  @override
+  String get syEiBlock_no_java =>
+      'Gli strumenti di Android vogliono Java 17 o più nuovo, e non l\'ho trovato (JAVA_HOME, il PATH, Android Studio). Installa un Java 17 (per esempio Eclipse Temurin o OpenLogic) o Android Studio, poi guarda di nuovo. Rasgeth non installa Java da solo.';
+
+  @override
+  String get syEiBlock_nothing => 'Qui non manca niente.';
+
+  @override
+  String get syEiBlock_offline =>
+      'Non sono riuscito a leggere l\'elenco dei pacchetti di Google (con le licenze). Controlla la connessione e riprova.';
+
+  @override
+  String get syEiBlock_unsupported =>
+      'Google non fa un emulatore Android per questo sistema e questo processore. Un nodo su un altro computer può portarne uno.';
+
+  @override
+  String get syEiCancelled => 'Fermata. Puoi ripartire quando vuoi.';
+
+  @override
+  String get syEiClose => 'Chiudi';
+
+  @override
+  String get syEiDone => 'Fatto. Il resoconto di questa macchina è stato letto di nuovo.';
+
+  @override
+  String get syEiFailed =>
+      'L\'installazione non è finita. Quello che è già nella cartella resta; puoi riprovare.';
+
+  @override
+  String get syEiFolder => 'Cartella';
+
+  @override
+  String get syEiFolderApply => 'Ricalcola';
+
+  @override
+  String get syEiFolderHelp =>
+      'Un percorso completo; una cartella nuova o vuota, oppure un SDK Android già presente.';
+
+  @override
+  String get syEiFolderOther => 'Un\'altra cartella o un altro nome';
+
+  @override
+  String get syEiFolderStandard => 'il posto standard di questo sistema';
+
+  @override
+  String get syEiInstall => 'Installa quello che manca';
+
+  @override
+  String syEiJava(String major) {
+    return 'Con Java $major:';
+  }
+
+  @override
+  String get syEiLead =>
+      'Rasgeth li scarica da Google solo adesso, con il tuo sì, e mette tutto in questa cartella (il telefono virtuale va dove l\'emulatore li tiene). Nient\'altro cambia sul computer.';
+
+  @override
+  String get syEiLicenceAccept => 'Ho letto e accetto queste licenze';
+
+  @override
+  String get syEiLicenceHelp =>
+      'Rasgeth dice sì al posto tuo solo a queste, solo per questa installazione.';
+
+  @override
+  String get syEiLicences => 'Licenze';
+
+  @override
+  String get syEiLicencesLead =>
+      'Le condizioni di Google per questi pezzi, per intero. Leggile: l\'installazione parte solo quando le accetti.';
+
+  @override
+  String get syEiNote_bios =>
+      'La virtualizzazione è spenta: accendila nel BIOS/UEFI (VT-x o AMD-V) e, su Windows, la funzione Windows Hypervisor Platform.';
+
+  @override
+  String get syEiNote_ios_bridge =>
+      'iOS: il ponte per i tocchi arriva con Rasgeth 3.11.1; adesso non c\'è niente da installare.';
+
+  @override
+  String get syEiNote_kvm_group =>
+      'Linux: /dev/kvm c\'è ma questo utente non può usarlo. Un amministratore può aggiungere l\'utente al gruppo kvm, poi si rientra.';
+
+  @override
+  String get syEiNote_node =>
+      'Impostazioni › Nodi: collega un computer che può far girare gli emulatori.';
+
+  @override
+  String get syEiNote_xcode =>
+      'I simulatori iOS vogliono Xcode, dall\'App Store: Rasgeth non lo installa. iOS arriva con Rasgeth 3.11.1.';
+
+  @override
+  String get syEiReading => 'Leggo l\'elenco dei pacchetti di Google…';
+
+  @override
+  String get syEiRunning => 'Parto…';
+
+  @override
+  String get syEiStart => 'Installa';
+
+  @override
+  String get syEiStartUpdate => 'Aggiorna';
+
+  @override
+  String syEiStep_avd(String name) {
+    return 'Il telefono virtuale $name';
+  }
+
+  @override
+  String syEiStep_cmdline_tools(String version) {
+    return 'Gli strumenti a riga di comando di Android $version (sdkmanager, avdmanager)';
+  }
+
+  @override
+  String get syEiStep_emulator => 'L\'emulatore Android';
+
+  @override
+  String syEiStep_emulator_update(String version) {
+    return 'L\'emulatore, all\'ultima versione $version';
+  }
+
+  @override
+  String get syEiStep_licences => 'Le licenze che hai letto e accettato';
+
+  @override
+  String get syEiStep_platform_tools => 'Gli strumenti di piattaforma (adb)';
+
+  @override
+  String get syEiStep_system_image => 'Android 15 (API 35) per questo processore';
+
+  @override
+  String get syEiSteps => 'Cosa farà';
+
+  @override
+  String get syEiStopNow => 'Ferma';
+
+  @override
+  String get syEiTitle => 'Installa i pezzi di Android';
+
+  @override
+  String get syEiTitleUpdate => 'Aggiorna l\'emulatore';
+
+  @override
+  String syEiTotal(String size) {
+    return 'Da scaricare: $size';
+  }
+
+  @override
+  String get syEiUpdate => 'Aggiorna l\'emulatore';
+
+  @override
+  String get syUiDetails => 'Dettagli per chi ti aiuta';
 }
