@@ -18080,7 +18080,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get smpRoutedIn => 'in:';
 
   @override
-  String get smpRoutedUnsure => 'I wasn\'t sure, I put it in:';
+  String get smpRoutedUnsure => 'I wasn\'t sure: I put it here';
 
   @override
   String smpMovedTo(String title) {
@@ -18242,4 +18242,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wzLookNameHint => 'Your name (optional)';
+
+  @override
+  String get smpOther => 'Something else…';
+
+  @override
+  String get smpOtherHint => 'Write your answer';
 }

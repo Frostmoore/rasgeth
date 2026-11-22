@@ -219,6 +219,41 @@ void main() {
       await done(tester);
     });
 
+    testWidgets('a plain question is its buttons, as the board («Vuoi che lo prenoti?»)', (
+      tester,
+    ) async {
+      server.ask({
+        'requestId': 'q1',
+        'sessionId': 't_trip',
+        'agentId': 'a0',
+        'agentName': 'God',
+        'projectId': null,
+        'createdAt': '2026-11-22T09:00:00.000Z',
+        'questions': [
+          {
+            'question': 'Vuoi che lo prenoti?',
+            'options': [
+              {'label': 'Sì, prenota'},
+              {'label': 'Mostrami gli altri'},
+            ],
+            'multiSelect': false,
+          },
+        ],
+        'topic': {'id': 't_trip', 'title': 'Vacanza in Sardegna'},
+      });
+      await open(tester);
+      await tap(tester, find.byKey(const Key('topic-t_trip')));
+      expect(find.text('Vuoi che lo prenoti?'), findsOneWidget);
+      expect(find.byKey(const Key('ask-q1-other')), findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 900));
+      await tap(tester, find.byKey(const Key('ask-q1-0')));
+      final answer = server.received.where((m) => m['type'] == 'question.answer').single;
+      expect(answer['answers'], [
+        ['Sì, prenota'],
+      ]);
+      await done(tester);
+    });
+
     testWidgets('the archive: found with words, taken back with a tap', (tester) async {
       await open(tester);
       await tap(tester, find.byKey(const Key('simple-archive')));

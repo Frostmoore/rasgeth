@@ -12779,7 +12779,7 @@
   "smpMove": "Move",
   "smpMovedHere": "Brought here from another topic",
   "smpRoutedIn": "in:",
-  "smpRoutedUnsure": "I wasn't sure, I put it in:",
+  "smpRoutedUnsure": "I wasn't sure: I put it here",
   "smpMovedTo": "Moved to «{title}»",
   "@smpMovedTo": {
     "placeholders": {
@@ -12844,5 +12844,7 @@
   "wzLookFull": "Full",
   "wzLookFullText": "Agents, projects, tools, models and every setting. For who wants to see how it works inside.",
   "wzLookName": "What should we call you?",
-  "wzLookNameHint": "Your name (optional)"
+  "wzLookNameHint": "Your name (optional)",
+  "smpOther": "Something else…",
+  "smpOtherHint": "Write your answer"
 }

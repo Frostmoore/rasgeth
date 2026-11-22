@@ -916,14 +916,16 @@ class _DocItem extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 4,
           children: [
+            // Unsure: said short, the topic is the one on screen; sure: «in: Titolo».
             Text(
               uncertain ? l.smpRoutedUnsure : l.smpRoutedIn,
               style: TextStyle(fontSize: 13.5, color: uncertain ? c.text : c.dim),
             ),
-            Text(
-              title,
-              style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600, color: c.text),
-            ),
+            if (!uncertain)
+              Text(
+                title,
+                style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600, color: c.text),
+              ),
             if (userSeq != null) ...[
               Text('·', style: TextStyle(color: c.dim)),
               InkWell(
@@ -969,17 +971,17 @@ class _DocItem extends StatelessWidget {
         );
       case final QuestionItem q:
         final waiting = !q.answered && open.contains(q.requestId);
-        return Container(
-          margin: const EdgeInsets.only(top: 8, bottom: 14),
-          padding: waiting ? const EdgeInsets.all(14) : EdgeInsets.zero,
-          decoration: waiting
-              ? BoxDecoration(
-                  color: c.panel,
-                  border: Border.all(color: c.accent, width: 2),
-                  borderRadius: BorderRadius.circular(16),
-                )
-              : null,
-          child: ChatQuestionCard.of(q, open: waiting),
+        if (waiting) {
+          return SimpleQuestion(
+            key: Key('ask-${q.requestId}'),
+            requestId: q.requestId,
+            questions: q.questions,
+            plan: q.plan,
+          );
+        }
+        return Padding(
+          padding: const EdgeInsets.only(top: 8, bottom: 14),
+          child: ChatQuestionCard.of(q, open: false),
         );
       case ProductsItem(:final products, :final title):
         return ProductCarousel(products: products, title: title);
@@ -1119,9 +1121,77 @@ class _QuestionBox extends StatelessWidget {
   final QuestionRequest q;
 
   @override
+  Widget build(BuildContext context) => SimpleQuestion(
+    key: Key('ask-${q.requestId}'),
+    requestId: q.requestId,
+    questions: q.questions,
+    plan: q.plan,
+    topic: q.topic?.title,
+  );
+}
+
+/// A question waiting for the person, in the evident box. One plain choice (the board's «Vuoi
+/// che lo prenoti?») is its buttons, the first one filled, with «Altro…» for words of one's own;
+/// anything else (several questions, several choices, a plan) is the usual card.
+class SimpleQuestion extends StatefulWidget {
+  const SimpleQuestion({
+    super.key,
+    required this.requestId,
+    required this.questions,
+    this.plan,
+    this.topic,
+  });
+
+  final String requestId;
+  final List<Question> questions;
+  final String? plan;
+
+  /// «per: Titolo», outside the topic.
+  final String? topic;
+
+  @override
+  State<SimpleQuestion> createState() => _SimpleQuestionState();
+}
+
+class _SimpleQuestionState extends State<SimpleQuestion> {
+  bool _armed = false;
+  bool _sent = false;
+  Timer? _arm;
+  TextEditingController? _other;
+
+  @override
+  void initState() {
+    super.initState();
+    _arm = Timer(armDelay, () {
+      if (mounted) setState(() => _armed = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _arm?.cancel();
+    _other?.dispose();
+    super.dispose();
+  }
+
+  void _answer(String text) {
+    if (!_armed || _sent || text.trim().isEmpty) return;
+    final ok = AppScope.read(context).answerQuestionId(widget.requestId, [
+      [text.trim()],
+    ]);
+    if (ok) setState(() => _sent = true);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final c = RgColors.of(context);
     final l = AppLocalizations.of(context);
+    final one = widget.questions.length == 1 && widget.plan == null ? widget.questions.first : null;
+    ButtonStyle style(bool main) => FilledButton.styleFrom(
+      backgroundColor: main ? c.accent : Color.lerp(c.panel2, c.accent, 0.09),
+      foregroundColor: main ? Colors.white : c.text,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    );
     return Container(
       margin: const EdgeInsets.only(top: 8, bottom: 14),
       padding: const EdgeInsets.all(14),
@@ -1133,17 +1203,69 @@ class _QuestionBox extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (q.topic != null)
+          if (widget.topic != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 6),
-              child: Text(l.smpFor(q.topic!.title), style: TextStyle(fontSize: 13, color: c.dim)),
+              child: Text(l.smpFor(widget.topic!), style: TextStyle(fontSize: 13, color: c.dim)),
             ),
-          ChatQuestionCard(
-            requestId: q.requestId,
-            questions: q.questions,
-            plan: q.plan,
-            open: true,
-          ),
+          if (one == null || one.multiSelect)
+            ChatQuestionCard(
+              requestId: widget.requestId,
+              questions: widget.questions,
+              plan: widget.plan,
+              open: true,
+            )
+          else ...[
+            Text(
+              one.question,
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16.5, color: c.text),
+            ),
+            const SizedBox(height: 10),
+            Opacity(
+              opacity: _armed && !_sent ? 1 : 0.6,
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (var i = 0; i < one.options.length; i++)
+                    FilledButton(
+                      key: Key('ask-${widget.requestId}-$i'),
+                      style: style(i == 0),
+                      onPressed: () => _answer(one.options[i].label),
+                      child: Text(one.options[i].label),
+                    ),
+                  if (_other == null)
+                    FilledButton(
+                      key: Key('ask-${widget.requestId}-other'),
+                      style: style(false),
+                      onPressed: () => setState(() => _other = TextEditingController()),
+                      child: Text(l.smpOther),
+                    ),
+                ],
+              ),
+            ),
+            if (_other != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _other,
+                        decoration: InputDecoration(hintText: l.smpOtherHint, isDense: true),
+                        onSubmitted: _answer,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    FilledButton(
+                      style: style(true),
+                      onPressed: () => _answer(_other!.text),
+                      child: Text(l.smpSend),
+                    ),
+                  ],
+                ),
+              ),
+          ],
         ],
       ),
     );

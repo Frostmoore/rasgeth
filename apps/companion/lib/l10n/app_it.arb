@@ -5169,7 +5169,7 @@
   "smpMove": "Sposta",
   "smpMovedHere": "Portato qui da un altro argomento",
   "smpRoutedIn": "in:",
-  "smpRoutedUnsure": "Non ero sicuro, l'ho messo in:",
+  "smpRoutedUnsure": "Non ero sicuro: l'ho messo qui",
   "smpMovedTo": "Spostato in «{title}»",
   "smpMovedElsewhere": "Spostato in un altro argomento",
   "smpDecide": "Una decisione per te",
@@ -5220,5 +5220,7 @@
   "wzLookFull": "Completa",
   "wzLookFullText": "Agenti, progetti, strumenti, modelli e tutte le impostazioni. Per chi vuole vedere come funziona dentro.",
   "wzLookName": "Come ti chiamiamo?",
-  "wzLookNameHint": "Il tuo nome (facoltativo)"
+  "wzLookNameHint": "Il tuo nome (facoltativo)",
+  "smpOther": "Altro…",
+  "smpOtherHint": "Scrivi la tua risposta"
 }

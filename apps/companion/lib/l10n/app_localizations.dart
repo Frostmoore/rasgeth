@@ -31110,7 +31110,7 @@ abstract class AppLocalizations {
   /// No description provided for @smpRoutedUnsure.
   ///
   /// In en, this message translates to:
-  /// **'I wasn\'t sure, I put it in:'**
+  /// **'I wasn\'t sure: I put it here'**
   String get smpRoutedUnsure;
 
   /// No description provided for @smpMovedTo.
@@ -31418,6 +31418,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your name (optional)'**
   String get wzLookNameHint;
+
+  /// No description provided for @smpOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Something else…'**
+  String get smpOther;
+
+  /// No description provided for @smpOtherHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write your answer'**
+  String get smpOtherHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
