@@ -164,3 +164,78 @@ export function versionBelow(a: string, b: string): boolean {
   }
   return false;
 }
+
+// ---- Phase 2: a device live in the Canvas, for the person and the agents ----
+
+/** Keys the person's keyboard and the agents send to a device (Android key codes on the server). */
+export const DEVICE_KEYS = [
+  "Enter",
+  "Backspace",
+  "Delete",
+  "Tab",
+  "Escape",
+  "Space",
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+] as const;
+export type DeviceKey = (typeof DEVICE_KEYS)[number];
+
+/** The phone's own buttons. */
+export const DEVICE_BUTTONS = [
+  "back",
+  "home",
+  "recents",
+  "power",
+  "volume_up",
+  "volume_down",
+] as const;
+export type DeviceButton = (typeof DEVICE_BUTTONS)[number];
+
+const frac = z.number().min(0).max(1);
+/** One gesture on a device's screen; x and y are fractions of the screen (0 to 1). */
+export const DeviceInput = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("tap"), x: frac, y: frac }),
+  z.object({
+    kind: z.literal("long"),
+    x: frac,
+    y: frac,
+    ms: z.number().int().min(300).max(5000).optional(),
+  }),
+  z.object({
+    kind: z.literal("swipe"),
+    x: frac,
+    y: frac,
+    x2: frac,
+    y2: frac,
+    ms: z.number().int().min(50).max(5000).optional(),
+  }),
+  z.object({ kind: z.literal("text"), text: z.string().min(1).max(2000) }),
+  z.object({ kind: z.literal("key"), key: z.enum(DEVICE_KEYS) }),
+  z.object({ kind: z.literal("button"), button: z.enum(DEVICE_BUTTONS) }),
+  z.object({ kind: z.literal("rotate") }),
+]);
+export type DeviceInput = z.infer<typeof DeviceInput>;
+
+export type DeviceState = "off" | "starting" | "on" | "unauthorized" | "offline";
+
+/** A device one can open: an AVD (on or off), a running emulator, a phone over USB or Wi-Fi. */
+export interface EmuDeviceView {
+  /** `avd:<name>` for an AVD that is off, else adb's serial. */
+  id: string;
+  name: string;
+  kind: "emulator" | "phone";
+  state: DeviceState;
+  avd?: string;
+  serial?: string;
+  model?: string;
+  link?: "usb" | "wifi";
+  /** Rasgeth started it (only those are switched off when idle). */
+  ours?: boolean;
+  /** Who drives it now. */
+  control: "agents" | "person";
+}
+
+/** An emulator is an id `avd:<name>` or a serial `emulator-<port>`; anything else is a real phone. */
+export const isEmulatorId = (id: string): boolean => /^(avd:|emulator-\d+$)/.test(id);

@@ -16,7 +16,8 @@
   "files": [
     "dist",
     "fonts",
-    "templates"
+    "templates",
+    "vendor"
   ],
   "dependencies": {
     "@agentclientprotocol/sdk": "2.6.0",
@@ -50,6 +51,11 @@
     "@univerjs/sheets-formula": "1.4.0",
     "@univerjs/sheets-numfmt": "1.4.0",
     "@univerjs/sheets-sort": "1.4.0",
+    "@yume-chan/adb": "2.6.4",
+    "@yume-chan/adb-scrcpy": "2.3.2",
+    "@yume-chan/adb-server-node-tcp": "2.5.2",
+    "@yume-chan/scrcpy": "2.3.0",
+    "@yume-chan/stream-extra": "2.6.1",
     "ag-psd": "^34.1.0",
     "chart.js": "^4.6.1",
     "d3": "^7.9.2",

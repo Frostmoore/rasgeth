@@ -13,6 +13,7 @@ import {
   DocProposal,
   DocSnapshot,
 } from "./doc.js";
+import { DeviceInput } from "./emulators.js";
 import { Event } from "./events.js";
 import { ImagePart } from "./messages.js";
 import { Answers, QuestionRequestInfo } from "./questions.js";
@@ -170,6 +171,15 @@ export const ClientMessage = z.discriminatedUnion("type", [
     start: z.boolean(),
     title: z.string().max(200).optional(),
   }),
+  // A device in the Canvas (3.11): its screen, and the person's hands on it (never logged).
+  z.object({ type: z.literal("device.watch"), id: z.string().min(1).max(200) }),
+  z.object({ type: z.literal("device.unwatch"), id: z.string().min(1).max(200) }),
+  z.object({
+    type: z.literal("device.control"),
+    id: z.string().min(1).max(200),
+    take: z.boolean(),
+  }),
+  z.object({ type: z.literal("device.input"), id: z.string().min(1).max(200), event: DeviceInput }),
   z.object({
     type: z.literal("browser.input"),
     event: z.discriminatedUnion("kind", [
@@ -417,6 +427,22 @@ export const ServerMessage = z.discriminatedUnion("type", [
     data: z.string(),
     width: z.number(),
     height: z.number(),
+  }),
+  /** A device's screen (3.11): a frame (JPEG, base64) and its state. */
+  z.object({
+    type: z.literal("device.frame"),
+    id: z.string(),
+    data: z.string(),
+    width: z.number(),
+    height: z.number(),
+  }),
+  z.object({
+    type: z.literal("device.state"),
+    id: z.string(),
+    state: z.enum(["off", "starting", "on", "unauthorized", "offline"]),
+    control: z.enum(["agents", "person"]),
+    /** Why it cannot be shown (no SDK, too many emulators, adb refused…), in English. */
+    error: z.string().optional(),
   }),
   z.object({
     type: z.literal("browser.state"),

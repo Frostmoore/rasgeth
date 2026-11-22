@@ -129,6 +129,8 @@ export function attachWebSocket(
     let offCanvas: (() => void) | undefined;
     let offActivity: (() => void) | undefined;
     let offScreen: (() => void) | undefined;
+    /** The devices this connection watches (3.11), by id. */
+    const offDevices = new Map<string, () => void>();
     let offPage: (() => void) | undefined;
     const follows = new Map<string, () => void>();
     /** Conversations an editor on this connection shows with its files (G38.6). */
@@ -378,6 +380,45 @@ export function attachWebSocket(
             );
             return;
           }
+          // A device in the Canvas (3.11): its screen, and the person's hands on it (never logged).
+          case "device.watch": {
+            if (offDevices.has(msg.id)) return;
+            const id = msg.id;
+            offDevices.set(id, () => {});
+            // Not awaited: opening may start an AVD (a minute), and this connection's other
+            // messages must not wait for it.
+            void core.emuDevices
+              .watch(id, (e) =>
+                e.type === "frame"
+                  ? send({ type: "device.frame", id, ...e.frame })
+                  : send({
+                      type: "device.state",
+                      id,
+                      state: e.state,
+                      control: e.control,
+                      ...(e.error && { error: e.error }),
+                    }),
+              )
+              .then((off) => {
+                if (offDevices.has(id)) offDevices.set(id, off);
+                else off();
+              });
+            return;
+          }
+          case "device.unwatch":
+            offDevices.get(msg.id)?.();
+            offDevices.delete(msg.id);
+            return;
+          case "device.control":
+            core.emuDevices.setControl(msg.id, msg.take ? "person" : "agents");
+            return;
+          case "device.input":
+            await core.emuDevices
+              .input(msg.id, msg.event, "person")
+              .catch((err: unknown) =>
+                fail("device", err instanceof Error ? err.message : String(err)),
+              );
+            return;
           case "browser.unwatch":
             offScreen?.();
             offScreen = undefined;
@@ -694,6 +735,9 @@ export function attachWebSocket(
       offCanvas?.();
       offActivity?.();
       offScreen?.();
+      for (const off of offDevices.values()) off();
+      // One still opening closes itself when it arrives (it finds no entry).
+      offDevices.clear();
       offPage?.();
     });
   }
