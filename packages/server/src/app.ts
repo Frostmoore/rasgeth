@@ -2644,6 +2644,21 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       ),
     ),
   );
+  // The simple or the full interface for new devices, and the person's name (3.12).
+  app.put("/api/setup/interface", (c) =>
+    wizard(c, async () =>
+      (setup as SetupService).saveInterface(
+        (await parsed(c, z.object({ ui: z.enum(["simple", "full"]) }))).ui,
+      ),
+    ),
+  );
+  app.put("/api/setup/person", (c) =>
+    wizard(c, async () =>
+      (setup as SetupService).savePersonName(
+        (await parsed(c, z.object({ name: z.string().max(40).nullable() }))).name,
+      ),
+    ),
+  );
   app.put("/api/setup/github", (c) =>
     wizard(c, async () =>
       (setup as SetupService).saveGithub(

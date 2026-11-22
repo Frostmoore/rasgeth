@@ -260,6 +260,28 @@ describe("the setup wizard", () => {
     expect(yaml).not.toContain(key);
   });
 
+  it("keeps the interface for new devices and the person's name (3.12)", async () => {
+    await setup();
+    const api = (s as Server).api;
+    const before = (await api<SetupState>("GET", "/api/setup")).body.config as Record<
+      string,
+      unknown
+    >;
+    // Installations from before say nothing: devices open the full interface.
+    expect(before.ui).toBeUndefined();
+    expect((await api("PUT", "/api/setup/interface", { ui: "simple" })).status).toBe(200);
+    expect((await api("PUT", "/api/setup/interface", { ui: "tiny" })).status).toBe(400);
+    expect((await api("PUT", "/api/setup/person", { name: "  Riccardo " })).status).toBe(200);
+    let config = (await api<SetupState>("GET", "/api/setup")).body.config as Record<
+      string,
+      unknown
+    >;
+    expect(config).toMatchObject({ ui: "simple", personName: "Riccardo" });
+    await api("PUT", "/api/setup/person", { name: "" });
+    config = (await api<SetupState>("GET", "/api/setup")).body.config as Record<string, unknown>;
+    expect(config.personName).toBeUndefined();
+  });
+
   it("puts the chosen names in the built-in instructions", async () => {
     const { service } = await setup();
     await service.saveNames({ god: "Zeus", demigod: "Hermes" });

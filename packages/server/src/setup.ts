@@ -331,6 +331,13 @@ export interface SetupConfig {
   subscriptionAck?: boolean;
   /** Standard (everything ready, nothing reachable from outside) or advanced (G24.5). */
   mode?: "standard" | "advanced";
+  /**
+   * The interface a device opens with until it chooses its own (3.12): the simple one for everyday
+   * people or the full one. Asked by the first-start wizard; absent (installations from before): full.
+   */
+  ui?: "simple" | "full";
+  /** What the person likes to be called (3.12, the simple interface's greeting); absent: no name. */
+  personName?: string;
   /** Where the code lives: GitHub and/or Gitea (their tokens are in the secrets). */
   git?: GitHostsConfig;
   /** How RedGiant is reached from outside home, and at which address (G24.6). */
@@ -1990,6 +1997,20 @@ export class SetupService {
     await this.o.hooks.engine(e);
     if (e) this.config.engine = e;
     else delete this.config.engine;
+    await this.save();
+  }
+
+  /** The interface new devices open with (3.12): simple or full; each device may choose its own. */
+  async saveInterface(ui: "simple" | "full"): Promise<void> {
+    this.config.ui = ui;
+    await this.save();
+  }
+
+  /** What the person likes to be called (3.12); null or empty: no name. */
+  async savePersonName(name: string | null): Promise<void> {
+    const n = name?.trim();
+    if (n) this.config.personName = n;
+    else delete this.config.personName;
     await this.save();
   }
 
