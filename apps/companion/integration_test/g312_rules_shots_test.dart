@@ -194,9 +194,26 @@ void main() {
     await frames(t, 2000);
     final p = _phone ? 'telefono' : 'computer';
 
+    /// Scrolls the page until [f] is built (the list builds only what is near the screen).
+    Future<void> reveal(Finder f) async {
+      final page = find.byKey(const Key('pr-page'));
+      if (f.evaluate().isEmpty && page.evaluate().isNotEmpty) {
+        final list = find.descendant(of: page, matching: find.byType(Scrollable)).first;
+        final pos = t.state<ScrollableState>(list).position;
+        await t.scrollUntilVisible(
+          f,
+          pos.pixels >= pos.maxScrollExtent ? -300 : 300,
+          scrollable: list,
+          maxScrolls: 60,
+        );
+      }
+      await t.ensureVisible(f.first);
+      await frames(t, 300);
+    }
+
     Future<void> tap(String key) async {
       final f = find.byKey(Key(key)).first;
-      await t.ensureVisible(f);
+      await reveal(find.byKey(Key(key)));
       await frames(t, 300);
       await t.tap(f);
       await frames(t, 900);
@@ -215,9 +232,9 @@ void main() {
       nav.push(MaterialPageRoute<void>(builder: (_) => const PersonRulesScreen())).ignore();
       await frames(t, 1500);
       await shot(t, 'app-$p-$tone-01-pagina');
-      await t.ensureVisible(find.byKey(const Key('pr-rule-rule_1')));
+      await reveal(find.byKey(const Key('pr-rule-rule_1')));
       await shot(t, 'app-$p-$tone-02-regole');
-      await t.ensureVisible(find.byKey(const Key('pr-fire-f2')));
+      await reveal(find.byKey(const Key('pr-fire-f2')));
       await shot(t, 'app-$p-$tone-03-cosa-hanno-fatto');
       await tap('pr-edit-rule_1');
       await tap('pr-try');
