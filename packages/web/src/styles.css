@@ -20862,6 +20862,14 @@ html[data-theme="dark"] {
 .em-node + .em-node {
   margin-top: 16px;
 }
+/* In a narrow column (the area on the right open) the rows wrap instead of squeezing the text. */
+.em-page .st-row {
+  flex-wrap: wrap;
+}
+.em-page .st-row-text {
+  flex: 1 1 180px;
+  min-width: 0;
+}
 /* A device live on the right (3.11): the phone's frame, its screen and its buttons. */
 .device-frame {
   display: flex;
