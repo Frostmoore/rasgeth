@@ -3597,6 +3597,8 @@ export class RedGiantCore implements OrchestrationHost {
         this.workSessions.delete(a.id);
         this.freshWork.add(a.id);
       }
+    // God's topics (3.12): the next message from the chat opens a topic of its own.
+    this.topics.newFromChat(ownerId);
     this.relay.delete(ownerId);
   }
 

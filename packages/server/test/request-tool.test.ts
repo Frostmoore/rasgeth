@@ -33,7 +33,8 @@ function script(): (req: CompletionRequest, i: number) => FakeTurn {
     const last = req.messages.at(-1);
     const fromTool = last?.parts.some((p) => p.type === "tool_result");
     const said = last?.parts.flatMap((p) => (p.type === "text" ? [p.text] : [])).join("") ?? "";
-    if (!fromTool && said.includes("need the web"))
+    // The person's own words (3.12: a topic's first message lists God's other topics after them).
+    if (!fromTool && said.startsWith("I need the web"))
       return {
         toolCalls: [{ name: "request_tool", input: { tool: "fetch", why: "to read the page" } }],
       };
