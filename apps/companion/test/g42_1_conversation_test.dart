@@ -125,6 +125,8 @@ void main() {
     expect(server.resolves.last, containsPair('scope', 'always'));
     expect(server.resolves.last, containsPair('remember', true));
     await tester.ensureVisible(find.byKey(const Key('chat-why-p2')));
+    // 3.10.4: the bigger text may scroll it into view: armed again.
+    await _armed(tester);
     await tester.tap(find.byKey(const Key('chat-why-p2')));
     await _settle(tester);
     await tester.enterText(find.byKey(const Key('chat-why-text-p2')), 'non quel file, l\'altro');
@@ -201,10 +203,14 @@ void main() {
     await _settle(tester);
     expect(server.resolves.last, containsPair('scope', 'always'));
     await tester.ensureVisible(find.byKey(const Key('chat-cap-2.0')));
+    // 3.10.4: the bigger text may scroll it into view: armed again.
+    await _armed(tester);
     await tester.tap(find.byKey(const Key('chat-cap-2.0')));
     await _settle(tester, 2);
     expect(find.text('Consenti, fino a 2 \$'), findsOneWidget);
     await tester.ensureVisible(find.byKey(const Key('chat-allow-g1')));
+    // 3.10.4: the bigger text may scroll it into view: armed again.
+    await _armed(tester);
     await tester.tap(find.byKey(const Key('chat-allow-g1')));
     await _settle(tester);
     expect(server.resolves.last, containsPair('capUsd', 2.0));

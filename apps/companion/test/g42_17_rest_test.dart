@@ -242,7 +242,7 @@ void main() {
   testWidgets('what is new on a computer: the window of the page, only what is newer, once', (
     tester,
   ) async {
-    final prefs = MemoryAppPrefs()..values['newsSeen'] = '3.10.1';
+    final prefs = MemoryAppPrefs()..values['newsSeen'] = '3.10.3';
     Future<AppController> open() async {
       final app = AppController(
         tokens: MemoryTokenStore(),
@@ -265,10 +265,10 @@ void main() {
     expect(find.byKey(const Key('news-band')), findsNothing);
     // Only the releases after the one this device saw, newest first.
     expect(find.text('Le novità di Rasgeth $newsVersion'), findsOneWidget);
-    expect(find.text('Versione 3.10.2'), findsOneWidget);
-    expect(find.text('Versione 3.10.1'), findsNothing);
-    expect(find.byKey(const Key('news-news3102Tray')), findsOneWidget);
-    expect(find.byKey(const Key('news-news3101Unlock')), findsNothing);
+    expect(find.text('Versione 3.10.4'), findsOneWidget);
+    expect(find.text('Versione 3.10.3'), findsNothing);
+    expect(find.byKey(const Key('news-news3104Reading')), findsOneWidget);
+    expect(find.byKey(const Key('news-news3103Names')), findsNothing);
     final ok = find.byKey(const Key('news-ok'));
     await tester.scrollUntilVisible(
       ok,
