@@ -33314,6 +33314,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Yesterday'**
   String get smpYesterday;
+
+  /// No description provided for @smpYourAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'YOUR AGENTS'**
+  String get smpYourAgents;
+
+  /// No description provided for @smpOpenChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the chat'**
+  String get smpOpenChat;
+
+  /// No description provided for @smpAgentIs.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, {state}'**
+  String smpAgentIs(String name, String state);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

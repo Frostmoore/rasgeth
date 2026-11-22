@@ -19346,4 +19346,15 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get smpYesterday => 'Ieri';
+
+  @override
+  String get smpYourAgents => 'I TUOI AGENTI';
+
+  @override
+  String get smpOpenChat => 'Apri la chat';
+
+  @override
+  String smpAgentIs(String name, String state) {
+    return '$name, $state';
+  }
 }

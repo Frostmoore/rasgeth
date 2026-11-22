@@ -84,6 +84,7 @@ import { ProductCards } from "./ProductCards.js";
 import { QuestionCard } from "./QuestionCard.js";
 import { Seg, Switch } from "./SettingsKit.js";
 import { SimpleStage } from "./SimpleStage.js";
+import { SimpleStrip } from "./SimpleStrip.js";
 import { Telegram } from "./Telegram.js";
 import { Modal } from "./ui.js";
 
@@ -281,6 +282,7 @@ function Today() {
             </button>
           </div>
         )}
+        <SimpleStrip />
       </div>
     </div>
   );

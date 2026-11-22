@@ -356,3 +356,79 @@ describe("Satellite, the Chat, on the same orbit (3.12.1)", () => {
     );
   });
 });
+
+describe("the agents' strip at the bottom (3.12.1, «Striscia fitta»)", () => {
+  const agent = (id: string, kind: string, o: Record<string, unknown> = {}) =>
+    ({
+      id,
+      name: id,
+      kind,
+      parentId: "god",
+      status: "active",
+      ...o,
+    }) as unknown as (typeof state.agents.value)[number];
+  const team = () => [
+    agent("God", "god", { parentId: null }),
+    agent("chat", "assistant", { name: "Chat" }),
+    agent("Demi-God", "demigod"),
+    agent("Ada", "orchestrator"),
+    agent("Pixel", "agent", { parentId: "Ada" }),
+    agent("Tester", "subagent", { parentId: "Pixel" }),
+    agent("Old", "agent", { status: "stopped" }),
+  ];
+
+  it("keeps every agent with a face but God and the Chat (pure)", () => {
+    expect(state.stripAgents(team(), "chat").map((a) => a.id)).toEqual([
+      "Demi-God",
+      "Ada",
+      "Pixel",
+    ]);
+    expect(state.nearestIndex([10, 50, 90], 62)).toBe(1);
+    expect(state.nearestIndex([], 5)).toBe(-1);
+  });
+
+  it("enlarges the one under the finger, its neighbours a little, with its balloon", async () => {
+    state.agents.value = team();
+    state.chatAgentId.value = "chat";
+    state.sessionRows.value = [
+      row("s4", { agentId: "Ada", title: "Il sito", lastAt: "2026-11-22T10:00:00.000Z" }),
+    ];
+    const r = render(<SimpleApp />);
+    expect(r.getByText("I TUOI AGENTI")).toBeTruthy();
+    const minis = [...r.container.querySelectorAll(".smp-sm")] as HTMLElement[];
+    expect(minis).toHaveLength(3);
+    fireEvent.focus(minis[1] as HTMLElement);
+    expect(minis[1]?.classList.contains("on")).toBe(true);
+    expect(minis[0]?.classList.contains("near")).toBe(true);
+    expect(minis[2]?.classList.contains("near")).toBe(true);
+    const balloon = r.container.querySelector(".smp-balloon") as HTMLElement;
+    expect(balloon.textContent).toContain("Ada");
+    expect(balloon.textContent).toContain("Apri la chat");
+    expect(balloon.textContent).toContain("fermo");
+    // Sliding along the strip moves the pick.
+    fireEvent.pointerMove(r.container.querySelector(".smp-strip") as HTMLElement, { clientX: 0 });
+    expect(minis[0]?.classList.contains("on")).toBe(true);
+    // The balloon opens that agent's conversation.
+    fireEvent.focus(minis[1] as HTMLElement);
+    fireEvent.click(r.container.querySelector(".smp-balloon") as HTMLElement);
+    await waitFor(() => expect(state.simpleScreen.value).toMatchObject({ kind: "chat", id: "s4" }));
+  });
+
+  it("starts a conversation with an agent that has none", async () => {
+    state.agents.value = team();
+    state.chatAgentId.value = "chat";
+    fake.impl.startSession = () => ({ sessionId: "s7" });
+    const r = render(<SimpleApp />);
+    const minis = [...r.container.querySelectorAll(".smp-sm")] as HTMLElement[];
+    fireEvent.focus(minis[2] as HTMLElement);
+    fireEvent.click(r.container.querySelector(".smp-balloon") as HTMLElement);
+    await waitFor(() => expect(state.simpleScreen.value).toMatchObject({ kind: "chat", id: "s7" }));
+    expect(fake.calls.find(([n]) => n === "startSession")?.[1]).toEqual(["Pixel"]);
+  });
+
+  it("is not there without agents", () => {
+    state.agents.value = [agent("God", "god", { parentId: null })];
+    const r = render(<SimpleApp />);
+    expect(r.container.querySelector(".smp-strip")).toBeNull();
+  });
+});

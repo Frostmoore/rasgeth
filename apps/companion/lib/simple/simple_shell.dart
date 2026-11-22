@@ -28,6 +28,7 @@ import '../ui/product_cards.dart';
 import '../ui/rg_menu.dart';
 import '../screens/new_agent_screen.dart' show RgSwitch;
 import 'simple_giant.dart';
+import 'simple_strip.dart';
 import 'simple_model.dart';
 
 /// The widest the screens grow (the board's `.wrap`): wider windows keep it in the middle.
@@ -530,6 +531,8 @@ class _TodayScreenState extends State<TodayScreen> {
                             ),
                           ),
                         ),
+                      // 3.12.1: every agent's mascot in a strip at the bottom.
+                      const SimpleStrip(),
                     ],
                   ),
                 ),

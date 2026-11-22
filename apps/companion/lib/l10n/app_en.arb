@@ -13362,5 +13362,18 @@
       }
     }
   },
-  "smpYesterday": "Yesterday"
+  "smpYesterday": "Yesterday",
+  "smpYourAgents": "YOUR AGENTS",
+  "smpOpenChat": "Open the chat",
+  "smpAgentIs": "{name}, {state}",
+  "@smpAgentIs": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      }
+    }
+  }
 }

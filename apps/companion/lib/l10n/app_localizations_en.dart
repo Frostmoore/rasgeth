@@ -19288,4 +19288,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get smpYesterday => 'Yesterday';
+
+  @override
+  String get smpYourAgents => 'YOUR AGENTS';
+
+  @override
+  String get smpOpenChat => 'Open the chat';
+
+  @override
+  String smpAgentIs(String name, String state) {
+    return '$name, $state';
+  }
 }

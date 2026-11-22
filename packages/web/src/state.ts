@@ -3302,3 +3302,51 @@ export function sendInChat(sessionId: string, text: string): boolean {
   });
   return true;
 }
+
+// ---------- The agents' strip at the bottom of «Oggi» (3.12.1, «Striscia fitta») ----------
+
+/**
+ * The agents in the strip: every working agent with a face of its own (sub-agents have none),
+ * but God and the Chat, already on the orbit above; in the order they were made. Pure.
+ */
+export function stripAgents(
+  list: readonly import("./api.js").Agent[],
+  chatId: string | null,
+): import("./api.js").Agent[] {
+  return list.filter(
+    (a) =>
+      a.status === "active" &&
+      a.kind !== "god" &&
+      a.kind !== "subagent" &&
+      a.id !== chatId &&
+      !(a as { archived?: boolean }).archived,
+  );
+}
+
+/** The strip's mascot nearest to [x], from their centres; -1 with none. Pure. */
+export function nearestIndex(centres: readonly number[], x: number): number {
+  let best = -1;
+  let d = Number.POSITIVE_INFINITY;
+  centres.forEach((c, i) => {
+    if (Math.abs(c - x) < d) {
+      d = Math.abs(c - x);
+      best = i;
+    }
+  });
+  return best;
+}
+
+/** Opens an agent's latest conversation in the simple interface (a new one when it has none). */
+export async function openAgentConversation(agentId: string, name: string): Promise<void> {
+  const latest = sessionRows.value
+    .filter((r) => r.agentId === agentId && !r.archived)
+    .sort((a, b) => (b.lastAt ?? b.createdAt).localeCompare(a.lastAt ?? a.createdAt))[0];
+  if (latest) {
+    openChat(latest.id, latest.title ?? name);
+    return;
+  }
+  const r = await attempt(() => getApi().startSession(agentId));
+  if (!r) return;
+  openChat(r.sessionId, name);
+  void refreshConversations().catch(() => {});
+}

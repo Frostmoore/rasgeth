@@ -19,6 +19,7 @@ import 'package:rgcompanion/l10n/app_localizations.dart';
 import 'package:rgcompanion/simple/simple_giant.dart';
 import 'package:rgcompanion/simple/simple_model.dart';
 import 'package:rgcompanion/simple/simple_shell.dart';
+import 'package:rgcompanion/simple/simple_strip.dart';
 
 import 'fake_server.dart';
 import 'fake_topics.dart';
@@ -144,11 +145,9 @@ void main() {
       expect(find.text('pronto'), findsOneWidget);
       expect(find.text('Appena iniziato'), findsOneWidget);
       expect(find.text('Archivio (1)'), findsOneWidget);
-      // Nothing technical in sight: no team, agents, tools.
-      expect(
-        find.textContaining(RegExp('agent|strument|token', caseSensitive: false)),
-        findsNothing,
-      );
+      // Nothing technical in sight: no tools or figures (the strip at the bottom shows «I tuoi
+      // agenti» by their faces, the person's choice of 3.12.1).
+      expect(find.textContaining(RegExp('strument|token', caseSensitive: false)), findsNothing);
       await done(tester);
     });
 
@@ -335,6 +334,33 @@ void main() {
       await done(tester);
     });
 
+    testWidgets('3.12.1: the agents\' strip: a tap enlarges one, its balloon opens its chat', (
+      tester,
+    ) async {
+      await open(tester, size: const Size(390, 2200));
+      expect(find.text('I TUOI AGENTI'), findsOneWidget);
+      // God and sub-agents are not in it.
+      expect(find.byKey(const Key('strip-a0')), findsNothing);
+      expect(find.byKey(const Key('strip-a1')), findsOneWidget);
+      expect(find.byKey(const Key('strip-a8')), findsNothing);
+      expect(find.byKey(const Key('strip-balloon')), findsNothing);
+      await tap(tester, find.byKey(const Key('strip-a2')));
+      expect(find.byKey(const Key('strip-balloon')), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('strip-balloon')),
+          matching: find.text('Apri la chat'),
+        ),
+        findsOneWidget,
+      );
+      final before = server.sessions.length;
+      await tap(tester, find.byKey(const Key('strip-balloon')));
+      expect(find.byType(TopicScreen), findsOneWidget);
+      expect(server.sessions.length, before + 1);
+      expect(server.sessions.last['agentId'], 'a2');
+      await done(tester);
+    });
+
     testWidgets('3.12.1: a swipe turns the orbit either way', (tester) async {
       await open(tester);
       await tester.fling(find.byKey(const Key('simple-stage')), const Offset(-300, 0), 1200);
@@ -480,6 +506,22 @@ void main() {
     ];
     expect(recentChats(rows, 'chat').map((r) => r.id), ['b', 'a']);
     expect(recentChats(rows, null), isEmpty);
+  });
+
+  test('3.12.1: the strip keeps every agent with a face but God and the Chat', () {
+    Agent a(String id, String kind, {String status = 'active'}) =>
+        Agent.fromJson({'id': id, 'name': id, 'kind': kind, 'status': status, 'parentId': null});
+    final list = [
+      a('god', 'god'),
+      a('chat', 'assistant'),
+      a('demi', 'demigod'),
+      a('ada', 'orchestrator'),
+      a('tester', 'subagent'),
+      a('old', 'agent', status: 'stopped'),
+    ];
+    expect(stripAgents(list, 'chat').map((x) => x.id), ['demi', 'ada']);
+    expect(nearestIndex([10, 50, 90], 62), 1);
+    expect(nearestIndex([], 5), -1);
   });
 
   test('3.12.1: a 404 is an old server, the rest is not', () {

@@ -5536,5 +5536,8 @@
   "smpNoChats": "Ancora nessuna chiacchierata: scrivi qui e ne cominciamo una.",
   "smpUntitledChat": "Una nuova chiacchierata",
   "smpTodayAt": "Oggi, {time}",
-  "smpYesterday": "Ieri"
+  "smpYesterday": "Ieri",
+  "smpYourAgents": "I TUOI AGENTI",
+  "smpOpenChat": "Apri la chat",
+  "smpAgentIs": "{name}, {state}"
 }
