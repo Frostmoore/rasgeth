@@ -361,6 +361,21 @@ void main() {
       await done(tester);
     });
 
+    testWidgets('3.12.1: a card shows the agents of its topic; a card with nobody, none', (
+      tester,
+    ) async {
+      topics.active.first['agents'] = [
+        {'id': 'a5', 'role': 'from'},
+        {'id': 'a2', 'role': 'task'},
+      ];
+      await open(tester, size: const Size(390, 2200));
+      expect(find.byKey(const Key('card-agent-a5')), findsOneWidget);
+      expect(find.byKey(const Key('card-agent-a2')), findsOneWidget);
+      // The other cards have nobody.
+      expect(find.byWidgetPredicate((w) => '${w.key}'.contains('card-agent-')), findsNWidgets(2));
+      await done(tester);
+    });
+
     testWidgets('3.12.1: a swipe turns the orbit either way', (tester) async {
       await open(tester);
       await tester.fling(find.byKey(const Key('simple-stage')), const Offset(-300, 0), 1200);
@@ -429,6 +444,16 @@ void main() {
     final working = TopicView.fromJson(topicJson('a', 'A', state: 'working'));
     final ready = TopicView.fromJson(topicJson('a', 'A'));
     expect(finishedWork([working], [ready]), isTrue);
+    final withAgents = TopicView.fromJson({
+      ...topicJson('b', 'B'),
+      'agents': [
+        {'id': 'ada', 'role': 'from'},
+        {'id': 'pixel', 'role': 'task'},
+      ],
+    });
+    expect(withAgents.agents, ['ada', 'pixel']);
+    expect(withAgents.read().agents, ['ada', 'pixel']);
+    expect(ready.agents, isEmpty);
     expect(finishedWork([ready], [ready]), isFalse);
   });
 

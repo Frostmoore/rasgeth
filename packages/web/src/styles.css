@@ -24530,6 +24530,24 @@ html[data-theme="dark"] .app-simple {
     height: 70px;
   }
 }
+/* The agents on a topic's card (3.12.1): small and overlapping, like the strip. */
+.smp-card-agents {
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+}
+.smp-card-agent {
+  width: 28px;
+  height: 28px;
+  margin-left: -10px;
+  z-index: calc(10 - var(--i));
+  border-radius: 50%;
+  background: var(--smp-card);
+  box-shadow: 0 0 0 2px var(--smp-card);
+}
+.smp-card-agent .mascot {
+  display: block;
+}
 /* The agents' strip (3.12.1, «Striscia fitta»): overlapping by almost half; the one under the
    mouse or the finger grows (its neighbours a little) and its balloon says name and state. */
 .smp-strip-wrap {

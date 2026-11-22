@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { rebuildHistory } from "@redgiant/agent";
-import { type Event, routeByRules } from "@redgiant/protocol";
+import { type Event, routeByRules, TopicList } from "@redgiant/protocol";
 import type { CompletionRequest, FakeTurn } from "@redgiant/providers";
 import { afterEach, describe, expect, it } from "vitest";
 import { type RouterFn, SUMMARY_SYSTEM, WarmRouter } from "../src/topics.js";
@@ -556,6 +556,50 @@ describe("God's topics: migration, archive, summaries, labels", () => {
       by: "assistant",
       from: "Ada",
     });
+  });
+});
+
+describe("the agents on a topic's card (3.12.1)", () => {
+  it("lists the assistant that opened it, then the agents of its open tasks, each once", async () => {
+    const { s, god } = await withGod(godScript());
+    const human = { type: "human" as const, ownerId: ME };
+    const ada = await s.core.registry.create(human, {
+      kind: "assistant",
+      parentId: god,
+      name: "Ada",
+    });
+    const pixel = await s.core.registry.create(human, {
+      kind: "orchestrator",
+      parentId: god,
+      projectId: "p1",
+      name: "Pixel",
+    });
+    const godRec = s.core.registry.get(god);
+    if (!godRec) throw new Error("no God");
+    const sid = await s.core.topicFor(
+      godRec as never,
+      "Che impegni ho domani?",
+      "assistant",
+      "Ada",
+    );
+    const of = async () => (await s.core.topics.list(ME)).topics.find((t) => t.id === sid);
+    expect((await of())?.agents).toEqual([{ id: ada.id, role: "from" }]);
+    const from = { agentId: god, sessionId: sid, name: "God" };
+    await s.core.tasks.open(pixel, "sess_p1", "Il sito", from);
+    await s.core.tasks.open(pixel, "sess_p2", "Le foto", from);
+    // Ada working on a task too: still once.
+    await s.core.tasks.open(ada, "sess_a1", "Il calendario", from);
+    expect((await of())?.agents).toEqual([
+      { id: ada.id, role: "from" },
+      { id: pixel.id, role: "task" },
+    ]);
+    expect(TopicList.parse(await s.core.topics.list(ME)).topics.length).toBeGreaterThan(0);
+    // A topic with nobody: none.
+    const r = await s.core.topics.send(ME, { text: "Una cosa mia", newTopic: true });
+    await r.done;
+    expect((await s.core.topics.list(ME)).topics.find((t) => t.id === r.sessionId)?.agents).toEqual(
+      [],
+    );
   });
 });
 

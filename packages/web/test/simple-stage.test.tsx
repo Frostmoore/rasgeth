@@ -432,3 +432,34 @@ describe("the agents' strip at the bottom (3.12.1, «Striscia fitta»)", () => {
     expect(r.container.querySelector(".smp-strip")).toBeNull();
   });
 });
+
+describe("the agents on a topic's card (3.12.1)", () => {
+  it("shows who opened it and who works on its tasks; nobody, nothing", async () => {
+    state.agents.value = [
+      { id: "God", name: "God", kind: "god", parentId: null, status: "active" },
+      { id: "ada", name: "Ada", kind: "assistant", parentId: "God", status: "active" },
+      { id: "pixel", name: "Pixel", kind: "orchestrator", parentId: "God", status: "active" },
+    ] as unknown as typeof state.agents.value;
+    fake.impl.topics = () => ({
+      topics: [
+        topic("t1", {
+          from: "Ada",
+          agents: [
+            { id: "ada", role: "from" },
+            { id: "pixel", role: "task" },
+          ],
+        }),
+        topic("t2"),
+      ],
+      archived: 0,
+    });
+    const r = render(<SimpleApp />);
+    await waitFor(() => expect(r.container.querySelectorAll(".smp-card").length).toBe(2));
+    const cards = [...r.container.querySelectorAll(".smp-card")];
+    const minis = cards[0]?.querySelectorAll(".smp-card-agent") ?? [];
+    expect(minis).toHaveLength(2);
+    expect(minis[0]?.getAttribute("title")).toBe("Ada, fermo");
+    expect(minis[1]?.getAttribute("title")).toBe("Pixel, fermo");
+    expect(cards[1]?.querySelector(".smp-card-agents")).toBeNull();
+  });
+});

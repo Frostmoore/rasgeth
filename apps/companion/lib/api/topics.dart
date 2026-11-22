@@ -43,6 +43,7 @@ class TopicView {
     this.tasks = 0,
     this.projectId,
     this.from,
+    this.agents = const [],
   });
 
   factory TopicView.fromJson(Map<String, dynamic> j) => TopicView(
@@ -60,6 +61,11 @@ class TopicView {
     tasks: _i(j['tasks']),
     projectId: _s(j['projectId']),
     from: _s(j['from']),
+    agents: [
+      if (j['agents'] case final List<dynamic> list)
+        for (final a in list)
+          if (a is Map && a['id'] is String) a['id'] as String,
+    ],
   );
 
   final String id;
@@ -79,6 +85,9 @@ class TopicView {
   /// The assistant whose request opened it («da Ada»).
   final String? from;
 
+  /// The agents on its card (3.12.1): who opened it, then who works on its open tasks (ids).
+  final List<String> agents;
+
   TopicView read() => TopicView(
     id: id,
     title: title,
@@ -93,6 +102,7 @@ class TopicView {
     tasks: tasks,
     projectId: projectId,
     from: from,
+    agents: agents,
   );
 }
 

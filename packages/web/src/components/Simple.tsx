@@ -30,6 +30,7 @@ import {
   Logo,
 } from "../icons.js";
 import { renderAnswer, renderStreamingMarkdown } from "../markdown.js";
+import { agentMascotState } from "../mascot-state.js";
 import {
   agents,
   archivedCount,
@@ -80,6 +81,7 @@ import { useArmed } from "./armed.js";
 import { FileCard } from "./Chat.js";
 import { askText } from "./dialogs.js";
 import { useFollow } from "./follow-hook.js";
+import { Mascot } from "./Mascot.js";
 import { ProductCards } from "./ProductCards.js";
 import { QuestionCard } from "./QuestionCard.js";
 import { Seg, Switch } from "./SettingsKit.js";
@@ -375,6 +377,7 @@ function TopicCard({ x }: { x: TopicView }) {
       </span>
       <span class="smp-card-p">{x.summary ?? t("smpJustStarted")}</span>
       {x.from && <span class="smp-card-from">{t("smpFrom", { name: x.from })}</span>}
+      <CardMascots ids={(x.agents ?? []).map((a) => a.id)} />
       <span class={`smp-pill ${x.state}`}>
         {word}
         {x.unread > 0 && (
@@ -384,6 +387,35 @@ function TopicCard({ x }: { x: TopicView }) {
         )}
       </span>
     </button>
+  );
+}
+
+/**
+ * The agents on a topic's card (3.12.1): who opened it and who works on its tasks, small and
+ * overlapping like the strip, each with its live state; nobody, nothing.
+ */
+function CardMascots({ ids }: { ids: readonly string[] }) {
+  const list = ids.flatMap((id) => {
+    const a = agents.value.find((x) => x.id === id);
+    return a ? [a] : [];
+  });
+  if (list.length === 0) return null;
+  return (
+    <span class="smp-card-agents">
+      {list.map((a, i) => (
+        <span
+          key={a.id}
+          class="smp-card-agent"
+          style={{ "--i": String(i) }}
+          title={t("smpAgentIs", {
+            name: a.name,
+            state: t(`mascotState_${agentMascotState(a.id)}`),
+          })}
+        >
+          <Mascot agent={a} size={28} />
+        </span>
+      ))}
+    </span>
   );
 }
 

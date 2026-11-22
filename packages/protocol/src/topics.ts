@@ -96,6 +96,13 @@ export const TopicState = z.enum(["waiting", "working", "ready"]);
 export type TopicState = z.infer<typeof TopicState>;
 
 /** One topic as «Oggi» lists it (`GET /api/god/topics`). */
+/** An agent on a topic's card: who opened it (`from`) or works on one of its tasks (`task`). */
+export const TopicAgent = z.object({
+  id: z.string(),
+  role: z.enum(["from", "task"]),
+});
+export type TopicAgent = z.infer<typeof TopicAgent>;
+
 export const TopicView = z.object({
   /** The topic's session id (open it like any conversation). */
   id: z.string(),
@@ -119,6 +126,11 @@ export const TopicView = z.object({
   projectId: z.string().nullable(),
   /** The assistant whose request opened it («from Ada»), else null. */
   from: z.string().nullable(),
+  /**
+   * The agents on its card (3.12.1): the assistant that opened it, then the agents of its open
+   * tasks, each once; their mascots show small with their live state. Absent from servers before.
+   */
+  agents: z.array(TopicAgent).optional(),
 });
 export type TopicView = z.infer<typeof TopicView>;
 

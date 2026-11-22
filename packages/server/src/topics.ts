@@ -21,6 +21,7 @@ import {
   shouldArchive,
   TOPIC_IDLE_DAYS,
   TOPIC_SURE,
+  type TopicAgent,
   type TopicList,
   type TopicOpenedBy,
   type TopicOrigin,
@@ -305,8 +306,37 @@ export class Topics {
     return out;
   }
 
-  private view(r: TopicRow, pending: Map<string, number>): TopicView {
-    const tasks = this.core.tasks.waitingIn(r.id).length;
+  /**
+   * The agents on a topic's card (3.12.1): the assistant that opened it (found by its name among
+   * the owner's working agents), then the agents of its open tasks, each once.
+   */
+  private agentsOf(
+    ownerId: string,
+    r: TopicRow,
+    open: readonly { agentId: string }[],
+  ): TopicAgent[] {
+    const out: TopicAgent[] = [];
+    const seen = new Set<string>();
+    if (r.topic_from) {
+      const a = this.core.registry
+        .list({ ownerId, activeOnly: true })
+        .find((x) => x.name === r.topic_from && x.kind !== "god");
+      if (a) {
+        out.push({ id: a.id, role: "from" });
+        seen.add(a.id);
+      }
+    }
+    for (const t of open)
+      if (!seen.has(t.agentId)) {
+        seen.add(t.agentId);
+        out.push({ id: t.agentId, role: "task" });
+      }
+    return out;
+  }
+
+  private view(r: TopicRow, pending: Map<string, number>, ownerId: string): TopicView {
+    const open = this.core.tasks.waitingIn(r.id);
+    const tasks = open.length;
     const requests = pending.get(r.id) ?? 0;
     return {
       id: r.id,
@@ -328,6 +358,7 @@ export class Topics {
       tasks,
       projectId: r.project_id,
       from: r.topic_from,
+      agents: this.agentsOf(ownerId, r, open),
     };
   }
 
@@ -350,7 +381,7 @@ export class Topics {
           [ownerId, god.id],
         )
       : [];
-    return { topics: rows.map((r) => this.view(r, pending)), archived: Number(n?.n ?? 0) };
+    return { topics: rows.map((r) => this.view(r, pending, ownerId)), archived: Number(n?.n ?? 0) };
   }
 
   /** The most recent active topic (the old apps' work conversation), opened when there is none. */

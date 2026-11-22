@@ -27,6 +27,8 @@ import '../ui/model_sheet.dart' show ChoiceRow;
 import '../ui/product_cards.dart';
 import '../ui/rg_menu.dart';
 import '../screens/new_agent_screen.dart' show RgSwitch;
+import '../mascot/mascot_view.dart';
+import '../ui/words.dart' as words;
 import 'simple_giant.dart';
 import 'simple_strip.dart';
 import 'simple_model.dart';
@@ -707,6 +709,51 @@ class _Assistants extends StatelessWidget {
 }
 
 /// The topics' cards: two in a row on a phone, up to four on a computer.
+/// The agents on a topic's card (3.12.1, the page's `CardMascots`): small and overlapping like
+/// the strip, each with its live state; nobody, nothing.
+class _CardMascots extends StatelessWidget {
+  const _CardMascots({required this.ids});
+
+  final List<String> ids;
+
+  @override
+  Widget build(BuildContext context) {
+    final app = AppScope.of(context);
+    final l = AppLocalizations.of(context);
+    final list = [
+      for (final id in ids) ?app.agents.where((a) => a.id == id).firstOrNull,
+    ];
+    if (list.isEmpty) return const SizedBox.shrink();
+    const size = 28.0;
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: SizedBox(
+        height: size,
+        width: size + (list.length - 1) * (size - 10),
+        child: Stack(
+          children: [
+            for (var i = list.length - 1; i >= 0; i--)
+              Positioned(
+                left: i * (size - 10),
+                child: MascotView(
+                  key: Key('card-agent-${list[i].id}'),
+                  agentId: list[i].id,
+                  spec: list[i].mascot,
+                  state: app.live.mascotStateOf(list[i].id),
+                  size: size,
+                  label: l.smpAgentIs(
+                    list[i].name,
+                    words.stateWord(l, app.live.mascotStateOf(list[i].id)),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _Cards extends StatelessWidget {
   const _Cards({required this.topics});
 
@@ -802,6 +849,8 @@ class TopicCard extends StatelessWidget {
                       style: TextStyle(fontSize: 12.5, color: c.dim, fontStyle: FontStyle.italic),
                     ),
                   ),
+                // 3.12.1: who opened it and who works on its tasks, small and overlapping.
+                _CardMascots(ids: t.agents),
                 const SizedBox(height: 10),
                 Container(
                   key: Key('topic-state-${t.id}'),
