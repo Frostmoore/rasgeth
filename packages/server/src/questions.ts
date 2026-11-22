@@ -9,6 +9,7 @@ import {
   PLAN_REVISE,
   Question,
   type QuestionRequestInfo,
+  type TopicRef,
 } from "@redgiant/protocol";
 import { z } from "zod";
 import type { QuestionOutcome } from "./person-requests.js";
@@ -34,7 +35,12 @@ export class HumanQuestions extends EventEmitter<{
   /** Where each closed question was answered, until it is recorded (`takeVia`). */
   private readonly answered = new Map<string, string>();
 
-  ask(ownerId: string, info: QuestionRequestInfo, signal?: AbortSignal): Promise<Answers | null> {
+  /** The topic of God a conversation belongs to («for: Title», 3.12), up the chain of tasks. */
+  topicOf?: (sessionId: string) => TopicRef | undefined;
+
+  ask(ownerId: string, asked: QuestionRequestInfo, signal?: AbortSignal): Promise<Answers | null> {
+    const topic = asked.topic ?? this.topicOf?.(asked.sessionId);
+    const info = topic ? { ...asked, topic } : asked;
     return new Promise((resolve) => {
       this.pending.set(info.requestId, { info, ownerId, resolve });
       signal?.addEventListener(

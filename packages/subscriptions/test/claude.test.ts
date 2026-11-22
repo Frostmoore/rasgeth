@@ -475,3 +475,60 @@ describe("one answer without tools (3.9.8: the person's classifier)", () => {
     }).rejects.toThrow(/runs through its engine/);
   });
 });
+
+describe("the warm engine (3.12, God's topics' router)", () => {
+  it("starts the engine ahead, answers its one prompt with the router's instructions, then closes", async () => {
+    const runs: { options: Record<string, unknown>; got?: string; at: number }[] = [];
+    let clock = 0;
+    const sdk: ClaudeSdk = {
+      tool: (name, _d, _s, handler) => ({ name, handler }),
+      createSdkMcpServer: (o) => o,
+      query({ prompt, options }) {
+        const run: { options: Record<string, unknown>; got?: string; at: number } = {
+          options,
+          at: clock,
+        };
+        runs.push(run);
+        async function* out() {
+          for await (const m of prompt) {
+            const c = (m as { message: { content: { text: string }[] } }).message.content;
+            run.got = c[0]?.text;
+            break;
+          }
+          if (run.got === undefined) return;
+          yield {
+            type: "assistant",
+            parent_tool_use_id: null,
+            message: {
+              model: "claude-haiku-4-5",
+              content: [{ type: "text", text: '{"topic":"new","confidence":0.9}' }],
+            },
+          };
+          yield { type: "result", subtype: "success", is_error: false, result: "" };
+        }
+        return out();
+      },
+    };
+    const dir = await mkdtemp(join(tmpdir(), "rg-warm-"));
+    const p = new ClaudeSubscriptionProvider({ token: "t", configDir: dir, cwd: dir, sdk });
+    const warm = p.engine.prewarm({ model: "claude-haiku-4-5", system: "ROUTER" });
+    // Started before anything is asked.
+    await new Promise((r) => setTimeout(r, 0));
+    expect(runs).toHaveLength(1);
+    expect(runs[0]?.options).toMatchObject({
+      systemPrompt: "ROUTER",
+      maxTurns: 1,
+      allowedTools: [],
+    });
+    clock = 15_000;
+    expect(await warm.ask("<message>hi</message>")).toBe('{"topic":"new","confidence":0.9}');
+    expect(runs[0]?.got).toBe("<message>hi</message>");
+    warm.close();
+    await expect(warm.ask("again")).rejects.toThrow(/closed/);
+    // One closed before it was asked never sends anything.
+    const idle = p.engine.prewarm({ model: "claude-haiku-4-5", system: "ROUTER" });
+    idle.close();
+    await new Promise((r) => setTimeout(r, 0));
+    expect(runs[1]?.got).toBeUndefined();
+  });
+});

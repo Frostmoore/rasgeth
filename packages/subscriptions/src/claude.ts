@@ -494,9 +494,7 @@ export class ClaudeEngine implements Engine {
     const stop = () => abort.abort();
     signal?.addEventListener("abort", stop, { once: true });
     const model = { model: req.model, ...(req.effort && { effort: req.effort }) } as ModelSpec;
-    let answer = "";
-    let usage: Record<string, number> | undefined;
-    let used = req.model;
+    let got: { answer: string; usage: Record<string, number> | undefined; model: string };
     try {
       const q = sdk.query({
         prompt: prompt(),
@@ -509,35 +507,11 @@ export class ClaudeEngine implements Engine {
           abortController: abort,
         }),
       });
-      for await (const m of q) {
-        if (m.type === "assistant" && m.parent_tool_use_id === null) {
-          const msg = m.message as {
-            content?: Block[];
-            usage?: Record<string, number>;
-            model?: string;
-          };
-          for (const b of msg.content ?? [])
-            if (b.type === "text" && typeof b.text === "string") answer += b.text;
-          usage = msg.usage ?? usage;
-          used = msg.model ?? used;
-        }
-        if (m.type === "rate_limit_event") {
-          const w = eventWindows(m.rate_limit_info);
-          if (w.length) this.onLimits?.(w);
-        }
-        if (m.type === "result" && (m.subtype !== "success" || m.is_error === true)) {
-          const why =
-            typeof m.result === "string" && m.result
-              ? m.result
-              : Array.isArray(m.errors)
-                ? (m.errors as string[]).join("; ")
-                : String(m.subtype);
-          throw new ProviderError(`Claude subscription: ${why}`, false);
-        }
-      }
+      got = await this.collect(q, req.model);
     } finally {
       signal?.removeEventListener("abort", stop);
     }
+    const { answer, usage, model: used } = got;
     const metrics = metricsOf(usage, used, started, now());
     return {
       message: { role: "assistant", parts: answer ? [{ type: "text", text: answer }] : [] },
@@ -551,6 +525,106 @@ export class ClaudeEngine implements Engine {
       metrics,
       model: used,
       provider: CLAUDE_SUBSCRIPTION,
+    };
+  }
+
+  /** One answer without tools read from the engine: its text, usage and model; errors thrown. */
+  private async collect(
+    q: AsyncIterable<Record<string, unknown>>,
+    model: string,
+  ): Promise<{ answer: string; usage: Record<string, number> | undefined; model: string }> {
+    let answer = "";
+    let usage: Record<string, number> | undefined;
+    let used = model;
+    for await (const m of q) {
+      if (m.type === "assistant" && m.parent_tool_use_id === null) {
+        const msg = m.message as {
+          content?: Block[];
+          usage?: Record<string, number>;
+          model?: string;
+        };
+        for (const b of msg.content ?? [])
+          if (b.type === "text" && typeof b.text === "string") answer += b.text;
+        usage = msg.usage ?? usage;
+        used = msg.model ?? used;
+      }
+      if (m.type === "rate_limit_event") {
+        const w = eventWindows(m.rate_limit_info);
+        if (w.length) this.onLimits?.(w);
+      }
+      if (m.type === "result" && (m.subtype !== "success" || m.is_error === true)) {
+        const why =
+          typeof m.result === "string" && m.result
+            ? m.result
+            : Array.isArray(m.errors)
+              ? (m.errors as string[]).join("; ")
+              : String(m.subtype);
+        throw new ProviderError(`Claude subscription: ${why}`, false);
+      }
+    }
+    return { answer, usage, model: used };
+  }
+
+  /**
+   * An engine started ahead of its one prompt (3.12, God's topics' warm router): the process starts
+   * now with the fixed instructions and waits; `ask` gives it the message and reads one answer
+   * without tools, with none of the start-up wait (~15 s cold). Used once, then closed.
+   */
+  prewarm(req: { model: string; system: string; effort?: string }): {
+    ask(text: string, signal?: AbortSignal): Promise<string>;
+    close(): void;
+  } {
+    const abort = new AbortController();
+    let give: (text: string | undefined) => void = () => {};
+    const input = new Promise<string | undefined>((r) => {
+      give = r;
+    });
+    async function* prompt(): AsyncIterable<unknown> {
+      const text = await input;
+      if (text === undefined) return;
+      yield {
+        type: "user",
+        parent_tool_use_id: null,
+        message: { role: "user", content: [{ type: "text", text }] },
+      };
+    }
+    const model = { model: req.model, ...(req.effort && { effort: req.effort }) } as ModelSpec;
+    const started = (async () => {
+      const sdk = this.o.sdk ?? (await loadSdk());
+      return sdk.query({
+        prompt: prompt(),
+        options: this.options(model, {
+          systemPrompt: req.system,
+          tools: [],
+          allowedTools: [],
+          permissionMode: "dontAsk",
+          maxTurns: 1,
+          abortController: abort,
+        }),
+      });
+    })();
+    started.catch(() => {});
+    let closed = false;
+    return {
+      ask: async (text, signal) => {
+        if (closed)
+          throw new ProviderError("Claude subscription: the warm engine was closed", true);
+        const stop = () => abort.abort();
+        signal?.addEventListener("abort", stop, { once: true });
+        try {
+          const q = await started;
+          give(text);
+          return (await this.collect(q, req.model)).answer;
+        } finally {
+          signal?.removeEventListener("abort", stop);
+        }
+      },
+      close: () => {
+        if (closed) return;
+        closed = true;
+        give(undefined);
+        abort.abort();
+      },
     };
   }
 }

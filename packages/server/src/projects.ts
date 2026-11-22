@@ -104,6 +104,16 @@ export async function migrateProjects(db: SqlClient): Promise<void> {
   await db.query("ALTER TABLE rg_sessions ADD COLUMN IF NOT EXISTS folder text");
   // A conversation that goes on from another one (G36.23): the link the list shows.
   await db.query("ALTER TABLE rg_sessions ADD COLUMN IF NOT EXISTS forked_from text");
+  // God's topics (3.12), for the lists only: the log keeps why (`topic.*` events).
+  await db.query(
+    "ALTER TABLE rg_sessions ADD COLUMN IF NOT EXISTS topic boolean NOT NULL DEFAULT false",
+  );
+  await db.query("ALTER TABLE rg_sessions ADD COLUMN IF NOT EXISTS summary text");
+  await db.query("ALTER TABLE rg_sessions ADD COLUMN IF NOT EXISTS person_at timestamptz");
+  await db.query(
+    "ALTER TABLE rg_sessions ADD COLUMN IF NOT EXISTS unread integer NOT NULL DEFAULT 0",
+  );
+  await db.query("ALTER TABLE rg_sessions ADD COLUMN IF NOT EXISTS topic_from text");
   // Work conversations once named after the task's id ("[Task task_… from God: title]"): the
   // readable name they have now ("God: title").
   await db.query(

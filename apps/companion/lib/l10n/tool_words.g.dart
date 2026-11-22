@@ -78,6 +78,7 @@ const toolWords = <String, Map<String, String>>{
     'tool_knowledge_create': r"Creare raccolte di Conoscenza",
     'tool_knowledge_status': r"Vedere lo stato della Conoscenza",
     'tool_list_agents': r"Vedere gli agenti",
+    'tool_list_topics': r"Elencare gli argomenti",
     'tool_mail_draft': r"Scrivere bozze",
     'tool_mail_move': r"Sistemare la posta",
     'tool_mail_read': r"Leggere la posta",
@@ -103,12 +104,14 @@ const toolWords = <String, Map<String, String>>{
     'tool_publish_board': r"Varianti a confronto",
     'tool_read_agent': r"Leggere un altro agente",
     'tool_read_file': r"Leggere i file",
+    'tool_read_topic': r"Leggere un argomento",
     'tool_remove_agent': r"Rimuovere agenti",
     'tool_repo': r"GitHub e Gitea",
     'tool_request_connection': r"Chiedere un collegamento",
     'tool_request_tool': r"Chiedere uno strumento",
     'tool_restore_agent': r"Ripristinare agenti",
     'tool_resume_agent': r"Riattivare agenti",
+    'tool_route_message': r"Spostare un messaggio nel suo argomento",
     'tool_run_script': r"Passi in fila",
     'tool_search_conversations': r"Cerca nelle conversazioni passate",
     'tool_search_knowledge': r"Cerca nei documenti",
@@ -161,6 +164,8 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_knowledge_status':
         r"Dice quali raccolte ci sono, cosa è stato letto e se la ricerca va per significato.",
     'toolDo_list_agents': r"Elenca gli agenti che può vedere, con il loro ruolo.",
+    'toolDo_list_topics':
+        r"Elenca gli argomenti di God con te, attivi o in archivio.",
     'toolDo_mail_draft': r"Scrive una bozza, una risposta o un inoltro nelle tue Bozze, con file allegati; non invia niente.",
     'toolDo_mail_move': r"Segna come letta o da leggere, mette la stella, archivia, sposta nel cestino o in una cartella; cancellare per sempre lo chiede a te.",
     'toolDo_mail_read': r"Legge un'email come testo semplice ed elenca gli allegati; può salvarli nella sua cartella. Non segna niente come letto.",
@@ -190,6 +195,8 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_publish_board': r"Pubblica alcune varianti grafiche su una pagina, perché tu scelga.",
     'toolDo_read_agent': r"Legge cosa ha fatto un altro agente nella sua conversazione.",
     'toolDo_read_file': r"Legge i file del suo progetto.",
+    'toolDo_read_topic':
+        r"Legge gli ultimi messaggi di un altro argomento di God.",
     'toolDo_remove_agent':
         r"Toglie un agente dalla squadra (la sua storia resta; puoi ripristinarlo).",
     'toolDo_repo': r"Apre richieste di modifica e segnalazioni sul repository del progetto.",
@@ -199,6 +206,8 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_restore_agent': r"Riporta nella squadra un agente rimosso.",
     'toolDo_resume_agent':
         r"Riattiva un agente fermato sotto di sé: i suoi compiti aperti ripartono.",
+    'toolDo_route_message':
+        r"Sposta nell'argomento giusto un messaggio arrivato in quello sbagliato.",
     'toolDo_run_script':
         r"Lancia un piccolo programma che usa i suoi strumenti tante volte di fila.",
     'toolDo_search_conversations': r"Ritrova quello che si è già detto e fatto nelle conversazioni passate che può vedere, con il link per aprirle.",
@@ -320,6 +329,7 @@ const toolWords = <String, Map<String, String>>{
     'tool_knowledge_create': r"Make knowledge collections",
     'tool_knowledge_status': r"See the knowledge's state",
     'tool_list_agents': r"See the agents",
+    'tool_list_topics': r"List the topics",
     'tool_mail_draft': r"Write drafts",
     'tool_mail_move': r"File email",
     'tool_mail_read': r"Read email",
@@ -345,12 +355,14 @@ const toolWords = <String, Map<String, String>>{
     'tool_publish_board': r"Variants side by side",
     'tool_read_agent': r"Read another agent",
     'tool_read_file': r"Read files",
+    'tool_read_topic': r"Read a topic",
     'tool_remove_agent': r"Remove agents",
     'tool_repo': r"GitHub and Gitea",
     'tool_request_connection': r"Ask for a connection",
     'tool_request_tool': r"Ask for a tool",
     'tool_restore_agent': r"Restore agents",
     'tool_resume_agent': r"Resume agents",
+    'tool_route_message': r"Move a message to its topic",
     'tool_run_script': r"Chains of steps",
     'tool_search_conversations': r"Search past conversations",
     'tool_search_knowledge': r"Search the documents",
@@ -405,6 +417,7 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_knowledge_status':
         r"Tells which collections there are, what was read and whether the search goes by meaning.",
     'toolDo_list_agents': r"Lists the agents it can see, with their role.",
+    'toolDo_list_topics': r"Lists God's topics with you, active or archived.",
     'toolDo_mail_draft': r"Writes a draft, a reply or a forward in your Drafts, with files attached; nothing is sent.",
     'toolDo_mail_move': r"Marks read or unread, flags, archives, moves to the bin or a folder; deleting for good asks you.",
     'toolDo_mail_read': r"Reads one email as plain text and lists its attachments; it can save them in its folder. Nothing is marked as read.",
@@ -434,6 +447,8 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_publish_board': r"Publishes a few design variants on a page for you to choose.",
     'toolDo_read_agent': r"Reads what another agent did in its conversation.",
     'toolDo_read_file': r"Reads the files of its project.",
+    'toolDo_read_topic':
+        r"Reads the latest messages of another of God's topics.",
     'toolDo_remove_agent':
         r"Removes an agent from the team (its history stays; you can restore it).",
     'toolDo_repo': r"Opens pull requests and issues on the project's repository.",
@@ -441,6 +456,8 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_request_tool': r"Switches on a group of tools when the work needs it; asks you only for the tools you switched off.",
     'toolDo_restore_agent': r"Brings a removed agent back into the team.",
     'toolDo_resume_agent': r"Resumes a stopped agent under it: its open tasks go on.",
+    'toolDo_route_message':
+        r"Moves a message that reached the wrong topic to the right one.",
     'toolDo_run_script': r"Runs a small program that uses its tools many times in a row.",
     'toolDo_search_conversations': r"Looks up what was already said and done in past conversations it may see, with a link to open them.",
     'toolDo_search_knowledge':

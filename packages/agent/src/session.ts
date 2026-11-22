@@ -589,6 +589,8 @@ export class AgentSession {
       via?: "artifact" | "voice";
       /** «Send anyway» on the secret warning (2026-11-19): recorded with the message. */
       secretOk?: boolean;
+      /** Moved here from another topic of God (3.12): recorded with the message. */
+      movedFrom?: { sessionId: string; seq: number };
     } = {},
   ): Promise<SendResult> {
     const ctx = { ...this.ctx, signal };
@@ -615,6 +617,7 @@ export class AgentSession {
         ...(notes.length > 0 && { notes }),
         ...(extra.via && { via: extra.via }),
         ...(extra.secretOk && { secretOk: true }),
+        ...(extra.movedFrom && { movedFrom: extra.movedFrom }),
       },
     });
     this.history.push({

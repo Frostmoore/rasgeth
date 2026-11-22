@@ -126,6 +126,7 @@ import type { SetupNetwork } from "./setup-network.js";
 import { setupCaptive, setupNetworkRoutes } from "./setup-network-routes.js";
 import { MEMORY_ENTRY_LIMIT, MemoryError } from "./shared-memory.js";
 import { sheetRoutes } from "./sheet-routes.js";
+import { topicRoutes } from "./topic-routes.js";
 import { updateRoutes } from "./update-routes.js";
 import { UpdateRequiredError } from "./updates.js";
 import { VaultError } from "./vault.js";
@@ -1753,6 +1754,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   artifactRoutes(app, core, owner);
   // Commands' limits and requests to the person (G36.16, G36.17).
   personRoutes(app, core, owner);
+  // God's conversations by topic (3.12): «Oggi», routing, «Move», the archive.
+  topicRoutes(app, core, owner);
   codeRoutes(app, core, owner);
   // The person's saved passages (G40.14).
   savedRoutes(app, core, owner);

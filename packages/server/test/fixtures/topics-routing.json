@@ -1,0 +1,73 @@
+{
+  "about": "God's topics (3.12, phase 0): 40 messages, Italian and English, against five made-up topics, with the topic each belongs to (\"new\": a subject of its own). `rule`: what the free rules decide by themselves (short replies go where God spoke last, t-preventivo here). Used by topics.test.ts (the rules, the router's plumbing) and topics.live.test.ts (the router's precision with a real model, goal 90%).",
+  "lastGod": "t-preventivo",
+  "topics": [
+    {
+      "id": "t-preventivo",
+      "title": "Preventivo per Rossi Srl",
+      "summary": "Il preventivo del sito per Rossi Srl: manca il costo dell'hosting, bozza in revisione."
+    },
+    {
+      "id": "t-server",
+      "title": "Backup del server di casa",
+      "summary": "Backup notturno del NAS fallito due volte; si controlla il disco e lo spazio."
+    },
+    {
+      "id": "t-trip",
+      "title": "Trip to Lisbon in March",
+      "summary": "Flights and a hotel near Alfama for 12-16 March; comparing two hotels."
+    },
+    {
+      "id": "t-blog",
+      "title": "Articolo sul blog: Rasgeth per i professionisti",
+      "summary": "Bozza dell'articolo, seconda stesura; mancano gli esempi e l'immagine di testata."
+    },
+    {
+      "id": "t-taxes",
+      "title": "Quarterly VAT filing",
+      "summary": "Collecting invoices for Q3; two receipts missing from the accountant's list."
+    }
+  ],
+  "messages": [
+    { "text": "sì", "want": "t-preventivo", "rule": "short_reply" },
+    { "text": "ok, fallo", "want": "t-preventivo", "rule": "short_reply" },
+    { "text": "la seconda", "want": "t-preventivo", "rule": "short_reply" },
+    { "text": "go ahead", "want": "t-preventivo", "rule": "short_reply" },
+    { "text": "Aggiungi al preventivo di Rossi anche 120 euro l'anno per l'hosting", "want": "t-preventivo" },
+    { "text": "Rossi ha risposto: vogliono anche la manutenzione, rifai la cifra", "want": "t-preventivo" },
+    { "text": "Can you export the Rossi quote as a PDF so I can send it today?", "want": "t-preventivo" },
+    { "text": "Metti lo sconto del 10% nella bozza per il cliente e mandamela", "want": "t-preventivo" },
+    { "text": "Il backup di stanotte è andato? Controlla il NAS", "want": "t-server" },
+    { "text": "Il disco del NAS è quasi pieno, cosa possiamo cancellare?", "want": "t-server" },
+    { "text": "The backup failed again with 'no space left on device'", "want": "t-server" },
+    { "text": "Sposta i backup vecchi di sei mesi sull'altro disco", "want": "t-server" },
+    { "text": "Is the cron job for the nightly backup still scheduled at 2am?", "want": "t-server" },
+    { "text": "Which of the two hotels in Lisbon has breakfast included?", "want": "t-trip" },
+    { "text": "Prenota il volo del 12 marzo per Lisbona, quello del mattino", "want": "t-trip" },
+    { "text": "Check if the Alfama hotel has a room free on the 16th too", "want": "t-trip" },
+    { "text": "Quanto costa un taxi dall'aeroporto di Lisbona al centro?", "want": "t-trip" },
+    { "text": "Rileggi l'articolo del blog e aggiungi due esempi concreti", "want": "t-blog" },
+    { "text": "Per l'immagine di testata dell'articolo usa qualcosa di sobrio", "want": "t-blog" },
+    { "text": "Make the blog post's intro shorter, it takes too long to get to the point", "want": "t-blog" },
+    { "text": "Il titolo dell'articolo per i professionisti non mi convince, proponine tre", "want": "t-blog" },
+    { "text": "I found the two missing receipts, they're in the Downloads folder", "want": "t-taxes" },
+    { "text": "Quando scade la dichiarazione IVA del trimestre?", "want": "t-taxes" },
+    { "text": "Send the Q3 invoices list to the accountant once it's complete", "want": "t-taxes" },
+    { "text": "La fattura di Amazon di settembre va nel trimestre o no?", "want": "t-taxes" },
+    { "text": "Ricordami domani alle 9 di chiamare il dentista", "want": "new" },
+    { "text": "What's a good recipe for dinner with zucchini and ricotta?", "want": "new" },
+    { "text": "Crea un progetto nuovo per il sito della palestra di Marco", "want": "new" },
+    { "text": "Translate this paragraph into German for my cousin", "want": "new" },
+    { "text": "Il telefono di mia madre non si connette al wifi, come la aiuto?", "want": "new" },
+    { "text": "Find me a good second-hand road bike under 600 euros", "want": "new" },
+    { "text": "Scrivi una mail di auguri per il compleanno di Giulia", "want": "new" },
+    { "text": "How do I renew my passport in Milan?", "want": "new" },
+    { "text": "Organizza una cena per otto persone sabato prossimo", "want": "new" },
+    { "text": "Explain how compound interest works with a small example", "want": "new" },
+    { "text": "Dammi un riassunto delle notizie di oggi sull'intelligenza artificiale", "want": "new" },
+    { "text": "Also add the hosting cost to the quote, the yearly one", "want": "t-preventivo" },
+    { "text": "Il NAS fa un rumore strano da ieri sera", "want": "t-server" },
+    { "text": "Is there a direct flight back from Lisbon on the 16th in the evening?", "want": "t-trip" },
+    { "text": "Rimanda l'articolo a settimana prossima, ora non ho tempo", "want": "t-blog" }
+  ]
+}

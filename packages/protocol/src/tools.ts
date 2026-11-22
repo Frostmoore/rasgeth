@@ -174,6 +174,10 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   one("resume_agent", "agents", "team"),
   { id: "subagents", group: "agents", tools: ["run_subagent", "run_subagents"], kit: "helpers" },
   one("ask_inspector", "agents", "helpers"),
+  // God's topics (3.12): the others, read only, and moving a message that came to the wrong one.
+  one("list_topics", "agents", "team"),
+  one("read_topic", "agents", "team"),
+  one("route_message", "agents", "team"),
   // A magic automation's conversation exists to propose one.
   one("propose_automation", "platform", true),
   // A magic integration's or extension's conversation exists to propose one (G38.3).

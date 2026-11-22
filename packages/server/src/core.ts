@@ -88,6 +88,7 @@ import {
   isMediaRef,
   type KitState,
   type ListName,
+  MAX_NOTES,
   MCP_CATALOG,
   type MediaChoice,
   type MediaKind,
@@ -352,6 +353,7 @@ import { SKILL_PROMPT, SkillNudge } from "./skill-nudge.js";
 import { SkillUpdateRequests } from "./skill-requests.js";
 import { type SshToolsHost, sshTools } from "./ssh-tools.js";
 import { dryWorkspace, ToolChoiceStore, toolChars, toolsView } from "./tool-choice.js";
+import { type RouterFn, Topics, type WarmEngine, WarmRouter } from "./topics.js";
 import { type Seat, TurnSeats } from "./turn-seats.js";
 import { UpdateRequiredError, type UpdateWatcher } from "./updates.js";
 import {
@@ -428,6 +430,11 @@ function startsOn(r: Recipe): string {
 
 export interface CoreOptions {
   db: SqlClient;
+  /**
+   * God's topics' router (3.12, level 2): tests pass a fake; by default the routing model when it
+   * answers fast (an API key, a local engine, a subscription's warm engine), else none.
+   */
+  topicsRouter?: (ownerId: string) => Promise<{ fn: RouterFn; model: ModelSpec } | undefined>;
   /**
    * Video projects (G41.4-G41.6): the programs and how they run (tests: a fake ffmpeg); by
    * default ffmpeg and ffprobe found or downloaded, run without a shell.
@@ -601,6 +608,10 @@ export interface ProjectWork {
 type TurnExtra = {
   images?: ImagePart[];
   quotes?: MessageQuote[];
+  /** RedGiant's lines for the model after the text (a topic's `<meanwhile>`, a moved answer). */
+  notes?: string[];
+  /** Moved here from another topic (3.12). */
+  movedFrom?: { sessionId: string; seq: number };
   from?: string;
   watch?: boolean;
   steer?: boolean;
@@ -830,6 +841,10 @@ export class RedGiantCore implements OrchestrationHost {
   /** Notifications to the devices (G40.4): Web Push, APNs through the blind relay. */
   readonly push: PushService;
   readonly tasks: TaskTracker;
+  /** God's conversations by topic (3.12). */
+  readonly topics: Topics;
+  /** list_topics, read_topic and route_message (God's tools). */
+  readonly topicTools: NonNullable<OrchestrationHost["topicTools"]>;
   readonly board: Board;
   /** Persistent memory of every agent (G29.3). */
   readonly notes: Notes;
@@ -1108,6 +1123,21 @@ export class RedGiantCore implements OrchestrationHost {
     this.sandbox = o.sandbox ?? new HostSandboxProvider();
     this.tasks = new TaskTracker(this.store);
     this.tasks.escalate = (task, reason) => this.escalate(task, reason);
+    // God's topics (3.12): every conversation of God is one; requests say which one is theirs.
+    this.topics = new Topics(this, {
+      router: o.topicsRouter ?? ((ownerId) => this.fastRouter(ownerId)),
+    });
+    this.topicTools = {
+      listText: (ownerId, archived, here) => this.topics.listText(ownerId, archived, here),
+      readText: (ownerId, id, last) => this.topics.readText(ownerId, id, last),
+      routeFromTurn: (ownerId, sid, to, title) =>
+        this.topics.routeFromTurn(ownerId, sid, to, title),
+    };
+    this.approvals.topicOf = (sid) => this.topics.topicOf(sid);
+    this.questions.topicOf = (sid) => this.topics.topicOf(sid);
+    this.onTurnEnded(
+      (t) => void this.topics.turnEnded(t.ownerId, t.sessionId, t.stopReason).catch(() => {}),
+    );
     this.board = new Board(o.db, this.store);
     // Apart from every workspace (2026-11-05: in the assistants' folder an assistant could read and
     // rewrite any agent's or project's notes with its file tools).
@@ -1662,6 +1692,106 @@ export class RedGiantCore implements OrchestrationHost {
     // Conversations nobody uses leave memory; the next message rebuilds them from the log.
     this.sweeper = setInterval(() => this.closeIdle(), 5 * 60_000);
     this.sweeper.unref();
+    // Topics idle for days go to the archive; quiet ones get their one-line summary (3.12).
+    this.topicsTimer = setInterval(() => void this.topicsTick().catch(() => {}), 10 * 60_000);
+    this.topicsTimer.unref();
+  }
+
+  private readonly topicsTimer: ReturnType<typeof setInterval>;
+
+  /** The topics' periodic check for every owner with a God (the service's clock in tests). */
+  async topicsTick(now?: number): Promise<void> {
+    const owners = new Set(
+      this.registry
+        .list({ activeOnly: true })
+        .filter((a) => a.kind === "god")
+        .map((a) => a.ownerId),
+    );
+    for (const ownerId of owners) await this.topics.tick(ownerId, now);
+  }
+
+  /**
+   * The router's model when it answers fast (3.12, level 2): an API key or a local engine answer
+   * directly; Claude on a subscription answers through a warm engine kept running (an engine
+   * started ahead, ~15 s saved per message); any other subscription: none (God decides).
+   */
+  private async fastRouter(
+    ownerId: string,
+  ): Promise<{ fn: RouterFn; model: ModelSpec } | undefined> {
+    const model = await this.topics.routingModel(ownerId);
+    if (!model || !this.o.providers.has(model.provider)) return undefined;
+    const provider = this.o.providers.get(model.provider);
+    const warm = (provider as { engine?: { prewarm?: unknown } }).engine;
+    if (warm && typeof warm.prewarm === "function") {
+      this.warmRouter ??= new WarmRouter(warm as WarmEngine);
+      const w = this.warmRouter;
+      return { model, fn: (call, signal) => w.ask(call, signal) };
+    }
+    if (/-subscription$/.test(model.provider)) return undefined;
+    return {
+      model,
+      fn: async (call) => {
+        const c = await complete(
+          streamWithFallback(this.o.providers, call.model, {
+            system: call.system,
+            tools: [],
+            messages: [{ role: "user", parts: [{ type: "text", text: call.text }] }],
+            maxTokens: 200,
+          }),
+        );
+        const god = this.topics.god(ownerId);
+        if (god)
+          await this.budget
+            .record(
+              budgetKeys(god, this.registry.resolve),
+              c.usage,
+              costUsd(c.usage, this.o.providers.get(c.provider).modelInfo(c.model).pricing),
+              { ownerId, projectId: null, agentId: god.id },
+            )
+            .catch(() => {});
+        return c.message.parts.flatMap((p) => (p.type === "text" ? [p.text] : [])).join("");
+      },
+    };
+  }
+
+  private warmRouter: WarmRouter | undefined;
+
+  /** To every page and app of the owner. */
+  tellOwner(ownerId: string, m: ServerMessage): void {
+    this.toOwner(ownerId, m);
+  }
+
+  /** Working, waiting for a place or with messages in line. */
+  isBusy(sessionId: string): boolean {
+    const l = this.live.get(sessionId);
+    return (
+      (l !== undefined && (l.running !== null || (l.queue?.length ?? 0) > 0)) ||
+      this.waitingTurns.has(sessionId)
+    );
+  }
+
+  /** Stops the turn answering now and waits for it to end (3.12: «Move» of a running exchange). */
+  async stopTurn(ownerId: string, sessionId: string): Promise<void> {
+    const l = this.live.get(sessionId);
+    if (!l?.running) return;
+    await this.interrupt(ownerId, sessionId);
+    await l.turn?.catch(() => {});
+  }
+
+  /** The topic of God a message goes to (3.12): ask_god of Demi-God and of the assistants. */
+  async topicFor(
+    god: AgentRecord,
+    text: string,
+    origin: "chat" | "assistant",
+    from?: string,
+  ): Promise<string> {
+    const r = await this.topics.route(god.ownerId, {
+      text,
+      origin,
+      ...(from && { from }),
+    });
+    if (origin === "chat") this.telegramSessions.add(r.topicId);
+    return r.topicId;
   }
 
   static async create(o: CoreOptions): Promise<RedGiantCore> {
@@ -3480,6 +3610,11 @@ export class RedGiantCore implements OrchestrationHost {
       if (a.kind !== "demigod" && a.kind !== "god") continue;
       const sid = this.workSessions.get(a.id);
       if (sid && (await this.interrupt(ownerId, sid))) stopped = true;
+      // God works in topics (3.12): the ones answering now stop.
+      if (a.kind === "god")
+        for (const l of this.live.values())
+          if (l.agentId === a.id && l.running && (await this.interrupt(ownerId, l.id)))
+            stopped = true;
     }
     return stopped;
   }
@@ -5985,6 +6120,8 @@ export class RedGiantCore implements OrchestrationHost {
   async workSession(agent: AgentRecord, projectId?: string): Promise<string> {
     // In a project it is assigned to, a conversation of its own for that project.
     const there = projectId && projectId !== agent.projectId ? projectId : undefined;
+    // God has topics, not one conversation (3.12): the old apps get the latest active one.
+    if (agent.kind === "god" && !there) return this.topics.latest(agent.ownerId);
     const slot = there ? `${agent.id}@${there}` : agent.id;
     const existing = this.workSessions.get(slot);
     if (existing) return existing;
@@ -6530,10 +6667,13 @@ export class RedGiantCore implements OrchestrationHost {
       opts.projectId && agent.projects?.includes(opts.projectId) ? opts.projectId : agent.projectId;
     this.assertActive(ownerId, agent.projectId);
     this.assertActive(ownerId, project);
+    // God's old conversations become topics first (3.12), then this one joins them.
+    if (agent.kind === "god") await this.topics.prepare(ownerId);
     await this.o.db.query(
       "INSERT INTO rg_sessions (id, owner_id, agent_id, project_id, model) VALUES ($1, $2, $3, $4, $5)",
       [id, ownerId, agentId, project, opts.model ? JSON.stringify(opts.model) : null],
     );
+    if (agent.kind === "god") await this.topics.adopt(ownerId, id);
     this.listsChanged(ownerId, "sessions");
     await opts.before?.(id);
     try {
@@ -6972,6 +7112,12 @@ export class RedGiantCore implements OrchestrationHost {
       [sessionId, ownerId],
     );
     if (!row) throw new NotFoundError(`Session "${sessionId}" not found`);
+    // A topic's archive is an event (3.12): who archived it, or what brought it back.
+    if (this.topics.isTopic(sessionId) && change.archived !== undefined) {
+      if (change.archived) await this.topics.archive(ownerId, sessionId, "person");
+      else await this.topics.restore(ownerId, sessionId, "person");
+    }
+    if (change.title) this.topics.renamed(sessionId, change.title);
     await this.o.db.query(
       "UPDATE rg_sessions SET title = COALESCE($2, title), pinned = COALESCE($3, pinned), archived = COALESCE($4, archived) WHERE id = $1",
       [sessionId, change.title ?? null, change.pinned ?? null, change.archived ?? null],
@@ -7113,6 +7259,10 @@ export class RedGiantCore implements OrchestrationHost {
       images?: ImagePart[];
       /** Passages of earlier messages it answers (G36.22). */
       quotes?: MessageQuote[];
+      /** RedGiant's lines for the model after the text (3.12: a moved answer, as data). */
+      notes?: string[];
+      /** Moved here from another topic by the person (3.12). */
+      movedFrom?: { sessionId: string; seq: number };
       from?: string;
       /** The human sent it: a long or failed turn is notified when it ends. */
       watch?: boolean;
@@ -7493,18 +7643,7 @@ export class RedGiantCore implements OrchestrationHost {
     sessionId: string,
     l: Live,
     text: string,
-    extra: {
-      images?: ImagePart[];
-      quotes?: MessageQuote[];
-      from?: string;
-      watch?: boolean;
-      steer?: boolean;
-      clientId?: string;
-      human?: boolean;
-      taskReport?: boolean;
-      via?: "artifact" | "voice";
-      secretOk?: boolean;
-    },
+    extra: TurnExtra,
     seat: Seat,
   ): Promise<{ done: Promise<SendResult> }> {
     // Also for messages that waited in line: they are refused, not lost in the middle of a turn.
@@ -7572,7 +7711,14 @@ export class RedGiantCore implements OrchestrationHost {
     // Wrapped: an async function returning a bare promise would wait for the whole turn.
     const started = Date.now();
     // `steer` only says how a busy session takes it; it is not part of the message.
-    const { watch, steer: _steer, clientId: _clientId, human: _human, ...message } = extra;
+    const {
+      watch,
+      steer: _steer,
+      clientId: _clientId,
+      human: _human,
+      notes: given,
+      ...message
+    } = extra;
     const ended = (stopReason: string) => {
       l.running = null;
       seat.release();
@@ -7590,7 +7736,18 @@ export class RedGiantCore implements OrchestrationHost {
     };
     // A new turn: one group of edits (G37.1); what the person changed meanwhile rides with it.
     this.editor.turnStarted(sessionId);
-    const notes = [...this.editor.notesFor(sessionId), ...this.artifactErrors.take(sessionId)];
+    // A topic of God (3.12): what changed elsewhere, a moved exchange, the other topics.
+    const topicNotes = this.topics.isTopic(sessionId)
+      ? await this.topics
+          .beforeTurn(ownerId, sessionId, { human, taskReport: extra.taskReport === true })
+          .catch(() => [])
+      : [];
+    const notes = [
+      ...(given ?? []),
+      ...topicNotes,
+      ...this.editor.notesFor(sessionId),
+      ...this.artifactErrors.take(sessionId),
+    ].slice(0, MAX_NOTES);
     // Its tools run as this turn (3.8.10): a child it waits for takes its place.
     const done = this.turnAsker
       .run({ ownerId, sessionId }, () =>
@@ -8936,6 +9093,8 @@ export class RedGiantCore implements OrchestrationHost {
     this.portrait.stop();
     this.echo.stop();
     clearInterval(this.sweeper);
+    clearInterval(this.topicsTimer);
+    this.warmRouter?.close();
     this.inspector.stop();
     this.code?.unwatch();
     for (const l of this.live.values()) l.running?.abort();

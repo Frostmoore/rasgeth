@@ -1,6 +1,11 @@
 import { EventEmitter } from "node:events";
 import type { ApprovalRequest, HumanAnswer } from "@redgiant/hierarchy";
-import { offersWorkAllow, type PermissionRequestInfo, requestNameIds } from "@redgiant/protocol";
+import {
+  offersWorkAllow,
+  type PermissionRequestInfo,
+  requestNameIds,
+  type TopicRef,
+} from "@redgiant/protocol";
 
 interface Pending {
   info: PermissionRequestInfo;
@@ -28,6 +33,8 @@ export class HumanApprovals extends EventEmitter<{
    * instead of ids. A lookup that fails only leaves the ids.
    */
   nameOf?: (ownerId: string, ids: string[]) => Promise<Record<string, string>>;
+  /** The topic of God a conversation belongs to («for: Title», 3.12), up the chain of tasks. */
+  topicOf?: (sessionId: string) => TopicRef | undefined;
 
   ask(request: ApprovalRequest, signal: AbortSignal): Promise<HumanAnswer> {
     // The ids in the input, and the requester's project (the chats' first line names it).
@@ -66,6 +73,8 @@ export class HumanApprovals extends EventEmitter<{
       createdAt: new Date().toISOString(),
       ...(request.sessionId && { sessionId: request.sessionId }),
     };
+    const topic = request.sessionId ? this.topicOf?.(request.sessionId) : undefined;
+    if (topic) info.topic = topic;
     const ownerId = request.requester.ownerId;
     return new Promise((resolve) => {
       this.pending.set(info.requestId, { info, ownerId, resolve });

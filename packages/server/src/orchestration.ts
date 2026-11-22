@@ -74,6 +74,22 @@ export interface OrchestrationHost {
   broker: PermissionBroker;
   /** The session an agent receives delegated work in (created on first use). */
   workSession(agent: AgentRecord, projectId?: string): Promise<string>;
+  /**
+   * The topic of God a message goes to (3.12): routed like the person's messages (an assistant's
+   * request opens or continues a topic «from» it; Demi-God's relayed words too).
+   */
+  /** God's topics (3.12): list_topics, read_topic, route_message. */
+  topicTools?: {
+    listText(ownerId: string, archived: boolean, here?: string): Promise<string>;
+    readText(ownerId: string, topicId: string, last?: number): Promise<string>;
+    routeFromTurn(ownerId: string, sessionId: string, to: string, title?: string): Promise<string>;
+  };
+  topicFor?(
+    god: AgentRecord,
+    text: string,
+    origin: "chat" | "assistant",
+    from?: string,
+  ): Promise<string>;
   /** Names a conversation in the list (tasks: who gave the latest, and what). */
   nameSession?(sessionId: string, title: string): Promise<void>;
   /** A brand-new session: isolated context. */
@@ -226,10 +242,19 @@ export class TaskTracker {
    * reminding their agents and complete_task can close them.
    */
   async rebuild(): Promise<number> {
-    const events = await this.store.list({ types: ["task.opened", "task.closed"] });
+    const events = await this.store.list({
+      types: ["task.opened", "task.closed", "task.redirected"],
+    });
     for (const e of events) {
       const p = e.payload as { taskId: string; title?: string; from?: Task["from"] } | null;
       if (!p) continue;
+      // A moved exchange's task (3.12): its report goes to the topic it reached.
+      if (e.type === "task.redirected") {
+        const t = this.tasks.get(p.taskId);
+        const to = (e.payload as { toSessionId: string }).toSessionId;
+        if (t?.from) t.from = { ...t.from, sessionId: to };
+        continue;
+      }
       if (e.type === "task.opened" && e.agentId && e.sessionId)
         this.tasks.set(p.taskId, {
           id: p.taskId,
@@ -248,6 +273,28 @@ export class TaskTracker {
 
   get(id: string): Task | undefined {
     return this.tasks.get(id);
+  }
+
+  /** Every task known (open, and closed since the start). */
+  all(): Task[] {
+    return [...this.tasks.values()];
+  }
+
+  /**
+   * A task handed over in an exchange the person moved to another topic (3.12): its report goes
+   * there. Recorded in the topic it left (`task.redirected`), so a restart keeps it.
+   */
+  async redirect(task: Task, toSessionId: string, fromSessionId: string): Promise<void> {
+    if (!task.from) return;
+    const was = task.from;
+    task.from = { ...was, sessionId: toSessionId };
+    await this.store.append({
+      ownerId: task.ownerId,
+      projectId: null,
+      agentId: was.agentId,
+      sessionId: fromSessionId,
+      body: { type: "task.redirected", payload: { taskId: task.id, toSessionId } },
+    });
   }
 
   /** The open task of an agent in a session, if any. */
@@ -617,7 +664,9 @@ export function orchestrationTools(
         async run({ message }: { message: string }) {
           if (!can(me, "message", god, host.registry.resolve))
             throw new Error("You cannot reach God.");
-          const sid = await host.workSession(god);
+          const sid = host.topicFor
+            ? await host.topicFor(god, message, "chat")
+            : await host.workSession(god);
           // The message goes as it is: who relays it is stated in God's system prompt (the
           // operator channel). A "[forwarded by another agent]" prefix in the text looks like a
           // prompt injection to safety classifiers and got refused as "cyber".
@@ -695,7 +744,9 @@ export function orchestrationTools(
         async run({ message }: { message: string }) {
           if (!can(me, "message", god, host.registry.resolve))
             throw new Error("You cannot reach God.");
-          const sid = await host.workSession(god);
+          const sid = host.topicFor
+            ? await host.topicFor(god, message, "assistant", self.name)
+            : await host.workSession(god);
           const { done } = await host.send(
             self.ownerId,
             sid,
@@ -708,6 +759,58 @@ export function orchestrationTools(
           return `${r.stopReason === "end_turn" ? "" : `(God stopped: ${r.stopReason})\n`}${clip(answer, 6000) || "God gave no answer."}`;
         },
       } as Tool);
+  }
+
+  // God's topics (3.12): each conversation with the person is one topic; these look at the others
+  // (read only) and move the message this turn answers when it belongs elsewhere.
+  const topics = host.topicTools;
+  if (self.kind === "god" && topics) {
+    tools.push(
+      {
+        def: {
+          name: "list_topics",
+          description:
+            "List your topics with the person (each conversation with them is one topic): id, title, state, last activity, open tasks, one-line summary. archived true: the archive instead.",
+          inputSchema: { type: "object", properties: { archived: { type: "boolean" } } },
+        },
+        schema: z.object({ archived: z.boolean().optional() }),
+        async run({ archived }: { archived?: boolean }, ctx: ToolContext) {
+          return topics.listText(self.ownerId, archived === true, ctx.sessionId);
+        },
+      } as Tool,
+      {
+        def: {
+          name: "read_topic",
+          description:
+            "Read the latest messages of another of your topics (read only), to know where it stands.",
+          inputSchema: {
+            type: "object",
+            properties: { topic_id: { type: "string" }, last: { type: "number" } },
+            required: ["topic_id"],
+          },
+        },
+        schema: z.object({ topic_id: z.string().min(1), last: z.number().int().optional() }),
+        async run({ topic_id, last }: { topic_id: string; last?: number }) {
+          return topics.readText(self.ownerId, topic_id, last);
+        },
+      } as Tool,
+      {
+        def: {
+          name: "route_message",
+          description:
+            'Only as your first move, when a <topics> block says the message came here without a router and it belongs to another topic (or is a new subject): moves it there (topic_id, or "new" with a short title in the person\'s language) and you answer there. Then end this turn with one short line.',
+          inputSchema: {
+            type: "object",
+            properties: { topic_id: { type: "string" }, title: { type: "string" } },
+            required: ["topic_id"],
+          },
+        },
+        schema: z.object({ topic_id: z.string().min(1), title: z.string().max(120).optional() }),
+        async run({ topic_id, title }: { topic_id: string; title?: string }, ctx: ToolContext) {
+          return topics.routeFromTurn(self.ownerId, ctx.sessionId, topic_id, title);
+        },
+      } as Tool,
+    );
   }
 
   // Personal assistants (G24.11): God hands work to the one whose job it is, and assistants hand
