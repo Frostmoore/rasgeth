@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 
 import '../api/client.dart';
 import '../api/topics.dart';
+import '../api/types.dart' show MascotState;
 
 /// The interface to show: the device's choice, else the installation's, else the simple one
 /// (3.12.1: an installation that never chose opens with the simple interface).
@@ -21,6 +22,67 @@ String greetingKey(int hour) => hour >= 5 && hour < 13
     : hour >= 13 && hour < 18
     ? 'smpAfternoon'
     : 'smpEvening';
+
+// ---------- God's giant mascot on «Oggi» (3.12.1, the page's `giantMood`) ----------
+
+enum GiantMood { rest, listen, think, work, wait, happy, worried }
+
+/// The mood from the page's real facts, the most urgent first (the page's `giantMood`).
+GiantMood giantMood({
+  bool typing = false,
+  bool routing = false,
+  bool working = false,
+  bool waiting = false,
+  bool happy = false,
+  bool error = false,
+}) {
+  if (error) return GiantMood.worried;
+  if (routing) return GiantMood.think;
+  if (typing) return GiantMood.listen;
+  if (happy) return GiantMood.happy;
+  if (waiting) return GiantMood.wait;
+  if (working) return GiantMood.work;
+  return GiantMood.rest;
+}
+
+/// The drawing's state for each mood (the page's `GIANT_STATE`).
+MascotState giantState(GiantMood m) => switch (m) {
+  GiantMood.rest || GiantMood.listen || GiantMood.happy => MascotState.active,
+  GiantMood.think => MascotState.think,
+  GiantMood.work => MascotState.work,
+  GiantMood.wait => MascotState.wait,
+  GiantMood.worried => MascotState.error,
+};
+
+/// A still mascot's small gestures (the page's `IDLE_GESTURES`).
+enum IdleGesture { lookL, lookR, hop, wiggle, wink, nod }
+
+/// The next gesture: any of [from] but [last], so never the same twice in a row.
+IdleGesture nextGesture(IdleGesture? last, List<IdleGesture> from, double Function() rand) {
+  final pool = from.where((g) => g != last).toList();
+  final list = pool.isEmpty ? from : pool;
+  return list[(rand() * list.length).floor().clamp(0, list.length - 1)];
+}
+
+/// How long a still mascot waits before its next gesture: 3.5 to 8 s, never a fixed beat.
+Duration gestureDelay(double Function() rand) =>
+    Duration(milliseconds: (3500 + rand() * 4500).round());
+
+/// How long a gesture lasts.
+Duration gestureLength(IdleGesture g) => Duration(
+  milliseconds: switch (g) {
+    IdleGesture.lookL || IdleGesture.lookR => 1600,
+    IdleGesture.hop => 800,
+    IdleGesture.wink => 700,
+    IdleGesture.wiggle || IdleGesture.nod => 900,
+  },
+);
+
+/// Whether a topic that was at work is now ready (a piece of work finished).
+bool finishedWork(List<TopicView> before, List<TopicView> after) {
+  final was = {for (final x in before) x.id: x.state};
+  return after.any((x) => x.state == TopicState.ready && was[x.id] == TopicState.working);
+}
 
 /// A ready-made assistant for everyday life (3.12, «Assistenti pronti»: still to be defined with
 /// the person). «Oggi» shows them when [SimpleModel.assistants] has some; empty, nothing shows.
@@ -62,11 +124,47 @@ class SimpleModel extends ChangeNotifier {
 
   Timer? _soon;
 
+  /// The person is writing in «Oggi»'s box (the giant listens), a moment after the last key too.
+  bool typing = false;
+  Timer? _typing;
+
+  /// A message to God is being routed (the giant thinks).
+  bool routing = false;
+
+  /// A piece of work just finished (the giant is happy for a few seconds).
+  bool cheer = false;
+  Timer? _cheer;
+
+  void typed(String words) {
+    final now = words.trim().isNotEmpty;
+    _typing?.cancel();
+    if (now) {
+      _typing = Timer(const Duration(milliseconds: 2500), () {
+        typing = false;
+        notifyListeners();
+      });
+    }
+    if (now == typing) return;
+    typing = now;
+    notifyListeners();
+  }
+
+  void cheerUp([Duration d = const Duration(seconds: 4)]) {
+    cheer = true;
+    _cheer?.cancel();
+    _cheer = Timer(d, () {
+      cheer = false;
+      notifyListeners();
+    });
+    notifyListeners();
+  }
+
   Future<void> refresh() async {
     final c = _client();
     if (c == null) return;
     try {
       final l = await c.topics();
+      if (loaded && finishedWork(topics, l.topics)) cheerUp();
       topics = l.topics;
       archivedCount = l.archived;
       loaded = true;
@@ -120,7 +218,11 @@ class SimpleModel extends ChangeNotifier {
   Future<TopicSent?> ask(String text, {String? topicId}) async {
     final words = text.trim();
     if (words.isEmpty) return null;
+    routing = true;
+    notifyListeners();
     final r = await _try((c) => c.godMessage(words, topicId: topicId));
+    routing = false;
+    notifyListeners();
     if (r != null) refreshSoon();
     return r;
   }
@@ -186,6 +288,8 @@ class SimpleModel extends ChangeNotifier {
   @override
   void dispose() {
     _soon?.cancel();
+    _typing?.cancel();
+    _cheer?.cancel();
     super.dispose();
   }
 }

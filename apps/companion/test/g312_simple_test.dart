@@ -14,6 +14,9 @@ import 'package:rgcompanion/api/token_store.dart';
 import 'package:rgcompanion/api/types.dart';
 import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
+import 'package:rgcompanion/api/topics.dart';
+import 'package:rgcompanion/l10n/app_localizations.dart';
+import 'package:rgcompanion/simple/simple_giant.dart';
 import 'package:rgcompanion/simple/simple_model.dart';
 import 'package:rgcompanion/simple/simple_shell.dart';
 
@@ -288,6 +291,23 @@ void main() {
       await done(tester);
     });
 
+    testWidgets('3.12.1: God giant above the greeting; it listens while the person types', (
+      tester,
+    ) async {
+      await open(tester);
+      expect(find.byKey(const Key('simple-stage')), findsOneWidget);
+      final giantY = tester.getTopLeft(find.byKey(const Key('simple-stage'))).dy;
+      expect(giantY, lessThan(tester.getTopLeft(find.byKey(const Key('simple-greeting'))).dy));
+      // A topic waits for the person: so does the giant.
+      expect(find.byKey(const Key('simple-giant-wait')), findsOneWidget);
+      await tester.enterText(find.byKey(const Key('simple-ask')), 'Ciao');
+      await tester.pump();
+      expect(find.byKey(const Key('simple-giant-listen')), findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 2600));
+      expect(find.byKey(const Key('simple-giant-listen')), findsNothing);
+      await done(tester);
+    });
+
     testWidgets('3.12.1: a server before 3.12 (no topics routes) is said, the full view offered', (
       tester,
     ) async {
@@ -319,9 +339,89 @@ void main() {
     });
   });
 
+  test('3.12.1: the giant\'s mood follows the facts, the most urgent first', () {
+    expect(giantMood(), GiantMood.rest);
+    expect(giantMood(typing: true), GiantMood.listen);
+    expect(giantMood(routing: true, typing: true), GiantMood.think);
+    expect(giantMood(working: true), GiantMood.work);
+    expect(giantMood(waiting: true, working: true), GiantMood.wait);
+    expect(giantMood(happy: true, waiting: true), GiantMood.happy);
+    expect(giantMood(error: true, routing: true, happy: true), GiantMood.worried);
+    expect(giantState(GiantMood.worried), MascotState.error);
+    expect(giantState(GiantMood.rest), MascotState.active);
+    IdleGesture? last;
+    var x = 0.13;
+    double rand() => x = (x * 9301 + 0.49297) % 1;
+    final seen = <IdleGesture>{};
+    for (var i = 0; i < 200; i++) {
+      final g = nextGesture(last, IdleGesture.values, rand);
+      expect(g, isNot(last));
+      seen.add(g);
+      last = g;
+    }
+    expect(seen.length, IdleGesture.values.length);
+    expect(gestureDelay(() => 0), const Duration(milliseconds: 3500));
+    expect(gestureDelay(() => 1), const Duration(milliseconds: 8000));
+    final working = TopicView.fromJson(topicJson('a', 'A', state: 'working'));
+    final ready = TopicView.fromJson(topicJson('a', 'A'));
+    expect(finishedWork([working], [ready]), isTrue);
+    expect(finishedWork([ready], [ready]), isFalse);
+  });
+
+  Widget giantApp(Widget child, {bool reduce = false}) => MaterialApp(
+    locale: const Locale('it'),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: MediaQuery(
+      data: MediaQueryData(disableAnimations: reduce),
+      child: Scaffold(body: Center(child: child)),
+    ),
+  );
+
+  testWidgets('3.12.1: still, the giant makes a gesture now and then, never the same twice', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      giantApp(const GiantMascot(agent: null, mood: GiantMood.rest, rand: _fixed)),
+    );
+    final st = tester.state<GiantMascotState>(find.byType(GiantMascot));
+    final seen = <IdleGesture>[];
+    for (var i = 0; i < 6; i++) {
+      await tester.pump(const Duration(milliseconds: 7996));
+      expect(st.gesture, isNotNull);
+      seen.add(st.gesture!);
+      await tester.pump(gestureLength(st.gesture!));
+      expect(st.gesture, isNull);
+    }
+    for (var i = 1; i < seen.length; i++) {
+      expect(seen[i], isNot(seen[i - 1]));
+    }
+    expect(seen, isNot(contains(IdleGesture.wink)));
+    // At work: no gestures.
+    await tester.pumpWidget(
+      giantApp(const GiantMascot(agent: null, mood: GiantMood.work, rand: _fixed)),
+    );
+    await tester.pump(const Duration(seconds: 20));
+    expect(tester.state<GiantMascotState>(find.byType(GiantMascot)).gesture, isNull);
+    expect(find.byKey(const Key('simple-giant-work')), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('3.12.1: with reduced motion the giant stays still', (tester) async {
+    await tester.pumpWidget(
+      giantApp(const GiantMascot(agent: null, mood: GiantMood.rest, rand: _fixed), reduce: true),
+    );
+    await tester.pump(const Duration(seconds: 60));
+    expect(tester.state<GiantMascotState>(find.byType(GiantMascot)).gesture, isNull);
+    expect(tester.state<GiantMascotState>(find.byType(GiantMascot)).moving, isFalse);
+    await tester.pumpWidget(const SizedBox());
+  });
+
   test('3.12.1: a 404 is an old server, the rest is not', () {
     expect(topicsMissing(404), isTrue);
     expect(topicsMissing(502), isFalse);
     expect(topicsMissing(0), isFalse);
   });
 }
+
+double _fixed() => 0.999;

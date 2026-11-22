@@ -2011,10 +2011,11 @@
         "lib/app.dart",
         "lib/settings/general_screen.dart",
         "lib/screens/you_screen.dart",
-        "lib/setup/wizard/wizard_screen.dart"
+        "lib/setup/wizard/wizard_screen.dart",
+        "lib/simple/simple_giant.dart"
       ],
       "phase": "3.12",
-      "note": "The simple interface (components/Simple.tsx, design «B · Assistente»): «Oggi» with the greeting, the big box and the topics' cards with their state (ti aspetto, al lavoro, pronto), a topic as a document with its decisions in a box (requests in plain words, questions), «in: Titolo · Sposta», the archive with its search, a few settings (notifications, voice, spending, name, Telegram, look, «Vista completa»). Switched in Settings › General and in Tu, remembered per device; the first-start wizard asks which one for new devices (wzLook). Phone and computer: one centred column, wider cards on a wide window. 3.12.1: the simple interface is the default of an installation that never chose (wzLook preselects it and saves it); a server before 3.12 (no God topics, 404) is said in words with the full interface offered, any other error with «Riprova»."
+      "note": "The simple interface (components/Simple.tsx, design «B · Assistente»): «Oggi» with the greeting, the big box and the topics' cards with their state (ti aspetto, al lavoro, pronto), a topic as a document with its decisions in a box (requests in plain words, questions), «in: Titolo · Sposta», the archive with its search, a few settings (notifications, voice, spending, name, Telegram, look, «Vista completa»). Switched in Settings › General and in Tu, remembered per device; the first-start wizard asks which one for new devices (wzLook). Phone and computer: one centred column, wider cards on a wide window. 3.12.1: the simple interface is the default of an installation that never chose (wzLook preselects it and saves it); a server before 3.12 (no God topics, 404) is said in words with the full interface offered, any other error with «Riprova». 3.12.1: God giant at the centre of «Oggi» (SimpleStage), its mood from real facts (giantMood: rest, listen while typing, think while routing, work, wait, happy when work finishes, worried on error) and idle gestures now and then, never the same twice in a row, none with reduced motion."
     }
   }
 }

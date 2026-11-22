@@ -19291,4 +19291,30 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get smpTryAgain => 'Riprova';
+
+  @override
+  String smpMascotOf(String name, String state) {
+    return '$name: $state';
+  }
+
+  @override
+  String get smpMoodRest => 'qui per te';
+
+  @override
+  String get smpMoodListen => 'ti ascolta';
+
+  @override
+  String get smpMoodThink => 'ci pensa';
+
+  @override
+  String get smpMoodWork => 'al lavoro';
+
+  @override
+  String get smpMoodWait => 'ti aspetta';
+
+  @override
+  String get smpMoodHappy => 'contento, qualcosa è pronto';
+
+  @override
+  String get smpMoodWorried => 'preoccupato, qualcosa non va';
 }

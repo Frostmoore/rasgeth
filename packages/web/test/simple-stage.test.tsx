@@ -1,0 +1,242 @@
+// @vitest-environment jsdom
+// «Oggi»'s stage (3.12.1, tavole-mascotte-chat/luna.html): God's mascot, giant, above the
+// greeting; its mood follows the page's real facts (typing, routing, work, a decision waiting,
+// work finished, an error) and, still, it makes a small gesture now and then, never the same twice
+// in a row and never with reduced motion. Timers are vitest's fake ones, never real time.
+import type { TopicView } from "@redgiant/protocol";
+import { act, cleanup, fireEvent, render, waitFor } from "@testing-library/preact";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { lang } from "../src/i18n.js";
+
+const { fake } = vi.hoisted(() => ({
+  fake: { impl: {} as Record<string, (...a: never[]) => unknown> },
+}));
+vi.mock("../src/api.js", async (orig) => {
+  const real = await orig<typeof import("../src/api.js")>();
+  class Api {
+    constructor() {
+      // biome-ignore lint/correctness/noConstructorReturn: a stand-in for the whole API
+      return new Proxy(
+        {},
+        {
+          get:
+            (_t, name: string) =>
+            (...args: unknown[]) => {
+              const f = fake.impl[name] as ((...a: unknown[]) => unknown) | undefined;
+              return Promise.resolve(f ? f(...args) : []);
+            },
+        },
+      );
+    }
+  }
+  class Live {
+    send() {}
+    close() {}
+  }
+  return { ...real, Api, Live };
+});
+const state = await import("../src/state.js");
+const { SimpleApp } = await import("../src/components/Simple.js");
+const { SimpleStage } = await import("../src/components/SimpleStage.js");
+
+const topic = (id: string, o: Partial<TopicView> = {}): TopicView => ({
+  id,
+  title: id,
+  summary: null,
+  state: "ready",
+  lastAt: "2026-11-22T09:00:00.000Z",
+  personAt: "2026-11-22T09:00:00.000Z",
+  createdAt: "2026-11-22T09:00:00.000Z",
+  pinned: false,
+  archived: false,
+  unread: 0,
+  requests: 0,
+  tasks: 0,
+  projectId: null,
+  from: null,
+  ...o,
+});
+const facts = (o: Partial<import("../src/state.js").GiantFacts> = {}) => ({
+  typing: false,
+  routing: false,
+  working: false,
+  waiting: false,
+  happy: false,
+  error: false,
+  ...o,
+});
+let reduce = false;
+
+beforeAll(async () => {
+  fake.impl.setup = () => ({ config: { completed: true, ui: "simple" } });
+  await state.signIn("token").catch(() => {});
+  window.matchMedia = ((q: string) => ({
+    matches: q.includes("reduce") && reduce,
+    media: q,
+    addEventListener() {},
+    removeEventListener() {},
+    addListener() {},
+    removeListener() {},
+    onchange: null,
+    dispatchEvent: () => false,
+  })) as unknown as typeof window.matchMedia;
+});
+
+beforeEach(() => {
+  lang.value = "it";
+  reduce = false;
+  fake.impl.topics = () => ({ topics: [], archived: 0 });
+  state.agents.value = [
+    {
+      id: "god",
+      name: "God",
+      kind: "god",
+      parentId: null,
+    } as unknown as (typeof state.agents.value)[number],
+  ];
+  state.topics.value = [];
+  state.topicsLoaded.value = true;
+  state.topicsTrouble.value = null;
+  state.approvals.value = [];
+  state.questions.value = [];
+  state.lastError.value = null;
+  state.simpleTyping.value = false;
+  state.godRouting.value = false;
+  state.giantCheer.value = false;
+  state.simpleScreen.value = { kind: "today" };
+});
+afterEach(() => {
+  cleanup();
+  vi.useRealTimers();
+});
+
+const mood = (r: ReturnType<typeof render>) =>
+  r.container.querySelector(".smp-giant")?.getAttribute("data-mood");
+
+describe("the giant's mood (pure)", () => {
+  it("follows the facts, the most urgent first", () => {
+    const table: [Partial<import("../src/state.js").GiantFacts>, string][] = [
+      [{}, "rest"],
+      [{ typing: true }, "listen"],
+      [{ routing: true, typing: true }, "think"],
+      [{ working: true }, "work"],
+      [{ waiting: true, working: true }, "wait"],
+      [{ happy: true, waiting: true }, "happy"],
+      [{ error: true, routing: true, happy: true }, "worried"],
+    ];
+    for (const [f, m] of table) expect(state.giantMood(facts(f))).toBe(m);
+    expect(state.GIANT_STATE.worried).toBe("error");
+    expect(state.GIANT_STATE.rest).toBe("active");
+  });
+
+  it("never makes the same gesture twice in a row, and waits a different time", () => {
+    let last: import("../src/state.js").IdleGesture | null = null;
+    const seen = new Set<string>();
+    let x = 0.13;
+    const rand = () => {
+      x = (x * 9301 + 0.49297) % 1;
+      return x;
+    };
+    for (let i = 0; i < 200; i++) {
+      const g = state.nextGesture(last, state.IDLE_GESTURES, rand);
+      expect(g).not.toBe(last);
+      seen.add(g);
+      last = g;
+    }
+    expect(seen.size).toBe(state.IDLE_GESTURES.length);
+    expect(state.nextGesture("hop", state.IDLE_GESTURES, () => 0.999)).not.toBe("hop");
+    expect(state.gestureDelay(() => 0)).toBe(3500);
+    expect(state.gestureDelay(() => 1)).toBe(8000);
+  });
+
+  it("is happy when a topic at work becomes ready", () => {
+    expect(state.finishedWork([topic("a", { state: "working" })], [topic("a")])).toBe(true);
+    expect(state.finishedWork([topic("a", { state: "waiting" })], [topic("a")])).toBe(false);
+    expect(state.finishedWork([], [topic("a")])).toBe(false);
+  });
+});
+
+describe("«Oggi»'s stage", () => {
+  it("shows God giant above the greeting, its mood in words for screen readers", async () => {
+    const r = render(<SimpleApp />);
+    const giant = r.container.querySelector(".smp-giant");
+    expect(giant).not.toBeNull();
+    // Above the greeting.
+    const h1 = r.getByRole("heading", { level: 1 });
+    expect(giant?.compareDocumentPosition(h1) ?? 0).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(r.getByRole("img", { name: "God: qui per te" })).toBeTruthy();
+    expect(mood(r)).toBe("rest");
+  });
+
+  it("listens while the person types, then rests again", async () => {
+    vi.useFakeTimers();
+    const r = render(<SimpleApp />);
+    fireEvent.input(r.getByPlaceholderText("Chiedimi qualcosa…"), { target: { value: "Ciao" } });
+    expect(mood(r)).toBe("listen");
+    await act(() => vi.advanceTimersByTime(2600));
+    expect(mood(r)).toBe("rest");
+  });
+
+  it("thinks while God routes, works and waits as the topics say, worries on an error", async () => {
+    let answer: (v: unknown) => void = () => {};
+    fake.impl.godMessage = () => new Promise((ok) => (answer = ok));
+    const r = render(<SimpleStage />);
+    const routed = state.askGod("Un idraulico");
+    await waitFor(() => expect(mood(r)).toBe("think"));
+    answer({ sessionId: "t1", routed: { topicId: "t1", title: "Idraulico", via: "new" } });
+    await routed;
+    await waitFor(() => expect(mood(r)).not.toBe("think"));
+    act(() => {
+      state.topics.value = [topic("t1", { state: "working" })];
+    });
+    expect(mood(r)).toBe("work");
+    act(() => {
+      state.topics.value = [topic("t1", { state: "waiting" })];
+    });
+    expect(mood(r)).toBe("wait");
+    act(() => {
+      state.lastError.value = "Qualcosa non va";
+    });
+    expect(mood(r)).toBe("worried");
+    expect(r.container.querySelector(".masc.st-error")).not.toBeNull();
+  });
+
+  it("is happy for a while when work finishes", async () => {
+    vi.useFakeTimers();
+    state.topics.value = [topic("t1", { state: "working" })];
+    fake.impl.topics = () => ({ topics: [topic("t1")], archived: 0 });
+    const r = render(<SimpleStage />);
+    await act(() => state.refreshTopics());
+    expect(mood(r)).toBe("happy");
+    await act(() => vi.advanceTimersByTime(4100));
+    expect(mood(r)).toBe("rest");
+  });
+
+  it("makes a gesture now and then while still, a different one each time", async () => {
+    vi.useFakeTimers();
+    // The same draw every time: still never the same gesture twice in a row.
+    vi.spyOn(Math, "random").mockReturnValue(0.999);
+    const r = render(<SimpleStage />);
+    const seen: string[] = [];
+    for (let i = 0; i < 6; i++) {
+      await act(() => vi.advanceTimersByTime(7996));
+      const g = r.container.querySelector(".smp-giant")?.getAttribute("data-gesture");
+      expect(g).toBeTruthy();
+      if (g) seen.push(g);
+      await act(() => vi.advanceTimersByTime(900));
+      expect(r.container.querySelector(".smp-giant")?.getAttribute("data-gesture")).toBeNull();
+    }
+    vi.restoreAllMocks();
+    for (let i = 1; i < seen.length; i++) expect(seen[i]).not.toBe(seen[i - 1]);
+    // God's eyes are one drawing: it never winks.
+    expect(seen).not.toContain("wink");
+  });
+
+  it("makes no gesture with reduced motion", async () => {
+    reduce = true;
+    vi.useFakeTimers();
+    const r = render(<SimpleStage />);
+    await act(() => vi.advanceTimersByTime(60_000));
+    expect(r.container.querySelector(".smp-giant")?.getAttribute("data-gesture")).toBeNull();
+  });
+});

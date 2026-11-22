@@ -57,6 +57,7 @@ import {
   signOut,
   simpleAssistants,
   simpleScreen,
+  simpleTyping,
   TOPIC_STATE_WORDS,
   topics,
   topicsLoaded,
@@ -75,6 +76,7 @@ import { useFollow } from "./follow-hook.js";
 import { ProductCards } from "./ProductCards.js";
 import { QuestionCard } from "./QuestionCard.js";
 import { Seg, Switch } from "./SettingsKit.js";
+import { SimpleStage } from "./SimpleStage.js";
 import { Telegram } from "./Telegram.js";
 import { Modal } from "./ui.js";
 
@@ -110,12 +112,31 @@ function AskBox({
   hint,
   onSend,
   big = false,
+  listened = false,
 }: {
   hint: string;
   onSend: (text: string) => Promise<unknown>;
   big?: boolean;
+  /** The giant mascot listens while the person types here (3.12.1). */
+  listened?: boolean;
 }) {
   const [text, setText] = useState("");
+  const typing = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(
+    () => () => {
+      clearTimeout(typing.current);
+      if (listened) simpleTyping.value = false;
+    },
+    [listened],
+  );
+  const typed = (words: string) => {
+    setText(words);
+    if (!listened) return;
+    // Listening while keys come, and a moment after the last one.
+    simpleTyping.value = words.trim() !== "";
+    clearTimeout(typing.current);
+    typing.current = setTimeout(() => (simpleTyping.value = false), 2500);
+  };
   const [busy, setBusy] = useState(false);
   const area = useRef<HTMLTextAreaElement>(null);
   const send = async () => {
@@ -124,7 +145,7 @@ function AskBox({
     setBusy(true);
     const r = await onSend(words);
     setBusy(false);
-    if (r !== undefined) setText("");
+    if (r !== undefined) typed("");
     area.current?.focus();
   };
   // The box grows with what is written, up to a few lines.
@@ -142,7 +163,7 @@ function AskBox({
         value={text}
         placeholder={hint}
         aria-label={hint}
-        onInput={(e) => setText((e.target as HTMLTextAreaElement).value)}
+        onInput={(e) => typed((e.target as HTMLTextAreaElement).value)}
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
             e.preventDefault();
@@ -188,11 +209,12 @@ function Today() {
             <IconSettings size={20} />
           </button>
         </header>
+        <SimpleStage />
         <div class="smp-hero">
           <h1>{name ? t(`${key}Name`, { name }) : t(key)}</h1>
           <p>{t("smpHeroLead")}</p>
         </div>
-        <AskBox big hint={t("smpAskHint")} onSend={(text) => askGod(text)} />
+        <AskBox big listened hint={t("smpAskHint")} onSend={(text) => askGod(text)} />
         {others > 0 && (
           <button
             type="button"

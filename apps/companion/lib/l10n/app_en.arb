@@ -13328,5 +13328,23 @@
   "syUiDetails": "Details for whoever helps you",
   "smpOldServer": "This simple interface needs Rasgeth 3.12 or newer on the server, and this one is older. Ask whoever looks after it to update the server to 3.12; meanwhile the full interface works.",
   "smpTopicsFailed": "Your topics did not arrive. Try again in a moment, or use the full interface.",
-  "smpTryAgain": "Try again"
+  "smpTryAgain": "Try again",
+  "smpMascotOf": "{name}: {state}",
+  "@smpMascotOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "smpMoodRest": "here for you",
+  "smpMoodListen": "listening",
+  "smpMoodThink": "thinking",
+  "smpMoodWork": "at work",
+  "smpMoodWait": "waiting for you",
+  "smpMoodHappy": "happy, something is done",
+  "smpMoodWorried": "worried, something went wrong"
 }

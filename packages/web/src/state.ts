@@ -2905,6 +2905,7 @@ export const topicsTrouble = signal<"old" | "failed" | null>(null);
 export async function refreshTopics(): Promise<void> {
   try {
     const list = await getApi().topics();
+    if (topicsLoaded.value && finishedWork(topics.value, list.topics)) cheerGiant();
     topics.value = list.topics;
     archivedCount.value = list.archived;
     topicsLoaded.value = true;
@@ -3046,7 +3047,10 @@ export async function askGod(
 ): Promise<{ sessionId: string; routed: TopicRouted } | undefined> {
   const words = text.trim();
   if (!words) return undefined;
-  const r = await attempt(() => getApi().godMessage({ text: words, ...o }));
+  godRouting.value = true;
+  const r = await attempt(() => getApi().godMessage({ text: words, ...o })).finally(() => {
+    godRouting.value = false;
+  });
   if (!r) return undefined;
   lastRouted.value = { ...lastRouted.value, [r.sessionId]: r.routed };
   if (o.topicId === undefined) openTopic(r.sessionId, r.routed.title);
@@ -3085,4 +3089,111 @@ export async function restoreTopic(id: string, title: string): Promise<void> {
   archivedTopics.value = archivedTopics.value.filter((x) => x.id !== id);
   await refreshTopics().catch(() => {});
   openTopic(id, title);
+}
+
+// ---------- God's giant mascot on «Oggi» (3.12.1, tavole-mascotte-chat/luna.html) ----------
+//
+// Its mood follows what really happens: resting, listening while the person types, thinking while
+// God routes a message, working while agents work, waiting for a decision of the person, happy
+// when a piece of work finishes, worried on an error. Still, it makes a small gesture now and then.
+
+export type GiantMood = "rest" | "listen" | "think" | "work" | "wait" | "happy" | "worried";
+
+/** What the giant's mood is made of, each a real fact of the page. */
+export interface GiantFacts {
+  /** The person is writing in the box. */
+  typing: boolean;
+  /** A message to God is being routed (`askGod` in flight). */
+  routing: boolean;
+  /** A topic or God is at work. */
+  working: boolean;
+  /** A request or a question waits for the person, or a topic does. */
+  waiting: boolean;
+  /** A piece of work just finished (a few seconds). */
+  happy: boolean;
+  /** An error is shown, or the topics did not come. */
+  error: boolean;
+}
+
+/** The mood from the facts, the most urgent first. Pure. */
+export function giantMood(f: GiantFacts): GiantMood {
+  if (f.error) return "worried";
+  if (f.routing) return "think";
+  if (f.typing) return "listen";
+  if (f.happy) return "happy";
+  if (f.waiting) return "wait";
+  if (f.working) return "work";
+  return "rest";
+}
+
+/** The drawing's state for each mood (the page adds the mood's own movement on top). */
+export const GIANT_STATE: Record<GiantMood, import("@redgiant/protocol").MascotState> = {
+  rest: "active",
+  listen: "active",
+  think: "think",
+  work: "work",
+  wait: "wait",
+  happy: "active",
+  worried: "error",
+};
+
+/** The small gestures of a still mascot. */
+export type IdleGesture = "look-l" | "look-r" | "hop" | "wiggle" | "wink" | "nod";
+export const IDLE_GESTURES: readonly IdleGesture[] = [
+  "look-l",
+  "look-r",
+  "hop",
+  "wiggle",
+  "wink",
+  "nod",
+];
+
+/** The next gesture: any of [from] but the last one, so never the same twice in a row. Pure. */
+export function nextGesture(
+  last: IdleGesture | null,
+  from: readonly IdleGesture[],
+  rand: () => number,
+): IdleGesture {
+  const pool = from.filter((g) => g !== last);
+  const list = pool.length > 0 ? pool : from;
+  return list[Math.min(list.length - 1, Math.floor(rand() * list.length))] as IdleGesture;
+}
+
+/** How long a still mascot waits before its next gesture: 3.5 to 8 s, never a fixed beat. Pure. */
+export function gestureDelay(rand: () => number): number {
+  return Math.round(3500 + rand() * 4500);
+}
+
+/** How long a gesture lasts, in ms. */
+export const GESTURE_MS: Record<IdleGesture, number> = {
+  "look-l": 1600,
+  "look-r": 1600,
+  hop: 800,
+  wiggle: 900,
+  wink: 700,
+  nod: 900,
+};
+
+/** The person is writing in the simple interface's box (the giant listens). */
+export const simpleTyping = signal(false);
+/** A message to God is being routed (the giant thinks). */
+export const godRouting = signal(false);
+/** A piece of work just finished (the giant is happy for a few seconds). */
+export const giantCheer = signal(false);
+
+let cheerTimer: ReturnType<typeof setTimeout> | undefined;
+/** The giant is happy for [ms]. */
+export function cheerGiant(ms = 4000): void {
+  giantCheer.value = true;
+  if (cheerTimer) clearTimeout(cheerTimer);
+  cheerTimer = setTimeout(() => {
+    cheerTimer = undefined;
+    giantCheer.value = false;
+  }, ms);
+}
+
+/** Whether a topic that was at work is now ready (a piece of work finished). Pure. */
+export function finishedWork(before: readonly TopicView[], after: readonly TopicView[]): boolean {
+  const was = new Map(before.map((x) => [x.id, x.state]));
+  return after.some((x) => x.state === "ready" && was.get(x.id) === "working");
 }

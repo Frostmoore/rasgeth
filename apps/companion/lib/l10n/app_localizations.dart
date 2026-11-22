@@ -33212,6 +33212,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try again'**
   String get smpTryAgain;
+
+  /// No description provided for @smpMascotOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: {state}'**
+  String smpMascotOf(String name, String state);
+
+  /// No description provided for @smpMoodRest.
+  ///
+  /// In en, this message translates to:
+  /// **'here for you'**
+  String get smpMoodRest;
+
+  /// No description provided for @smpMoodListen.
+  ///
+  /// In en, this message translates to:
+  /// **'listening'**
+  String get smpMoodListen;
+
+  /// No description provided for @smpMoodThink.
+  ///
+  /// In en, this message translates to:
+  /// **'thinking'**
+  String get smpMoodThink;
+
+  /// No description provided for @smpMoodWork.
+  ///
+  /// In en, this message translates to:
+  /// **'at work'**
+  String get smpMoodWork;
+
+  /// No description provided for @smpMoodWait.
+  ///
+  /// In en, this message translates to:
+  /// **'waiting for you'**
+  String get smpMoodWait;
+
+  /// No description provided for @smpMoodHappy.
+  ///
+  /// In en, this message translates to:
+  /// **'happy, something is done'**
+  String get smpMoodHappy;
+
+  /// No description provided for @smpMoodWorried.
+  ///
+  /// In en, this message translates to:
+  /// **'worried, something went wrong'**
+  String get smpMoodWorried;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -27,6 +27,7 @@ import '../ui/model_sheet.dart' show ChoiceRow;
 import '../ui/product_cards.dart';
 import '../ui/rg_menu.dart';
 import '../screens/new_agent_screen.dart' show RgSwitch;
+import 'simple_giant.dart';
 import 'simple_model.dart';
 
 /// The widest the screens grow (the board's `.wrap`): wider windows keep it in the middle.
@@ -92,11 +93,20 @@ class _Column extends StatelessWidget {
 
 /// The big box: one place to write to God.
 class AskBox extends StatefulWidget {
-  const AskBox({super.key, required this.hint, required this.onSend, this.big = false});
+  const AskBox({
+    super.key,
+    required this.hint,
+    required this.onSend,
+    this.big = false,
+    this.onTyping,
+  });
 
   final String hint;
   final Future<bool> Function(String text) onSend;
   final bool big;
+
+  /// What is written, as it changes (3.12.1: the giant mascot listens).
+  final void Function(String text)? onTyping;
 
   @override
   State<AskBox> createState() => _AskBoxState();
@@ -119,7 +129,10 @@ class _AskBoxState extends State<AskBox> {
     final ok = await widget.onSend(words);
     if (!mounted) return;
     setState(() => _busy = false);
-    if (ok) _text.clear();
+    if (ok) {
+      _text.clear();
+      widget.onTyping?.call('');
+    }
   }
 
   @override
@@ -151,6 +164,7 @@ class _AskBoxState extends State<AskBox> {
               maxLines: 6,
               textInputAction: TextInputAction.send,
               onSubmitted: (_) => unawaited(_send()),
+              onChanged: widget.onTyping,
               style: TextStyle(fontSize: 16.5, color: c.text, height: 1.4),
               decoration: InputDecoration(
                 hintText: widget.hint,
@@ -305,14 +319,16 @@ class _TodayScreenState extends State<TodayScreen> {
                           ],
                         ),
                       ),
+                      // 3.12.1: God giant at the centre, above the greeting.
+                      const SimpleStage(),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               _greeting(l, app.personName.trim()),
                               key: const Key('simple-greeting'),
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.w700,
@@ -321,13 +337,18 @@ class _TodayScreenState extends State<TodayScreen> {
                               ),
                             ),
                             const SizedBox(height: 6),
-                            Text(l.smpHeroLead, style: TextStyle(fontSize: 15.5, color: c.dim)),
+                            Text(
+                              l.smpHeroLead,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 15.5, color: c.dim),
+                            ),
                           ],
                         ),
                       ),
                       AskBox(
                         big: true,
                         hint: l.smpAskHint,
+                        onTyping: s.typed,
                         onSend: (text) async {
                           final r = await s.ask(text);
                           if (r == null || !context.mounted) return false;
