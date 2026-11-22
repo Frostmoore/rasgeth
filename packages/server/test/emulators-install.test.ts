@@ -6,7 +6,7 @@
 import { createHash } from "node:crypto";
 import { mkdir, mkdtemp, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, sep } from "node:path";
 import type { EmuInstallPlan, EmulatorReport, Job } from "@redgiant/protocol";
 import { zipSync } from "fflate";
 import { afterEach, describe, expect, it } from "vitest";
@@ -762,9 +762,9 @@ describe("the install runs only with the person's yes", () => {
     expect(
       files
         .filter((f) => !inside(s.target, f) && !inside(s.avdHome, f))
-        .map((f) => f.slice(s.root.length)),
+        .map((f) => f.slice(s.root.length).split(sep).join("/")),
     ).toEqual(["/elsewhere/keep.txt"]);
-    expect(await findCmdline("linux", s.target)).toBe(join(s.target, "cmdline-tools", "latest"));
+    expect(await findCmdline(HOST_OS, s.target)).toBe(join(s.target, "cmdline-tools", "latest"));
     expect(
       (await stat(join(s.target, "cmdline-tools", "latest", "bin", "sdkmanager"))).mode & 0o111,
     ).toBeTruthy();
@@ -824,7 +824,7 @@ describe("the install runs only with the person's yes", () => {
       fetch: (async (url: string | URL) => {
         const u = String(url);
         if (REPOSITORY_LISTS.includes(u as never))
-          return new Response(XML.replace(/windows/g, "linux"));
+          return new Response(XML.replace(/windows/g, HOST_OS));
         return new Response(
           chunked(zip, 8, () => {
             clock += 1000;
@@ -909,7 +909,7 @@ describe("over HTTP", () => {
           fetch: (async (url: string | URL) => {
             const u = String(url);
             if (REPOSITORY_LISTS.includes(u as never))
-              return new Response(XML.replace(/windows/g, "linux"));
+              return new Response(XML.replace(/windows/g, HOST_OS));
             return new Response(tools.zip);
           }) as typeof fetch,
           launch: fakeTools({ root: s0.root, runs: s0.runs }),
