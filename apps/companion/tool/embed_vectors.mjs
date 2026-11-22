@@ -24,6 +24,8 @@ const params = [
   { ...base, embed: "board", board: "s_1.0123456789ab" },
   { ...base, embed: "board", board: "s_1.0123456789ab", variant: 3, screen: "tablet" },
   { ...base, embed: "probe", font: "Inter, sans-serif" },
+  // 3.10.4: the app's accent colour.
+  { ...base, embed: "canvas", scope: "p1", path: "a.md", accent: "blue" },
   { ...base, token: "a~b!c'(d)*e", embed: "probe" },
 ];
 const badHashes = [
@@ -43,6 +45,7 @@ const badHashes = [
   "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&scope=p&theme=dark&lang=it",
   "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it&font=a%7Bb",
   "token=a+b&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it",
+  "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it&accent=pink",
   "token=x&embed=board&bridge=n0nce-n0nce_n0nce&board=s.0123456789ab&variant=9&theme=dark&lang=it",
   "token=x&embed=board&bridge=n0nce-n0nce_n0nce&board=s.0123456789ab&variant=0&theme=dark&lang=it",
   "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&variant=1&theme=dark&lang=it",
@@ -148,6 +151,7 @@ const envelopes = [
 const appMessages = [
   { t: "theme", theme: "light" },
   { t: "lang", lang: "en" },
+  { t: "accent", accent: "violet" },
   { t: "font", family: "Inter, sans-serif" },
   { t: "back" },
   { t: "key", key: "save" },
@@ -195,6 +199,7 @@ const badAppMessages = [
   { t: "drop", scope: "p", path: "a.mp4", x: 0 },
   { t: "drop", scope: "p", path: "a.mp4", x: 0, y: 0, files: [] },
   { t: "key", key: "j" },
+  { t: "accent", accent: "pink" },
 ];
 for (const m of badAppMessages) if (p.readAppMessage({ rg: "app", m })) throw new Error(`taken: ${JSON.stringify(m)}`);
 

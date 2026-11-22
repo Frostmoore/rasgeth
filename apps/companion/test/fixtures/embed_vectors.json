@@ -90,6 +90,19 @@
     },
     {
       "params": {
+        "token": "rgd_abc123",
+        "bridge": "n0nce-n0nce_n0nce",
+        "theme": "dark",
+        "lang": "it",
+        "embed": "canvas",
+        "scope": "p1",
+        "path": "a.md",
+        "accent": "blue"
+      },
+      "hash": "token=rgd_abc123&embed=canvas&bridge=n0nce-n0nce_n0nce&scope=p1&path=a.md&theme=dark&lang=it&accent=blue"
+    },
+    {
+      "params": {
         "token": "a~b!c'(d)*e",
         "bridge": "n0nce-n0nce_n0nce",
         "theme": "dark",
@@ -116,6 +129,7 @@
     "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&scope=p&theme=dark&lang=it",
     "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it&font=a%7Bb",
     "token=a+b&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it",
+    "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&theme=dark&lang=it&accent=pink",
     "token=x&embed=board&bridge=n0nce-n0nce_n0nce&board=s.0123456789ab&variant=9&theme=dark&lang=it",
     "token=x&embed=board&bridge=n0nce-n0nce_n0nce&board=s.0123456789ab&variant=0&theme=dark&lang=it",
     "token=x&embed=probe&bridge=n0nce-n0nce_n0nce&variant=1&theme=dark&lang=it",
@@ -595,6 +609,10 @@
       "lang": "en"
     },
     {
+      "t": "accent",
+      "accent": "violet"
+    },
+    {
       "t": "font",
       "family": "Inter, sans-serif"
     },
@@ -938,6 +956,10 @@
     {
       "t": "key",
       "key": "j"
+    },
+    {
+      "t": "accent",
+      "accent": "pink"
     }
   ],
   "boardScreens": {

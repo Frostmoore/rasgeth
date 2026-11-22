@@ -28,6 +28,7 @@ void main() {
     variant: j['variant'] as int?,
     screen: j['screen'] as String?,
     font: j['font'] as String?,
+    accent: j['accent'] as String?,
   );
 
   test('the page\'s encoding, byte for byte', () {

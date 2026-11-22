@@ -1,16 +1,12 @@
 import { signal } from "@preact/signals";
+import { ACCENTS, type Accent, isAccent } from "@redgiant/protocol";
 
 /**
  * The accent colour (3.10.4), chosen in Settings > General next to the theme: Rasgeth's red (the
  * default) or one of four others. Kept per device like the theme (`rg.accent`); the shades for
  * each theme live in styles.css (`html[data-accent=…]`), mirrored in the app's `RgAccent`.
  */
-export const ACCENTS = ["red", "amber", "green", "blue", "violet"] as const;
-export type Accent = (typeof ACCENTS)[number];
-
-export function isAccent(v: unknown): v is Accent {
-  return typeof v === "string" && (ACCENTS as readonly string[]).includes(v);
-}
+export { ACCENTS, type Accent };
 
 const saved = typeof localStorage !== "undefined" ? localStorage.getItem("rg.accent") : null;
 export const accent = signal<Accent>(isAccent(saved) ? saved : "red");

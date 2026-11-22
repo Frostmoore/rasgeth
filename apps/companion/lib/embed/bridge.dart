@@ -4,6 +4,8 @@
 // `packages/protocol/src/embed.ts`, checked against `test/fixtures/embed_vectors.json`.
 import 'dart:convert';
 
+import 'embed_link.dart' show embedAccents;
+
 /// Files one message carries, and the biggest one (`EMBED_FILES_MAX`, `EMBED_FILE_MAX`).
 const embedFilesMax = 20;
 const embedFileMax = 25 * 1024 * 1024;
@@ -219,6 +221,7 @@ bool appToEmbedOk(Map<String, Object?> m) {
   return switch (m['t']) {
     'theme' => _only(m, {'t', 'theme'}) && const ['light', 'dark'].contains(m['theme']),
     'lang' => _only(m, {'t', 'lang'}) && const ['it', 'en'].contains(m['lang']),
+    'accent' => _only(m, {'t', 'accent'}) && embedAccents.contains(m['accent']),
     'font' =>
       _only(m, {'t', 'family'}) &&
           _str(m['family'], min: 1, max: 200) &&
@@ -442,6 +445,7 @@ class EmbedBridge {
   Future<void> theme({required bool dark}) =>
       send({'t': 'theme', 'theme': dark ? 'dark' : 'light'});
   Future<void> lang(String lang) => send({'t': 'lang', 'lang': lang});
+  Future<void> accent(String accent) => send({'t': 'accent', 'accent': accent});
   Future<void> font(String family) => send({'t': 'font', 'family': family});
   Future<void> back() => send({'t': 'back'});
   Future<void> key(EmbedKey k) => send({'t': 'key', 'key': k.name});

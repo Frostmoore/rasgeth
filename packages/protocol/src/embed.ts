@@ -10,7 +10,9 @@
 // can speak for it. The app answers by posting `{ rg: "app", m }` to the page's own window.
 // The app mirrors these rules in Dart (lib/embed/), checked against vectors made from here
 // (apps/companion/tool/embed_vectors.mjs).
+
 import { z } from "zod";
+import { ACCENTS } from "./accent.js";
 import { CanvasTargetSchema } from "./canvas.js";
 
 /** What an embed shows. */
@@ -42,6 +44,7 @@ export const EMBED_HASH_ORDER = [
   "theme",
   "lang",
   "font",
+  "accent",
 ] as const;
 
 /**
@@ -94,6 +97,8 @@ export const EmbedParams = z
       .max(200)
       .regex(/^[^;{}<>]+$/)
       .optional(),
+    /** The accent colour the person chose in the app (3.10.4); none: Rasgeth's red. */
+    accent: z.enum(ACCENTS).optional(),
   })
   .strict()
   .superRefine((p, ctx) => {
@@ -398,6 +403,8 @@ export const EMBED_TIMELINE_KEYS: readonly EmbedKey[] = [
 export const AppToEmbed = z.discriminatedUnion("t", [
   z.object({ t: z.literal("theme"), theme: z.enum(["light", "dark"]) }).strict(),
   z.object({ t: z.literal("lang"), lang: z.enum(["it", "en"]) }).strict(),
+  /** The accent colour changed in the app (3.10.4). */
+  z.object({ t: z.literal("accent"), accent: z.enum(ACCENTS) }).strict(),
   z
     .object({
       t: z.literal("font"),

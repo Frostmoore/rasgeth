@@ -29,6 +29,7 @@ const embedHashOrder = [
   'theme',
   'lang',
   'font',
+  'accent',
 ];
 
 /// The real screens a board's variants are drawn at (`BOARD_SCREENS`), width × height.
@@ -40,6 +41,9 @@ const boardScreens = <String, ({int width, int height})>{
 
 /// The most variants a board has (`BOARD_VARIANTS_MAX`).
 const boardVariantsMax = 8;
+
+/// The accents the page knows (`ACCENTS`, protocol).
+const embedAccents = ['red', 'amber', 'green', 'blue', 'violet'];
 
 final _nonce = RegExp(r'^[A-Za-z0-9_-]{16,64}$');
 final _board = RegExp(r'^[\w-]+\.[0-9a-f]{12}$');
@@ -65,6 +69,7 @@ class EmbedParams {
     this.variant,
     this.screen,
     this.font,
+    this.accent,
   });
 
   final String token;
@@ -94,6 +99,9 @@ class EmbedParams {
   final String? screen;
   final String? font;
 
+  /// The accent colour chosen in the app (3.10.4, `RgAccent`'s name); null: Rasgeth's red.
+  final String? accent;
+
   Map<String, Object> toJson() => {
     'token': token,
     'embed': embed.name,
@@ -111,6 +119,7 @@ class EmbedParams {
     'theme': theme,
     'lang': lang,
     'font': ?font,
+    'accent': ?accent,
   };
 
   /// Null when it breaks one of the page's rules (`EmbedParams` in the protocol).
@@ -132,6 +141,7 @@ class EmbedParams {
     if (font != null && (font!.isEmpty || font!.length > 200 || !_font.hasMatch(font!))) {
       return 'font';
     }
+    if (accent != null && !embedAccents.contains(accent)) return 'accent';
     switch (embed) {
       case EmbedKind.canvas:
         if (scope == null || path == null) return 'canvas';
@@ -253,6 +263,7 @@ EmbedParams? parseEmbedHash(String hash) {
     variant: n('variant'),
     screen: raw['screen'],
     font: raw['font'],
+    accent: raw['accent'],
   );
   return p.problem == null ? p : null;
 }

@@ -166,7 +166,8 @@ class EmbedViewState extends State<EmbedView> {
     }
     final dark = Theme.of(context).brightness == Brightness.dark;
     final lang = Localizations.localeOf(context).languageCode == 'it' ? 'it' : 'en';
-    final look = '$dark/$lang';
+    final accent = AppScope.maybeRead(context)?.accent.name ?? 'red';
+    final look = '$dark/$lang/$accent';
     if (look != _look) {
       final first = _look.isEmpty;
       _look = look;
@@ -174,6 +175,7 @@ class EmbedViewState extends State<EmbedView> {
       if (!first && b != null && _ready) {
         unawaited(b.theme(dark: dark).catchError((Object _) {}));
         unawaited(b.lang(lang).catchError((Object _) {}));
+        unawaited(b.accent(accent).catchError((Object _) {}));
       }
     }
   }

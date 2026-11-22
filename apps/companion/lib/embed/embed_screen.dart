@@ -24,6 +24,7 @@ class EmbedContext {
     required this.token,
     required this.theme,
     required this.lang,
+    this.accent,
     this.leaf,
   });
 
@@ -31,6 +32,9 @@ class EmbedContext {
   final String token;
   final String theme;
   final String lang;
+
+  /// The chosen accent's name (3.10.4); null: Rasgeth's red.
+  final String? accent;
   final Uint8List? leaf;
 }
 
@@ -49,6 +53,7 @@ Future<EmbedContext?> embedContextOf(BuildContext context) async {
     token: token,
     theme: dark ? 'dark' : 'light',
     lang: lang,
+    accent: app.accent == RgAccent.red ? null : app.accent.name,
     leaf: leaf,
   );
 }
@@ -232,6 +237,7 @@ Future<void> openEmbedProbe(BuildContext context) => openEmbed(
     embed: EmbedKind.probe,
     bridge: nonce,
     theme: e.theme,
+    accent: e.accent,
     lang: e.lang,
   ),
 );
@@ -260,6 +266,7 @@ Future<void> openPortPreview(
       embed: EmbedKind.port,
       bridge: nonce,
       theme: e.theme,
+      accent: e.accent,
       lang: e.lang,
       agent: agentId,
       port: port,

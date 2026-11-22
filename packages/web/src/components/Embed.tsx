@@ -2,7 +2,7 @@
 // frame around it is the app's). Signed in with the device's token from the fragment, kept in
 // memory only; theme, language and font are the app's and are not saved. Its own live connection,
 // so collaboration, the agent's marks, proposals and `canvas.query`/`canvas.act` work as in the page.
-import type { AppToEmbed, EmbedParams } from "@redgiant/protocol";
+import type { Accent, AppToEmbed, EmbedParams } from "@redgiant/protocol";
 import { lazy, Suspense } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
 import { handleAppInput, installEmbedWays, onApp, toApp } from "../embed.js";
@@ -45,8 +45,16 @@ export function listenEmbedPreviewLinks(): () => void {
   };
 }
 
-/** The app's look, applied without touching the page's own choices (`rg.theme`, `rg.lang`). */
-export function applyEmbedLook(o: { theme?: "light" | "dark"; lang?: "it" | "en"; font?: string }) {
+/**
+ * The app's look, applied without touching the page's own choices (`rg.theme`, `rg.lang`,
+ * `rg.accent`).
+ */
+export function applyEmbedLook(o: {
+  theme?: "light" | "dark";
+  lang?: "it" | "en";
+  font?: string;
+  accent?: Accent;
+}) {
   if (o.theme) {
     document.documentElement.dataset.theme = o.theme;
     // The page's own signal too (never saved): the sheet editor and others follow it (G42.8).
@@ -57,6 +65,11 @@ export function applyEmbedLook(o: { theme?: "light" | "dark"; lang?: "it" | "en"
     document.documentElement.lang = o.lang;
   }
   if (o.font) document.body.style.fontFamily = o.font;
+  // The app's accent (3.10.4), never saved: red is `:root`'s own.
+  if (o.accent) {
+    if (o.accent === "red") delete document.documentElement.dataset.accent;
+    else document.documentElement.dataset.accent = o.accent;
+  }
 }
 
 /**
@@ -126,6 +139,7 @@ export function EmbedRoot({ params }: { params: EmbedParams }) {
       if (m.t === "theme") applyEmbedLook({ theme: m.theme });
       else if (m.t === "lang") applyEmbedLook({ lang: m.lang });
       else if (m.t === "font") applyEmbedLook({ font: m.family });
+      else if (m.t === "accent") applyEmbedLook({ accent: m.accent });
       else if (m.t === "back") toApp({ t: "back", handled: embedBack() });
       else handleAppInput(m);
     });

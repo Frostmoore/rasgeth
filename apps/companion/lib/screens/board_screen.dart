@@ -135,6 +135,7 @@ class _BoardScreenState extends State<BoardScreen> {
         embed: EmbedKind.board,
         bridge: _nonces.putIfAbsent('$n/$screen', newEmbedNonce),
         theme: e.theme,
+        accent: e.accent,
         lang: e.lang,
         board: '${widget.sessionId}.${widget.proposalId}',
         variant: n,

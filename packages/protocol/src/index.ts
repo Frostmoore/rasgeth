@@ -1,3 +1,4 @@
+export * from "./accent.js";
 export * from "./acp.js";
 export * from "./agents.js";
 export * from "./artifact.js";
