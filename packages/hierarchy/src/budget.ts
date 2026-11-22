@@ -64,6 +64,26 @@ export class PersistentBudget {
     }));
   }
 
+  private readonly spendListeners = new Set<
+    (
+      at: { ownerId: string; projectId: string | null; agentId: string | null },
+      budgets: { key: BudgetKey; limit: BudgetLimit; used: Spend }[],
+    ) => void
+  >();
+  /**
+   * After each recorded spend (3.12, the person's rules on budgets): the keys that have a limit,
+   * with what they used now. A listener that throws is ignored.
+   */
+  onRecorded(
+    listener: (
+      at: { ownerId: string; projectId: string | null; agentId: string | null },
+      budgets: { key: BudgetKey; limit: BudgetLimit; used: Spend }[],
+    ) => void,
+  ): () => void {
+    this.spendListeners.add(listener);
+    return () => this.spendListeners.delete(listener);
+  }
+
   /** Every counter of an owner: its global key, its projects and its agents. */
   async listFor(
     ownerId: string,
@@ -151,6 +171,28 @@ export class PersistentBudget {
       );
     }
     const after = await this.check(keys);
+    if (this.spendListeners.size) {
+      const now: { key: BudgetKey; limit: BudgetLimit; used: Spend }[] = [];
+      for (const key of keys) {
+        const [r] = await this.db.query<Row>(
+          "SELECT * FROM rg_budgets WHERE scope = $1 AND key = $2",
+          [key.scope, key.id],
+        );
+        if (!r || (r.limit_usd === null && r.limit_tok === null)) continue;
+        now.push({
+          key,
+          limit: {
+            ...(r.limit_usd !== null && { usd: r.limit_usd }),
+            ...(r.limit_tok !== null && { tokens: Number(r.limit_tok) }),
+          },
+          used: { usd: r.spent_usd, tokens: Number(r.spent_tok) },
+        });
+      }
+      for (const l of this.spendListeners)
+        try {
+          l(at, now);
+        } catch {}
+    }
     for (const b of after) {
       if (before.has(`${b.key.scope}:${b.key.id}`)) continue;
       // An artifact's cap (3.6) is said to the artifact itself, not logged as a budget's.

@@ -24729,3 +24729,203 @@ button.smp-row {
 fieldset.smp-decide {
   min-width: 0;
 }
+
+/* ---------- Settings > Rules (3.12, the person's rules) ---------- */
+.rl-start {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 8px 0 4px;
+}
+.rl-magic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+.rl-magic-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.rl-magic-item small {
+  margin-left: auto;
+  color: var(--dim);
+}
+.rl-hold {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  margin: 10px 0;
+  border-radius: 14px;
+  border: 1px solid var(--err);
+  background: color-mix(in srgb, var(--err) 8%, var(--panel));
+}
+.rl-hold > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.rl-hold small {
+  color: var(--dim);
+}
+.rl-hold-ico {
+  color: var(--err);
+  display: flex;
+}
+.rl-card {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+.rl-card.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.rl-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.rl-card-ico {
+  display: flex;
+  color: var(--accent);
+}
+.rl-card-title {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.rl-card-title small {
+  color: var(--dim);
+}
+.rl-card-words {
+  margin: 8px 0 0;
+}
+.rl-lines {
+  margin-top: 6px;
+}
+.rl-lines p {
+  margin: 2px 0;
+  color: var(--dim);
+}
+.rl-card-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.rl-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rl-part {
+  margin: 14px 0 2px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.rl-part-tag {
+  color: var(--accent);
+  font-weight: 800;
+  margin-right: 4px;
+}
+.rl-row2 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 10px;
+}
+.rl-cond {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) minmax(120px, 1fr) minmax(120px, 1.2fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+.rl-act {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--panel-2);
+}
+.rl-act-head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.rl-act-head > :first-child {
+  flex: 1;
+}
+.rl-examples {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.rl-example {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.rl-verdict.ok {
+  color: var(--ok);
+  font-weight: 700;
+}
+.rl-verdict.bad {
+  color: var(--err);
+  font-weight: 700;
+}
+.rl-history {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rl-history li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: baseline;
+}
+.rl-history small {
+  flex-basis: 100%;
+  color: var(--dim);
+}
+.rl-h-when {
+  color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 700px) {
+  .rl-cond,
+  .rl-examples,
+  .rl-row2 {
+    grid-template-columns: 1fr;
+  }
+}
+/* The wizard's look centres text: a rule's card, a stop, the history and the editor read left. */
+.rl-card,
+.rl-hold,
+.rl-history,
+.rl-editor,
+.rl-magic-list {
+  text-align: left;
+}
+.rl-card-head .wz-switch {
+  flex: none;
+}

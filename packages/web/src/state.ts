@@ -986,6 +986,9 @@ export function applyMessage(m: ServerMessage): void {
     case "automations.changed":
       automationsVersion.value++;
       return;
+    case "rules.changed":
+      rulesVersion.value++;
+      return;
     case "automation.notice":
       if (!notices.value.some((n) => n.runId === m.runId)) {
         notices.value = [
@@ -1081,6 +1084,8 @@ export const lastError = signal<string | null>(null);
 export const boardVersion = signal(0);
 /** Bumped when an automation is edited or one of its runs starts or ends. */
 export const automationsVersion = signal(0);
+/** Grows when the server says the person's rules changed (3.12, `rules.changed`). */
+export const rulesVersion = signal(0);
 /** Group chats (G24.12) and a counter that moves when any of them changes. */
 export const rooms = signal<Room[]>([]);
 /** Every project's subprojects (G24.13). */
@@ -1317,6 +1322,8 @@ export type SideView =
 
 export type SettingsSection =
   | "general"
+  /** The person's own rules (3.12): when, if, then. */
+  | "rules"
   /** The machine, the role, storage and backups, SSH (G39.3). */
   | "system"
   | "setup"

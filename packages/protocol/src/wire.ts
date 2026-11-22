@@ -415,6 +415,8 @@ export const ServerMessage = z.discriminatedUnion("type", [
   }),
   /** An automation was edited or one of its runs started or ended: clients reload the list. */
   z.object({ type: z.literal("automations.changed"), automationId: z.string() }),
+  /** The person's rules changed (3.12): saved, switched, acted, a stop put or lifted, a magic rule. */
+  z.object({ type: z.literal("rules.changed") }),
   /** An automation's message for the web page (`notify.to: [web]`). */
   z.object({
     type: z.literal("automation.notice"),

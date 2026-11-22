@@ -11,7 +11,12 @@ import { Readable, Writable } from "node:stream";
 import * as acp from "@agentclientprotocol/sdk";
 import type { AcpProcess, AcpWorkerHost } from "@redgiant/acp";
 import type { SqlClient } from "@redgiant/events";
-import type { AgentRecord, PermissionBroker } from "@redgiant/hierarchy";
+import {
+  type AgentRecord,
+  checkWithRules,
+  type PermissionBroker,
+  type SessionRules,
+} from "@redgiant/hierarchy";
 import { type AcpWorkerConfig, AcpWorkers, acpEnvProblem, PRODUCT_NAME } from "@redgiant/protocol";
 import { LocalWorkspace, type SpawnedProcess, type Workspace } from "@redgiant/tools";
 import { OwnerSettings } from "./person-requests.js";
@@ -102,6 +107,8 @@ export function acpWorkerHost(o: {
   agent: AgentRecord;
   sessionId: string;
   broker: PermissionBroker;
+  /** The person's rules (3.12): the agent's own permission requests go through them too. */
+  rules?: SessionRules;
   config: () => AcpWorkerConfig;
   log?: (line: string) => void;
 }): AcpWorkerHost {
@@ -110,7 +117,10 @@ export function acpWorkerHost(o: {
     readText: (rel) => o.ws.readText(rel),
     writeText: (rel, content) => o.ws.writeText(rel, content),
     permit: (call, { ask, signal }) =>
-      o.broker.check(o.agent, call, o.sessionId, { ask, ...(signal && { signal }) }),
+      checkWithRules(o.broker, o.agent, call, o.sessionId, o.rules, {
+        ask,
+        ...(signal && { signal }),
+      }),
     run: async (file, args, { cwd, env, signal, onOutput }) => {
       const r = await o.ws.execFile(file, args, {
         timeoutMs: Number.POSITIVE_INFINITY,

@@ -82,6 +82,10 @@ export class PermissionBroker {
        * classifier). A rule's no still stands.
        */
       ask?: boolean;
+      /** Why it asks, when `ask` comes from somewhere else than the agent (a person's rule). */
+      askReason?: string;
+      /** Only the person (or their classifier) answers, never a parent agent (a person's rule). */
+      personOnly?: boolean;
       /** Stops waiting (the turn was cancelled): a no. */
       signal?: AbortSignal;
     } = {},
@@ -90,7 +94,11 @@ export class PermissionBroker {
     const evaluated = evaluate(this.o.modeFor(agent), call, settings);
     const ev =
       o.ask && evaluated.decision === "allow"
-        ? { ...evaluated, decision: "ask" as const, reasons: ["the agent asks before doing this"] }
+        ? {
+            ...evaluated,
+            decision: "ask" as const,
+            reasons: [o.askReason ?? "the agent asks before doing this"],
+          }
         : evaluated;
     if (ev.decision === "allow") return { allow: true };
     if (o.signal?.aborted) return { allow: false, reason: "the turn was stopped" };
@@ -127,6 +135,7 @@ export class PermissionBroker {
     };
     // Parent agents never decide a danger the person kept for themself, nor a truly dangerous one.
     const humanOnly =
+      o.personOnly === true ||
       ev.critical.length > 0 ||
       ev.danger.some((d) => settings.humanOnly.includes(d) || ALWAYS_HUMAN.includes(d));
     for (const approver of approvalChain(agent, this.o.resolve)) {

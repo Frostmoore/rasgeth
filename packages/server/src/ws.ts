@@ -125,6 +125,7 @@ export function attachWebSocket(
     let offAutomations: (() => void) | undefined;
     let offNotices: (() => void) | undefined;
     let offPlatform: (() => void) | undefined;
+    let offRules: (() => void) | undefined;
     let offRooms: (() => void) | undefined;
     let offCanvas: (() => void) | undefined;
     let offActivity: (() => void) | undefined;
@@ -267,6 +268,11 @@ export function attachWebSocket(
             return true;
           });
           offPlatform = core.changes.onChange(onPlatform);
+          // The person's rules (3.12): pages and apps read them again at once.
+          offRules = core.rules.onChange((ownerId) => {
+            if (principal?.ownerId === ownerId && ws.readyState === ws.OPEN)
+              send({ type: "rules.changed" });
+          });
           offRooms = core.rooms.onChange(onRoom);
           // The canvas is asked for only when an agent looks (G36.12). A page (not the CLI nor a
           // gateway) is named: a question waiting reaches it when it comes back (p3.5.6).
@@ -690,6 +696,7 @@ export function attachWebSocket(
       offAutomations?.();
       offNotices?.();
       offPlatform?.();
+      offRules?.();
       offRooms?.();
       offCanvas?.();
       offActivity?.();

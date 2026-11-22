@@ -267,6 +267,10 @@ class LiveModel extends ChangeNotifier {
   /// the number goes up, Settings › Automations reads its list again.
   final automationsChanged = ValueNotifier<int>(0);
 
+  /// 3.12: the person's rules changed (`rules.changed`): saved, switched, acted, a stop put or
+  /// lifted, a magic rule's proposal. Settings › Rules reads them again at once.
+  final rulesChanged = ValueNotifier<int>(0);
+
   /// G42.17: the history of changes moved (`platform.changed`): Settings › Platform reads it again.
   final platformChanged = ValueNotifier<int>(0);
 
@@ -404,6 +408,9 @@ class LiveModel extends ChangeNotifier {
         return;
       case 'automations.changed':
         automationsChanged.value++;
+        return;
+      case 'rules.changed':
+        rulesChanged.value++;
         return;
       case 'platform.changed':
         platformChanged.value++;
