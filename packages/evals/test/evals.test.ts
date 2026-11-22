@@ -44,6 +44,28 @@ const asFiles = (f: Record<string, string>) =>
 /** What a correct answer looks like, per task: the verifiers must accept these. */
 const SOLUTIONS: Record<string, Record<string, string>> = {
   ...Object.fromEntries(Object.entries(FORMS).map(([k, v]) => [k, asFiles(v)])),
+  "device-broken-button": {
+    "app/src/main/java/com/example/notes/MainActivity.kt": `package com.example.notes
+
+import android.os.Bundle
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        findViewById<Button>(R.id.btn_add).setOnClickListener { addNote() }
+        findViewById<Button>(R.id.btn_clear).setOnClickListener { clearNotes() }
+        findViewById<Button>(R.id.btn_save).setOnClickListener { saveNotes() }
+    }
+    private fun addNote() {}
+    private fun clearNotes() {}
+    private fun saveNotes() {}
+}
+`,
+    "_answer.md": "The Save button did nothing: its listener had been put on Clear by mistake.",
+  },
   "multi-bug": {
     "inventory.js": `export class Inventory {
   constructor() {

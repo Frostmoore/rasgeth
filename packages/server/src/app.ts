@@ -99,6 +99,7 @@ import { svgRoutes } from "./editor/svg-routes.js";
 import { videoRoutes } from "./editor/video-routes.js";
 import { ISOLATION_HEADERS } from "./editor/zeta.js";
 import { MailboxNotFoundError } from "./email.js";
+import { emulatorRoutes } from "./emulators/routes.js";
 import { sessionMarkdown } from "./export.js";
 import { ConflictError, FileService } from "./files.js";
 import { type FirstAccessFrom, firstAccessOf, fromLocalNetwork } from "./first-access.js";
@@ -1766,6 +1767,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   personRoutes(app, core, owner);
   // God's conversations by topic (3.12): «Oggi», routing, «Move», the archive.
   topicRoutes(app, core, owner);
+  emulatorRoutes(app, core, owner);
   codeRoutes(app, core, owner);
   // The person's saved passages (G40.14).
   savedRoutes(app, core, owner);

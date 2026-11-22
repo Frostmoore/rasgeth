@@ -3,7 +3,8 @@
 // job, «reachable already», «Try a name», Pi-hole), Settings › System (the machine, the role, the
 // storage and the backups' destinations, SSH, Wi-Fi, HTTPS, the OS's updates and restart), the SSH
 // machines (the first key shown, trusted, a changed key refused), the nodes (a code, a pair
-// waiting with its six digits, grants, placements), the backup file (made, downloaded, sent,
+// waiting with its six digits, grants, placements), the emulators (3.11: a report, a folder refused,
+// how many at once), the backup file (made, downloaded, sent,
 // imported) and the updates' gate (the safety backup). Every action is recorded in [calls] with
 // its body; nothing reaches a real machine.
 import 'dart:convert';
@@ -254,6 +255,162 @@ class FakeSystem {
     'code': ?code_,
   };
 
+  // ---- emulators (3.11) ----
+  /// The devices one can open (3.11 phase 2, `EmuDeviceView`): an emulator Rasgeth started, one
+  /// off, a phone waiting for its yes.
+  List<Map<String, dynamic>> emulatorDevices = [
+    {
+      'id': 'emulator-5554',
+      'name': 'Pixel_8',
+      'kind': 'emulator',
+      'state': 'on',
+      'avd': 'Pixel_8',
+      'serial': 'emulator-5554',
+      'ours': true,
+      'control': 'agents',
+    },
+    {
+      'id': 'avd:Tablet',
+      'name': 'Tablet',
+      'kind': 'emulator',
+      'state': 'off',
+      'avd': 'Tablet',
+      'control': 'agents',
+    },
+    {
+      'id': 'R58N12ABCDE',
+      'name': 'SM A525F',
+      'kind': 'phone',
+      'state': 'unauthorized',
+      'serial': 'R58N12ABCDE',
+      'link': 'usb',
+      'control': 'agents',
+    },
+  ];
+  Map<String, dynamic> emulatorSettings = {'sdkPath': null, 'maxRunning': 2};
+
+  /// The guided install's plan (3.11 phase 5): everything for a machine without an SDK.
+  Map<String, dynamic> emulatorInstallPlan = {
+    'planId': 'P1',
+    'target': r'C:\Users\Ada\AppData\Local\Android\Sdk',
+    'targetStandard': true,
+    'steps': [
+      {'id': 'cmdline-tools', 'bytes': 155655386, 'version': '22.0'},
+      {'id': 'licences'},
+      {'id': 'platform-tools', 'package': 'platform-tools', 'bytes': 8188601},
+      {'id': 'emulator', 'package': 'emulator', 'bytes': 456613348},
+      {
+        'id': 'system-image',
+        'package': 'system-images;android-35;google_apis;x86_64',
+        'bytes': 1738815903,
+      },
+      {
+        'id': 'avd',
+        'package': 'system-images;android-35;google_apis;x86_64',
+        'avd': 'Rasgeth_Phone_API_35',
+      },
+    ],
+    'licences': [
+      {
+        'id': 'android-sdk-license',
+        'text': 'Terms and Conditions\n\nAndroid SDK License Agreement',
+      },
+    ],
+    'bytes': 2359273238,
+    'notes': <String>[],
+    'java': {'path': r'C:\Program Files\OpenLogic\jdk-17\bin\java.exe', 'major': 17},
+  };
+  Map<String, dynamic> emulatorReport = {
+    'os': 'windows',
+    'arch': 'x64',
+    'container': false,
+    'android': {
+      'sdk': {
+        'root': r'D:\Android\Sdk',
+        'source': 'studio',
+        'emulator': '35.2.10',
+        'platformTools': '37.0.1',
+        'cmdlineTools': true,
+        'images': ['android-35/google_apis_playstore/x86_64'],
+      },
+      'looked': [
+        {'path': r'D:\Android\Sdk', 'source': 'studio'},
+      ],
+      'avds': [
+        {'name': 'Medium_Phone_API_35', 'api': 35, 'abi': 'x86_64', 'playStore': true},
+      ],
+      'attached': [
+        {
+          'serial': 'emulator-5554',
+          'kind': 'emulator',
+          'state': 'device',
+          'avd': 'Medium_Phone_API_35',
+        },
+        {'serial': '192.168.1.40:5555', 'kind': 'phone', 'state': 'unauthorized', 'link': 'wifi'},
+      ],
+      'accel': {'ok': true, 'kind': 'whpx'},
+    },
+    'missing': ['emulator-old'],
+    'ready': true,
+    'maxRunning': 2,
+    'at': '2026-11-22T10:00:00.000Z',
+  };
+  List<Map<String, dynamic>> emulatorNodes = [
+    {
+      'id': 'SHA256:macMacMac',
+      'name': 'Mac mini',
+      'online': true,
+      'report': {
+        'os': 'macos',
+        'arch': 'arm64',
+        'container': false,
+        'android': {
+          'looked': [
+            {'path': '/Users/ana/Library/Android/sdk', 'source': 'standard'},
+          ],
+          'avds': <Object>[],
+          'attached': <Object>[],
+          'adbIdle': true,
+          'accel': {'ok': true, 'kind': 'hvf'},
+        },
+        'ios': {
+          'xcode': '27.2',
+          'simulators': [
+            {'name': 'iPhone 18', 'udid': 'U1', 'runtime': 'iOS 27.2', 'state': 'shutdown'},
+          ],
+        },
+        'missing': ['sdk', 'ios-bridge'],
+        'ready': false,
+        'maxRunning': 2,
+        'at': '2026-11-22T10:00:00.000Z',
+      },
+    },
+    {'id': 'SHA256:oldOldOld', 'name': 'Vecchio', 'online': false},
+  ];
+
+  Map<String, dynamic> _emulators() => {
+    'here': {
+      'id': 'here',
+      'name': 'Severino',
+      'online': true,
+      'report': {
+        ...emulatorReport,
+        'maxRunning': emulatorSettings['maxRunning'],
+        if (emulatorSettings['sdkPath'] != null)
+          'android': {
+            ...(emulatorReport['android'] as Map<String, dynamic>),
+            'sdk': {
+              ...((emulatorReport['android'] as Map)['sdk'] as Map<String, dynamic>),
+              'root': emulatorSettings['sdkPath'],
+              'source': 'custom',
+            },
+          },
+      },
+    },
+    'settings': emulatorSettings,
+    'nodes': emulatorNodes,
+  };
+
   Future<bool> handle(
     HttpRequest r,
     String path,
@@ -267,6 +424,7 @@ class FakeSystem {
         path.startsWith('/api/auth/') && path != '/api/auth/login' ||
         path.startsWith('/api/settings/machines') ||
         path.startsWith('/api/nodes') ||
+        path.startsWith('/api/emulators') ||
         path.startsWith('/api/backup/') ||
         path == '/api/update/safety-backup' ||
         path == '/api/vault' ||
@@ -547,6 +705,86 @@ class FakeSystem {
     }
     // ---- nodes ----
     switch (key) {
+      // ---- emulators (3.11) ----
+      case 'GET /api/emulators':
+        return ok(_emulators());
+      case 'GET /api/emulators/devices':
+        return ok({'devices': emulatorDevices});
+      case 'POST /api/emulators/devices/stop':
+        final d = emulatorDevices.where((x) => x['id'] == b['id']).firstOrNull;
+        if (d == null || d['kind'] != 'emulator') return no(404, 'No such emulator');
+        emulatorDevices = [
+          for (final x in emulatorDevices)
+            if (x['id'] == b['id'])
+              {
+                'id': 'avd:${x['avd']}',
+                'name': x['name'],
+                'kind': 'emulator',
+                'state': 'off',
+                'avd': x['avd'],
+                'control': 'agents',
+              }
+            else
+              x,
+        ];
+        return ok({'devices': emulatorDevices});
+      case 'POST /api/emulators/install/plan':
+        if (b['only'] == 'emulator-update') {
+          return ok({
+            ...emulatorInstallPlan,
+            'target': r'D:\Android\Sdk',
+            'targetStandard': false,
+            'steps': [
+              {'id': 'licences'},
+              {'id': 'emulator-update', 'package': 'emulator', 'version': '37.3.10'},
+            ],
+            'bytes': 456613348,
+          });
+        }
+        return ok(emulatorInstallPlan);
+      case 'POST /api/emulators/install/start':
+        if (b['planId'] != emulatorInstallPlan['planId']) {
+          return no(400, 'This plan is not known any more: look again', 'no-plan');
+        }
+        if (b['licenceAccepted'] != true) {
+          return no(400, 'The licences must be read and accepted first', 'licence');
+        }
+        final id = 'job${++_n}';
+        jobs[id] = {
+          'id': id,
+          'kind': 'emulator_install',
+          'state': 'done',
+          'vars': <String, String>{},
+          'reads': 2,
+          'steps': [
+            {
+              'id': 'cmdline-tools',
+              'state': 'running',
+              'progress': {
+                'done': 77827693,
+                'total': 155655386,
+                'rate': 12500000,
+                'secondsLeft': 6,
+              },
+            },
+            for (final st in ['licences', 'platform-tools', 'emulator', 'system-image', 'avd'])
+              {'id': st, 'state': 'waiting'},
+          ],
+        };
+        return ok({'jobId': id});
+      case 'PUT /api/emulators/settings':
+        if (b.containsKey('sdkPath')) {
+          final p = b['sdkPath'];
+          if (p is String && !p.toLowerCase().contains('sdk')) {
+            return no(
+              400,
+              'No Android SDK in that folder (no platform-tools, emulator, cmdline-tools or system-images)',
+            );
+          }
+          emulatorSettings['sdkPath'] = p;
+        }
+        if (b['maxRunning'] is int) emulatorSettings['maxRunning'] = b['maxRunning'];
+        return ok(_emulators());
       case 'GET /api/nodes':
         return ok(_nodes());
       case 'POST /api/nodes/code':

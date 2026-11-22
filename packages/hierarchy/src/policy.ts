@@ -20,6 +20,13 @@ export const OUTSIDE_PROJECT = "outside-project";
  */
 export const OUTGOING_MAIL = "outgoing-mail";
 
+/** Installing an app on an emulator (3.11): an ordinary request, as the person's choices say. */
+export const DEVICE_INSTALL = "device-install";
+/** Installing or launching an app on a real phone (3.11): the person's alone. */
+export const DEVICE_PHONE_APP = "device-phone-app";
+/** A device id that is an emulator (`avd:<name>`, `emulator-<port>`); anything else is a phone. */
+const EMULATOR_ID = "^(avd:|emulator-\\d+(@|$))";
+
 /**
  * Another agent's model changing (G38.9, decision «Il modello degli agenti lo sceglie la persona»):
  * an agent does it only when the person asked, and the person approves every change. Never a
@@ -172,6 +179,35 @@ export const DEFAULT_DANGER_RULES: DangerRule[] = [
       "\\b(send|invia|inviare|post|posta|pubblica|publish|pay|paga|pagare|buy|compra|acquista|purchase|order|ordina|checkout|delete|elimina|cancella|remove|rimuovi|transfer|bonifico|confirm|conferma)\\b",
   },
   {
+    // 3.11: an app installed on an emulator (the person decided: an ordinary request).
+    id: DEVICE_INSTALL,
+    label: "Installs an app on an emulator",
+    tool: "device_install",
+    field: "device",
+    pattern: EMULATOR_ID,
+  },
+  {
+    // 3.11: on a real phone an app installed or launched is the person's (installing is also
+    // truly dangerous, in `criticalOf`). Gestures and looking are ordinary work.
+    id: DEVICE_PHONE_APP,
+    label: "Installs or launches an app on a real phone",
+    tool: "device_*",
+    field: "device",
+    pattern: "^(?!avd:|emulator-\\d+(@|$)).+",
+    except: [
+      "device_list",
+      "device_open",
+      "device_look",
+      "device_tap",
+      "device_swipe",
+      "device_type",
+      "device_press",
+      "device_rotate",
+      "device_wait",
+      "device_logs",
+    ],
+  },
+  {
     // G24.14c: a pull request or an issue on the project's repository is public to its readers.
     id: "git-publish",
     label: "Opens a pull request or an issue",
@@ -253,6 +289,7 @@ export const DEFAULT_POLICY: PolicySettings = {
     "outgoing-browser",
     "git-publish",
     REMOVE_AGENT,
+    DEVICE_PHONE_APP,
   ],
   approverKinds: ["god", "orchestrator", "agent"],
 };
@@ -317,6 +354,11 @@ export const READ_ONLY_TOOLS = new Set([
   // Searching the person's mailboxes (G38.1) changes nothing; reading uses PEEK (nothing marked
   // as read) and only writes when it saves the attachments (below).
   "mail_search",
+  // Devices (3.11): which there are, their screen and tree, waiting for a text, their logs.
+  "device_list",
+  "device_look",
+  "device_wait",
+  "device_logs",
 ]);
 
 /** mail_read writes into the workspace only when it saves the attachments (G38.1). */

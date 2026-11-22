@@ -536,6 +536,15 @@
       ],
       "phase": "3.9.4",
       "note": "Native (3.9.4): Settings › Portrait («Mirror»): on/off, who reads it, the traits grouped with how sure and where each comes from (the conversation opens), change with category, remove, not true, add by hand, the text the agents read, forget everything."
+    },
+    "emulators": {
+      "app": "native",
+      "files": [
+        "lib/settings/system/emulators_screen.dart",
+        "lib/settings/api/system_api.dart"
+      ],
+      "phase": "3.11.0",
+      "note": "Native (3.11 phase 1): this machine's report (SDK and where it was found, emulator, adb, images, acceleration, Xcode), virtual devices, emulators running and phones on USB or Wi-Fi, what is missing in words, the SDK folder the person chooses (refused in the server's words) and how many emulators at once; the nodes' reports. Read-only: nothing installed or started."
     }
   },
   "viewers": {
@@ -1441,6 +1450,42 @@
         302
       ],
       "note": "Sent by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
+    },
+    "device.watch": {
+      "app": "native",
+      "files": [
+        "lib/screens/device_screen.dart",
+        "lib/api/live_model.dart"
+      ],
+      "phase": "3.11.0",
+      "note": "Native (3.11): the device's screen opens and watches its id; an AVD that is off starts on the server."
+    },
+    "device.unwatch": {
+      "app": "native",
+      "files": [
+        "lib/screens/device_screen.dart",
+        "lib/api/live_model.dart"
+      ],
+      "phase": "3.11.0",
+      "note": "Native (3.11): closing the device's view stops its frames."
+    },
+    "device.control": {
+      "app": "native",
+      "files": [
+        "lib/screens/device_screen.dart",
+        "lib/api/live_model.dart"
+      ],
+      "phase": "3.11.0",
+      "note": "Native (3.11): «Take control» and «Give back», as on the page."
+    },
+    "device.input": {
+      "app": "native",
+      "files": [
+        "lib/screens/device_screen.dart",
+        "lib/api/live_model.dart"
+      ],
+      "phase": "3.11.0",
+      "note": "Native (3.11): tap, hold and swipe with the finger or the mouse, the phone's buttons, turning it, the keyboard; only while the person has control, never logged."
     }
   },
   "server": {
@@ -1863,6 +1908,30 @@
       ],
       "phase": "3.12",
       "note": "A message to God routed from any channel: «Oggi» reads its topics again."
+    },
+    "device.frame": {
+      "app": "native",
+      "files": [
+        "lib/screens/device_screen.dart",
+        "lib/api/live_model.dart"
+      ],
+      "phase": "3.11.0",
+      "note": "Native (3.11): the JPEG frame drawn in the phone's frame."
+    },
+    "device.state": {
+      "app": "native",
+      "files": [
+        "lib/screens/device_screen.dart",
+        "lib/api/live_model.dart"
+      ],
+      "phase": "3.11.0",
+      "note": "Native (3.11): starting, on, off, waiting for the phone's yes, who drives it, why it cannot be shown."
+    },
+    "device.video": {
+      "app": "n/a",
+      "files": [],
+      "phase": "3.11.0",
+      "note": "The page's WebCodecs path (3.11 phase 7): the app never asks for H.264 (no `format`), it gets the JPEG frames (`device.frame`), as on a page without a decoder."
     }
   },
   "places": {

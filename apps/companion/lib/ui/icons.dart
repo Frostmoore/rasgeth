@@ -76,6 +76,14 @@ enum RgIcons {
     '<path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/>',
   ),
   phone('<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/>'),
+
+  /// Emulators (3.11): a phone with a play mark on its screen.
+  emulator(
+    '<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M10.5 8.5v5l4-2.5z"/><path d="M11 18h2"/>',
+  ),
+
+  /// A device turned (3.11 phase 2, the page's IconRotate).
+  rotate('<path d="M20 4v5h-5"/><path d="M19.5 9A8 8 0 1 0 20 15"/>'),
   monitor('<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>'),
   external(
     '<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',

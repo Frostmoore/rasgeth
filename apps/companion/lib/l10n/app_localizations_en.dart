@@ -18732,4 +18732,494 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get prHookSecretHelp => 'Shown only now: copy it.';
+
+  @override
+  String get syEmAccel => 'Acceleration';
+
+  @override
+  String syEmAccelOk(String kind) {
+    return '$kind works';
+  }
+
+  @override
+  String get syEmAccel_container => 'none in a container';
+
+  @override
+  String get syEmAccel_disabled =>
+      'virtualization is switched off (BIOS) or the hypervisor is missing';
+
+  @override
+  String get syEmAccel_kvm_denied =>
+      'KVM is there but this user may not use it (add it to the kvm group)';
+
+  @override
+  String get syEmAccel_no_kvm =>
+      'No KVM: turn on virtualization in the BIOS and load the KVM module';
+
+  @override
+  String get syEmAccel_unknown => 'unknown until the emulator is installed';
+
+  @override
+  String get syEmAdb => 'adb (platform-tools)';
+
+  @override
+  String get syEmAdbIdle =>
+      'adb is not running, so running emulators and phones are not known: Rasgeth does not start it just to look.';
+
+  @override
+  String syEmApi(String api) {
+    return 'API $api';
+  }
+
+  @override
+  String get syEmAttached => 'Running now';
+
+  @override
+  String get syEmAvds => 'Virtual devices';
+
+  @override
+  String get syEmContainer =>
+      'Rasgeth runs in a container here, so emulators cannot run on this machine: they come from a node with Android Studio or the SDK (a Windows, Mac or Linux computer paired in Settings › Nodes).';
+
+  @override
+  String get syEmEmulator => 'Emulator';
+
+  @override
+  String get syEmFolder => 'Folder of the Android SDK';
+
+  @override
+  String get syEmFolderForget => 'Forget it';
+
+  @override
+  String get syEmFolderHelp => 'The folder with platform-tools, emulator or system-images inside.';
+
+  @override
+  String get syEmFolderLabel => 'Full path of the SDK folder';
+
+  @override
+  String get syEmFolderLead =>
+      'Only if the SDK is somewhere Rasgeth does not look by itself. It looks at ANDROID_HOME, ANDROID_SDK_ROOT, Android Studio\'s settings, Android Studio\'s usual place and adb on the PATH.';
+
+  @override
+  String get syEmFolderSave => 'Use this folder';
+
+  @override
+  String get syEmHere => 'This machine';
+
+  @override
+  String get syEmImageMissing => 'image missing';
+
+  @override
+  String get syEmImages => 'System images';
+
+  @override
+  String get syEmLead =>
+      'Android emulators, Android phones on USB or Wi-Fi, and iOS simulators: what this machine and your nodes have, and what is missing. Here Rasgeth only looks: nothing is installed or started.';
+
+  @override
+  String get syEmLookAgain => 'Look again';
+
+  @override
+  String get syEmLooked => 'Where Rasgeth looked';
+
+  @override
+  String get syEmLooking => 'Looking…';
+
+  @override
+  String get syEmMax => 'Emulators at once';
+
+  @override
+  String get syEmMaxLead =>
+      'How many emulators may run together on this machine: each one takes 2 to 4 GB of memory.';
+
+  @override
+  String get syEmMiss_accel => 'Hardware acceleration: without it emulators are too slow.';
+
+  @override
+  String get syEmMiss_avd => 'A virtual device that can start here.';
+
+  @override
+  String get syEmMiss_cmdline_tools =>
+      'cmdline-tools (sdkmanager, avdmanager), to download images and create virtual devices.';
+
+  @override
+  String get syEmMiss_emulator => 'The Android Emulator package of the SDK.';
+
+  @override
+  String get syEmMiss_emulator_old =>
+      'The emulator is old: Rasgeth can propose the update, which you approve.';
+
+  @override
+  String get syEmMiss_ios_bridge => 'A bridge for touches on iOS simulators (comes with 3.11.1).';
+
+  @override
+  String get syEmMiss_platform_tools => 'platform-tools (adb), to talk to emulators and phones.';
+
+  @override
+  String get syEmMiss_sdk =>
+      'An Android SDK (Android Studio installs it; or choose its folder below).';
+
+  @override
+  String get syEmMiss_system_image => 'A system image for this processor.';
+
+  @override
+  String get syEmMiss_xcode => 'Xcode, for iOS simulators (from the App Store).';
+
+  @override
+  String get syEmMissing => 'What is missing';
+
+  @override
+  String get syEmNoNodes =>
+      'No nodes paired. Pair a computer with Android Studio in Settings › Nodes to use its emulators from here.';
+
+  @override
+  String get syEmNoSdk =>
+      'No Android SDK found. Choose its folder below if you have one, or install Android Studio (or the SDK alone); a guided install will come, and always asks you first.';
+
+  @override
+  String get syEmNodeOffline => 'offline';
+
+  @override
+  String get syEmNodeOld => 'This node has not said what it has: it is offline or older than 3.11.';
+
+  @override
+  String get syEmNodes => 'Your nodes';
+
+  @override
+  String get syEmNodesLead => 'What the machines paired with this one have, as each one last said.';
+
+  @override
+  String get syEmNone => 'none';
+
+  @override
+  String get syEmNoneAttached => 'No emulator running and no phone attached.';
+
+  @override
+  String get syEmNotReady => 'Not ready yet: see what is missing below.';
+
+  @override
+  String get syEmOffline => 'not responding';
+
+  @override
+  String get syEmPhoneUsb => 'Phone over USB';
+
+  @override
+  String get syEmPhoneWifi => 'Phone over Wi-Fi';
+
+  @override
+  String get syEmPlayStore => 'Play Store';
+
+  @override
+  String get syEmQ => 'Emulators and phones';
+
+  @override
+  String syEmReady(String count) {
+    return 'Ready: emulators can run here ($count virtual devices).';
+  }
+
+  @override
+  String get syEmRunningEmu => 'Emulator';
+
+  @override
+  String get syEmSdk => 'Android SDK';
+
+  @override
+  String get syEmSection => 'Emulators';
+
+  @override
+  String get syEmSimulators => 'iOS simulators';
+
+  @override
+  String get syEmSrc_ANDROID_HOME => 'from ANDROID_HOME';
+
+  @override
+  String get syEmSrc_ANDROID_SDK_ROOT => 'from ANDROID_SDK_ROOT';
+
+  @override
+  String get syEmSrc_custom => 'the folder you chose';
+
+  @override
+  String get syEmSrc_path => 'around adb or the emulator on the PATH';
+
+  @override
+  String get syEmSrc_standard => 'Android Studio\'s usual place';
+
+  @override
+  String get syEmSrc_studio => 'from Android Studio\'s settings';
+
+  @override
+  String get syEmSystem => 'System';
+
+  @override
+  String get syEmUnauthorized => 'waiting for your yes on the phone';
+
+  @override
+  String get syEmXcode => 'Xcode';
+
+  @override
+  String get syOffline => 'offline';
+
+  @override
+  String get syHubEmulators =>
+      'Android emulators, phones and iOS simulators, here and on the nodes';
+
+  @override
+  String get syAgents => 'Agents';
+
+  @override
+  String get syDsBack => 'Back';
+
+  @override
+  String syDsError(String error) {
+    return 'It cannot be shown: $error';
+  }
+
+  @override
+  String get syDsHome => 'Home';
+
+  @override
+  String get syDsRecents => 'Recent apps';
+
+  @override
+  String get syDsRotate => 'Turn';
+
+  @override
+  String syDsScreen(String name) {
+    return 'The screen of $name';
+  }
+
+  @override
+  String get syDsShared =>
+      'The agents\' device: you see what they do. Take control to use it yourself.';
+
+  @override
+  String get syDsStarting => 'Starting the emulator without a window: it takes about a minute.';
+
+  @override
+  String get syDsYours =>
+      'Yours now: tap, hold, swipe and type on it. Nothing you do here reaches a model or the log. Give it back when you are done.';
+
+  @override
+  String get syEmDevices => 'Devices';
+
+  @override
+  String get syEmDevicesLead =>
+      'Open one to see it live on the right: an emulator that is off starts without a window.';
+
+  @override
+  String get syEmNoDevices => 'No device here yet.';
+
+  @override
+  String get syEmOpen => 'Open';
+
+  @override
+  String get syEmStartedHere => 'started by Rasgeth';
+
+  @override
+  String get syEmStop => 'Switch off';
+
+  @override
+  String get syScreenGiveBack => 'Give it back to the agents';
+
+  @override
+  String get syScreenStarting => 'Starting the browser…';
+
+  @override
+  String get syScreenTake => 'Take control';
+
+  @override
+  String get syDsState_off => 'off';
+
+  @override
+  String get syDsState_offline => 'not responding';
+
+  @override
+  String get syDsState_on => 'on';
+
+  @override
+  String get syDsState_starting => 'starting…';
+
+  @override
+  String get syDsState_unauthorized => 'waiting for your yes on the phone';
+
+  @override
+  String get syEiAvdName => 'Name of the virtual phone';
+
+  @override
+  String get syEiAvdNameHelp => 'Letters, digits, dot, dash and underscore.';
+
+  @override
+  String get syEiBlock_container =>
+      'Rasgeth runs in a container here, and emulators cannot run inside it. Pair a node (a computer with Rasgeth) and its emulators appear here.';
+
+  @override
+  String get syEiBlock_emulators_running =>
+      'An emulator is running: switch it off first, then update.';
+
+  @override
+  String get syEiBlock_folder_not_empty =>
+      'That folder already holds other things and is not an Android SDK: choose a new or empty folder.';
+
+  @override
+  String get syEiBlock_folder_relative => 'The folder must be a full path.';
+
+  @override
+  String syEiBlock_java_old(String major) {
+    return 'The Java found is version $major: Android\'s tools need 17 or newer. Install a Java 17 or set JAVA_HOME to one, then look again.';
+  }
+
+  @override
+  String get syEiBlock_no_accel =>
+      'This computer has no hardware acceleration for virtual machines: an emulator would be far too slow to use. Nothing is installed; a node on a computer that has it is better.';
+
+  @override
+  String get syEiBlock_no_java =>
+      'Android\'s tools need Java 17 or newer, and none was found (JAVA_HOME, the PATH, Android Studio). Install a Java 17 (for example Eclipse Temurin or OpenLogic) or Android Studio, then look again. Rasgeth does not install Java by itself.';
+
+  @override
+  String get syEiBlock_nothing => 'Nothing is missing here.';
+
+  @override
+  String get syEiBlock_offline =>
+      'Google\'s list of packages (with the licences) could not be read. Check the internet connection and try again.';
+
+  @override
+  String get syEiBlock_unsupported =>
+      'Google makes no Android emulator for this system and processor. A node on another computer can bring one.';
+
+  @override
+  String get syEiCancelled => 'Stopped. You can start again whenever you like.';
+
+  @override
+  String get syEiClose => 'Close';
+
+  @override
+  String get syEiDone => 'Done. The report of this machine has been read again.';
+
+  @override
+  String get syEiFailed =>
+      'The install did not finish. What is already in the folder stays; you can try again.';
+
+  @override
+  String get syEiFolder => 'Folder';
+
+  @override
+  String get syEiFolderApply => 'Plan again';
+
+  @override
+  String get syEiFolderHelp =>
+      'A full path; a new or empty folder, or an Android SDK already there.';
+
+  @override
+  String get syEiFolderOther => 'Another folder or name';
+
+  @override
+  String get syEiFolderStandard => 'the standard place on this system';
+
+  @override
+  String get syEiInstall => 'Install what is missing';
+
+  @override
+  String syEiJava(String major) {
+    return 'With Java $major:';
+  }
+
+  @override
+  String get syEiLead =>
+      'Rasgeth downloads them from Google only now, with your yes, and puts everything in this folder (the virtual phone goes where the emulator keeps them). Nothing else on the computer changes.';
+
+  @override
+  String get syEiLicenceAccept => 'I read and accept these licences';
+
+  @override
+  String get syEiLicenceHelp =>
+      'Rasgeth says yes on your behalf only to these, only for this install.';
+
+  @override
+  String get syEiLicences => 'Licences';
+
+  @override
+  String get syEiLicencesLead =>
+      'Google\'s terms for these pieces, in full. Read them: the install starts only once you accept them.';
+
+  @override
+  String get syEiNote_bios =>
+      'Virtualization is switched off: switch it on in the BIOS/UEFI (VT-x or AMD-V) and, on Windows, the Windows Hypervisor Platform feature.';
+
+  @override
+  String get syEiNote_ios_bridge =>
+      'iOS: the bridge for touches comes with Rasgeth 3.11.1; there is nothing to install now.';
+
+  @override
+  String get syEiNote_kvm_group =>
+      'Linux: /dev/kvm is there but this user may not use it. An administrator can add the user to the kvm group, then log in again.';
+
+  @override
+  String get syEiNote_node => 'Settings › Nodes: pair a computer that can run emulators.';
+
+  @override
+  String get syEiNote_xcode =>
+      'iOS simulators need Xcode, from the App Store: Rasgeth does not install it. iOS comes with Rasgeth 3.11.1.';
+
+  @override
+  String get syEiReading => 'Reading Google\'s list of packages…';
+
+  @override
+  String get syEiRunning => 'Starting…';
+
+  @override
+  String get syEiStart => 'Install';
+
+  @override
+  String get syEiStartUpdate => 'Update';
+
+  @override
+  String syEiStep_avd(String name) {
+    return 'The virtual phone $name';
+  }
+
+  @override
+  String syEiStep_cmdline_tools(String version) {
+    return 'Android\'s command-line tools $version (sdkmanager, avdmanager)';
+  }
+
+  @override
+  String get syEiStep_emulator => 'The Android emulator';
+
+  @override
+  String syEiStep_emulator_update(String version) {
+    return 'The emulator, at its latest version $version';
+  }
+
+  @override
+  String get syEiStep_licences => 'The licences you read and accepted';
+
+  @override
+  String get syEiStep_platform_tools => 'Platform tools (adb)';
+
+  @override
+  String get syEiStep_system_image => 'Android 15 (API 35) for this processor';
+
+  @override
+  String get syEiSteps => 'What it will do';
+
+  @override
+  String get syEiStopNow => 'Stop';
+
+  @override
+  String get syEiTitle => 'Install the Android pieces';
+
+  @override
+  String get syEiTitleUpdate => 'Update the emulator';
+
+  @override
+  String syEiTotal(String size) {
+    return 'To download: $size';
+  }
+
+  @override
+  String get syEiUpdate => 'Update the emulator';
+
+  @override
+  String get syUiDetails => 'Details for whoever helps you';
 }

@@ -13103,5 +13103,227 @@
   "prHookLead": "Give the service this address and the secret (in the header x-redgiant-secret, or at the end of the address). What it sends is only data the rule looks at: never instructions.",
   "prHookAddress": "Address",
   "prHookSecret": "Secret",
-  "prHookSecretHelp": "Shown only now: copy it."
+  "prHookSecretHelp": "Shown only now: copy it.",
+  "syEmAccel": "Acceleration",
+  "syEmAccelOk": "{kind} works",
+  "@syEmAccelOk": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "syEmAccel_container": "none in a container",
+  "syEmAccel_disabled": "virtualization is switched off (BIOS) or the hypervisor is missing",
+  "syEmAccel_kvm_denied": "KVM is there but this user may not use it (add it to the kvm group)",
+  "syEmAccel_no_kvm": "No KVM: turn on virtualization in the BIOS and load the KVM module",
+  "syEmAccel_unknown": "unknown until the emulator is installed",
+  "syEmAdb": "adb (platform-tools)",
+  "syEmAdbIdle": "adb is not running, so running emulators and phones are not known: Rasgeth does not start it just to look.",
+  "syEmApi": "API {api}",
+  "@syEmApi": {
+    "placeholders": {
+      "api": {
+        "type": "String"
+      }
+    }
+  },
+  "syEmAttached": "Running now",
+  "syEmAvds": "Virtual devices",
+  "syEmContainer": "Rasgeth runs in a container here, so emulators cannot run on this machine: they come from a node with Android Studio or the SDK (a Windows, Mac or Linux computer paired in Settings › Nodes).",
+  "syEmEmulator": "Emulator",
+  "syEmFolder": "Folder of the Android SDK",
+  "syEmFolderForget": "Forget it",
+  "syEmFolderHelp": "The folder with platform-tools, emulator or system-images inside.",
+  "syEmFolderLabel": "Full path of the SDK folder",
+  "syEmFolderLead": "Only if the SDK is somewhere Rasgeth does not look by itself. It looks at ANDROID_HOME, ANDROID_SDK_ROOT, Android Studio's settings, Android Studio's usual place and adb on the PATH.",
+  "syEmFolderSave": "Use this folder",
+  "syEmHere": "This machine",
+  "syEmImageMissing": "image missing",
+  "syEmImages": "System images",
+  "syEmLead": "Android emulators, Android phones on USB or Wi-Fi, and iOS simulators: what this machine and your nodes have, and what is missing. Here Rasgeth only looks: nothing is installed or started.",
+  "syEmLookAgain": "Look again",
+  "syEmLooked": "Where Rasgeth looked",
+  "syEmLooking": "Looking…",
+  "syEmMax": "Emulators at once",
+  "syEmMaxLead": "How many emulators may run together on this machine: each one takes 2 to 4 GB of memory.",
+  "syEmMiss_accel": "Hardware acceleration: without it emulators are too slow.",
+  "syEmMiss_avd": "A virtual device that can start here.",
+  "syEmMiss_cmdline_tools": "cmdline-tools (sdkmanager, avdmanager), to download images and create virtual devices.",
+  "syEmMiss_emulator": "The Android Emulator package of the SDK.",
+  "syEmMiss_emulator_old": "The emulator is old: Rasgeth can propose the update, which you approve.",
+  "syEmMiss_ios_bridge": "A bridge for touches on iOS simulators (comes with 3.11.1).",
+  "syEmMiss_platform_tools": "platform-tools (adb), to talk to emulators and phones.",
+  "syEmMiss_sdk": "An Android SDK (Android Studio installs it; or choose its folder below).",
+  "syEmMiss_system_image": "A system image for this processor.",
+  "syEmMiss_xcode": "Xcode, for iOS simulators (from the App Store).",
+  "syEmMissing": "What is missing",
+  "syEmNoNodes": "No nodes paired. Pair a computer with Android Studio in Settings › Nodes to use its emulators from here.",
+  "syEmNoSdk": "No Android SDK found. Choose its folder below if you have one, or install Android Studio (or the SDK alone); a guided install will come, and always asks you first.",
+  "syEmNodeOffline": "offline",
+  "syEmNodeOld": "This node has not said what it has: it is offline or older than 3.11.",
+  "syEmNodes": "Your nodes",
+  "syEmNodesLead": "What the machines paired with this one have, as each one last said.",
+  "syEmNone": "none",
+  "syEmNoneAttached": "No emulator running and no phone attached.",
+  "syEmNotReady": "Not ready yet: see what is missing below.",
+  "syEmOffline": "not responding",
+  "syEmPhoneUsb": "Phone over USB",
+  "syEmPhoneWifi": "Phone over Wi-Fi",
+  "syEmPlayStore": "Play Store",
+  "syEmQ": "Emulators and phones",
+  "syEmReady": "Ready: emulators can run here ({count} virtual devices).",
+  "@syEmReady": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "syEmRunningEmu": "Emulator",
+  "syEmSdk": "Android SDK",
+  "syEmSection": "Emulators",
+  "syEmSimulators": "iOS simulators",
+  "syEmSrc_ANDROID_HOME": "from ANDROID_HOME",
+  "syEmSrc_ANDROID_SDK_ROOT": "from ANDROID_SDK_ROOT",
+  "syEmSrc_custom": "the folder you chose",
+  "syEmSrc_path": "around adb or the emulator on the PATH",
+  "syEmSrc_standard": "Android Studio's usual place",
+  "syEmSrc_studio": "from Android Studio's settings",
+  "syEmSystem": "System",
+  "syEmUnauthorized": "waiting for your yes on the phone",
+  "syEmXcode": "Xcode",
+  "syOffline": "offline",
+  "syHubEmulators": "Android emulators, phones and iOS simulators, here and on the nodes",
+  "syAgents": "Agents",
+  "syDsBack": "Back",
+  "syDsError": "It cannot be shown: {error}",
+  "@syDsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "syDsHome": "Home",
+  "syDsRecents": "Recent apps",
+  "syDsRotate": "Turn",
+  "syDsScreen": "The screen of {name}",
+  "@syDsScreen": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syDsShared": "The agents' device: you see what they do. Take control to use it yourself.",
+  "syDsStarting": "Starting the emulator without a window: it takes about a minute.",
+  "syDsYours": "Yours now: tap, hold, swipe and type on it. Nothing you do here reaches a model or the log. Give it back when you are done.",
+  "syEmDevices": "Devices",
+  "syEmDevicesLead": "Open one to see it live on the right: an emulator that is off starts without a window.",
+  "syEmNoDevices": "No device here yet.",
+  "syEmOpen": "Open",
+  "syEmStartedHere": "started by Rasgeth",
+  "syEmStop": "Switch off",
+  "syScreenGiveBack": "Give it back to the agents",
+  "syScreenStarting": "Starting the browser…",
+  "syScreenTake": "Take control",
+  "syDsState_off": "off",
+  "syDsState_offline": "not responding",
+  "syDsState_on": "on",
+  "syDsState_starting": "starting…",
+  "syDsState_unauthorized": "waiting for your yes on the phone",
+  "syEiAvdName": "Name of the virtual phone",
+  "syEiAvdNameHelp": "Letters, digits, dot, dash and underscore.",
+  "syEiBlock_container": "Rasgeth runs in a container here, and emulators cannot run inside it. Pair a node (a computer with Rasgeth) and its emulators appear here.",
+  "syEiBlock_emulators_running": "An emulator is running: switch it off first, then update.",
+  "syEiBlock_folder_not_empty": "That folder already holds other things and is not an Android SDK: choose a new or empty folder.",
+  "syEiBlock_folder_relative": "The folder must be a full path.",
+  "syEiBlock_java_old": "The Java found is version {major}: Android's tools need 17 or newer. Install a Java 17 or set JAVA_HOME to one, then look again.",
+  "@syEiBlock_java_old": {
+    "placeholders": {
+      "major": {
+        "type": "String"
+      }
+    }
+  },
+  "syEiBlock_no_accel": "This computer has no hardware acceleration for virtual machines: an emulator would be far too slow to use. Nothing is installed; a node on a computer that has it is better.",
+  "syEiBlock_no_java": "Android's tools need Java 17 or newer, and none was found (JAVA_HOME, the PATH, Android Studio). Install a Java 17 (for example Eclipse Temurin or OpenLogic) or Android Studio, then look again. Rasgeth does not install Java by itself.",
+  "syEiBlock_nothing": "Nothing is missing here.",
+  "syEiBlock_offline": "Google's list of packages (with the licences) could not be read. Check the internet connection and try again.",
+  "syEiBlock_unsupported": "Google makes no Android emulator for this system and processor. A node on another computer can bring one.",
+  "syEiCancelled": "Stopped. You can start again whenever you like.",
+  "syEiClose": "Close",
+  "syEiDone": "Done. The report of this machine has been read again.",
+  "syEiFailed": "The install did not finish. What is already in the folder stays; you can try again.",
+  "syEiFolder": "Folder",
+  "syEiFolderApply": "Plan again",
+  "syEiFolderHelp": "A full path; a new or empty folder, or an Android SDK already there.",
+  "syEiFolderOther": "Another folder or name",
+  "syEiFolderStandard": "the standard place on this system",
+  "syEiInstall": "Install what is missing",
+  "syEiJava": "With Java {major}:",
+  "@syEiJava": {
+    "placeholders": {
+      "major": {
+        "type": "String"
+      }
+    }
+  },
+  "syEiLead": "Rasgeth downloads them from Google only now, with your yes, and puts everything in this folder (the virtual phone goes where the emulator keeps them). Nothing else on the computer changes.",
+  "syEiLicenceAccept": "I read and accept these licences",
+  "syEiLicenceHelp": "Rasgeth says yes on your behalf only to these, only for this install.",
+  "syEiLicences": "Licences",
+  "syEiLicencesLead": "Google's terms for these pieces, in full. Read them: the install starts only once you accept them.",
+  "syEiNote_bios": "Virtualization is switched off: switch it on in the BIOS/UEFI (VT-x or AMD-V) and, on Windows, the Windows Hypervisor Platform feature.",
+  "syEiNote_ios_bridge": "iOS: the bridge for touches comes with Rasgeth 3.11.1; there is nothing to install now.",
+  "syEiNote_kvm_group": "Linux: /dev/kvm is there but this user may not use it. An administrator can add the user to the kvm group, then log in again.",
+  "syEiNote_node": "Settings › Nodes: pair a computer that can run emulators.",
+  "syEiNote_xcode": "iOS simulators need Xcode, from the App Store: Rasgeth does not install it. iOS comes with Rasgeth 3.11.1.",
+  "syEiReading": "Reading Google's list of packages…",
+  "syEiRunning": "Starting…",
+  "syEiStart": "Install",
+  "syEiStartUpdate": "Update",
+  "syEiStep_avd": "The virtual phone {name}",
+  "@syEiStep_avd": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syEiStep_cmdline_tools": "Android's command-line tools {version} (sdkmanager, avdmanager)",
+  "@syEiStep_cmdline_tools": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syEiStep_emulator": "The Android emulator",
+  "syEiStep_emulator_update": "The emulator, at its latest version {version}",
+  "@syEiStep_emulator_update": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syEiStep_licences": "The licences you read and accepted",
+  "syEiStep_platform_tools": "Platform tools (adb)",
+  "syEiStep_system_image": "Android 15 (API 35) for this processor",
+  "syEiSteps": "What it will do",
+  "syEiStopNow": "Stop",
+  "syEiTitle": "Install the Android pieces",
+  "syEiTitleUpdate": "Update the emulator",
+  "syEiTotal": "To download: {size}",
+  "@syEiTotal": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "syEiUpdate": "Update the emulator",
+  "syUiDetails": "Details for whoever helps you"
 }

@@ -46,6 +46,9 @@ const files = [
   "Nodes.tsx",
   "Backup.tsx",
   "BackupTargets.tsx",
+  "Emulators.tsx",
+  "EmulatorInstall.tsx",
+  "DeviceScreen.tsx",
 ];
 const families = [
   "fbMissing_",
@@ -59,6 +62,7 @@ const families = [
   "osErr_",
   "oiProbe",
   "err_",
+  "dsState_",
 ];
 // Jobs this area follows: their titles and their steps.
 const jobs = ["remote", "pihole", "backup", "import", "restore", "safety_backup", "proxmox_mount"];
@@ -67,6 +71,7 @@ const extra = [
   "fbSystemSection",
   "mcSection",
   "ndSection",
+  "emSection",
   "backup",
   "remove",
   "cancel",
@@ -95,6 +100,9 @@ const extra = [
   "wzFree",
   "wzStorage",
   "gitGiteaGuide",
+  "screenTake",
+  "screenGiveBack",
+  "screenStarting",
 ];
 // Literals that happen to be word keys but are not words of these screens.
 const skip = new Set(["close", "model", "on", "off", "url", "token", "number", "name", "path"]);

@@ -17,9 +17,11 @@ import { mkdir, readdir, rm, stat, statfs } from "node:fs/promises";
 import { arch, cpus, freemem, homedir, loadavg, type as osType, release, totalmem } from "node:os";
 import { join, resolve, sep } from "node:path";
 import { bashOutsideWrites, criticalOf, nodeCommands } from "@redgiant/hierarchy";
-import type { NodeCapabilities } from "@redgiant/protocol";
+import type { EmulatorReport, NodeCapabilities } from "@redgiant/protocol";
 import type { CompletionRequest, ProviderRegistry } from "@redgiant/providers";
 import type { Workspace } from "@redgiant/tools";
+import type { DeviceAccess } from "../emulators/devices.js";
+import { nodeDeviceHandler } from "./device.js";
 import { type NodeMediaOptions, nodeMediaHandler } from "./media.js";
 import { fileHash, putPiece, readPiece } from "./pieces.js";
 import type { NodeCaller, NodeHandlers } from "./service.js";
@@ -43,6 +45,10 @@ export interface NodeServeOptions {
   offersProvider?: (id: string) => boolean;
   /** G41.7: this machine's ffmpeg and cards, for renders asked by other machines. */
   media?: Omit<NodeMediaOptions, "dataDir" | "container" | "lends">;
+  /** 3.11: this machine's emulators, phones and simulators (Settings › Emulators of the asker). */
+  emulators?: () => Promise<EmulatorReport>;
+  /** 3.11 phase 4: this machine's devices, driven from other machines (`device`). */
+  devices?: () => DeviceAccess;
 }
 
 const safe = (fp: string) =>
@@ -78,8 +84,16 @@ export function nodeHandlers(o: NodeServeOptions): NodeHandlers {
       lends: (ownerId) => offers(ownerId).sandbox,
     });
 
+  const device =
+    o.devices &&
+    nodeDeviceHandler({
+      devices: o.devices,
+      dir: join(o.dataDir, "devices"),
+      lends: (ownerId) => offers(ownerId).sandbox,
+    });
   return {
     ...(media && { media }),
+    ...(device && { device }),
     async capabilities(ownerId) {
       const cores = cpus().length;
       let storage: NodeCapabilities["storage"] = { ok: false };
@@ -117,6 +131,10 @@ export function nodeHandlers(o: NodeServeOptions): NodeHandlers {
           gpus: await o.media.machine.gpus(),
           ...(offers(ownerId).sandbox && { media: await o.media.machine.media() }),
         }),
+        ...(await o.emulators?.().then(
+          (emulators) => ({ emulators }),
+          () => ({}),
+        )),
       };
     },
 

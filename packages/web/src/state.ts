@@ -748,6 +748,30 @@ export const browserScreen = signal<{
   unavailable?: boolean;
 }>({ control: "agents", url: "" });
 
+/** Each open device's screen (3.11): its latest frame, state and who drives it. */
+export interface DeviceScreenState {
+  frame?: { data: string; width: number; height: number };
+  state: "off" | "starting" | "on" | "unauthorized" | "offline";
+  control: "agents" | "person";
+  error?: string | undefined;
+}
+export const deviceScreens = signal<Record<string, DeviceScreenState>>({});
+/** Where each open device's H.264 goes (3.11 phase 7): its view's decoder, by device id. */
+export const deviceVideoSinks = new Map<
+  string,
+  (m: Extract<ServerMessage, { type: "device.video" }>) => void
+>();
+
+function deviceScreen(id: string, patch: Partial<DeviceScreenState>): void {
+  const cur = deviceScreens.value[id] ?? { state: "starting", control: "agents" };
+  deviceScreens.value = { ...deviceScreens.value, [id]: { ...cur, ...patch } };
+}
+
+/** Opens a device in the area on the right (3.11). */
+export function openDevice(device: string, title: string): void {
+  openTab({ id: `device:${device}`, type: "device", title, device });
+}
+
 export function applyMessage(m: ServerMessage): void {
   switch (m.type) {
     // A new link, the first or after a drop (p3.8.9: the person's server restarted after a
@@ -767,6 +791,15 @@ export function applyMessage(m: ServerMessage): void {
         ...browserScreen.value,
         frame: { data: m.data, width: m.width, height: m.height },
       };
+      return;
+    case "device.frame":
+      deviceScreen(m.id, { frame: { data: m.data, width: m.width, height: m.height } });
+      return;
+    case "device.state":
+      deviceScreen(m.id, { state: m.state, control: m.control, error: m.error });
+      return;
+    case "device.video":
+      deviceVideoSinks.get(m.id)?.(m);
       return;
     case "browser.state":
       browserScreen.value = {
@@ -1318,7 +1351,9 @@ export type SideView =
   /** The personal agents' browser, live (G24.14b). */
   | { id: string; type: "screen"; title: string }
   /** What an agent showed (G25.1). */
-  | { id: string; type: "canvas"; title: string; target: CanvasTarget };
+  | { id: string; type: "canvas"; title: string; target: CanvasTarget }
+  /** An Android emulator or phone, live (3.11): `device` is its id (`avd:<name>` or a serial). */
+  | { id: string; type: "device"; title: string; device: string };
 
 export type SettingsSection =
   | "general"
@@ -1361,6 +1396,8 @@ export type SettingsSection =
   | "machines"
   /** Other RedGiant machines paired with this one (G39.4). */
   | "nodes"
+  /** Android SDK, emulators, phones and iOS simulators here and on the nodes (3.11). */
+  | "emulators"
   /** The person's phones and computers with RGCompanion, each with its own token (G40.1). */
   | "devices"
   /** Hands-free voice on this device (G38.4). */
@@ -1613,7 +1650,7 @@ const SECTIONS: Record<string, SettingsSection> = {
 /** Opens something where it belongs: a tab in the middle, or a file or terminal on the right. */
 export function openTab(req: OpenRequest): void {
   drawerOpen.value = false;
-  if (req.type === "terminal" || req.type === "screen") {
+  if (req.type === "terminal" || req.type === "screen" || req.type === "device") {
     if (!sideViews.value.some((v) => v.id === req.id)) sideViews.value = [...sideViews.value, req];
     activeSide.value = req.id;
     showSideArea();

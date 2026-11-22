@@ -21,6 +21,7 @@ export * from "./doc-pdf.js";
 export * from "./doc-svg.js";
 export * from "./doc-video.js";
 export * from "./embed.js";
+export * from "./emulators.js";
 export * from "./events.js";
 export * from "./ffmpeg.js";
 export * from "./find-timing.js";

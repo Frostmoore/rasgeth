@@ -2,7 +2,7 @@
 // were ten editors in memory (Univer, pdf.js, a WebGL context each…). Now the tab in view and the
 // ones seen most recently stay loaded; the others are let go and loaded again when the person
 // comes back, where they were (the page, line, time, zoom or sheet their viewer last said).
-// Terminals, the shared screen, sites and agents' apps are never let go: they would lose what runs.
+// Terminals, the shared screen, devices (3.11), sites and agents' apps are never let go: they would lose what runs.
 import type { CanvasDo, CanvasPlace } from "@redgiant/protocol";
 import { canvasKind } from "./canvas-kind.js";
 
@@ -11,7 +11,7 @@ export const WARM_TABS = 3;
 
 export type WarmView =
   | { id: string; type: "canvas"; target: Parameters<typeof canvasKind>[0] }
-  | { id: string; type: "terminal" | "screen" };
+  | { id: string; type: "terminal" | "screen" | "device" };
 
 /** Whether a tab may be let go when it is out of view (an editor or a viewer of a file). */
 export function mayUnload(v: WarmView): boolean {

@@ -14,7 +14,9 @@ import {
   CatalogWatcher,
   DockerBrowserLauncher,
   debugLog,
+  EmulatorMachine,
   exportBackup,
+  FakeDeviceHost,
   FirstBoot,
   GitHosts,
   HuggingFace,
@@ -1169,8 +1171,115 @@ if (process.env.DEMO_SSH) {
   await mkdir(join(sshHome, "releases"), { recursive: true });
   await writeFile(join(sshHome, "app.log"), "12:00:01 started on :8080\n12:00:02 ready\n");
 }
+// DEMO_EMULATORS=1 (3.11): Settings › Emulators shows a Windows computer with an SDK found through
+// Android Studio's settings, an old emulator, two virtual devices, one running, and two phones
+// (one waiting for its yes). Without it the demo reads the machine it runs on.
+const demoEmulators =
+  process.env.DEMO_EMULATORS &&
+  new EmulatorMachine({
+    settings: (() => {
+      let v = { sdkPath: null, maxRunning: 2 };
+      return { get: () => v, set: async (n) => (v = { ...v, ...n }) };
+    })(),
+    os: "windows",
+    isSdk: async (p) => /android/i.test(p),
+    gather: async (o) => ({
+      os: "windows",
+      arch: "x64",
+      container: false,
+      looked: [
+        ...(o.custom ? [{ path: o.custom, source: "custom" }] : []),
+        { path: "D:\\Android\\Sdk", source: "studio" },
+        { path: "C:\\Users\\ana\\AppData\\Local\\Android\\Sdk", source: "standard" },
+      ],
+      sdk: {
+        root: o.custom ?? "D:\\Android\\Sdk",
+        source: o.custom ? "custom" : "studio",
+        emulator: "35.2.10",
+        platformTools: "37.0.1",
+        cmdlineTools: true,
+        images: process.env.DEMO_INSTALL_FAKE
+          ? []
+          : ["android-35/google_apis_playstore/x86_64", "android-36/google_apis/x86_64"],
+      },
+      avds: (process.env.DEMO_INSTALL_FAKE ? () => [] : (x) => x)([
+        {
+          report: {
+            name: "Pixel_9_API_36",
+            device: "pixel_9",
+            api: 36,
+            abi: "x86_64",
+            tag: "google_apis",
+          },
+          image: "android-36/google_apis/x86_64",
+        },
+        {
+          report: {
+            name: "Medium_Phone_API_35",
+            device: "medium_phone",
+            api: 35,
+            abi: "x86_64",
+            tag: "google_apis_playstore",
+            playStore: true,
+          },
+          image: "android-35/google_apis_playstore/x86_64",
+        },
+      ]),
+      attached: [
+        ...(process.env.DEMO_INSTALL_FAKE
+          ? []
+          : [
+              {
+                serial: "emulator-5554",
+                kind: "emulator",
+                state: "device",
+                model: "sdk gphone64 x86 64",
+              },
+            ]),
+        { serial: "R58N12ABCDE", kind: "phone", state: "device", link: "usb", model: "SM A525F" },
+        { serial: "192.168.1.40:5555", kind: "phone", state: "unauthorized", link: "wifi" },
+      ],
+      runningAvds: { "emulator-5554": "Medium_Phone_API_35" },
+      accel: { ok: true, kind: "whpx" },
+      maxRunning: o.maxRunning,
+      at: new Date().toISOString(),
+    }),
+  });
+// DEMO_INSTALL_FAKE=1 (3.11 phase 5, with DEMO_EMULATORS=1): the guided install acted out. The
+// plan is the real one, from stand-in Google lists and a stand-in Java; the install is a job whose
+// bars move by themselves. Nothing is downloaded, run or written.
+const demoInstallLists = `<x><license id="android-sdk-license" type="text">Terms and Conditions
+
+(Demo) Here the window shows the full text of Google's Android Software Development Kit License
+Agreement, as Google's repository gives it, to read before accepting.
+
+1. Introduction
+
+1.1 The Android Software Development Kit (referred to in the License Agreement as the "SDK") is
+licensed to you subject to the terms of the License Agreement.</license><channel id="channel-0">stable</channel>
+<remotePackage path="emulator"><revision><major>37</major><minor>3</minor><micro>10</micro></revision><uses-license ref="android-sdk-license"/><channelRef ref="channel-0"/><archives><archive><complete><size>456613348</size><url>e.zip</url></complete></archive></archives></remotePackage>
+<remotePackage path="platform-tools"><revision><major>37</major><minor>0</minor><micro>3</micro></revision><uses-license ref="android-sdk-license"/><channelRef ref="channel-0"/><archives><archive><complete><size>8188601</size><url>p.zip</url></complete></archive></archives></remotePackage>
+<remotePackage path="system-images;android-35;google_apis;x86_64"><revision><major>9</major></revision><uses-license ref="android-sdk-license"/><channelRef ref="channel-0"/><archives><archive><complete><size>1738815903</size><url>i.zip</url></complete></archive></archives></remotePackage></x>`;
 const core = await RedGiantCore.create({
   db: wrap(pg),
+  ...(demoEmulators && { emulators: demoEmulators }),
+  ...(process.env.DEMO_INSTALL_FAKE && {
+    emuInstall: {
+      fetch: async () => new Response(demoInstallLists),
+      java: async () => ({
+        path: "C:\\Program Files\\OpenLogic\\jdk-17.0.13.11-hotspot\\bin\\java.exe",
+        major: 17,
+      }),
+    },
+  }),
+  // DEMO_DEVICE_JPEG=<file> (3.11): the devices are acted out, every screen showing that picture.
+  // Without it the devices are this machine's own (adb's server; ANDROID_ADB_SERVER_PORT may be a
+  // tunnel to another machine's).
+  ...(process.env.DEMO_DEVICE_JPEG && {
+    deviceHost: new FakeDeviceHost(
+      (await readFile(process.env.DEMO_DEVICE_JPEG)).toString("base64"),
+    ),
+  }),
   providers: new ProviderRegistry()
     .register(
       new FakeProvider(brain, {
@@ -1229,6 +1338,42 @@ const core = await RedGiantCore.create({
     machines: { dial: () => ({ host: "127.0.0.1", port: sshDemo.port }), connectTimeoutMs: 5000 },
   }),
 });
+if (process.env.DEMO_INSTALL_FAKE) {
+  const plans = new Map();
+  const plan = core.emuInstall.plan.bind(core.emuInstall);
+  core.emuInstall.plan = async (owner, body) => {
+    const p = await plan(owner, body);
+    if (p.planId) plans.set(p.planId, p);
+    return p;
+  };
+  core.emuInstall.start = (owner, b) => {
+    const p = plans.get(b.planId);
+    if (!p || (p.licences.length && b.licenceAccepted !== true))
+      throw new Error("The licences must be read and accepted first");
+    plans.delete(b.planId);
+    return core.jobs.start(
+      owner,
+      "emulator_install",
+      p.steps.map((s) => s.id),
+      async (h) => {
+        for (const s of p.steps) {
+          h.step(s.id);
+          // About 11 MB/s, a little uneven, so the bar, the speed and the time left move.
+          const total = s.bytes ?? 0;
+          for (let done = 0; total && done < total; ) {
+            if (h.signal.aborted) throw new Error("cancelled");
+            await new Promise((r) => setTimeout(r, 500));
+            done = Math.min(total, done + 5_500_000 + Math.round(Math.random() * 1_000_000));
+            h.progress(done, total);
+          }
+          if (!total) await new Promise((r) => setTimeout(r, 800));
+        }
+        return { target: p.target };
+      },
+      { target: p.target },
+    );
+  };
+}
 // DEMO_API_KEY=1 (G40.9b): an Anthropic API key stand-in next to the subscription, so the same
 // Claude models go both ways and the menus offer «Abbonamento» / «Chiave API».
 if (process.env.DEMO_API_KEY)

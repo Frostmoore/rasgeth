@@ -84,6 +84,7 @@ import {
   type DocFile,
   docKey,
   EditorSettings,
+  EmulatorSettings,
   type Event,
   type ImagePart,
   isCriticalId,
@@ -158,6 +159,7 @@ import {
 } from "@redgiant/sandbox";
 import { readRelease } from "@redgiant/supervisor";
 import {
+  agentEnv,
   BackgroundCommands,
   baseTools,
   LocalWorkspace,
@@ -246,7 +248,15 @@ import {
   type MailboxInput,
   type MailSender,
 } from "./email.js";
+import { AndroidHost } from "./emulators/android.js";
+import { Devices } from "./emulators/devices.js";
+import type { DeviceHost } from "./emulators/host.js";
+import { EmulatorInstaller, type InstallerOptions } from "./emulators/install.js";
+import { EMULATOR_SETTINGS_OWNER, EmulatorMachine } from "./emulators/machine.js";
+import { DeviceHub } from "./emulators/remote.js";
+import { deviceTools } from "./emulators/tools.js";
 import { engineTranscripts, fingerprints, rewriteTranscript, tainted } from "./erase-message.js";
+import { ffmpegOnPath, locateFfmpeg } from "./ffmpeg.js";
 import { FileTriggers } from "./file-triggers.js";
 import type { GitHosts } from "./git-hosts.js";
 import { IMAGE_MODEL, imageFileName } from "./images.js";
@@ -450,6 +460,12 @@ export interface CoreOptions {
     /** G41.7: this machine's ffmpeg, cards and NVENC (tests: `fixedMachine`). */
     machine?: MediaMachineLike;
   };
+  /** Emulators (3.11): tests give a machine with fixed facts; by default this machine is read. */
+  emulators?: EmulatorMachine;
+  /** The guided install (3.11 phase 5): tests give fake downloads and programs. */
+  emuInstall?: Partial<Omit<InstallerOptions, "jobs" | "machine">>;
+  /** Devices in the Canvas (3.11): tests give a `FakeDeviceHost`; by default adb and scrcpy. */
+  deviceHost?: DeviceHost;
   /** The editor's timings (G37.1): tests save at once and hold the person's place briefly. */
   editor?: Pick<EditorHostOptions, "saveDelayMs" | "lockMs" | "watchMs" | "now">;
   /** What applies the document editor's actions on the server (tests: a fake; LibreOffice otherwise). */
@@ -1472,6 +1488,57 @@ export class RedGiantCore implements OrchestrationHost {
       (o.videoMedia?.tools
         ? fixedMachine(undefined, { download: false, nvenc: false, encoder: "libx264" })
         : new MediaMachine({ dataDir: dirname(o.workspacesDir) }));
+    this.emulatorSettings = new OwnerSettings(
+      o.db,
+      "emulators",
+      EmulatorSettings,
+      EmulatorSettings.parse({}),
+    );
+    this.emulators =
+      o.emulators ??
+      new EmulatorMachine({
+        settings: {
+          get: () => this.emulatorSettings.get(EMULATOR_SETTINGS_OWNER),
+          set: (v) => this.emulatorSettings.set(EMULATOR_SETTINGS_OWNER, v),
+        },
+      });
+    this.emuInstall = new EmulatorInstaller({
+      jobs: this.jobs,
+      machine: this.emulators,
+      env: () => agentEnv(),
+      ...o.emuInstall,
+    });
+    this.emuDevices = new Devices({
+      host:
+        o.deviceHost ??
+        new AndroidHost({
+          tools: async () => {
+            const r = await this.emulators.report();
+            const sdk = r.android.sdk;
+            const exe = r.os === "windows" ? ".exe" : "";
+            if (!sdk) return {};
+            return {
+              ...(sdk.platformTools && { adb: join(sdk.root, "platform-tools", `adb${exe}`) }),
+              ...(sdk.emulator && { emulator: join(sdk.root, "emulator", `emulator${exe}`) }),
+            };
+          },
+          // ffmpeg alone is enough here; the pinned build is downloaded only when there is none.
+          ffmpeg: async () =>
+            locateFfmpeg(dirname(o.workspacesDir))?.ffmpeg ??
+            ffmpegOnPath() ??
+            (
+              await this.mediaMachine.ensure({
+                signal: new AbortController().signal,
+                progress: () => {},
+              })
+            ).ffmpeg,
+        }),
+      avds: async () =>
+        (await this.emulators.report()).android.avds
+          .filter((a) => !a.imageMissing)
+          .map((a) => a.name),
+      maxRunning: () => this.emulators.settings().maxRunning,
+    });
     this.nodes = new Nodes({
       db: o.db,
       vault: () => this.vault,
@@ -1482,6 +1549,8 @@ export class RedGiantCore implements OrchestrationHost {
           machine: this.mediaMachine,
           ...(o.videoMedia?.run && { run: o.videoMedia.run }),
         },
+        emulators: () => this.emulators.report(),
+        devices: () => this.emuDevices,
         providers: o.providers,
         sandboxKind: this.sandbox.kind,
         sandbox: async (_ownerId, key, dir) =>
@@ -1491,6 +1560,7 @@ export class RedGiantCore implements OrchestrationHost {
       }),
       ...o.nodes,
     });
+    this.deviceHub = new DeviceHub({ local: this.emuDevices, nodes: this.nodes });
     // A node's models «via <node>» appear and go with it (G39.4).
     this.nodes.onChange((ownerId) => void this.syncNodeProviders(ownerId).catch(() => {}));
     this.mail = new MailService({
@@ -1923,6 +1993,7 @@ export class RedGiantCore implements OrchestrationHost {
     await core.commandSettings.load();
     await core.requestSettings.load();
     await core.editorSettings.load();
+    await core.emulatorSettings.load();
     await core.acpWorkers.load();
     await core.tasks.rebuild();
     // Echo (3.9.6): the conversations' index catches up with the log, then follows it.
@@ -2469,6 +2540,20 @@ export class RedGiantCore implements OrchestrationHost {
     if (this.browsers && ["assistant", "orchestrator", "agent", "subagent"].includes(agent.kind))
       tools.push(
         ...browserTools(this.browsers.get(ownerId), {
+          vision: (() => {
+            try {
+              return this.o.providers.get(model.provider).modelInfo(model.model).vision === true;
+            } catch {
+              return false;
+            }
+          })(),
+        }),
+      );
+    // Devices (3.11): the machine's emulators and phones, for every agent that does work.
+    if (ws && ["assistant", "orchestrator", "agent", "subagent"].includes(agent.kind))
+      tools.push(
+        ...deviceTools(this.deviceHub.of(ownerId), {
+          root: ws.root,
           vision: (() => {
             try {
               return this.o.providers.get(model.provider).modelInfo(model.model).vision === true;
@@ -5779,6 +5864,16 @@ export class RedGiantCore implements OrchestrationHost {
   private videoRendersCache: VideoRenders | undefined;
   /** G41.7: this machine's ffmpeg, cards and encoder. */
   readonly mediaMachine: MediaMachineLike;
+  /** 3.11: this machine's Android SDK, emulators, phones and simulators (Settings › Emulators). */
+  readonly emulators: EmulatorMachine;
+  /** 3.11 phase 5: the guided install of the Android SDK pieces, only with the person's yes. */
+  readonly emuInstall: EmulatorInstaller;
+  /** The machine's emulator settings, one value in `rg_settings` (owner `machine`). */
+  readonly emulatorSettings: OwnerSettings<EmulatorSettings>;
+  /** 3.11: the devices in the Canvas (AVDs, running emulators, phones), for the person and the agents. */
+  readonly emuDevices: Devices;
+  /** 3.11 phase 4: this machine's devices and the nodes', per person (`of(ownerId)`). */
+  readonly deviceHub: DeviceHub;
 
   /** The machines a video can be rendered on (G41.7): this one first, then the nodes. */
   async renderMachines(owner: string): Promise<RenderMachine[]> {
@@ -9299,6 +9394,7 @@ export class RedGiantCore implements OrchestrationHost {
   async close(): Promise<void> {
     this.closing = true;
     await this.nodes.stop();
+    this.emuDevices.close();
     await this.automations.stop();
     await this.rules.stop();
     // Edits accepted are in the log already; the files are written before closing.

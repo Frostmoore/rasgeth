@@ -20972,6 +20972,172 @@ html[data-theme="dark"] {
   display: block;
   margin-top: 2px;
 }
+/* Settings, Emulators (3.11): each machine's report. */
+.em-report {
+  display: grid;
+  gap: 12px;
+}
+.em-status {
+  margin: 0;
+  font-weight: 600;
+}
+.em-status.ok {
+  color: var(--ok);
+}
+.em-h {
+  margin: 8px 0 0;
+  font-size: 0.95rem;
+}
+.em-name,
+.em-node-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.em-node-name {
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+.em-src {
+  color: var(--dim);
+  font-weight: 400;
+}
+.st-facts dd code {
+  display: inline-block;
+  margin-left: 6px;
+}
+.em-missing,
+.em-looked {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+.em-missing li {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.em-missing svg {
+  flex: none;
+  margin-top: 3px;
+  color: var(--warn, var(--dim));
+}
+.em-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* 3.11 phase 5: the guided install's window. */
+.ei-acts {
+  margin-top: 10px;
+}
+.ei-plan .ei-block {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.ei-notes {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  color: var(--dim);
+}
+.ei-steps {
+  margin: 4px 0 0;
+  padding-left: 22px;
+}
+.ei-steps li {
+  margin: 3px 0;
+}
+.ei-total {
+  font-weight: 600;
+  margin: 8px 0 0;
+}
+.ei-licence {
+  margin: 8px 0;
+}
+.ei-licence pre {
+  max-height: 240px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 4px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel2, var(--panel));
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.em-node + .em-node {
+  margin-top: 16px;
+}
+/* In a narrow column (the area on the right open) the rows wrap instead of squeezing the text. */
+.em-page .st-row {
+  flex-wrap: wrap;
+}
+.em-page .st-row-text {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+/* A device live on the right (3.11): the phone's frame, its screen and its buttons. */
+.device-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  min-height: 0;
+}
+.device-view {
+  position: relative;
+  border: 10px solid #15161a;
+  border-radius: 30px;
+  overflow: hidden;
+  background: #000;
+  touch-action: none;
+  user-select: none;
+  max-width: 100%;
+}
+.device-frame.wide .device-view {
+  border-radius: 24px;
+}
+.device-view .device-canvas[hidden] {
+  display: none;
+}
+.device-view.mine {
+  box-shadow: 0 0 0 3px var(--accent);
+  cursor: pointer;
+}
+.device-view:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.device-view img,
+.device-view .device-canvas {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 260px);
+  width: auto;
+  height: auto;
+}
+.device-view .empty {
+  width: 260px;
+  height: 520px;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: #c9ccd4;
+  text-align: center;
+}
+.device-keys {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+}
 
 /* «Salvati» (G40.14): the person's saved passages. */
 .chats-head-actions {

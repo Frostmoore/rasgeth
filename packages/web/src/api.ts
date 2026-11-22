@@ -10,6 +10,10 @@ import {
   type ClientMessage,
   type CloudEmbeddingModel,
   type DeviceView,
+  type EmuDeviceView,
+  type EmuInstallPlan,
+  type EmuInstallPlanBody,
+  type EmulatorsState,
   type Event,
   type FoundBackup,
   type GodMessageRequest,
@@ -1778,6 +1782,18 @@ export class Api {
     this.call("DELETE", `/api/settings/mailboxes/${encodeURIComponent(id)}`);
   /** Nodes (G39.4): the tree, pairs waiting for the yes, grants, placements; never a key. */
   nodes = () => this.call<NodesState>("GET", "/api/nodes");
+  emulators = (fresh = false) =>
+    this.call<EmulatorsState>("GET", `/api/emulators${fresh ? "?fresh=1" : ""}`);
+  setEmulatorSettings = (b: { sdkPath?: string | null; maxRunning?: number }) =>
+    this.call<EmulatorsState>("PUT", "/api/emulators/settings", b);
+  emulatorDevices = () => this.call<{ devices: EmuDeviceView[] }>("GET", "/api/emulators/devices");
+  stopEmulatorDevice = (id: string) =>
+    this.call<{ devices: EmuDeviceView[] }>("POST", "/api/emulators/devices/stop", { id });
+  /** 3.11 phase 5: the guided install's plan (steps, sizes, licences) and the person's yes. */
+  emulatorInstallPlan = (b: EmuInstallPlanBody) =>
+    this.call<EmuInstallPlan>("POST", "/api/emulators/install/plan", b);
+  startEmulatorInstall = (b: { planId: string; licenceAccepted: boolean }) =>
+    this.call<{ jobId: string }>("POST", "/api/emulators/install/start", b);
   nodeCode = () => this.call<PairCode>("POST", "/api/nodes/code");
   cancelNodeCode = () => this.call("DELETE", "/api/nodes/code");
   pairNode = (b: { address: string; code: string; name?: string }) =>

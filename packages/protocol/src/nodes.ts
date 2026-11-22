@@ -6,6 +6,7 @@
 // a separate grant the person gives, kept by the machine it is about. No secret ever crosses:
 // a node's keys, its keychain and its providers' keys stay there.
 import { z } from "zod";
+import type { EmulatorReport } from "./emulators.js";
 import type { FfmpegInfo, H264Encoder } from "./ffmpeg.js";
 
 /** `use`: its capabilities (sandbox commands, models, storage); `admin`: also who may command it. */
@@ -90,6 +91,8 @@ export interface NodeCapabilities {
   gpus?: NodeGpu[];
   /** What it offers to render video (G41.7); absent before 3.9 (no `media` operation there). */
   media?: NodeMedia;
+  /** Its Android SDK, emulators, attached phones and iOS simulators (3.11); absent before 3.11. */
+  emulators?: EmulatorReport;
 }
 
 export interface NodeGpu {

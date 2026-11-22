@@ -496,6 +496,16 @@ const SENTENCES: Record<string, Record<Lang, Sentence>> = {
     it: ({ i, q }) => `Scrive nel campo ${q(str(i.field) ?? "?")} del browser`,
     en: ({ i, q }) => `Types into the field ${q(str(i.field) ?? "?")} in the browser`,
   },
+  device_install: {
+    it: ({ i, q }) => `Installa ${q(str(i.apk) ?? "?")} sul dispositivo ${q(str(i.device) ?? "?")}`,
+    en: ({ i, q }) => `Installs ${q(str(i.apk) ?? "?")} on the device ${q(str(i.device) ?? "?")}`,
+  },
+  device_launch: {
+    it: ({ i, q }) =>
+      `Apre l'app ${q(str(i.package) ?? "?")} sul dispositivo ${q(str(i.device) ?? "?")}`,
+    en: ({ i, q }) =>
+      `Launches the app ${q(str(i.package) ?? "?")} on the device ${q(str(i.device) ?? "?")}`,
+  },
   repo_pull_request: {
     it: ({ i, q }) => `Apre una pull request sul repository: ${q(str(i.title) ?? "?")}`,
     en: ({ i, q }) => `Opens a pull request on the repository: ${q(str(i.title) ?? "?")}`,

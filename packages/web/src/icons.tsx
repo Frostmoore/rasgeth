@@ -318,6 +318,14 @@ export const IconPhone = ({ size = 15 }: P) => (
     <path d="M11 18h2" />
   </Svg>
 );
+/** Emulators (3.11): a phone with a play mark on its screen. */
+export const IconEmulator = ({ size = 15 }: P) => (
+  <Svg size={size}>
+    <rect x="6" y="2" width="12" height="20" rx="2.5" />
+    <path d="M10.5 8.5v5l4-2.5z" />
+    <path d="M11 18h2" />
+  </Svg>
+);
 export const IconCard = ({ size = 15 }: P) => (
   <Svg size={size}>
     <rect x="2" y="5" width="20" height="14" rx="2" />

@@ -130,6 +130,8 @@ export function attachWebSocket(
     let offCanvas: (() => void) | undefined;
     let offActivity: (() => void) | undefined;
     let offScreen: (() => void) | undefined;
+    /** The devices this connection watches (3.11), by id. */
+    const offDevices = new Map<string, () => void>();
     let offPage: (() => void) | undefined;
     const follows = new Map<string, () => void>();
     /** Conversations an editor on this connection shows with its files (G38.6). */
@@ -384,6 +386,60 @@ export function attachWebSocket(
             );
             return;
           }
+          // A device in the Canvas (3.11): its screen, and the person's hands on it (never logged).
+          case "device.watch": {
+            if (offDevices.has(msg.id)) return;
+            const id = msg.id;
+            const h264 = msg.format === "h264";
+            // JPEGs until the first video packet (a node's device sends JPEG only).
+            let videoSeen = false;
+            offDevices.set(id, () => {});
+            // Not awaited: opening may start an AVD (a minute), and this connection's other
+            // messages must not wait for it. A page that decodes H.264 gets the video, not JPEGs.
+            void core.deviceHub
+              .of(owner)
+              .watch(
+                id,
+                (e) => {
+                  if (e.type === "frame") {
+                    if (!h264 || !videoSeen) send({ type: "device.frame", id, ...e.frame });
+                  } else if (e.type === "video") {
+                    if (h264) {
+                      videoSeen = true;
+                      send({ type: "device.video", id, ...e.packet });
+                    }
+                  } else
+                    send({
+                      type: "device.state",
+                      id,
+                      state: e.state,
+                      control: e.control,
+                      ...(e.error && { error: e.error }),
+                    });
+                },
+                { video: h264 },
+              )
+              .then((off) => {
+                if (offDevices.has(id)) offDevices.set(id, off);
+                else off();
+              });
+            return;
+          }
+          case "device.unwatch":
+            offDevices.get(msg.id)?.();
+            offDevices.delete(msg.id);
+            return;
+          case "device.control":
+            core.deviceHub.of(owner).setControl(msg.id, msg.take ? "person" : "agents");
+            return;
+          case "device.input":
+            await core.deviceHub
+              .of(owner)
+              .input(msg.id, msg.event, "person")
+              .catch((err: unknown) =>
+                fail("device", err instanceof Error ? err.message : String(err)),
+              );
+            return;
           case "browser.unwatch":
             offScreen?.();
             offScreen = undefined;
@@ -701,6 +757,9 @@ export function attachWebSocket(
       offCanvas?.();
       offActivity?.();
       offScreen?.();
+      for (const off of offDevices.values()) off();
+      // One still opening closes itself when it arrives (it finds no entry).
+      offDevices.clear();
       offPage?.();
     });
   }

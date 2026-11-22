@@ -547,6 +547,47 @@ class FakeRedGiant {
     }
   }
 
+  /// The devices (3.11 phase 2, ws.ts's `device.*`): who watches which, who has control, what the
+  /// person sent (only with control, as the server) and what happened.
+  final deviceWatchers = <String, Set<WebSocket>>{};
+  final deviceControl = <String, String>{};
+  final deviceInputs = <Map<String, dynamic>>[];
+  final deviceActs = <String>[];
+  String deviceStateOf = 'on';
+
+  void deviceState(String id, {String? error}) {
+    for (final ws in deviceWatchers[id] ?? const <WebSocket>{}) {
+      if (!_dead.contains(ws)) {
+        ws.add(
+          jsonEncode({
+            'type': 'device.state',
+            'id': id,
+            'state': deviceStateOf,
+            'control': deviceControl[id] ?? 'agents',
+            'error': ?error,
+          }),
+        );
+      }
+    }
+  }
+
+  /// A picture of a device's screen to its watchers (JPEG, base64).
+  void deviceFrame(String id, List<int> jpeg, {int width = 1080, int height = 2400}) {
+    for (final ws in deviceWatchers[id] ?? const <WebSocket>{}) {
+      if (!_dead.contains(ws)) {
+        ws.add(
+          jsonEncode({
+            'type': 'device.frame',
+            'id': id,
+            'data': base64Encode(jpeg),
+            'width': width,
+            'height': height,
+          }),
+        );
+      }
+    }
+  }
+
   final sent = <Map<String, dynamic>>[];
 
   /// 3.8.7: a turn step by step, in the real server's order (core.ts: `session.state` running once,
@@ -2776,6 +2817,24 @@ class FakeRedGiant {
             browserActs.add('teach ${m['agentId']} ${m['start']} ${m['title'] ?? ''}'.trim());
             browserTeaching = m['start'] == true ? m['agentId'] as String : null;
             _browserState();
+          case 'device.watch':
+            final id = m['id'] as String;
+            deviceWatchers.putIfAbsent(id, () => {}).add(ws);
+            deviceActs.add('watch $id');
+            deviceState(id);
+          case 'device.unwatch':
+            final id = m['id'] as String;
+            deviceWatchers[id]?.remove(ws);
+            deviceActs.add('unwatch $id');
+          case 'device.control':
+            final id = m['id'] as String;
+            deviceControl[id] = m['take'] == true ? 'person' : 'agents';
+            deviceActs.add('control $id ${m['take']}');
+            deviceState(id);
+          case 'device.input':
+            if (deviceControl[m['id']] == 'person') {
+              deviceInputs.add(m['event'] as Map<String, dynamic>);
+            }
           case 'ping':
             send({'type': 'pong'});
         }
@@ -2784,6 +2843,9 @@ class FakeRedGiant {
         sockets.remove(ws);
         follows.remove(ws);
         browserWatchers.remove(ws);
+        for (final w in deviceWatchers.values) {
+          w.remove(ws);
+        }
         _dead.remove(ws);
       },
     );

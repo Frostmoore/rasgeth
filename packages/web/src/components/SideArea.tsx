@@ -5,6 +5,7 @@ import {
   IconCanvas,
   IconChat,
   IconClose,
+  IconEmulator,
   IconMaximize,
   IconMonitor,
   IconTerminal,
@@ -29,6 +30,7 @@ import {
 import { sysWhat } from "../systems.js";
 import { placeOf, restoreTab } from "../viewers/live.js";
 import { placeDo, touch, warmTabs } from "../viewers/warm.js";
+import { DeviceScreen } from "./DeviceScreen.js";
 import { lazy } from "./lazy.js";
 import { Screen } from "./Screen.js";
 import { Shortcuts, shortcutsOpen } from "./Shortcuts.js";
@@ -278,6 +280,8 @@ export function SideArea() {
                   <IconTerminal size={13} />
                 ) : v.type === "screen" ? (
                   <IconMonitor size={13} />
+                ) : v.type === "device" ? (
+                  <IconEmulator size={13} />
                 ) : v.target.kind === "file" ? (
                   <FileIcon name={v.target.path} />
                 ) : (
@@ -323,6 +327,8 @@ export function SideArea() {
         >
           {v.type === "screen" ? (
             <Screen />
+          ) : v.type === "device" ? (
+            <DeviceScreen device={v.device} title={v.title} />
           ) : v.type === "canvas" ? (
             warm.has(v.id) && <Canvas title={v.title} target={v.target} />
           ) : (

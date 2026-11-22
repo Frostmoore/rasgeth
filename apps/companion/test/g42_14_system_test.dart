@@ -22,6 +22,7 @@ import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
 import 'package:rgcompanion/screens/server_settings_screen.dart';
 import 'package:rgcompanion/settings/system/backup_screen.dart';
+import 'package:rgcompanion/settings/system/emulators_screen.dart';
 import 'package:rgcompanion/settings/system/machines_screen.dart';
 import 'package:rgcompanion/settings/system/nodes_screen.dart';
 import 'package:rgcompanion/settings/system/os_panels.dart' show httpsTrustedHere;
@@ -293,6 +294,119 @@ void main() {
     await tap(tester, 'sy-mc-replace');
     await tap(tester, 'dialog-no');
     expect(sys.calls.where((c) => c.endsWith('/trust')), hasLength(1));
+    await done(tester);
+  });
+
+  testWidgets('emulators: the report, a folder refused then used, how many at once, the nodes', (
+    tester,
+  ) async {
+    await start(tester);
+    await push(tester, const EmulatorsScreen());
+    expect(find.textContaining('Pronta: qui possono girare gli emulatori (1'), findsOneWidget);
+    expect(
+      find.textContaining(r'D:\Android\Sdk · dalle impostazioni di Android Studio'),
+      findsOneWidget,
+    );
+    expect(find.text('Emulatore · Medium_Phone_API_35'), findsOneWidget);
+    expect(find.text('Telefono via Wi-Fi · aspetta il tuo sì sul telefono'), findsOneWidget);
+    expect(find.textContaining("L'emulatore è vecchio"), findsOneWidget);
+    // 3.11 phase 2: the devices one can open, between this machine and the SDK folder.
+    expect(find.byKey(const Key('sy-em-dev-emulator-5554')), findsOneWidget);
+    expect(find.byKey(const Key('sy-em-open-avd:Tablet')), findsOneWidget);
+    expect(find.byKey(const Key('sy-em-stop-avd:Tablet')), findsNothing);
+    // The nodes: a Mac with Xcode and no SDK, and one older than 3.11.
+    expect(find.text('Mac mini'), findsOneWidget);
+    expect(find.text('iPhone 18 (iOS 27.2)'), findsOneWidget);
+    expect(find.textContaining('Un ponte per i tocchi'), findsOneWidget);
+    expect(find.textContaining('più vecchio della 3.11'), findsOneWidget);
+    // A folder without an SDK is refused in the server's words; then one is used and forgotten.
+    await type(tester, 'sy-em-path', r'E:\vuota');
+    await tap(tester, 'sy-em-path-save');
+    expect(find.textContaining('No Android SDK in that folder'), findsOneWidget);
+    await type(tester, 'sy-em-path', r'E:\android-sdk');
+    await tap(tester, 'sy-em-path-save');
+    expect(sys.bodies['PUT /api/emulators/settings'], {'sdkPath': r'E:\android-sdk'});
+    expect(find.textContaining('la cartella che hai scelto'), findsOneWidget);
+    await tap(tester, 'sy-em-path-forget');
+    expect(sys.bodies['PUT /api/emulators/settings'], {'sdkPath': null});
+    await tap(tester, 'sy-em-max-3');
+    expect(sys.bodies['PUT /api/emulators/settings'], {'maxRunning': 3});
+    final before = sys.calls.where((c) => c == 'GET /api/emulators').length;
+    await calm(tester);
+    await tester.ensureVisible(find.byKey(const Key('sy-em-again')));
+    await calm(tester);
+    expect(
+      tester.widget<ButtonStyleButton>(find.byKey(const Key('sy-em-again'))).onPressed,
+      isNotNull,
+    );
+    await tap(tester, 'sy-em-again', 16);
+    expect(sys.calls.where((c) => c == 'GET /api/emulators').length, before + 1);
+    expect(find.byType(Checkbox), findsNothing);
+    await done(tester);
+  });
+
+  testWidgets('emulators: the guided install, only with the licences accepted (3.11 phase 5)', (
+    tester,
+  ) async {
+    sys.emulatorReport = {
+      ...sys.emulatorReport,
+      'android': {
+        'looked': [
+          {'path': r'C:\Users\Ada\AppData\Local\Android\Sdk', 'source': 'standard'},
+        ],
+        'avds': <Object>[],
+        'attached': <Object>[],
+        'accel': {'ok': false, 'reason': 'unknown'},
+      },
+      'missing': ['sdk'],
+      'ready': false,
+    };
+    await start(tester);
+    await push(tester, const EmulatorsScreen());
+    expect(find.byKey(const Key('ei-update')), findsNothing);
+    await tap(tester, 'ei-install', 16);
+    expect(sys.bodies['POST /api/emulators/install/plan'], <String, dynamic>{});
+    expect(find.textContaining(r'C:\Users\Ada\AppData\Local\Android\Sdk'), findsOneWidget);
+    expect(find.text('il posto standard di questo sistema'), findsOneWidget);
+    expect(find.textContaining('Gli strumenti a riga di comando di Android 22.0'), findsOneWidget);
+    expect(find.textContaining('Il telefono virtuale Rasgeth_Phone_API_35'), findsOneWidget);
+    expect(find.textContaining('Da scaricare: '), findsOneWidget);
+    expect(find.textContaining('Android SDK License Agreement'), findsOneWidget);
+    // Install waits for the licences accepted (our switch, never a checkbox).
+    await calm(tester);
+    await tester.ensureVisible(find.byKey(const Key('ei-start')));
+    expect(tester.widget<ButtonStyleButton>(find.byKey(const Key('ei-start'))).onPressed, isNull);
+    expect(find.byType(Checkbox), findsNothing);
+    await tap(tester, 'ei-accept');
+    expect(
+      tester.widget<ButtonStyleButton>(find.byKey(const Key('ei-start'))).onPressed,
+      isNotNull,
+    );
+    await tap(tester, 'ei-start', 16);
+    expect(sys.bodies['POST /api/emulators/install/start'], {
+      'planId': 'P1',
+      'licenceAccepted': true,
+    });
+    // The job's bar: bytes, speed and time left.
+    expect(find.byType(LinearProgressIndicator), findsOneWidget);
+    expect(find.textContaining('/s'), findsWidgets);
+    expect(find.byKey(const Key('ei-stop')), findsOneWidget);
+    final before = sys.calls.where((c) => c == 'GET /api/emulators').length;
+    await jobs(tester);
+    await calm(tester);
+    expect(find.textContaining('Fatto. Il resoconto'), findsOneWidget);
+    // The report is read again at the end.
+    expect(sys.calls.where((c) => c == 'GET /api/emulators').length, greaterThan(before));
+    await done(tester);
+  });
+
+  testWidgets('emulators: the update of an old emulator asks for its own plan', (tester) async {
+    await start(tester);
+    await push(tester, const EmulatorsScreen());
+    await tap(tester, 'ei-update', 16);
+    expect(sys.bodies['POST /api/emulators/install/plan'], {'only': 'emulator-update'});
+    expect(find.textContaining("L'emulatore, all'ultima versione 37.3.10"), findsOneWidget);
+    expect(find.byKey(const Key('ei-folder')), findsNothing);
     await done(tester);
   });
 

@@ -3,7 +3,7 @@
 // `revokeSessions`, `startRemote`, `stopRemote`, `setReachable`, `setupNet`, `probeName`,
 // `startPihole`, `stopPihole`, `piholePassword`), Settings › System (`setupRole`, `setupStorage`,
 // the backups' destinations, `setupSsh`, `setupWifi…`, `setupHttps`, `setupReboot`), the SSH
-// machines (`machines`…), the nodes (`nodes`…), the backup file (`exportBackup`, `uploadBackup`,
+// machines (`machines`…), the nodes (`nodes`…), the emulators (`emulators`, `setEmulatorSettings`), the backup file (`exportBackup`, `uploadBackup`,
 // `importBackup`), the updates' gate (`updateAct`, `safetyBackup`, `foundBackups`). Passwords and
 // keys go to the server and are never kept here.
 import 'dart:typed_data';
@@ -29,6 +29,126 @@ Found _found(Object? o) {
   return j.containsKey('value')
       ? (value: j['value'], missing: null)
       : (value: null, missing: _s(j['missing']) ?? 'unsupported');
+}
+
+/// `EmulatorReport` (3.11): what a machine has for emulators, phones and simulators.
+class EmulatorReport {
+  EmulatorReport(Map<String, dynamic> j)
+    : os = _s(j['os']) ?? 'linux',
+      arch = _s(j['arch']) ?? 'x64',
+      container = j['container'] == true,
+      sdk = _m(_m(j['android'])['sdk']).isEmpty ? null : _m(_m(j['android'])['sdk']),
+      looked = _l(_m(j['android'])['looked']),
+      avds = _l(_m(j['android'])['avds']),
+      attached = _l(_m(j['android'])['attached']),
+      adbIdle = _m(j['android'])['adbIdle'] == true,
+      accel = _m(_m(j['android'])['accel']),
+      ios = _m(j['ios']).isEmpty ? null : _m(j['ios']),
+      missing = _ss(j['missing']),
+      ready = j['ready'] == true,
+      maxRunning = _i(j['maxRunning']);
+
+  final String os, arch;
+  final bool container, adbIdle, ready;
+
+  /// `{root, source, emulator?, platformTools?, cmdlineTools, images}`.
+  final Map<String, dynamic>? sdk;
+  final List<Map<String, dynamic>> looked, avds, attached;
+
+  /// `{ok, kind?, reason?}`.
+  final Map<String, dynamic> accel;
+
+  /// `{xcode?, simulators, bridge?}` (macOS only).
+  final Map<String, dynamic>? ios;
+  final List<String> missing;
+  final int maxRunning;
+}
+
+/// `EmuInstallPlan` (3.11 phase 5): the guided install's steps, folder, sizes, licences; a
+/// `planId` only when it can start.
+class EmuInstallPlan {
+  EmuInstallPlan(Map<String, dynamic> j)
+    : planId = _s(j['planId']),
+      target = _s(j['target']) ?? '',
+      targetStandard = j['targetStandard'] == true,
+      steps = _l(j['steps']),
+      licences = _l(j['licences']),
+      bytes = _i(j['bytes']),
+      blocked = _s(j['blocked']),
+      notes = _ss(j['notes']),
+      java = _m(j['java']).isEmpty ? null : _m(j['java']);
+
+  final String? planId;
+  final String target;
+  final bool targetStandard;
+
+  /// `{id, package?, bytes?, version?, avd?}`.
+  final List<Map<String, dynamic>> steps;
+
+  /// `{id, text}`: the full text to read and accept.
+  final List<Map<String, dynamic>> licences;
+  final int bytes;
+  final String? blocked;
+  final List<String> notes;
+
+  /// `{path, major}`.
+  final Map<String, dynamic>? java;
+}
+
+/// `EmulatorMachineView`: this machine or a node, with its report when it gave one.
+class EmulatorMachineView {
+  EmulatorMachineView(Map<String, dynamic> j)
+    : id = _s(j['id']) ?? '',
+      name = _s(j['name']) ?? '',
+      online = j['online'] == true,
+      report = _m(j['report']).isEmpty ? null : EmulatorReport(_m(j['report']));
+
+  final String id, name;
+  final bool online;
+  final EmulatorReport? report;
+}
+
+/// `EmulatorsState`: Settings › Emulators.
+class EmulatorsState {
+  EmulatorsState(Map<String, dynamic> j)
+    : here = EmulatorMachineView(_m(j['here'])),
+      sdkPath = _s(_m(j['settings'])['sdkPath']),
+      maxRunning = _m(j['settings'])['maxRunning'] is num ? _i(_m(j['settings'])['maxRunning']) : 2,
+      nodes = [for (final n in _l(j['nodes'])) EmulatorMachineView(n)];
+
+  final EmulatorMachineView here;
+  final String? sdkPath;
+  final int maxRunning;
+  final List<EmulatorMachineView> nodes;
+}
+
+/// `EmuDeviceView` (3.11 phase 2): a device one can open, an AVD (on or off), a running
+/// emulator, a phone over USB or Wi-Fi.
+class EmuDeviceView {
+  EmuDeviceView(Map<String, dynamic> j)
+    : id = _s(j['id']) ?? '',
+      name = _s(j['name']) ?? '',
+      kind = j['kind'] == 'phone' ? 'phone' : 'emulator',
+      state = _s(j['state']) ?? 'off',
+      serial = _s(j['serial']),
+      link = _s(j['link']),
+      machine = _s(j['machine']),
+      ours = j['ours'] == true;
+
+  final String id, name;
+
+  /// emulator | phone.
+  final String kind;
+
+  /// off | starting | on | unauthorized | offline.
+  final String state;
+  final String? serial, link;
+
+  /// On a node (3.11 phase 4): its name; the id ends with `@<fingerprint>`.
+  final String? machine;
+
+  /// Rasgeth started it.
+  final bool ours;
 }
 
 /// `BlockDisk`.
@@ -384,6 +504,61 @@ extension SystemApi on RedGiantClient {
       _do('POST', '/api/settings/machines/${_e(id)}/test');
   Future<void> trustMachine(String id, String fingerprint) =>
       callJson('POST', '/api/settings/machines/${_e(id)}/trust', {'fingerprint': fingerprint});
+
+  // ---- emulators (3.11) ----
+
+  Future<EmulatorsState> emulators({bool fresh = false}) async =>
+      EmulatorsState(objectOf(await getJson('/api/emulators', fresh ? {'fresh': '1'} : null)));
+
+  /// `PUT /api/emulators/settings`: the SDK folder (`null` forgets it) and how many at once.
+  Future<EmulatorsState> setEmulatorSettings({
+    bool setPath = false,
+    String? sdkPath,
+    int? maxRunning,
+  }) async => EmulatorsState(
+    await _do('PUT', '/api/emulators/settings', {
+      if (setPath) 'sdkPath': sdkPath,
+      'maxRunning': ?maxRunning,
+    }),
+  );
+
+  /// `GET /api/emulators/devices`: the devices one can open (3.11 phase 2).
+  Future<List<EmuDeviceView>> emulatorDevices() async => [
+    for (final d in _l((await _get('/api/emulators/devices'))['devices'])) EmuDeviceView(d),
+  ];
+
+  /// `POST /api/emulators/devices/stop`: switches an emulator off; the devices after it.
+  Future<List<EmuDeviceView>> stopEmulatorDevice(String id) async => [
+    for (final d in _l((await _do('POST', '/api/emulators/devices/stop', {'id': id}))['devices']))
+      EmuDeviceView(d),
+  ];
+
+  /// `POST /api/emulators/install/plan` (3.11 phase 5): what the guided install would do here.
+  Future<EmuInstallPlan> emulatorInstallPlan({
+    String? target,
+    String? avdName,
+    String? only,
+  }) async => EmuInstallPlan(
+    await _do('POST', '/api/emulators/install/plan', {
+      'target': ?target,
+      'avdName': ?avdName,
+      'only': ?only,
+    }),
+  );
+
+  /// `POST /api/emulators/install/start`: the person's yes; the job's id.
+  Future<String> startEmulatorInstall(String planId, {required bool licenceAccepted}) async =>
+      _s(
+        (await _do('POST', '/api/emulators/install/start', {
+          'planId': planId,
+          'licenceAccepted': licenceAccepted,
+        }))['jobId'],
+      ) ??
+      '';
+
+  /// `POST /api/jobs/:id/cancel`.
+  Future<void> cancelEmulatorInstall(String jobId) =>
+      callJson('POST', '/api/jobs/${_e(jobId)}/cancel', const {});
 
   // ---- nodes ----
 

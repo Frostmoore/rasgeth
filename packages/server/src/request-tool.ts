@@ -23,6 +23,8 @@ export const KIT_LINES: Readonly<Record<ToolKit, string>> = {
   platform: "the platform itself: settings, budgets, rules, automations, MCP servers, its code",
   knowledge: "the person's document collections: search them, make one, add sources",
   browser: "a real browser: open pages, click, type, read, screenshots",
+  devices:
+    "Android emulators and phones: open one, look at its screen, tap, type, install and launch apps, logs",
   canvas: "the person's canvas: look at it, act on it, edit an open file with them",
   present: "show what you made in the canvas, product cards, boards of variants to choose from",
   images: "make pictures, and look at image files",

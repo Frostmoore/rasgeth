@@ -308,6 +308,16 @@ export function locateFfmpeg(
   return undefined;
 }
 
+/**
+ * An ffmpeg on the PATH, even without its ffprobe (3.11: a device's screen needs only ffmpeg; the
+ * renders keep asking for both through `locateFfmpeg`).
+ */
+export function ffmpegOnPath(
+  path: string = process.env.PATH ?? process.env.Path ?? "",
+): string | undefined {
+  return onPath("ffmpeg", path);
+}
+
 /** The ffmpeg to use, without downloading (see `locateFfmpeg`). */
 export const findFfmpeg = (dataDir: string, path?: string): string | undefined =>
   locateFfmpeg(dataDir, path)?.ffmpeg;

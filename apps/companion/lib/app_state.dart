@@ -1527,6 +1527,11 @@ class AppController extends ChangeNotifier {
       live.apply(m);
       // The shared browser watched again after a drop (the server forgets the watchers).
       if (m['type'] == 'welcome' && live.browser.watching) s.send({'type': 'browser.watch'});
+      if (m['type'] == 'welcome') {
+        for (final id in live.devices.watched) {
+          s.send({'type': 'device.watch', 'id': id});
+        }
+      }
     });
     var opened = false;
     _statusSub = s.statuses.listen((st) {
@@ -1808,6 +1813,27 @@ class AppController extends ChangeNotifier {
     'start': start,
     if (title != null && title.trim().isNotEmpty) 'title': title.trim(),
   });
+
+  /// Watches a device's screen (`device.watch`, 3.11 phase 2) or stops (`device.unwatch`).
+  void watchDevice(String id, bool on) {
+    final d = live.devices;
+    if (d.watched.contains(id) == on) return;
+    if (on) {
+      d.watched.add(id);
+      d.forget(id);
+    } else {
+      d.watched.remove(id);
+    }
+    socket?.send({'type': on ? 'device.watch' : 'device.unwatch', 'id': id});
+  }
+
+  /// Takes control of a device, or gives it back to the agents.
+  void deviceControl(String id, bool take) =>
+      socket?.send({'type': 'device.control', 'id': id, 'take': take});
+
+  /// A tap, a press held, a swipe, text, a key, a button or a turn (x, y between 0 and 1).
+  void deviceInput(String id, Map<String, Object?> event) =>
+      socket?.send({'type': 'device.input', 'id': id, 'event': event});
 
   /// Takes back a message still waiting in line (`session.unqueue`, 2026-11-05 in the page).
   void unqueue(String sessionId, String clientId) {
