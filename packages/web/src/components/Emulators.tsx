@@ -19,6 +19,7 @@ import { useEffect, useState } from "preact/hooks";
 import { t } from "../i18n.js";
 import { IconAlert, IconEmulator, IconPhone, IconRefresh, IconServer } from "../icons.js";
 import { attempt, getApi, openDevice } from "../state.js";
+import { EmulatorInstall } from "./EmulatorInstall.js";
 import { Box, Chips, Facts, Head, Row, Sub, WzPage } from "./SettingsKit.js";
 import { Advanced, Field } from "./ui.js";
 
@@ -247,6 +248,7 @@ export function DeviceList() {
               </span>
             }
             help={[
+              d.machine,
               d.kind === "phone"
                 ? d.link === "wifi"
                   ? t("emPhoneWifi")
@@ -262,7 +264,7 @@ export function DeviceList() {
               type="button"
               class="wz-btn small primary"
               disabled={d.state === "unauthorized" || d.state === "offline"}
-              onClick={() => openDevice(d.id, d.name)}
+              onClick={() => openDevice(d.id, d.machine ? `${d.name} · ${d.machine}` : d.name)}
             >
               {t("emOpen")}
             </button>
@@ -320,6 +322,7 @@ export function Emulators() {
       />
       <Box>
         {here ? <MachineReport r={here} /> : <p class="st-note">{t("emLooking")}</p>}
+        {here && <EmulatorInstall r={here} onDone={() => load(true)} />}
         <div class="em-acts">
           <button
             type="button"

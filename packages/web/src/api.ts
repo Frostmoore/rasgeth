@@ -11,6 +11,8 @@ import {
   type CloudEmbeddingModel,
   type DeviceView,
   type EmuDeviceView,
+  type EmuInstallPlan,
+  type EmuInstallPlanBody,
   type EmulatorsState,
   type Event,
   type FoundBackup,
@@ -1746,6 +1748,11 @@ export class Api {
   emulatorDevices = () => this.call<{ devices: EmuDeviceView[] }>("GET", "/api/emulators/devices");
   stopEmulatorDevice = (id: string) =>
     this.call<{ devices: EmuDeviceView[] }>("POST", "/api/emulators/devices/stop", { id });
+  /** 3.11 phase 5: the guided install's plan (steps, sizes, licences) and the person's yes. */
+  emulatorInstallPlan = (b: EmuInstallPlanBody) =>
+    this.call<EmuInstallPlan>("POST", "/api/emulators/install/plan", b);
+  startEmulatorInstall = (b: { planId: string; licenceAccepted: boolean }) =>
+    this.call<{ jobId: string }>("POST", "/api/emulators/install/start", b);
   nodeCode = () => this.call<PairCode>("POST", "/api/nodes/code");
   cancelNodeCode = () => this.call("DELETE", "/api/nodes/code");
   pairNode = (b: { address: string; code: string; name?: string }) =>

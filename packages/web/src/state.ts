@@ -700,6 +700,11 @@ export interface DeviceScreenState {
   error?: string | undefined;
 }
 export const deviceScreens = signal<Record<string, DeviceScreenState>>({});
+/** Where each open device's H.264 goes (3.11 phase 7): its view's decoder, by device id. */
+export const deviceVideoSinks = new Map<
+  string,
+  (m: Extract<ServerMessage, { type: "device.video" }>) => void
+>();
 
 function deviceScreen(id: string, patch: Partial<DeviceScreenState>): void {
   const cur = deviceScreens.value[id] ?? { state: "starting", control: "agents" };
@@ -736,6 +741,9 @@ export function applyMessage(m: ServerMessage): void {
       return;
     case "device.state":
       deviceScreen(m.id, { state: m.state, control: m.control, error: m.error });
+      return;
+    case "device.video":
+      deviceVideoSinks.get(m.id)?.(m);
       return;
     case "browser.state":
       browserScreen.value = {

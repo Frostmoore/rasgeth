@@ -20859,6 +20859,48 @@ html[data-theme="dark"] {
   gap: 8px;
   margin-top: 12px;
 }
+
+/* 3.11 phase 5: the guided install's window. */
+.ei-acts {
+  margin-top: 10px;
+}
+.ei-plan .ei-block {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.ei-notes {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  color: var(--dim);
+}
+.ei-steps {
+  margin: 4px 0 0;
+  padding-left: 22px;
+}
+.ei-steps li {
+  margin: 3px 0;
+}
+.ei-total {
+  font-weight: 600;
+  margin: 8px 0 0;
+}
+.ei-licence {
+  margin: 8px 0;
+}
+.ei-licence pre {
+  max-height: 240px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 4px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel2, var(--panel));
+  font-size: 12.5px;
+  line-height: 1.45;
+}
 .em-node + .em-node {
   margin-top: 16px;
 }
@@ -20892,6 +20934,9 @@ html[data-theme="dark"] {
 .device-frame.wide .device-view {
   border-radius: 24px;
 }
+.device-view .device-canvas[hidden] {
+  display: none;
+}
 .device-view.mine {
   box-shadow: 0 0 0 3px var(--accent);
   cursor: pointer;
@@ -20900,7 +20945,8 @@ html[data-theme="dark"] {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
 }
-.device-view img {
+.device-view img,
+.device-view .device-canvas {
   display: block;
   max-width: 100%;
   max-height: calc(100vh - 260px);

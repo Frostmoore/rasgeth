@@ -3,10 +3,11 @@
 // (a tap, a press held, a swipe with the mouse or the finger, the keyboard), never logged and never
 // seen by a model; then give it back. The phone's own buttons and turning it are drawn under it.
 import type { DeviceInput } from "@redgiant/protocol";
-import { useEffect, useRef } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
+import { H264Canvas, hasVideoDecoder } from "../device-video.js";
 import { t } from "../i18n.js";
 import { IconChevronLeft, IconHome, IconRotate, IconSquare } from "../icons.js";
-import { deviceScreens, getLive } from "../state.js";
+import { deviceScreens, deviceVideoSinks, getLive } from "../state.js";
 
 /** Keys sent as such; everything else printable is typed as text. */
 const KEYS = new Set([
@@ -48,11 +49,31 @@ export function DeviceScreen({ device, title }: { device: string; title: string 
   };
   const area = useRef<HTMLDivElement>(null);
   const down = useRef<{ x: number; y: number; at: number } | undefined>(undefined);
+  const canvas = useRef<HTMLCanvasElement>(null);
+  // H.264 decoded here when the browser can (3.11 phase 7); JPEG frames otherwise or after a failure.
+  const [format, setFormat] = useState<"h264" | "jpeg">(() => (hasVideoDecoder() ? "h264" : "jpeg"));
+  const [video, setVideo] = useState(false);
   useEffect(() => {
     const live = getLive();
-    live.send({ type: "device.watch", id: device });
-    return () => live.send({ type: "device.unwatch", id: device });
-  }, [device]);
+    let decoder: H264Canvas | undefined;
+    if (format === "h264") {
+      decoder = new H264Canvas(
+        () => canvas.current,
+        () => {
+          setVideo(false);
+          setFormat("jpeg");
+        },
+        () => setVideo(true),
+      );
+      deviceVideoSinks.set(device, (m) => void decoder?.push(m));
+    }
+    live.send({ type: "device.watch", id: device, ...(format === "h264" && { format }) });
+    return () => {
+      live.send({ type: "device.unwatch", id: device });
+      if (deviceVideoSinks.get(device)) deviceVideoSinks.delete(device);
+      decoder?.close();
+    };
+  }, [device, format]);
   useEffect(() => {
     if (s.control === "person") area.current?.focus();
   }, [s.control]);
@@ -127,7 +148,8 @@ export function DeviceScreen({ device, title }: { device: string; title: string 
             }
           }}
         >
-          {s.frame ? (
+          {format === "h264" && <canvas ref={canvas} hidden={!video} class="device-canvas" />}
+          {video ? null : s.frame ? (
             <img src={`data:image/jpeg;base64,${s.frame.data}`} alt="" draggable={false} />
           ) : (
             <div class="empty">
