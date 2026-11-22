@@ -410,6 +410,8 @@ Rasgeth is in pre-alpha. What comes next, in order:
   cuts on the beat, slip/slide/roll, speed and still frames, and Resolve timelines in. Then 3D generation with local or cloud engines, finished in Blender.
 - **3.11 — Emulators in the Canvas**: an Android emulator or the iOS simulator found on the computer
   opens in the Canvas, for you and for the agents trying the apps they build.
+- **3.12 — Simple interface**: an assistant for everyone, with no technical words in view (the full interface
+  one switch away), God's conversations sorted by topic, and your own rules in Settings › Rules.
 - **4.0 — Alpha**: documentation, security and privacy pages, and a stability round on everything.
 - **Then** the beta (community, documentation site) and the production release.
 

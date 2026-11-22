@@ -2497,6 +2497,15 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news3120Simple: "A simple interface, for everyone",
+  news3120SimpleText:
+    "For anyone who just wants an assistant: a greeting, one big box to ask anything, the things in progress as cards that say in words whether they wait for you, and answers to read like a page, with your decisions as buttons. No technical words in view; the full interface is one switch away in Settings › General.",
+  news3120Topics: "God sorts your conversations by topic",
+  news3120TopicsText:
+    "Write to God always in one place: each message goes to the topic it belongs to, or opens a new one with its title. If it lands in the wrong place, Move it with a tap. Topics left alone for three days rest in the archive and come back when you write about them.",
+  news3120Rules: "Your own rules",
+  news3120RulesText:
+    "Settings › Rules: when something happens, if a condition holds, Rasgeth warns you, asks, blocks a command, stops the agents after saving, switches tools off or runs a command — never with more rights than yours. Describe a rule to God and it builds it, tests it on two examples and proposes it.",
   news3104Reading: "Answers easier to read",
   news3104ReadingText:
     "Bigger text with more room between lines and paragraphs; headings stand out with a bar in the accent colour, bold is really bold, list marks and links are in the accent.",
@@ -10541,6 +10550,15 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news3120Simple: "Un'interfaccia semplice, per tutti",
+  news3120SimpleText:
+    "Per chi vuole solo un assistente: un saluto, una casella grande per chiedere qualsiasi cosa, le cose in corso come schede che dicono a parole se ti aspettano, e risposte da leggere come una pagina, con le tue decisioni come pulsanti. Niente parole tecniche in vista; l'interfaccia completa è a un interruttore in Impostazioni › Generale.",
+  news3120Topics: "God mette in ordine le conversazioni per argomento",
+  news3120TopicsText:
+    "Scrivi a God sempre in un posto solo: ogni messaggio va nell'argomento giusto, o ne apre uno nuovo con il suo titolo. Se finisce nel posto sbagliato, lo Sposti con un tocco. Gli argomenti fermi da tre giorni vanno in archivio e tornano quando ne riparli.",
+  news3120Rules: "Le tue regole",
+  news3120RulesText:
+    "Impostazioni › Regole: quando succede qualcosa, se vale una condizione, Rasgeth ti avvisa, ti chiede, blocca un comando, ferma gli agenti dopo aver salvato, spegne degli strumenti o esegue un comando, mai con più permessi dei tuoi. Descrivi una regola a God e lui la costruisce, la prova su due esempi e te la propone.",
   news3104Reading: "Risposte più facili da leggere",
   news3104ReadingText:
     "Testo più grande, con più spazio tra le righe e i paragrafi; i titoli si vedono con una barra nel colore d'accento, i grassetti sono grassetti veri, pallini, numeri e link sono nel colore d'accento.",
