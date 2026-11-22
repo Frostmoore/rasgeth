@@ -93,7 +93,8 @@ describe("Settings drawn as the wizard", () => {
   it("General: theme and language in segments, and a window for each square", async () => {
     const r = render(<General />);
     await waitFor(() => expect(r.container.querySelector(".wz-q")).not.toBeNull());
-    expect(r.container.querySelectorAll(".wz-seg button")).toHaveLength(5);
+    // Theme (3), the interface (2, 3.12: simple or full) and the language (2).
+    expect(r.container.querySelectorAll(".wz-seg button")).toHaveLength(7);
     const tiles = [...r.container.querySelectorAll(".wz-tile")];
     const titles = tiles.map((x) => x.querySelector(".wz-tile-title")?.textContent);
     expect(titles).toEqual([
