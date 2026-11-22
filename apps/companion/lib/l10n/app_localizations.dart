@@ -30902,6 +30902,834 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The context of every conversation with a local model is saved on disk: coming back to it, even after a restart, does not read it all again.'**
   String get moSysPersistarLine;
+
+  /// No description provided for @prSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules'**
+  String get prSection;
+
+  /// No description provided for @prQ.
+  ///
+  /// In en, this message translates to:
+  /// **'What should Rasgeth watch for you?'**
+  String get prQ;
+
+  /// No description provided for @prLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a rule once and Rasgeth keeps it by itself: when something happens, if it is as you say, it tells you, asks you, blocks or stops the agents. A rule never gives anyone more than you have.'**
+  String get prLead;
+
+  /// No description provided for @prMagic.
+  ///
+  /// In en, this message translates to:
+  /// **'Magic rule'**
+  String get prMagic;
+
+  /// No description provided for @prNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New rule'**
+  String get prNew;
+
+  /// No description provided for @prListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your rules'**
+  String get prListTitle;
+
+  /// No description provided for @prListLead.
+  ///
+  /// In en, this message translates to:
+  /// **'A rule acts only when it is on. Each one is tried on its two examples before it switches on.'**
+  String get prListLead;
+
+  /// No description provided for @prNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No rules yet. Describe one to God with «Magic rule», or write it yourself.'**
+  String get prNone;
+
+  /// No description provided for @prFiresTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What the rules did'**
+  String get prFiresTitle;
+
+  /// No description provided for @prFiresLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The last times a rule acted, newest first.'**
+  String get prFiresLead;
+
+  /// No description provided for @prTplMargin.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly margin of the subscription'**
+  String get prTplMargin;
+
+  /// No description provided for @prTplMarginQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Warn me at +5, stop the agents at +2?'**
+  String get prTplMarginQ;
+
+  /// No description provided for @prTplMarginLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The margin is how much of the week has passed minus how much of it is used. Two rules, added switched off: you switch them on.'**
+  String get prTplMarginLead;
+
+  /// No description provided for @prTplAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the two rules'**
+  String get prTplAdd;
+
+  /// No description provided for @prHoldTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped by the rule «{name}»'**
+  String prHoldTitle(String name);
+
+  /// No description provided for @prHoldSince.
+  ///
+  /// In en, this message translates to:
+  /// **'since {when}'**
+  String prHoldSince(String when);
+
+  /// No description provided for @prResumeNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get prResumeNow;
+
+  /// No description provided for @prByYou.
+  ///
+  /// In en, this message translates to:
+  /// **'you'**
+  String get prByYou;
+
+  /// No description provided for @prByGod.
+  ///
+  /// In en, this message translates to:
+  /// **'made with God'**
+  String get prByGod;
+
+  /// No description provided for @prByTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'ready-made'**
+  String get prByTemplate;
+
+  /// No description provided for @prLastFired.
+  ///
+  /// In en, this message translates to:
+  /// **'last acted {when}'**
+  String prLastFired(String when);
+
+  /// No description provided for @prEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get prEdit;
+
+  /// No description provided for @prHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get prHistory;
+
+  /// No description provided for @prHistoryOf.
+  ///
+  /// In en, this message translates to:
+  /// **'History of «{name}»'**
+  String prHistoryOf(String name);
+
+  /// No description provided for @prHistoryBy.
+  ///
+  /// In en, this message translates to:
+  /// **'{by}, version {version}'**
+  String prHistoryBy(String by, String version);
+
+  /// No description provided for @prUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo the last change'**
+  String get prUndo;
+
+  /// No description provided for @prRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get prRemove;
+
+  /// No description provided for @prRemoveQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the rule «{name}»?'**
+  String prRemoveQ(String name);
+
+  /// No description provided for @prRemoveLead.
+  ///
+  /// In en, this message translates to:
+  /// **'It stops acting at once. Its history stays: «Undo» brings it back.'**
+  String get prRemoveLead;
+
+  /// No description provided for @prChCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Made'**
+  String get prChCreated;
+
+  /// No description provided for @prChChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed'**
+  String get prChChanged;
+
+  /// No description provided for @prChEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Switched on'**
+  String get prChEnabled;
+
+  /// No description provided for @prChDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Switched off'**
+  String get prChDisabled;
+
+  /// No description provided for @prChRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed'**
+  String get prChRemoved;
+
+  /// No description provided for @prChUndone.
+  ///
+  /// In en, this message translates to:
+  /// **'Undone'**
+  String get prChUndone;
+
+  /// No description provided for @prName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get prName;
+
+  /// No description provided for @prNamePh.
+  ///
+  /// In en, this message translates to:
+  /// **'No push on Sundays'**
+  String get prNamePh;
+
+  /// No description provided for @prWords.
+  ///
+  /// In en, this message translates to:
+  /// **'In your words (optional)'**
+  String get prWords;
+
+  /// No description provided for @prWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get prWhen;
+
+  /// No description provided for @prWhenQ.
+  ///
+  /// In en, this message translates to:
+  /// **'what happens?'**
+  String get prWhenQ;
+
+  /// No description provided for @prIf.
+  ///
+  /// In en, this message translates to:
+  /// **'If'**
+  String get prIf;
+
+  /// No description provided for @prIfQ.
+  ///
+  /// In en, this message translates to:
+  /// **'what must be true? (all of it)'**
+  String get prIfQ;
+
+  /// No description provided for @prIfNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No conditions: it acts every time.'**
+  String get prIfNone;
+
+  /// No description provided for @prThen.
+  ///
+  /// In en, this message translates to:
+  /// **'Then'**
+  String get prThen;
+
+  /// No description provided for @prThenQ.
+  ///
+  /// In en, this message translates to:
+  /// **'what does Rasgeth do?'**
+  String get prThenQ;
+
+  /// No description provided for @prValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Value'**
+  String get prValue;
+
+  /// No description provided for @prAddCond.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a condition'**
+  String get prAddCond;
+
+  /// No description provided for @prRemoveCond.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the condition'**
+  String get prRemoveCond;
+
+  /// No description provided for @prAddAct.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an action'**
+  String get prAddAct;
+
+  /// No description provided for @prRemoveAct.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the action'**
+  String get prRemoveAct;
+
+  /// No description provided for @prNotifyPh.
+  ///
+  /// In en, this message translates to:
+  /// **'What to tell you (empty: what happened)'**
+  String get prNotifyPh;
+
+  /// No description provided for @prReasonPh.
+  ///
+  /// In en, this message translates to:
+  /// **'Why (the agent reads it)'**
+  String get prReasonPh;
+
+  /// No description provided for @prScopeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get prScopeAll;
+
+  /// No description provided for @prScopeProject.
+  ///
+  /// In en, this message translates to:
+  /// **'That project\'s'**
+  String get prScopeProject;
+
+  /// No description provided for @prScopeAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'That agent'**
+  String get prScopeAgent;
+
+  /// No description provided for @prResumePerson.
+  ///
+  /// In en, this message translates to:
+  /// **'I resume them'**
+  String get prResumePerson;
+
+  /// No description provided for @prResumeAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'It is fine again'**
+  String get prResumeAuto;
+
+  /// No description provided for @prToolsOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools to switch off'**
+  String get prToolsOff;
+
+  /// No description provided for @prAutomation.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation'**
+  String get prAutomation;
+
+  /// No description provided for @prCommand.
+  ///
+  /// In en, this message translates to:
+  /// **'Command'**
+  String get prCommand;
+
+  /// No description provided for @prProjectPh.
+  ///
+  /// In en, this message translates to:
+  /// **'Project (empty: the rules\' own folder)'**
+  String get prProjectPh;
+
+  /// No description provided for @prCommandSafe.
+  ///
+  /// In en, this message translates to:
+  /// **'It runs in the sandbox, checked as an agent\'s command: what is truly dangerous asks you, and no key is in its environment.'**
+  String get prCommandSafe;
+
+  /// No description provided for @prCron.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get prCron;
+
+  /// No description provided for @prCronHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Minute, hour, day, month, weekday: 0 9 * * 1-5 is 9:00 on working days.'**
+  String get prCronHelp;
+
+  /// No description provided for @prExamples.
+  ///
+  /// In en, this message translates to:
+  /// **'Try'**
+  String get prExamples;
+
+  /// No description provided for @prExamplesQ.
+  ///
+  /// In en, this message translates to:
+  /// **'one case where it must act, one where it must not'**
+  String get prExamplesQ;
+
+  /// No description provided for @prExFire.
+  ///
+  /// In en, this message translates to:
+  /// **'It must act'**
+  String get prExFire;
+
+  /// No description provided for @prExPass.
+  ///
+  /// In en, this message translates to:
+  /// **'It must not act'**
+  String get prExPass;
+
+  /// No description provided for @prExOk.
+  ///
+  /// In en, this message translates to:
+  /// **'As expected'**
+  String get prExOk;
+
+  /// No description provided for @prExBad.
+  ///
+  /// In en, this message translates to:
+  /// **'Not as expected'**
+  String get prExBad;
+
+  /// No description provided for @prTrialOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Both examples go as they should: the rule can switch on.'**
+  String get prTrialOk;
+
+  /// No description provided for @prTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try'**
+  String get prTry;
+
+  /// No description provided for @prSaveOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Save switched off'**
+  String get prSaveOff;
+
+  /// No description provided for @prSaveOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and switch on'**
+  String get prSaveOn;
+
+  /// No description provided for @prAnd.
+  ///
+  /// In en, this message translates to:
+  /// **' and '**
+  String get prAnd;
+
+  /// No description provided for @prSayWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When {event}'**
+  String prSayWhen(String event);
+
+  /// No description provided for @prSayWhenTime.
+  ///
+  /// In en, this message translates to:
+  /// **'At the times {cron}'**
+  String prSayWhenTime(String cron);
+
+  /// No description provided for @prSayIf.
+  ///
+  /// In en, this message translates to:
+  /// **'if {conds}'**
+  String prSayIf(String conds);
+
+  /// No description provided for @prSayThen.
+  ///
+  /// In en, this message translates to:
+  /// **'then {acts}'**
+  String prSayThen(String acts);
+
+  /// No description provided for @prSayNotify.
+  ///
+  /// In en, this message translates to:
+  /// **'tell you'**
+  String get prSayNotify;
+
+  /// No description provided for @prSayNotifyText.
+  ///
+  /// In en, this message translates to:
+  /// **'tell you «{text}»'**
+  String prSayNotifyText(String text);
+
+  /// No description provided for @prSayAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'ask you first'**
+  String get prSayAsk;
+
+  /// No description provided for @prSayBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'block it'**
+  String get prSayBlock;
+
+  /// No description provided for @prSayStop.
+  ///
+  /// In en, this message translates to:
+  /// **'stop the agents after they save, until you resume them'**
+  String get prSayStop;
+
+  /// No description provided for @prSayStopAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'stop the agents after they save, until it is fine again'**
+  String get prSayStopAuto;
+
+  /// No description provided for @prSayToolsOff.
+  ///
+  /// In en, this message translates to:
+  /// **'switch off {what}'**
+  String prSayToolsOff(String what);
+
+  /// No description provided for @prSayAutomation.
+  ///
+  /// In en, this message translates to:
+  /// **'start the automation «{name}»'**
+  String prSayAutomation(String name);
+
+  /// No description provided for @prSayCommand.
+  ///
+  /// In en, this message translates to:
+  /// **'run «{command}» in the sandbox'**
+  String prSayCommand(String command);
+
+  /// No description provided for @prEvUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'the subscription\'s use is read'**
+  String get prEvUsage;
+
+  /// No description provided for @prEvBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'a budget is used'**
+  String get prEvBudget;
+
+  /// No description provided for @prEvTool.
+  ///
+  /// In en, this message translates to:
+  /// **'a tool or command is about to run'**
+  String get prEvTool;
+
+  /// No description provided for @prEvFile.
+  ///
+  /// In en, this message translates to:
+  /// **'a file is about to be written'**
+  String get prEvFile;
+
+  /// No description provided for @prEvAgentDone.
+  ///
+  /// In en, this message translates to:
+  /// **'an agent finishes'**
+  String get prEvAgentDone;
+
+  /// No description provided for @prEvSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'at a time'**
+  String get prEvSchedule;
+
+  /// No description provided for @prFieldMargin.
+  ///
+  /// In en, this message translates to:
+  /// **'the margin (points)'**
+  String get prFieldMargin;
+
+  /// No description provided for @prFieldUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'the use (%)'**
+  String get prFieldUsed;
+
+  /// No description provided for @prFieldWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'the window'**
+  String get prFieldWindow;
+
+  /// No description provided for @prFieldProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'the subscription'**
+  String get prFieldProvider;
+
+  /// No description provided for @prFieldBudgetPct.
+  ///
+  /// In en, this message translates to:
+  /// **'the budget used (%)'**
+  String get prFieldBudgetPct;
+
+  /// No description provided for @prFieldBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'the budget'**
+  String get prFieldBudget;
+
+  /// No description provided for @prFieldTool.
+  ///
+  /// In en, this message translates to:
+  /// **'the tool'**
+  String get prFieldTool;
+
+  /// No description provided for @prFieldCommand.
+  ///
+  /// In en, this message translates to:
+  /// **'the command'**
+  String get prFieldCommand;
+
+  /// No description provided for @prFieldPath.
+  ///
+  /// In en, this message translates to:
+  /// **'the path'**
+  String get prFieldPath;
+
+  /// No description provided for @prFieldProject.
+  ///
+  /// In en, this message translates to:
+  /// **'the project'**
+  String get prFieldProject;
+
+  /// No description provided for @prFieldAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'the agent'**
+  String get prFieldAgent;
+
+  /// No description provided for @prFieldStop.
+  ///
+  /// In en, this message translates to:
+  /// **'how it ended'**
+  String get prFieldStop;
+
+  /// No description provided for @prOpLt.
+  ///
+  /// In en, this message translates to:
+  /// **'is less than'**
+  String get prOpLt;
+
+  /// No description provided for @prOpLte.
+  ///
+  /// In en, this message translates to:
+  /// **'is at most'**
+  String get prOpLte;
+
+  /// No description provided for @prOpGt.
+  ///
+  /// In en, this message translates to:
+  /// **'is more than'**
+  String get prOpGt;
+
+  /// No description provided for @prOpGte.
+  ///
+  /// In en, this message translates to:
+  /// **'is at least'**
+  String get prOpGte;
+
+  /// No description provided for @prOpEq.
+  ///
+  /// In en, this message translates to:
+  /// **'is'**
+  String get prOpEq;
+
+  /// No description provided for @prOpNeq.
+  ///
+  /// In en, this message translates to:
+  /// **'is not'**
+  String get prOpNeq;
+
+  /// No description provided for @prOpMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'looks like'**
+  String get prOpMatches;
+
+  /// No description provided for @prOpContains.
+  ///
+  /// In en, this message translates to:
+  /// **'contains'**
+  String get prOpContains;
+
+  /// No description provided for @prActNotify.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell me'**
+  String get prActNotify;
+
+  /// No description provided for @prActAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me first'**
+  String get prActAsk;
+
+  /// No description provided for @prActBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Block it'**
+  String get prActBlock;
+
+  /// No description provided for @prActStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop the agents'**
+  String get prActStop;
+
+  /// No description provided for @prActToolsOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch tools off'**
+  String get prActToolsOff;
+
+  /// No description provided for @prActAutomation.
+  ///
+  /// In en, this message translates to:
+  /// **'Start an automation'**
+  String get prActAutomation;
+
+  /// No description provided for @prActCommand.
+  ///
+  /// In en, this message translates to:
+  /// **'Run a command'**
+  String get prActCommand;
+
+  /// No description provided for @prMagicAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'What should the rule do?'**
+  String get prMagicAsk;
+
+  /// No description provided for @prMagicPh.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: if the weekly margin drops under 5 tell me, under 2 stop everyone'**
+  String get prMagicPh;
+
+  /// No description provided for @prMagicStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'You say it'**
+  String get prMagicStep1;
+
+  /// No description provided for @prMagicStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'God builds and tries it'**
+  String get prMagicStep2;
+
+  /// No description provided for @prMagicStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'You decide'**
+  String get prMagicStep3;
+
+  /// No description provided for @prMagicProposal.
+  ///
+  /// In en, this message translates to:
+  /// **'God\'s rule'**
+  String get prMagicProposal;
+
+  /// No description provided for @prMagicMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Still missing:'**
+  String get prMagicMissing;
+
+  /// No description provided for @prMagicNotTested.
+  ///
+  /// In en, this message translates to:
+  /// **'Its examples do not pass yet; it will be made switched off:'**
+  String get prMagicNotTested;
+
+  /// No description provided for @prMagicRefuse.
+  ///
+  /// In en, this message translates to:
+  /// **'Refuse'**
+  String get prMagicRefuse;
+
+  /// No description provided for @prMagicChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get prMagicChange;
+
+  /// No description provided for @prMagicApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get prMagicApprove;
+
+  /// No description provided for @prMagicDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done: the rule is among your rules.'**
+  String get prMagicDone;
+
+  /// No description provided for @prMagicBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'God is building the rule with you in the conversation.'**
+  String get prMagicBuilding;
+
+  /// No description provided for @prMagicGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with God'**
+  String get prMagicGo;
+
+  /// No description provided for @prMagicSendNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the no'**
+  String get prMagicSendNo;
+
+  /// No description provided for @prMagicWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'What is wrong (God reads it)'**
+  String get prMagicWhy;
+
+  /// No description provided for @prHub.
+  ///
+  /// In en, this message translates to:
+  /// **'When, if, then: what Rasgeth watches for you'**
+  String get prHub;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

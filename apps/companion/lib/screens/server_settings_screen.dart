@@ -48,6 +48,7 @@ import '../settings/vault/keychain_screen.dart' show openKeychainSettings;
 import '../settings/knowledge_screen.dart' show openKnowledgeSettings;
 import '../settings/memory_screen.dart' show openSharedMemory;
 import '../settings/portrait_screen.dart' show openPortrait;
+import '../settings/person_rules/person_rules_screen.dart' show openPersonRulesSettings;
 import '../settings/skills_screen.dart' show openSkills;
 // G42.13 and G42.15: Telegram, Chats, Models and subscriptions, native.
 import '../settings/channels/chats_screen.dart' show openChatPlatforms;
@@ -605,6 +606,15 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       l.g4SfTitle,
                       '${sysName(context, RgSystem.eventHorizon)} · ${l.g4HubSafety}',
                       () => openSafetySettings(context),
+                    ),
+                    // 3.12: the person's own rules, beside Safety (not inside the automations).
+                    _hub(
+                      c,
+                      'rules',
+                      RgIcons.zap,
+                      l.prSection,
+                      l.prHub,
+                      () => openPersonRulesSettings(context),
                     ),
                     // G42.13 and G42.15: the page's «Where» group (Telegram, Chats) and
                     // Models and subscriptions, before the budgets as on the page.

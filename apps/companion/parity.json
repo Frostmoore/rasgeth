@@ -401,6 +401,17 @@
       ],
       "note": "Native (G42.4): ask me or don't ask me anything (the classifier and its model), the time to answer and what happens after it, the truly dangerous requests, the classifier's decisions; answering requests in Inbox."
     },
+    "rules": {
+      "app": "native",
+      "files": [
+        "lib/settings/person_rules/person_rules_screen.dart",
+        "lib/settings/person_rules/person_rules_api.dart",
+        "lib/settings/rules_kit.dart"
+      ],
+      "phase": "3.12",
+      "rows": [],
+      "note": "Native (3.12, the person's rules): the stops in place with Resume, the rules with their switch (on only when their two examples pass), their words, history with Undo, remove; the editor (when, if, then, the two examples and Try); the ready-made weekly margin added switched off; the magic rule with God beside the conversation (approve, change, refuse); what the rules did."
+    },
     "projects": {
       "app": "native",
       "files": [

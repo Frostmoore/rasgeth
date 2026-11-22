@@ -18016,4 +18016,453 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get moSysPersistarLine =>
       'Il contesto di ogni conversazione con un modello locale è salvato su disco: tornandoci, anche dopo un riavvio, non si rilegge tutto da capo.';
+
+  @override
+  String get prSection => 'Regole';
+
+  @override
+  String get prQ => 'Cosa deve tenere d\'occhio Rasgeth per te?';
+
+  @override
+  String get prLead =>
+      'Scrivi una regola una volta e Rasgeth la fa rispettare da solo: quando succede qualcosa, se è come dici tu, ti avvisa, ti chiede, blocca o ferma gli agenti. Una regola non dà mai a nessuno più di quello che hai tu.';
+
+  @override
+  String get prMagic => 'Regola magica';
+
+  @override
+  String get prNew => 'Nuova regola';
+
+  @override
+  String get prListTitle => 'Le tue regole';
+
+  @override
+  String get prListLead =>
+      'Una regola agisce solo se è accesa. Ognuna si prova sui suoi due esempi prima di accendersi.';
+
+  @override
+  String get prNone =>
+      'Ancora nessuna regola. Descrivine una a God con «Regola magica», o scrivila tu.';
+
+  @override
+  String get prFiresTitle => 'Cosa hanno fatto le regole';
+
+  @override
+  String get prFiresLead => 'Le ultime volte che una regola ha agito, dalla più recente.';
+
+  @override
+  String get prTplMargin => 'Margine settimanale dell\'abbonamento';
+
+  @override
+  String get prTplMarginQ => 'Avvisarti a +5, fermare gli agenti a +2?';
+
+  @override
+  String get prTplMarginLead =>
+      'Il margine è quanta settimana è passata meno quanta ne hai usata. Due regole, aggiunte spente: le accendi tu.';
+
+  @override
+  String get prTplAdd => 'Aggiungi le due regole';
+
+  @override
+  String prHoldTitle(String name) {
+    return 'Fermati dalla regola «$name»';
+  }
+
+  @override
+  String prHoldSince(String when) {
+    return 'dalle $when';
+  }
+
+  @override
+  String get prResumeNow => 'Riprendi';
+
+  @override
+  String get prByYou => 'tu';
+
+  @override
+  String get prByGod => 'fatta con God';
+
+  @override
+  String get prByTemplate => 'pronta';
+
+  @override
+  String prLastFired(String when) {
+    return 'ultima volta $when';
+  }
+
+  @override
+  String get prEdit => 'Cambia';
+
+  @override
+  String get prHistory => 'Storia';
+
+  @override
+  String prHistoryOf(String name) {
+    return 'Storia di «$name»';
+  }
+
+  @override
+  String prHistoryBy(String by, String version) {
+    return '$by, versione $version';
+  }
+
+  @override
+  String get prUndo => 'Annulla l\'ultima modifica';
+
+  @override
+  String get prRemove => 'Togli';
+
+  @override
+  String prRemoveQ(String name) {
+    return 'Togliere la regola «$name»?';
+  }
+
+  @override
+  String get prRemoveLead => 'Smette subito di agire. La sua storia resta: «Annulla» la riporta.';
+
+  @override
+  String get prChCreated => 'Creata';
+
+  @override
+  String get prChChanged => 'Cambiata';
+
+  @override
+  String get prChEnabled => 'Accesa';
+
+  @override
+  String get prChDisabled => 'Spenta';
+
+  @override
+  String get prChRemoved => 'Tolta';
+
+  @override
+  String get prChUndone => 'Annullata';
+
+  @override
+  String get prName => 'Nome';
+
+  @override
+  String get prNamePh => 'Niente push la domenica';
+
+  @override
+  String get prWords => 'Con parole tue (facoltativo)';
+
+  @override
+  String get prWhen => 'Quando';
+
+  @override
+  String get prWhenQ => 'cosa succede?';
+
+  @override
+  String get prIf => 'Se';
+
+  @override
+  String get prIfQ => 'cosa deve essere vero? (tutto)';
+
+  @override
+  String get prIfNone => 'Nessuna condizione: agisce ogni volta.';
+
+  @override
+  String get prThen => 'Allora';
+
+  @override
+  String get prThenQ => 'cosa fa Rasgeth?';
+
+  @override
+  String get prValue => 'Valore';
+
+  @override
+  String get prAddCond => 'Aggiungi una condizione';
+
+  @override
+  String get prRemoveCond => 'Togli la condizione';
+
+  @override
+  String get prAddAct => 'Aggiungi un\'azione';
+
+  @override
+  String get prRemoveAct => 'Togli l\'azione';
+
+  @override
+  String get prNotifyPh => 'Cosa dirti (vuoto: cosa è successo)';
+
+  @override
+  String get prReasonPh => 'Perché (l\'agente lo legge)';
+
+  @override
+  String get prScopeAll => 'Tutti';
+
+  @override
+  String get prScopeProject => 'Quelli del progetto';
+
+  @override
+  String get prScopeAgent => 'Quell\'agente';
+
+  @override
+  String get prResumePerson => 'Li riprendo io';
+
+  @override
+  String get prResumeAuto => 'Torna tutto a posto';
+
+  @override
+  String get prToolsOff => 'Strumenti da spegnere';
+
+  @override
+  String get prAutomation => 'Automazione';
+
+  @override
+  String get prCommand => 'Comando';
+
+  @override
+  String get prProjectPh => 'Progetto (vuoto: la cartella delle regole)';
+
+  @override
+  String get prCommandSafe =>
+      'Gira nella sandbox, controllato come il comando di un agente: ciò che è davvero pericoloso chiede a te, e nel suo ambiente non c\'è nessuna chiave.';
+
+  @override
+  String get prCron => 'Orario';
+
+  @override
+  String get prCronHelp =>
+      'Minuto, ora, giorno, mese, giorno della settimana: 0 9 * * 1-5 sono le 9:00 dei giorni feriali.';
+
+  @override
+  String get prExamples => 'Prova';
+
+  @override
+  String get prExamplesQ => 'un caso in cui deve agire, uno in cui no';
+
+  @override
+  String get prExFire => 'Deve agire';
+
+  @override
+  String get prExPass => 'Non deve agire';
+
+  @override
+  String get prExOk => 'Come previsto';
+
+  @override
+  String get prExBad => 'Non come previsto';
+
+  @override
+  String get prTrialOk => 'I due esempi vanno come devono: la regola si può accendere.';
+
+  @override
+  String get prTry => 'Prova';
+
+  @override
+  String get prSaveOff => 'Salva spenta';
+
+  @override
+  String get prSaveOn => 'Salva e accendi';
+
+  @override
+  String get prAnd => ' e ';
+
+  @override
+  String prSayWhen(String event) {
+    return 'Quando $event';
+  }
+
+  @override
+  String prSayWhenTime(String cron) {
+    return 'Agli orari $cron';
+  }
+
+  @override
+  String prSayIf(String conds) {
+    return 'se $conds';
+  }
+
+  @override
+  String prSayThen(String acts) {
+    return 'allora $acts';
+  }
+
+  @override
+  String get prSayNotify => 'ti avvisa';
+
+  @override
+  String prSayNotifyText(String text) {
+    return 'ti dice «$text»';
+  }
+
+  @override
+  String get prSayAsk => 'prima chiede a te';
+
+  @override
+  String get prSayBlock => 'lo blocca';
+
+  @override
+  String get prSayStop => 'ferma gli agenti dopo che hanno salvato, finché non li riprendi';
+
+  @override
+  String get prSayStopAuto => 'ferma gli agenti dopo che hanno salvato, finché non torna a posto';
+
+  @override
+  String prSayToolsOff(String what) {
+    return 'spegne $what';
+  }
+
+  @override
+  String prSayAutomation(String name) {
+    return 'lancia l\'automazione «$name»';
+  }
+
+  @override
+  String prSayCommand(String command) {
+    return 'esegue «$command» nella sandbox';
+  }
+
+  @override
+  String get prEvUsage => 'si legge il consumo dell\'abbonamento';
+
+  @override
+  String get prEvBudget => 'si usa un budget';
+
+  @override
+  String get prEvTool => 'sta per partire uno strumento o un comando';
+
+  @override
+  String get prEvFile => 'sta per essere scritto un file';
+
+  @override
+  String get prEvAgentDone => 'un agente finisce';
+
+  @override
+  String get prEvSchedule => 'a un orario';
+
+  @override
+  String get prFieldMargin => 'il margine (punti)';
+
+  @override
+  String get prFieldUsed => 'il consumo (%)';
+
+  @override
+  String get prFieldWindow => 'la finestra';
+
+  @override
+  String get prFieldProvider => 'l\'abbonamento';
+
+  @override
+  String get prFieldBudgetPct => 'il budget usato (%)';
+
+  @override
+  String get prFieldBudget => 'il budget';
+
+  @override
+  String get prFieldTool => 'lo strumento';
+
+  @override
+  String get prFieldCommand => 'il comando';
+
+  @override
+  String get prFieldPath => 'il percorso';
+
+  @override
+  String get prFieldProject => 'il progetto';
+
+  @override
+  String get prFieldAgent => 'l\'agente';
+
+  @override
+  String get prFieldStop => 'come è finito';
+
+  @override
+  String get prOpLt => 'è meno di';
+
+  @override
+  String get prOpLte => 'è al massimo';
+
+  @override
+  String get prOpGt => 'è più di';
+
+  @override
+  String get prOpGte => 'è almeno';
+
+  @override
+  String get prOpEq => 'è';
+
+  @override
+  String get prOpNeq => 'non è';
+
+  @override
+  String get prOpMatches => 'somiglia a';
+
+  @override
+  String get prOpContains => 'contiene';
+
+  @override
+  String get prActNotify => 'Avvisami';
+
+  @override
+  String get prActAsk => 'Chiedimi prima';
+
+  @override
+  String get prActBlock => 'Bloccalo';
+
+  @override
+  String get prActStop => 'Ferma gli agenti';
+
+  @override
+  String get prActToolsOff => 'Spegni strumenti';
+
+  @override
+  String get prActAutomation => 'Lancia un\'automazione';
+
+  @override
+  String get prActCommand => 'Esegui un comando';
+
+  @override
+  String get prMagicAsk => 'Cosa deve fare la regola?';
+
+  @override
+  String get prMagicPh =>
+      'Per esempio: se il margine settimanale scende sotto 5 avvisami, sotto 2 ferma tutti';
+
+  @override
+  String get prMagicStep1 => 'Lo dici tu';
+
+  @override
+  String get prMagicStep2 => 'God la costruisce e la prova';
+
+  @override
+  String get prMagicStep3 => 'Decidi tu';
+
+  @override
+  String get prMagicProposal => 'La regola di God';
+
+  @override
+  String get prMagicMissing => 'Manca ancora:';
+
+  @override
+  String get prMagicNotTested => 'I suoi esempi non passano ancora; verrà creata spenta:';
+
+  @override
+  String get prMagicRefuse => 'Rifiuta';
+
+  @override
+  String get prMagicChange => 'Cambia';
+
+  @override
+  String get prMagicApprove => 'Approva';
+
+  @override
+  String get prMagicDone => 'Fatto: la regola è tra le tue regole.';
+
+  @override
+  String get prMagicBuilding => 'God sta costruendo la regola con te nella conversazione.';
+
+  @override
+  String get prMagicGo => 'Inizia con God';
+
+  @override
+  String get prMagicSendNo => 'Manda il no';
+
+  @override
+  String get prMagicWhy => 'Cosa non va (God lo legge)';
+
+  @override
+  String get prHub => 'Quando, se, allora: cosa Rasgeth tiene d’occhio per te';
 }

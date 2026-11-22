@@ -12702,5 +12702,244 @@
   "hfWakeErrServer": "Rasgeth could not download the speech model",
   "hfWakeErrChecksum": "the recogniser that arrived is not the expected one, so it was not kept",
   "hfWakeErrBroken": "the speech model did not start on this device; download it again",
-  "moSysPersistarLine": "The context of every conversation with a local model is saved on disk: coming back to it, even after a restart, does not read it all again."
+  "moSysPersistarLine": "The context of every conversation with a local model is saved on disk: coming back to it, even after a restart, does not read it all again.",
+  "prSection": "Rules",
+  "prQ": "What should Rasgeth watch for you?",
+  "prLead": "Write a rule once and Rasgeth keeps it by itself: when something happens, if it is as you say, it tells you, asks you, blocks or stops the agents. A rule never gives anyone more than you have.",
+  "prMagic": "Magic rule",
+  "prNew": "New rule",
+  "prListTitle": "Your rules",
+  "prListLead": "A rule acts only when it is on. Each one is tried on its two examples before it switches on.",
+  "prNone": "No rules yet. Describe one to God with «Magic rule», or write it yourself.",
+  "prFiresTitle": "What the rules did",
+  "prFiresLead": "The last times a rule acted, newest first.",
+  "prTplMargin": "Weekly margin of the subscription",
+  "prTplMarginQ": "Warn me at +5, stop the agents at +2?",
+  "prTplMarginLead": "The margin is how much of the week has passed minus how much of it is used. Two rules, added switched off: you switch them on.",
+  "prTplAdd": "Add the two rules",
+  "prHoldTitle": "Stopped by the rule «{name}»",
+  "@prHoldTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "prHoldSince": "since {when}",
+  "@prHoldSince": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "prResumeNow": "Resume",
+  "prByYou": "you",
+  "prByGod": "made with God",
+  "prByTemplate": "ready-made",
+  "prLastFired": "last acted {when}",
+  "@prLastFired": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "prEdit": "Change",
+  "prHistory": "History",
+  "prHistoryOf": "History of «{name}»",
+  "@prHistoryOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "prHistoryBy": "{by}, version {version}",
+  "@prHistoryBy": {
+    "placeholders": {
+      "by": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "prUndo": "Undo the last change",
+  "prRemove": "Remove",
+  "prRemoveQ": "Remove the rule «{name}»?",
+  "@prRemoveQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "prRemoveLead": "It stops acting at once. Its history stays: «Undo» brings it back.",
+  "prChCreated": "Made",
+  "prChChanged": "Changed",
+  "prChEnabled": "Switched on",
+  "prChDisabled": "Switched off",
+  "prChRemoved": "Removed",
+  "prChUndone": "Undone",
+  "prName": "Name",
+  "prNamePh": "No push on Sundays",
+  "prWords": "In your words (optional)",
+  "prWhen": "When",
+  "prWhenQ": "what happens?",
+  "prIf": "If",
+  "prIfQ": "what must be true? (all of it)",
+  "prIfNone": "No conditions: it acts every time.",
+  "prThen": "Then",
+  "prThenQ": "what does Rasgeth do?",
+  "prValue": "Value",
+  "prAddCond": "Add a condition",
+  "prRemoveCond": "Remove the condition",
+  "prAddAct": "Add an action",
+  "prRemoveAct": "Remove the action",
+  "prNotifyPh": "What to tell you (empty: what happened)",
+  "prReasonPh": "Why (the agent reads it)",
+  "prScopeAll": "All",
+  "prScopeProject": "That project's",
+  "prScopeAgent": "That agent",
+  "prResumePerson": "I resume them",
+  "prResumeAuto": "It is fine again",
+  "prToolsOff": "Tools to switch off",
+  "prAutomation": "Automation",
+  "prCommand": "Command",
+  "prProjectPh": "Project (empty: the rules' own folder)",
+  "prCommandSafe": "It runs in the sandbox, checked as an agent's command: what is truly dangerous asks you, and no key is in its environment.",
+  "prCron": "Schedule",
+  "prCronHelp": "Minute, hour, day, month, weekday: 0 9 * * 1-5 is 9:00 on working days.",
+  "prExamples": "Try",
+  "prExamplesQ": "one case where it must act, one where it must not",
+  "prExFire": "It must act",
+  "prExPass": "It must not act",
+  "prExOk": "As expected",
+  "prExBad": "Not as expected",
+  "prTrialOk": "Both examples go as they should: the rule can switch on.",
+  "prTry": "Try",
+  "prSaveOff": "Save switched off",
+  "prSaveOn": "Save and switch on",
+  "prAnd": " and ",
+  "prSayWhen": "When {event}",
+  "@prSayWhen": {
+    "placeholders": {
+      "event": {
+        "type": "String"
+      }
+    }
+  },
+  "prSayWhenTime": "At the times {cron}",
+  "@prSayWhenTime": {
+    "placeholders": {
+      "cron": {
+        "type": "String"
+      }
+    }
+  },
+  "prSayIf": "if {conds}",
+  "@prSayIf": {
+    "placeholders": {
+      "conds": {
+        "type": "String"
+      }
+    }
+  },
+  "prSayThen": "then {acts}",
+  "@prSayThen": {
+    "placeholders": {
+      "acts": {
+        "type": "String"
+      }
+    }
+  },
+  "prSayNotify": "tell you",
+  "prSayNotifyText": "tell you «{text}»",
+  "@prSayNotifyText": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "prSayAsk": "ask you first",
+  "prSayBlock": "block it",
+  "prSayStop": "stop the agents after they save, until you resume them",
+  "prSayStopAuto": "stop the agents after they save, until it is fine again",
+  "prSayToolsOff": "switch off {what}",
+  "@prSayToolsOff": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "prSayAutomation": "start the automation «{name}»",
+  "@prSayAutomation": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "prSayCommand": "run «{command}» in the sandbox",
+  "@prSayCommand": {
+    "placeholders": {
+      "command": {
+        "type": "String"
+      }
+    }
+  },
+  "prEvUsage": "the subscription's use is read",
+  "prEvBudget": "a budget is used",
+  "prEvTool": "a tool or command is about to run",
+  "prEvFile": "a file is about to be written",
+  "prEvAgentDone": "an agent finishes",
+  "prEvSchedule": "at a time",
+  "prFieldMargin": "the margin (points)",
+  "prFieldUsed": "the use (%)",
+  "prFieldWindow": "the window",
+  "prFieldProvider": "the subscription",
+  "prFieldBudgetPct": "the budget used (%)",
+  "prFieldBudget": "the budget",
+  "prFieldTool": "the tool",
+  "prFieldCommand": "the command",
+  "prFieldPath": "the path",
+  "prFieldProject": "the project",
+  "prFieldAgent": "the agent",
+  "prFieldStop": "how it ended",
+  "prOpLt": "is less than",
+  "prOpLte": "is at most",
+  "prOpGt": "is more than",
+  "prOpGte": "is at least",
+  "prOpEq": "is",
+  "prOpNeq": "is not",
+  "prOpMatches": "looks like",
+  "prOpContains": "contains",
+  "prActNotify": "Tell me",
+  "prActAsk": "Ask me first",
+  "prActBlock": "Block it",
+  "prActStop": "Stop the agents",
+  "prActToolsOff": "Switch tools off",
+  "prActAutomation": "Start an automation",
+  "prActCommand": "Run a command",
+  "prMagicAsk": "What should the rule do?",
+  "prMagicPh": "For example: if the weekly margin drops under 5 tell me, under 2 stop everyone",
+  "prMagicStep1": "You say it",
+  "prMagicStep2": "God builds and tries it",
+  "prMagicStep3": "You decide",
+  "prMagicProposal": "God's rule",
+  "prMagicMissing": "Still missing:",
+  "prMagicNotTested": "Its examples do not pass yet; it will be made switched off:",
+  "prMagicRefuse": "Refuse",
+  "prMagicChange": "Change",
+  "prMagicApprove": "Approve",
+  "prMagicDone": "Done: the rule is among your rules.",
+  "prMagicBuilding": "God is building the rule with you in the conversation.",
+  "prMagicGo": "Start with God",
+  "prMagicSendNo": "Send the no",
+  "prMagicWhy": "What is wrong (God reads it)",
+  "prHub": "When, if, then: what Rasgeth watches for you"
 }
