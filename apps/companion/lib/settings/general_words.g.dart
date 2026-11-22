@@ -172,14 +172,38 @@ const agentLanguages = <AgentLanguageRow>[
   AgentLanguageRow('es', 'Español', 'Spanish', 'Spagnolo', common: true),
   AgentLanguageRow('fr', 'Français', 'French', 'Francese', common: true),
   AgentLanguageRow('de', 'Deutsch', 'German', 'Tedesco', common: true),
-  AgentLanguageRow('pt-BR', 'Português (Brasil)', 'Portuguese (Brazil)', 'Portoghese (Brasile)', common: true),
-  AgentLanguageRow('zh-Hans', '中文（简体）', 'Chinese (Simplified)', 'Cinese (semplificato)', common: true),
+  AgentLanguageRow(
+    'pt-BR',
+    'Português (Brasil)',
+    'Portuguese (Brazil)',
+    'Portoghese (Brasile)',
+    common: true,
+  ),
+  AgentLanguageRow(
+    'zh-Hans',
+    '中文（简体）',
+    'Chinese (Simplified)',
+    'Cinese (semplificato)',
+    common: true,
+  ),
   AgentLanguageRow('hi', 'हिन्दी', 'Hindi', 'Hindi', common: true),
   AgentLanguageRow('ar', 'العربية', 'Arabic', 'Arabo', common: true),
   AgentLanguageRow('ru', 'Русский', 'Russian', 'Russo', common: true),
   AgentLanguageRow('ja', '日本語', 'Japanese', 'Giapponese', common: true),
-  AgentLanguageRow('pt-PT', 'Português (Portugal)', 'Portuguese (Portugal)', 'Portoghese (Portogallo)', common: false),
-  AgentLanguageRow('zh-Hant', '中文（繁體）', 'Chinese (Traditional)', 'Cinese (tradizionale)', common: false),
+  AgentLanguageRow(
+    'pt-PT',
+    'Português (Portugal)',
+    'Portuguese (Portugal)',
+    'Portoghese (Portogallo)',
+    common: false,
+  ),
+  AgentLanguageRow(
+    'zh-Hant',
+    '中文（繁體）',
+    'Chinese (Traditional)',
+    'Cinese (tradizionale)',
+    common: false,
+  ),
   AgentLanguageRow('ko', '한국어', 'Korean', 'Coreano', common: false),
   AgentLanguageRow('bn', 'বাংলা', 'Bengali', 'Bengalese', common: false),
   AgentLanguageRow('ur', 'اردو', 'Urdu', 'Urdu', common: false),
@@ -189,7 +213,13 @@ const agentLanguages = <AgentLanguageRow>[
   AgentLanguageRow('pl', 'Polski', 'Polish', 'Polacco', common: false),
   AgentLanguageRow('uk', 'Українська', 'Ukrainian', 'Ucraino', common: false),
   AgentLanguageRow('sv', 'Svenska', 'Swedish', 'Svedese', common: false),
-  AgentLanguageRow('nb', 'Norsk (bokmål)', 'Norwegian (Bokmål)', 'Norvegese (bokmål)', common: false),
+  AgentLanguageRow(
+    'nb',
+    'Norsk (bokmål)',
+    'Norwegian (Bokmål)',
+    'Norvegese (bokmål)',
+    common: false,
+  ),
   AgentLanguageRow('da', 'Dansk', 'Danish', 'Danese', common: false),
   AgentLanguageRow('fi', 'Suomi', 'Finnish', 'Finlandese', common: false),
   AgentLanguageRow('is', 'Íslenska', 'Icelandic', 'Islandese', common: false),
@@ -246,28 +276,112 @@ const agentLanguages = <AgentLanguageRow>[
 ];
 
 const searchProviders = <SearchProviderRow>[
-  SearchProviderRow('searxng', 'SearXNG', needsUrl: true, keyUrl: 'https://docs.searxng.org/admin/installation.html', keyExample: null),
-  SearchProviderRow('brave', 'Brave Search', needsUrl: false, keyUrl: 'https://api-dashboard.search.brave.com/app/keys', keyExample: 'BSA…'),
-  SearchProviderRow('tavily', 'Tavily', needsUrl: false, keyUrl: 'https://app.tavily.com/home', keyExample: 'tvly-…'),
-  SearchProviderRow('exa', 'Exa', needsUrl: false, keyUrl: 'https://dashboard.exa.ai/api-keys', keyExample: null),
-  SearchProviderRow('serper', 'Serper (Google)', needsUrl: false, keyUrl: 'https://serper.dev/api-keys', keyExample: null),
+  SearchProviderRow(
+    'searxng',
+    'SearXNG',
+    needsUrl: true,
+    keyUrl: 'https://docs.searxng.org/admin/installation.html',
+    keyExample: null,
+  ),
+  SearchProviderRow(
+    'brave',
+    'Brave Search',
+    needsUrl: false,
+    keyUrl: 'https://api-dashboard.search.brave.com/app/keys',
+    keyExample: 'BSA…',
+  ),
+  SearchProviderRow(
+    'tavily',
+    'Tavily',
+    needsUrl: false,
+    keyUrl: 'https://app.tavily.com/home',
+    keyExample: 'tvly-…',
+  ),
+  SearchProviderRow(
+    'exa',
+    'Exa',
+    needsUrl: false,
+    keyUrl: 'https://dashboard.exa.ai/api-keys',
+    keyExample: null,
+  ),
+  SearchProviderRow(
+    'serper',
+    'Serper (Google)',
+    needsUrl: false,
+    keyUrl: 'https://serper.dev/api-keys',
+    keyExample: null,
+  ),
 ];
 
 const sttProviders = <SttProviderRow>[
-  SttProviderRow('openai', 'OpenAI', keyUrl: 'https://platform.openai.com/api-keys', keyExample: 'sk-proj-…', models: [
+  SttProviderRow(
+    'openai',
+    'OpenAI',
+    keyUrl: 'https://platform.openai.com/api-keys',
+    keyExample: 'sk-proj-…',
+    models: [
       SttModelRow('gpt-transcribe', 'GPT Transcribe', usd: 0.0045, per: 'minute', closes: null),
-      SttModelRow('gpt-4o-mini-transcribe', 'GPT-4o mini Transcribe', usd: 0.003, per: 'minute', closes: '2027-02-26'),
-      SttModelRow('gpt-4o-transcribe', 'GPT-4o Transcribe', usd: 0.006, per: 'minute', closes: '2027-02-26'),
+      SttModelRow(
+        'gpt-4o-mini-transcribe',
+        'GPT-4o mini Transcribe',
+        usd: 0.003,
+        per: 'minute',
+        closes: '2027-02-26',
+      ),
+      SttModelRow(
+        'gpt-4o-transcribe',
+        'GPT-4o Transcribe',
+        usd: 0.006,
+        per: 'minute',
+        closes: '2027-02-26',
+      ),
       SttModelRow('whisper-1', 'Whisper', usd: 0.006, per: 'minute', closes: '2027-02-26'),
-  ]),
-  SttProviderRow('groq', 'Groq', keyUrl: 'https://console.groq.com/keys', keyExample: 'gsk_…', models: [
-      SttModelRow('whisper-large-v3-turbo', 'Whisper Large v3 Turbo', usd: 0.0006666666666666666, per: 'minute', closes: null),
-      SttModelRow('whisper-large-v3', 'Whisper Large v3', usd: 0.00185, per: 'minute', closes: null),
-  ]),
-  SttProviderRow('elevenlabs', 'ElevenLabs', keyUrl: 'https://elevenlabs.io/app/settings/api-keys', keyExample: 'sk_…', models: [
-      SttModelRow('scribe_v3', 'Scribe v3', usd: 0.0033333333333333335, per: 'minute', closes: null),
-      SttModelRow('scribe_v2', 'Scribe v2', usd: 0.0033333333333333335, per: 'minute', closes: null),
-  ]),
+    ],
+  ),
+  SttProviderRow(
+    'groq',
+    'Groq',
+    keyUrl: 'https://console.groq.com/keys',
+    keyExample: 'gsk_…',
+    models: [
+      SttModelRow(
+        'whisper-large-v3-turbo',
+        'Whisper Large v3 Turbo',
+        usd: 0.0006666666666666666,
+        per: 'minute',
+        closes: null,
+      ),
+      SttModelRow(
+        'whisper-large-v3',
+        'Whisper Large v3',
+        usd: 0.00185,
+        per: 'minute',
+        closes: null,
+      ),
+    ],
+  ),
+  SttProviderRow(
+    'elevenlabs',
+    'ElevenLabs',
+    keyUrl: 'https://elevenlabs.io/app/settings/api-keys',
+    keyExample: 'sk_…',
+    models: [
+      SttModelRow(
+        'scribe_v3',
+        'Scribe v3',
+        usd: 0.0033333333333333335,
+        per: 'minute',
+        closes: null,
+      ),
+      SttModelRow(
+        'scribe_v2',
+        'Scribe v2',
+        usd: 0.0033333333333333335,
+        per: 'minute',
+        closes: null,
+      ),
+    ],
+  ),
 ];
 
 /// The page's words for the news, the search services and the named systems.
@@ -588,8 +702,10 @@ const generalWords = <String, Map<String, String>>{
     'searchCard_brave': 'Ha un indice suo, indipendente da Google e Bing; rispetta la privacy. Credito gratuito ogni mese, poi a consumo.',
     'searchCard_exa': 'Cerca per significato: forte su documentazione, articoli scientifici e tecnici. Credito gratuito all\'inizio.',
     'searchCard_searxng': 'Gratis, senza chiave né account: un motore di ricerca che gira a casa tua (lo avvia Rasgeth, dove può, oppure usi il tuo).',
-    'searchCard_serper': 'I risultati di Google, veloce ed economico. 2.500 ricerche gratis all\'iscrizione.',
-    'searchCard_tavily': 'Fatto per gli agenti: estratti già puliti di ogni pagina. 1.000 ricerche gratis al mese.',
+    'searchCard_serper':
+        'I risultati di Google, veloce ed economico. 2.500 ricerche gratis all\'iscrizione.',
+    'searchCard_tavily':
+        'Fatto per gli agenti: estratti già puliti di ogni pagina. 1.000 ricerche gratis al mese.',
     'searchHow_brave': 'Apri la pagina della Brave Search API (link qui sotto) e crea un account.\nIn Subscriptions scegli il piano gratuito (o uno a pagamento).\nIn API Keys premi «Add API key», copiala e incollala qui.',
     'searchHow_exa': 'Apri la dashboard di Exa (link qui sotto) e crea un account.\nIn API Keys crea una chiave e copiala.\nIncollala qui: i nuovi account hanno un credito gratuito.',
     'searchHow_searxng': 'La via più semplice: premi «Avvia il motore di ricerca di Rasgeth», in cima a questa finestra, e Rasgeth fa tutto da solo.\nSe invece hai già un tuo SearXNG, scrivi il suo indirizzo nella casella qui sotto (per esempio http://192.168.1.20:8080) e premi «Usa questo».\nNel suo settings.yml, tra i search.formats ci deve essere «json», altrimenti Rasgeth non legge le risposte.',
@@ -608,7 +724,8 @@ const generalWords = <String, Map<String, String>>{
     'sysPersistar': 'Persistar',
     'sysPersistarLine': 'Il contesto di ogni conversazione con un modello locale è salvato su disco: tornandoci, anche dopo un riavvio, non si rilegge tutto da capo.',
     'sysPersistarWhat': 'il contesto di ogni conversazione salvato su disco',
-    'wzStreamInfo1': 'Per modelli più grandi della scheda video, e per un contesto molto più lungo.',
+    'wzStreamInfo1':
+        'Per modelli più grandi della scheda video, e per un contesto molto più lungo.',
   },
   'en': {
     'news3100App': 'Everything in the app',
@@ -927,7 +1044,8 @@ const generalWords = <String, Map<String, String>>{
     'searchCard_exa': 'Searches by meaning: strong on documentation, papers and technical articles. Free credit to start.',
     'searchCard_searxng': 'Free, no key, no account: a search engine that runs at your place (Rasgeth starts it, where it can, or you use yours).',
     'searchCard_serper': 'Google\'s results, fast and cheap. 2,500 free searches when you sign up.',
-    'searchCard_tavily': 'Made for AI agents: clean extracts of each page. 1,000 free searches a month.',
+    'searchCard_tavily':
+        'Made for AI agents: clean extracts of each page. 1,000 free searches a month.',
     'searchHow_brave': 'Open the Brave Search API page (link below) and create an account.\nChoose the free plan (or a paid one) under Subscriptions.\nUnder API Keys press «Add API key», copy it and paste it here.',
     'searchHow_exa': 'Open Exa\'s dashboard (link below) and create an account.\nUnder API Keys create a key and copy it.\nPaste it here: new accounts get free credit.',
     'searchHow_searxng': 'Easiest: press «Start Rasgeth\'s search engine» at the top of this window, and Rasgeth does everything by itself.\nIf you already have your own SearXNG instead, write its address in the box below (for example http://192.168.1.20:8080) and press «Use this».\nIn its settings.yml, «json» must be among search.formats, or Rasgeth cannot read its answers.',
