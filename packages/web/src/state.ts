@@ -1288,6 +1288,8 @@ export type SettingsSection =
   | "machines"
   /** Other RedGiant machines paired with this one (G39.4). */
   | "nodes"
+  /** Android SDK, emulators, phones and iOS simulators here and on the nodes (3.11). */
+  | "emulators"
   /** The person's phones and computers with RGCompanion, each with its own token (G40.1). */
   | "devices"
   /** Hands-free voice on this device (G38.4). */

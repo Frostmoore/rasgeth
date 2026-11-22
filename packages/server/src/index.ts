@@ -16,6 +16,8 @@ export * from "./devices.js";
 export * from "./discovery.js";
 export * from "./egress-routes.js";
 export * from "./email.js";
+export { detectEmulators, type EmulatorFacts } from "./emulators/detect.js";
+export { EmulatorMachine, memorySettings } from "./emulators/machine.js";
 export * from "./engine-errors.js";
 export * from "./export.js";
 export * from "./files.js";

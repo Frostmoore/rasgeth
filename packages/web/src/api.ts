@@ -10,6 +10,7 @@ import {
   type ClientMessage,
   type CloudEmbeddingModel,
   type DeviceView,
+  type EmulatorsState,
   type Event,
   type FoundBackup,
   type ImportApply,
@@ -1737,6 +1738,10 @@ export class Api {
     this.call("DELETE", `/api/settings/mailboxes/${encodeURIComponent(id)}`);
   /** Nodes (G39.4): the tree, pairs waiting for the yes, grants, placements; never a key. */
   nodes = () => this.call<NodesState>("GET", "/api/nodes");
+  emulators = (fresh = false) =>
+    this.call<EmulatorsState>("GET", `/api/emulators${fresh ? "?fresh=1" : ""}`);
+  setEmulatorSettings = (b: { sdkPath?: string | null; maxRunning?: number }) =>
+    this.call<EmulatorsState>("PUT", "/api/emulators/settings", b);
   nodeCode = () => this.call<PairCode>("POST", "/api/nodes/code");
   cancelNodeCode = () => this.call("DELETE", "/api/nodes/code");
   pairNode = (b: { address: string; code: string; name?: string }) =>

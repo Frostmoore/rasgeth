@@ -14,6 +14,7 @@ import {
   CatalogWatcher,
   DockerBrowserLauncher,
   debugLog,
+  EmulatorMachine,
   exportBackup,
   FirstBoot,
   GitHosts,
@@ -1140,8 +1141,77 @@ if (process.env.DEMO_SSH) {
   await mkdir(join(sshHome, "releases"), { recursive: true });
   await writeFile(join(sshHome, "app.log"), "12:00:01 started on :8080\n12:00:02 ready\n");
 }
+// DEMO_EMULATORS=1 (3.11): Settings › Emulators shows a Windows computer with an SDK found through
+// Android Studio's settings, an old emulator, two virtual devices, one running, and two phones
+// (one waiting for its yes). Without it the demo reads the machine it runs on.
+const demoEmulators =
+  process.env.DEMO_EMULATORS &&
+  new EmulatorMachine({
+    settings: (() => {
+      let v = { sdkPath: null, maxRunning: 2 };
+      return { get: () => v, set: async (n) => (v = { ...v, ...n }) };
+    })(),
+    os: "windows",
+    isSdk: async (p) => /android/i.test(p),
+    gather: async (o) => ({
+      os: "windows",
+      arch: "x64",
+      container: false,
+      looked: [
+        ...(o.custom ? [{ path: o.custom, source: "custom" }] : []),
+        { path: "D:\\Android\\Sdk", source: "studio" },
+        { path: "C:\\Users\\ana\\AppData\\Local\\Android\\Sdk", source: "standard" },
+      ],
+      sdk: {
+        root: o.custom ?? "D:\\Android\\Sdk",
+        source: o.custom ? "custom" : "studio",
+        emulator: "35.2.10",
+        platformTools: "37.0.1",
+        cmdlineTools: true,
+        images: ["android-35/google_apis_playstore/x86_64", "android-36/google_apis/x86_64"],
+      },
+      avds: [
+        {
+          report: {
+            name: "Pixel_9_API_36",
+            device: "pixel_9",
+            api: 36,
+            abi: "x86_64",
+            tag: "google_apis",
+          },
+          image: "android-36/google_apis/x86_64",
+        },
+        {
+          report: {
+            name: "Medium_Phone_API_35",
+            device: "medium_phone",
+            api: 35,
+            abi: "x86_64",
+            tag: "google_apis_playstore",
+            playStore: true,
+          },
+          image: "android-35/google_apis_playstore/x86_64",
+        },
+      ],
+      attached: [
+        {
+          serial: "emulator-5554",
+          kind: "emulator",
+          state: "device",
+          model: "sdk gphone64 x86 64",
+        },
+        { serial: "R58N12ABCDE", kind: "phone", state: "device", link: "usb", model: "SM A525F" },
+        { serial: "192.168.1.40:5555", kind: "phone", state: "unauthorized", link: "wifi" },
+      ],
+      runningAvds: { "emulator-5554": "Medium_Phone_API_35" },
+      accel: { ok: true, kind: "whpx" },
+      maxRunning: o.maxRunning,
+      at: new Date().toISOString(),
+    }),
+  });
 const core = await RedGiantCore.create({
   db: wrap(pg),
+  ...(demoEmulators && { emulators: demoEmulators }),
   providers: new ProviderRegistry()
     .register(
       new FakeProvider(brain, {

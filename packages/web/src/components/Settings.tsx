@@ -19,6 +19,7 @@ import {
   IconCpu,
   IconDatabase,
   IconDollar,
+  IconEmulator,
   IconFolder,
   IconKey,
   IconLayers,
@@ -46,6 +47,7 @@ import { ChatPlatforms } from "./ChatPlatforms.js";
 import { CodeSettings } from "./CodeSettings.js";
 import { CommandLimits } from "./CommandLimits.js";
 import { Devices } from "./Devices.js";
+import { Emulators } from "./Emulators.js";
 import { Extensions } from "./Extensions.js";
 import { ExternalAgents } from "./ExternalAgents.js";
 import { SystemSettings } from "./FirstBoot.js";
@@ -137,6 +139,7 @@ export const GROUPS: { title: () => string; sections: Section[] }[] = [
       { id: "system", label: () => t("fbSystemSection"), icon: <IconCpu size={20} /> },
       { id: "machines", label: () => t("mcSection"), icon: <IconServer size={20} /> },
       { id: "nodes", label: () => t("ndSection"), icon: <IconNodes size={20} /> },
+      { id: "emulators", label: () => t("emSection"), icon: <IconEmulator size={20} /> },
       { id: "backup", label: () => t("backup"), icon: <IconArchive size={20} /> },
       { id: "platform", label: () => t("platformView"), icon: <IconLayers size={20} /> },
     ],
@@ -238,6 +241,7 @@ export function Settings({ section = "general" }: { section?: SettingsSection | 
         {section === "system" && <SystemSettings />}
         {section === "machines" && <Machines />}
         {section === "nodes" && <Nodes />}
+        {section === "emulators" && <Emulators />}
         {section === "budgets" && <Budgets />}
         {section === "backup" && <Backup />}
         {section === "platform" && <Platform />}

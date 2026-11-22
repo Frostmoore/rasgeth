@@ -20801,6 +20801,67 @@ html[data-theme="dark"] {
   display: block;
   margin-top: 2px;
 }
+/* Settings, Emulators (3.11): each machine's report. */
+.em-report {
+  display: grid;
+  gap: 12px;
+}
+.em-status {
+  margin: 0;
+  font-weight: 600;
+}
+.em-status.ok {
+  color: var(--ok);
+}
+.em-h {
+  margin: 8px 0 0;
+  font-size: 0.95rem;
+}
+.em-name,
+.em-node-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.em-node-name {
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+.em-src {
+  color: var(--dim);
+  font-weight: 400;
+}
+.st-facts dd code {
+  display: inline-block;
+  margin-left: 6px;
+}
+.em-missing,
+.em-looked {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+.em-missing li {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.em-missing svg {
+  flex: none;
+  margin-top: 3px;
+  color: var(--warn, var(--dim));
+}
+.em-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.em-node + .em-node {
+  margin-top: 16px;
+}
 
 /* «Salvati» (G40.14): the person's saved passages. */
 .chats-head-actions {
