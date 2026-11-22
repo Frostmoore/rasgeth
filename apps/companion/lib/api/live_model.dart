@@ -270,6 +270,9 @@ class LiveModel extends ChangeNotifier {
   /// G42.17: the history of changes moved (`platform.changed`): Settings › Platform reads it again.
   final platformChanged = ValueNotifier<int>(0);
 
+  /// 3.12: God's topics changed (`topics.changed`, `session.routed`): «Oggi» reads them again.
+  final topicsChanged = ValueNotifier<int>(0);
+
   /// The server's own error on the live link (`error`, 3.10, G42.17b): what the page shows as its
   /// `lastError`; the app shows it once as a notice. The browser's `unavailable` is not one.
   final serverError = ValueNotifier<String?>(null);
@@ -404,6 +407,9 @@ class LiveModel extends ChangeNotifier {
         return;
       case 'platform.changed':
         platformChanged.value++;
+        return;
+      case 'topics.changed' || 'session.routed':
+        topicsChanged.value++;
         return;
       case 'automation.notice':
         final n = AutomationNotice.fromWire(m);

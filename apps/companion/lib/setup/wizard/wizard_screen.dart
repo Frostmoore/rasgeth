@@ -25,6 +25,7 @@ import '../../settings/system/remote_screen.dart' show openRemoteSettings;
 import '../../theme/colors.dart';
 import '../../ui/icons.dart';
 import '../../ui/settings_kit.dart';
+import '../../api/topics.dart';
 import 'wizard_logic.dart';
 import 'wizard_words.g.dart';
 
@@ -395,6 +396,13 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
             return true;
           },
         );
+      // 3.12: the simple interface (first, chosen already) or the full one, and the person's name.
+      case 'wzLook':
+        return _LookStep(
+          ui: (config['ui'] as String?) ?? 'simple',
+          name: (config['personName'] as String?) ?? '',
+          register: (f) => _save = f,
+        );
       case 'wzBrain':
         final ways = waysInUse(s);
         return _OpenStep(
@@ -640,6 +648,63 @@ class _PickStepState extends State<_PickStep> {
         ),
         ?widget.extra,
       ],
+    );
+  }
+}
+
+/// «Come vuoi vedere Rasgeth?»: the interface for every device that does not choose its own (this
+/// one takes it at once), and what the person is called (the page's `Look`).
+class _LookStep extends StatefulWidget {
+  const _LookStep({required this.ui, required this.name, required this.register});
+
+  final String ui;
+  final String name;
+  final void Function(_Save) register;
+
+  @override
+  State<_LookStep> createState() => _LookStepState();
+}
+
+class _LookStepState extends State<_LookStep> {
+  late final _name = TextEditingController(text: widget.name);
+
+  @override
+  void dispose() {
+    _name.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final app = AppScope.read(context);
+    String w(String k) => wzWord(context, k);
+    return _PickStep(
+      title: w('wzLookQ'),
+      lead: w('wzLookLead'),
+      value: widget.ui,
+      options: [
+        ('simple', w('wzLookSimple'), w('wzLookSimpleText')),
+        ('full', w('wzLookFull'), w('wzLookFullText')),
+      ],
+      register: widget.register,
+      save: (v) async {
+        final c = app.client;
+        if (c == null) return false;
+        if (v != widget.ui) await c.setupInterface(v);
+        final name = _name.text.trim();
+        if (name != widget.name.trim()) await app.setPersonName(name);
+        app.uiDefault = v;
+        return true;
+      },
+      extra: Padding(
+        padding: const EdgeInsets.only(top: 16),
+        child: TextField(
+          key: const Key('wz-person-name'),
+          controller: _name,
+          maxLength: 40,
+          decoration: InputDecoration(labelText: w('wzLookName'), hintText: w('wzLookNameHint')),
+        ),
+      ),
     );
   }
 }

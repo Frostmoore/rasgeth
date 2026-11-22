@@ -25,6 +25,7 @@ import 'api/setup_channel.dart';
 import 'api/token_store.dart';
 import 'api/update_follower.dart';
 import 'api/transport.dart';
+import 'api/topics.dart';
 import 'api/types.dart';
 import 'canvas/job_notices.dart';
 import 'desktop/handoff.dart';
@@ -39,6 +40,7 @@ import 'push/push_center.dart';
 import 'push/registrar.dart';
 import 'push/system_notifier.dart';
 import 'share/share_intake.dart';
+import 'simple/simple_model.dart';
 import 'ui/no_internet_notice.dart';
 import 'voice/audio.dart';
 import 'voice/voice_controller.dart';
@@ -159,6 +161,9 @@ class AppController extends ChangeNotifier {
     live.knowsAgent = (id) => agents.any((a) => a.id == id);
     live.onTurnEnded = () => spend.refreshSoon(client);
     live.addListener(_onLiveChanged);
+    live.topicsChanged.addListener(() {
+      if (simpleUi) simple.refreshSoon();
+    });
   }
 
   // The notifications, the voice and the Share sheet (G40.10).
@@ -268,6 +273,61 @@ class AppController extends ChangeNotifier {
   /// installed before it (`firstVersion`). Whoever starts with Rasgeth sees nothing.
   bool renameDue = false;
   bool _renameSeen = true;
+
+  /// The simple interface (3.12): this device's own choice (`simple`, `full`; null: not chosen,
+  /// the installation's [uiDefault] applies, else the full one).
+  String? uiChoice;
+
+  /// The installation's interface for devices that never chose (the first-start wizard's answer).
+  String? uiDefault;
+
+  /// What the person likes to be called (the simple interface's greeting); '' for no name.
+  String personName = '';
+
+  /// Whether the simple interface shows (`effectiveUi`).
+  bool get simpleUi => effectiveUi(uiChoice, uiDefault) == 'simple';
+
+  /// God's topics and the simple interface's actions.
+  late final SimpleModel simple = SimpleModel(() => client);
+
+  /// Switches this device's interface, remembered on it.
+  void setUi(String ui) {
+    uiChoice = ui;
+    unawaited(prefs.set('ui', ui));
+    if (ui == 'simple') unawaited(simple.refresh());
+    notifyListeners();
+  }
+
+  /// The person's name, kept on the server for every device.
+  Future<bool> setPersonName(String name) async {
+    final c = client;
+    if (c == null) return false;
+    try {
+      await c.setupPerson(name.trim().isEmpty ? null : name.trim());
+    } on ApiException {
+      return false;
+    }
+    personName = name.trim();
+    notifyListeners();
+    return true;
+  }
+
+  /// The installation's interface and the person's name, from the setup's state.
+  Future<void> _loadSimple(RedGiantClient c) async {
+    try {
+      final config = (await c.setupState())['config'];
+      if (config is Map<String, dynamic>) {
+        final ui = config['ui'];
+        uiDefault = ui is String && (ui == 'simple' || ui == 'full') ? ui : null;
+        final name = config['personName'];
+        personName = name is String ? name : '';
+      }
+    } on ApiException {
+      // Kept as it was.
+    }
+    if (simpleUi) await simple.refresh();
+    notifyListeners();
+  }
 
   /// The advanced interface (G40.11, Tu › Interfaccia), per RedGiant: the projects' git state
   /// and Files, Diff and Terminal in every agent's sheet (Projects is in the bar anyway, G42.5).
@@ -505,6 +565,8 @@ class AppController extends ChangeNotifier {
     final lang = await prefs.get('locale');
     locale = lang == null ? null : Locale(lang);
     reduceMotion = await prefs.get('reduceMotion') == '1';
+    final ui = await prefs.get('ui');
+    uiChoice = ui == 'simple' || ui == 'full' ? ui : null;
     commandStripMin = await prefs.get('cmdStrip') == 'min';
     try {
       final seen = jsonDecode(await prefs.get('subSeen') ?? '{}');
@@ -1402,6 +1464,7 @@ class AppController extends ChangeNotifier {
     if (c == null) return;
     unawaited(spend.refresh(c));
     unawaited(noInternet.refresh(c));
+    unawaited(_loadSimple(c));
     await _loadProjects(c);
     try {
       live.setSessions(await c.sessions());

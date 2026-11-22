@@ -440,6 +440,19 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
               ),
             ),
             Divider(height: 1, color: c.line),
+            // 3.12: the simple interface or the full one, on this device.
+            _Line(
+              title: l.uiTitle,
+              help: l.uiHelp,
+              child: ChoiceRow(
+                keyPrefix: 'general-ui',
+                values: const ['simple', 'full'],
+                selected: app.simpleUi ? 'simple' : 'full',
+                label: (v) => v == 'simple' ? l.uiSimple : l.uiFull,
+                onChanged: app.setUi,
+              ),
+            ),
+            Divider(height: 1, color: c.line),
             _Line(
               title: l.accentLabel,
               help: l.accentHint,

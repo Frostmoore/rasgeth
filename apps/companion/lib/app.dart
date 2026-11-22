@@ -9,6 +9,7 @@ import 'desktop/desktop_shell.dart';
 import 'l10n/app_localizations.dart';
 import 'mascot/mascot_source.dart';
 import 'screens/home_shell.dart';
+import 'simple/simple_shell.dart';
 import 'theme/theme.dart';
 
 class RGCompanionApp extends StatelessWidget {
@@ -66,8 +67,12 @@ class AppHome extends StatelessWidget {
     final app = AppScope.of(context);
     return AppUpdateWatcher(
       child: LayoutBuilder(
-        builder: (context, box) =>
-            app.desktopLayoutFor(box.maxWidth) ? const DesktopShell() : const HomeShell(),
+        builder: (context, box) => app.simpleUi && app.server != null
+            // 3.12: the simple interface, on phones and computers alike.
+            ? const SimpleShell()
+            : app.desktopLayoutFor(box.maxWidth)
+            ? const DesktopShell()
+            : const HomeShell(),
       ),
     );
   }

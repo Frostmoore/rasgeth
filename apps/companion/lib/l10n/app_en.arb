@@ -12702,5 +12702,147 @@
   "hfWakeErrServer": "Rasgeth could not download the speech model",
   "hfWakeErrChecksum": "the recogniser that arrived is not the expected one, so it was not kept",
   "hfWakeErrBroken": "the speech model did not start on this device; download it again",
-  "moSysPersistarLine": "The context of every conversation with a local model is saved on disk: coming back to it, even after a restart, does not read it all again."
+  "moSysPersistarLine": "The context of every conversation with a local model is saved on disk: coming back to it, even after a restart, does not read it all again.",
+  "smpMorning": "Good morning",
+  "smpAfternoon": "Good afternoon",
+  "smpEvening": "Good evening",
+  "smpMorningName": "Good morning, {name}",
+  "@smpMorningName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "smpAfternoonName": "Good afternoon, {name}",
+  "@smpAfternoonName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "smpEveningName": "Good evening, {name}",
+  "@smpEveningName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "smpHeroLead": "What do you need today?",
+  "smpAskHint": "Ask me anything…",
+  "smpReplyHint": "Reply…",
+  "smpSend": "Send",
+  "smpSettings": "Settings",
+  "smpInProgress": "IN PROGRESS",
+  "smpNoTopics": "Nothing in progress. Write above what you need: I'll take care of it.",
+  "smpLoading": "Loading…",
+  "smpArchive": "Archive ({n})",
+  "@smpArchive": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "smpJustStarted": "Just started",
+  "smpFrom": "from {name}",
+  "@smpFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "smpUnread": "Something new",
+  "smpWaiting": "waiting for you",
+  "smpWorking": "working",
+  "smpReady": "ready",
+  "smpOtherOne": "One thing waits for your answer",
+  "smpOtherMany": "{n} things wait for your answer",
+  "@smpOtherMany": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "smpBack": "Back",
+  "smpMore": "More",
+  "smpRename": "Rename",
+  "smpPin": "Keep at the top",
+  "smpUnpin": "Don't keep at the top",
+  "smpArchiveThis": "Put in the archive",
+  "smpEmptyTopic": "Nothing written here yet.",
+  "smpWorkingNow": "I'm working on it…",
+  "smpMove": "Move",
+  "smpMovedHere": "Brought here from another topic",
+  "smpRoutedIn": "in:",
+  "smpRoutedUnsure": "I wasn't sure, I put it in:",
+  "smpMovedTo": "Moved to «{title}»",
+  "@smpMovedTo": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "smpMovedElsewhere": "Moved to another topic",
+  "smpDecide": "A decision for you",
+  "smpAskAllow": "Can I go ahead?",
+  "smpAskCritical": "Careful: this can't be undone. Can I go ahead?",
+  "smpFor": "for: {title}",
+  "@smpFor": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "smpYes": "Yes, go ahead",
+  "smpNo": "No",
+  "smpMoveTitle": "Move to another topic",
+  "smpMoveLead": "Your message and my answer go there, and I answer there again.",
+  "smpNewTopic": "New topic",
+  "smpNewTopicName": "What should it be called? (you can leave it empty)",
+  "smpSearchHint": "Search in your topics",
+  "smpInArchive": "IN THE ARCHIVE",
+  "smpArchiveTitle": "Archive",
+  "smpArchiveLead": "Topics left untouched for a few days rest here. Tap one to take it back.",
+  "smpNothingFound": "Nothing found with these words.",
+  "smpArchiveEmpty": "The archive is empty.",
+  "smpRequestsTitle": "Waiting for you",
+  "smpNothingWaits": "Nothing waits for you.",
+  "smpNotify": "Notifications on this device",
+  "smpNotifyBlocked": "Blocked by the browser: allow them in its settings.",
+  "smpVoice": "Voice",
+  "smpVoiceHelp": "Talk to me and hear the answers, on this device.",
+  "smpSpend": "Ask me before spending",
+  "smpSpendHelp": "Before paying or buying anything I always ask you.",
+  "smpAlways": "Always",
+  "smpYourName": "Your name",
+  "smpYourNameLabel": "What should I call you?",
+  "smpNoName": "Add",
+  "smpLink": "Link",
+  "smpLinked": "Linked",
+  "smpTheme": "Look",
+  "smpColour": "Colour",
+  "smpLanguage": "Language",
+  "smpFullView": "Full view",
+  "smpFullViewHelp": "Every setting, for who wants to see how it works inside.",
+  "smpSignOut": "Sign out",
+  "uiTitle": "Interface",
+  "uiHelp": "The simple one shows only your topics and a few settings; the full one shows everything. Each device remembers its own.",
+  "uiSimple": "Simple",
+  "uiFull": "Full",
+  "wzLook": "Interface",
+  "wzLookQ": "How would you like to see Rasgeth?",
+  "wzLookLead": "You can change it whenever you like, on each device.",
+  "wzLookSimple": "Simple",
+  "wzLookSimpleText": "A big box to ask for what you need, your topics in progress and a few settings. For everyday things.",
+  "wzLookFull": "Full",
+  "wzLookFullText": "Agents, projects, tools, models and every setting. For who wants to see how it works inside.",
+  "wzLookName": "What should we call you?",
+  "wzLookNameHint": "Your name (optional)"
 }

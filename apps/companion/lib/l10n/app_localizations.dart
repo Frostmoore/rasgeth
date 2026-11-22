@@ -30902,6 +30902,522 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The context of every conversation with a local model is saved on disk: coming back to it, even after a restart, does not read it all again.'**
   String get moSysPersistarLine;
+
+  /// No description provided for @smpMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get smpMorning;
+
+  /// No description provided for @smpAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon'**
+  String get smpAfternoon;
+
+  /// No description provided for @smpEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get smpEvening;
+
+  /// No description provided for @smpMorningName.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning, {name}'**
+  String smpMorningName(String name);
+
+  /// No description provided for @smpAfternoonName.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon, {name}'**
+  String smpAfternoonName(String name);
+
+  /// No description provided for @smpEveningName.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening, {name}'**
+  String smpEveningName(String name);
+
+  /// No description provided for @smpHeroLead.
+  ///
+  /// In en, this message translates to:
+  /// **'What do you need today?'**
+  String get smpHeroLead;
+
+  /// No description provided for @smpAskHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me anything…'**
+  String get smpAskHint;
+
+  /// No description provided for @smpReplyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply…'**
+  String get smpReplyHint;
+
+  /// No description provided for @smpSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get smpSend;
+
+  /// No description provided for @smpSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get smpSettings;
+
+  /// No description provided for @smpInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'IN PROGRESS'**
+  String get smpInProgress;
+
+  /// No description provided for @smpNoTopics.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in progress. Write above what you need: I\'ll take care of it.'**
+  String get smpNoTopics;
+
+  /// No description provided for @smpLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get smpLoading;
+
+  /// No description provided for @smpArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive ({n})'**
+  String smpArchive(String n);
+
+  /// No description provided for @smpJustStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Just started'**
+  String get smpJustStarted;
+
+  /// No description provided for @smpFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'from {name}'**
+  String smpFrom(String name);
+
+  /// No description provided for @smpUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'Something new'**
+  String get smpUnread;
+
+  /// No description provided for @smpWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'waiting for you'**
+  String get smpWaiting;
+
+  /// No description provided for @smpWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'working'**
+  String get smpWorking;
+
+  /// No description provided for @smpReady.
+  ///
+  /// In en, this message translates to:
+  /// **'ready'**
+  String get smpReady;
+
+  /// No description provided for @smpOtherOne.
+  ///
+  /// In en, this message translates to:
+  /// **'One thing waits for your answer'**
+  String get smpOtherOne;
+
+  /// No description provided for @smpOtherMany.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} things wait for your answer'**
+  String smpOtherMany(String n);
+
+  /// No description provided for @smpBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get smpBack;
+
+  /// No description provided for @smpMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get smpMore;
+
+  /// No description provided for @smpRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get smpRename;
+
+  /// No description provided for @smpPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep at the top'**
+  String get smpPin;
+
+  /// No description provided for @smpUnpin.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t keep at the top'**
+  String get smpUnpin;
+
+  /// No description provided for @smpArchiveThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Put in the archive'**
+  String get smpArchiveThis;
+
+  /// No description provided for @smpEmptyTopic.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing written here yet.'**
+  String get smpEmptyTopic;
+
+  /// No description provided for @smpWorkingNow.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m working on it…'**
+  String get smpWorkingNow;
+
+  /// No description provided for @smpMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Move'**
+  String get smpMove;
+
+  /// No description provided for @smpMovedHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Brought here from another topic'**
+  String get smpMovedHere;
+
+  /// No description provided for @smpRoutedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'in:'**
+  String get smpRoutedIn;
+
+  /// No description provided for @smpRoutedUnsure.
+  ///
+  /// In en, this message translates to:
+  /// **'I wasn\'t sure, I put it in:'**
+  String get smpRoutedUnsure;
+
+  /// No description provided for @smpMovedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved to «{title}»'**
+  String smpMovedTo(String title);
+
+  /// No description provided for @smpMovedElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved to another topic'**
+  String get smpMovedElsewhere;
+
+  /// No description provided for @smpDecide.
+  ///
+  /// In en, this message translates to:
+  /// **'A decision for you'**
+  String get smpDecide;
+
+  /// No description provided for @smpAskAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I go ahead?'**
+  String get smpAskAllow;
+
+  /// No description provided for @smpAskCritical.
+  ///
+  /// In en, this message translates to:
+  /// **'Careful: this can\'t be undone. Can I go ahead?'**
+  String get smpAskCritical;
+
+  /// No description provided for @smpFor.
+  ///
+  /// In en, this message translates to:
+  /// **'for: {title}'**
+  String smpFor(String title);
+
+  /// No description provided for @smpYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, go ahead'**
+  String get smpYes;
+
+  /// No description provided for @smpNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get smpNo;
+
+  /// No description provided for @smpMoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to another topic'**
+  String get smpMoveTitle;
+
+  /// No description provided for @smpMoveLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Your message and my answer go there, and I answer there again.'**
+  String get smpMoveLead;
+
+  /// No description provided for @smpNewTopic.
+  ///
+  /// In en, this message translates to:
+  /// **'New topic'**
+  String get smpNewTopic;
+
+  /// No description provided for @smpNewTopicName.
+  ///
+  /// In en, this message translates to:
+  /// **'What should it be called? (you can leave it empty)'**
+  String get smpNewTopicName;
+
+  /// No description provided for @smpSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search in your topics'**
+  String get smpSearchHint;
+
+  /// No description provided for @smpInArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'IN THE ARCHIVE'**
+  String get smpInArchive;
+
+  /// No description provided for @smpArchiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get smpArchiveTitle;
+
+  /// No description provided for @smpArchiveLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Topics left untouched for a few days rest here. Tap one to take it back.'**
+  String get smpArchiveLead;
+
+  /// No description provided for @smpNothingFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing found with these words.'**
+  String get smpNothingFound;
+
+  /// No description provided for @smpArchiveEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The archive is empty.'**
+  String get smpArchiveEmpty;
+
+  /// No description provided for @smpRequestsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you'**
+  String get smpRequestsTitle;
+
+  /// No description provided for @smpNothingWaits.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing waits for you.'**
+  String get smpNothingWaits;
+
+  /// No description provided for @smpNotify.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications on this device'**
+  String get smpNotify;
+
+  /// No description provided for @smpNotifyBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked by the browser: allow them in its settings.'**
+  String get smpNotifyBlocked;
+
+  /// No description provided for @smpVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get smpVoice;
+
+  /// No description provided for @smpVoiceHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Talk to me and hear the answers, on this device.'**
+  String get smpVoiceHelp;
+
+  /// No description provided for @smpSpend.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me before spending'**
+  String get smpSpend;
+
+  /// No description provided for @smpSpendHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Before paying or buying anything I always ask you.'**
+  String get smpSpendHelp;
+
+  /// No description provided for @smpAlways.
+  ///
+  /// In en, this message translates to:
+  /// **'Always'**
+  String get smpAlways;
+
+  /// No description provided for @smpYourName.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name'**
+  String get smpYourName;
+
+  /// No description provided for @smpYourNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'What should I call you?'**
+  String get smpYourNameLabel;
+
+  /// No description provided for @smpNoName.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get smpNoName;
+
+  /// No description provided for @smpLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get smpLink;
+
+  /// No description provided for @smpLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked'**
+  String get smpLinked;
+
+  /// No description provided for @smpTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Look'**
+  String get smpTheme;
+
+  /// No description provided for @smpColour.
+  ///
+  /// In en, this message translates to:
+  /// **'Colour'**
+  String get smpColour;
+
+  /// No description provided for @smpLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get smpLanguage;
+
+  /// No description provided for @smpFullView.
+  ///
+  /// In en, this message translates to:
+  /// **'Full view'**
+  String get smpFullView;
+
+  /// No description provided for @smpFullViewHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Every setting, for who wants to see how it works inside.'**
+  String get smpFullViewHelp;
+
+  /// No description provided for @smpSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get smpSignOut;
+
+  /// No description provided for @uiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Interface'**
+  String get uiTitle;
+
+  /// No description provided for @uiHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The simple one shows only your topics and a few settings; the full one shows everything. Each device remembers its own.'**
+  String get uiHelp;
+
+  /// No description provided for @uiSimple.
+  ///
+  /// In en, this message translates to:
+  /// **'Simple'**
+  String get uiSimple;
+
+  /// No description provided for @uiFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Full'**
+  String get uiFull;
+
+  /// No description provided for @wzLook.
+  ///
+  /// In en, this message translates to:
+  /// **'Interface'**
+  String get wzLook;
+
+  /// No description provided for @wzLookQ.
+  ///
+  /// In en, this message translates to:
+  /// **'How would you like to see Rasgeth?'**
+  String get wzLookQ;
+
+  /// No description provided for @wzLookLead.
+  ///
+  /// In en, this message translates to:
+  /// **'You can change it whenever you like, on each device.'**
+  String get wzLookLead;
+
+  /// No description provided for @wzLookSimple.
+  ///
+  /// In en, this message translates to:
+  /// **'Simple'**
+  String get wzLookSimple;
+
+  /// No description provided for @wzLookSimpleText.
+  ///
+  /// In en, this message translates to:
+  /// **'A big box to ask for what you need, your topics in progress and a few settings. For everyday things.'**
+  String get wzLookSimpleText;
+
+  /// No description provided for @wzLookFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Full'**
+  String get wzLookFull;
+
+  /// No description provided for @wzLookFullText.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents, projects, tools, models and every setting. For who wants to see how it works inside.'**
+  String get wzLookFullText;
+
+  /// No description provided for @wzLookName.
+  ///
+  /// In en, this message translates to:
+  /// **'What should we call you?'**
+  String get wzLookName;
+
+  /// No description provided for @wzLookNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name (optional)'**
+  String get wzLookNameHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

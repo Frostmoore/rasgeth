@@ -164,8 +164,7 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_knowledge_status':
         r"Dice quali raccolte ci sono, cosa è stato letto e se la ricerca va per significato.",
     'toolDo_list_agents': r"Elenca gli agenti che può vedere, con il loro ruolo.",
-    'toolDo_list_topics':
-        r"Elenca gli argomenti di God con te, attivi o in archivio.",
+    'toolDo_list_topics': r"Elenca gli argomenti di God con te, attivi o in archivio.",
     'toolDo_mail_draft': r"Scrive una bozza, una risposta o un inoltro nelle tue Bozze, con file allegati; non invia niente.",
     'toolDo_mail_move': r"Segna come letta o da leggere, mette la stella, archivia, sposta nel cestino o in una cartella; cancellare per sempre lo chiede a te.",
     'toolDo_mail_read': r"Legge un'email come testo semplice ed elenca gli allegati; può salvarli nella sua cartella. Non segna niente come letto.",
@@ -195,8 +194,7 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_publish_board': r"Pubblica alcune varianti grafiche su una pagina, perché tu scelga.",
     'toolDo_read_agent': r"Legge cosa ha fatto un altro agente nella sua conversazione.",
     'toolDo_read_file': r"Legge i file del suo progetto.",
-    'toolDo_read_topic':
-        r"Legge gli ultimi messaggi di un altro argomento di God.",
+    'toolDo_read_topic': r"Legge gli ultimi messaggi di un altro argomento di God.",
     'toolDo_remove_agent':
         r"Toglie un agente dalla squadra (la sua storia resta; puoi ripristinarlo).",
     'toolDo_repo': r"Apre richieste di modifica e segnalazioni sul repository del progetto.",
@@ -447,8 +445,7 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_publish_board': r"Publishes a few design variants on a page for you to choose.",
     'toolDo_read_agent': r"Reads what another agent did in its conversation.",
     'toolDo_read_file': r"Reads the files of its project.",
-    'toolDo_read_topic':
-        r"Reads the latest messages of another of God's topics.",
+    'toolDo_read_topic': r"Reads the latest messages of another of God's topics.",
     'toolDo_remove_agent':
         r"Removes an agent from the team (its history stays; you can restore it).",
     'toolDo_repo': r"Opens pull requests and issues on the project's repository.",
@@ -456,8 +453,7 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_request_tool': r"Switches on a group of tools when the work needs it; asks you only for the tools you switched off.",
     'toolDo_restore_agent': r"Brings a removed agent back into the team.",
     'toolDo_resume_agent': r"Resumes a stopped agent under it: its open tasks go on.",
-    'toolDo_route_message':
-        r"Moves a message that reached the wrong topic to the right one.",
+    'toolDo_route_message': r"Moves a message that reached the wrong topic to the right one.",
     'toolDo_run_script': r"Runs a small program that uses its tools many times in a row.",
     'toolDo_search_conversations': r"Looks up what was already said and done in past conversations it may see, with a link to open them.",
     'toolDo_search_knowledge':

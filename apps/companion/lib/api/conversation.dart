@@ -223,11 +223,15 @@ class UserItem extends ChatItem {
     this.from,
     this.quotes = const [],
     this.via,
+    this.movedFrom,
   });
 
   final String text;
   final String ts;
   final List<ImageData> imageParts;
+
+  /// Moved here from another of God's topics by the person (3.12): where it was written.
+  final ({String sessionId, int seq})? movedFrom;
 
   int get images => imageParts.length;
 
@@ -255,6 +259,57 @@ class UserItem extends ChatItem {
     'from': ?from,
     if (quotes.isNotEmpty) 'quotes': [for (final q in quotes) q.toJson()],
     'via': ?via,
+    if (movedFrom case final m?) 'movedFrom': {'sessionId': m.sessionId, 'seq': m.seq},
+  };
+}
+
+/// Why the person's next message came to this topic of God (3.12, `topic.routed`, the page's
+/// `routed` item): «in: Title · Move», prominent when the router was unsure.
+class RoutedItem extends ChatItem {
+  RoutedItem({super.key, required this.seq, required this.via, this.uncertain = false});
+
+  final int seq;
+  final String via;
+  final bool uncertain;
+
+  /// The message it routed, once it is in the log.
+  int? userSeq;
+
+  @override
+  String get kind => 'routed';
+
+  @override
+  Map<String, Object?> toJson() => {
+    ...super.toJson(),
+    'seq': seq,
+    'via': via,
+    'uncertain': uncertain,
+    'userSeq': ?userSeq,
+  };
+}
+
+/// An exchange moved to another topic (3.12, `message.moved`): «Moved to Title».
+class MovedItem extends ChatItem {
+  const MovedItem({
+    super.key,
+    required this.seq,
+    required this.throughSeq,
+    required this.toSessionId,
+  });
+
+  final int seq;
+  final int throughSeq;
+  final String toSessionId;
+
+  @override
+  String get kind => 'moved';
+
+  @override
+  Map<String, Object?> toJson() => {
+    ...super.toJson(),
+    'seq': seq,
+    'throughSeq': throughSeq,
+    'toSessionId': toSessionId,
   };
 }
 
@@ -652,6 +707,7 @@ List<ChatItem> buildItems(
   final open = <ToolItem>{};
   final asked = <String, QuestionItem>{};
   AssistantItem? limited;
+  RoutedItem? routing;
   for (final e in events) {
     final key = 'e${e.seq}';
     final p = e.payload;
@@ -666,8 +722,11 @@ List<ChatItem> buildItems(
         if (from == 'redgiant') break;
         limited?.stepLimit = false;
         limited = null;
+        routing?.userSeq = e.seq;
+        routing = null;
         final via = _str(p['via']);
         final text = _str(p['text']) ?? '';
+        final moved = p['movedFrom'];
         out.add(
           UserItem(
             key: key,
@@ -677,6 +736,30 @@ List<ChatItem> buildItems(
             from: from == null || from.isEmpty ? null : from,
             quotes: [for (final q in _list(p['quotes'])) ?Quote.fromJson(q)],
             via: via,
+            movedFrom: moved is Map<String, dynamic> && moved['sessionId'] is String
+                ? (
+                    sessionId: moved['sessionId'] as String,
+                    seq: (moved['seq'] as num?)?.toInt() ?? 0,
+                  )
+                : null,
+          ),
+        );
+      // God's topics (3.12): how a message got here, and an exchange moved elsewhere.
+      case 'topic.routed':
+        routing = RoutedItem(
+          key: key,
+          seq: e.seq,
+          via: _str(p['via']) ?? 'router',
+          uncertain: p['uncertain'] == true,
+        );
+        out.add(routing);
+      case 'message.moved':
+        out.add(
+          MovedItem(
+            key: key,
+            seq: (p['seq'] as num?)?.toInt() ?? 0,
+            throughSeq: (p['throughSeq'] as num?)?.toInt() ?? 0,
+            toSessionId: _str(p['toSessionId']) ?? '',
           ),
         );
       case 'session.forked':
@@ -1023,6 +1106,7 @@ class PermissionRequest extends PersonRequest {
     this.sessionId,
     this.projectId,
     this.words = const {},
+    this.topic,
   });
 
   factory PermissionRequest.fromJson(Map<String, dynamic> j) => PermissionRequest(
@@ -1044,6 +1128,7 @@ class PermissionRequest extends PersonRequest {
       for (final e in _map(j['words']).entries)
         if (e.value case final Map<String, dynamic> w) e.key: RequestWords.fromJson(w),
     },
+    topic: TopicRef.fromJson(j['topic']),
   );
 
   @override
@@ -1064,6 +1149,9 @@ class PermissionRequest extends PersonRequest {
 
   /// The request in words by language (`withRequestWords` on the server, G42.1).
   final Map<String, RequestWords> words;
+
+  /// The topic of God it belongs to («per: Titolo», 3.12).
+  final TopicRef? topic;
 
   /// Its words in [lang] (the other language, else none from an older server).
   RequestWords? wordsIn(String lang) => words[lang] ?? words['en'] ?? words.values.firstOrNull;
@@ -1169,6 +1257,7 @@ class QuestionRequest extends PersonRequest {
     required this.questions,
     required this.createdAt,
     this.plan,
+    this.topic,
   });
 
   factory QuestionRequest.fromJson(Map<String, dynamic> j) => QuestionRequest(
@@ -1181,6 +1270,7 @@ class QuestionRequest extends PersonRequest {
     ],
     createdAt: _str(j['createdAt']) ?? '',
     plan: _str(j['plan']),
+    topic: TopicRef.fromJson(j['topic']),
   );
 
   @override
@@ -1194,6 +1284,50 @@ class QuestionRequest extends PersonRequest {
   @override
   final String createdAt;
   final String? plan;
+
+  /// The topic of God it belongs to («per: Titolo», 3.12).
+  final TopicRef? topic;
+}
+
+/// A request's or question's topic (`TopicRef`).
+class TopicRef {
+  const TopicRef(this.id, this.title);
+
+  static TopicRef? fromJson(Object? o) {
+    if (o is! Map<String, dynamic>) return null;
+    final id = _str(o['id']);
+    return id == null ? null : TopicRef(id, _str(o['title']) ?? '');
+  }
+
+  final String id;
+  final String title;
+}
+
+/// A topic as a document (3.12, the page's `documentItems`, pure): the person's messages, the
+/// answers, the questions, what was found and shown; no tools, figures or technical notices. An
+/// exchange moved elsewhere leaves only its «Moved to» line; a routing line «written here» goes.
+List<ChatItem> documentItems(List<ChatItem> items) {
+  final moved = [
+    for (final i in items)
+      if (i is MovedItem) (i.seq, i.throughSeq),
+  ];
+  bool gone(int? at) => at != null && moved.any((m) => at >= m.$1 && at <= m.$2);
+  int? seqOf(ChatItem i) => int.tryParse(RegExp(r'^e(\d+)').firstMatch(i.key)?.group(1) ?? '');
+  return [
+    for (final i in items)
+      if (switch (i) {
+        RoutedItem() => i.via != 'here' && !gone(i.userSeq ?? i.seq),
+        MovedItem() => true,
+        AssistantItem() => i.text.trim().isNotEmpty && !gone(seqOf(i)),
+        UserItem() ||
+        QuestionItem() ||
+        ProductsItem() ||
+        FileItem() ||
+        WidgetItem() => !gone(seqOf(i)),
+        _ => false,
+      })
+        i,
+  ];
 }
 
 class Project {

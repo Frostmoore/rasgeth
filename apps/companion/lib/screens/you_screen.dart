@@ -13,6 +13,7 @@ import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import '../ui/accent_picker.dart';
+import '../ui/model_sheet.dart' show ChoiceRow;
 import '../ui/common.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
@@ -108,6 +109,18 @@ class YouScreen extends StatelessWidget {
             onSelectionChanged: (s) => app.setThemeMode(s.first),
           ),
         ),
+        // 3.12: the simple interface or the full one, on this device.
+        if (app.server != null)
+          _Row(
+            label: l.uiTitle,
+            child: ChoiceRow(
+              keyPrefix: 'you-ui',
+              values: const ['simple', 'full'],
+              selected: app.simpleUi ? 'simple' : 'full',
+              label: (v) => v == 'simple' ? l.uiSimple : l.uiFull,
+              onChanged: app.setUi,
+            ),
+          ),
         _Row(
           label: l.accentLabel,
           child: AccentPicker(key: const Key('accent-choice'), app: app),

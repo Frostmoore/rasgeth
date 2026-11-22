@@ -1108,6 +1108,24 @@
         72,
         274
       ]
+    },
+    "routed": {
+      "app": "native",
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/simple/simple_shell.dart"
+      ],
+      "phase": "3.12",
+      "note": "«in: Titolo · Sposta» before the person's message in a topic of God (topic.routed), prominent when the router was unsure; Sposta opens the move sheet. Shown by the simple interface's document (documentItems); the full chat leaves it out as before."
+    },
+    "moved": {
+      "app": "native",
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/simple/simple_shell.dart"
+      ],
+      "phase": "3.12",
+      "note": "«Spostato in «Titolo»» where an exchange left (message.moved): the moved messages leave the document, the line opens the topic they went to."
     }
   },
   "client": {
@@ -1805,6 +1823,25 @@
       ],
       "phase": "3.8.10",
       "note": "The queue of agents waiting for a place: wall tiles, status bar, conversation banner, the queue window with «Move ahead»."
+    },
+    "topics.changed": {
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/app_state.dart",
+        "lib/simple/simple_model.dart"
+      ],
+      "phase": "3.12",
+      "note": "«Oggi» reads GET /api/god/topics again."
+    },
+    "session.routed": {
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/simple/simple_model.dart"
+      ],
+      "phase": "3.12",
+      "note": "A message to God routed from any channel: «Oggi» reads its topics again."
     }
   },
   "places": {
@@ -1874,6 +1911,20 @@
         "lib/app.dart"
       ],
       "note": "A sub-agent's sign instead of a mascot (decision of 2026-11-19, board choice A): the ring in its parent's colour, the same drawing as the page's subagentSignSvg (Mascot.tsx), checked pixel by pixel against the library (test/subagent_sign_test.dart). Every MascotView of a sub-agent shows it: tabs, team, Room, approvals, the computer's rail and lists."
+    },
+    "simple": {
+      "app": "native",
+      "files": [
+        "lib/simple/simple_shell.dart",
+        "lib/simple/simple_model.dart",
+        "lib/api/topics.dart",
+        "lib/app.dart",
+        "lib/settings/general_screen.dart",
+        "lib/screens/you_screen.dart",
+        "lib/setup/wizard/wizard_screen.dart"
+      ],
+      "phase": "3.12",
+      "note": "The simple interface (components/Simple.tsx, design «B · Assistente»): «Oggi» with the greeting, the big box and the topics' cards with their state (ti aspetto, al lavoro, pronto), a topic as a document with its decisions in a box (requests in plain words, questions), «in: Titolo · Sposta», the archive with its search, a few settings (notifications, voice, spending, name, Telegram, look, «Vista completa»). Switched in Settings › General and in Tu, remembered per device; the first-start wizard asks which one for new devices (wzLook). Phone and computer: one centred column, wider cards on a wide window."
     }
   }
 }

@@ -17963,4 +17963,283 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get moSysPersistarLine =>
       'The context of every conversation with a local model is saved on disk: coming back to it, even after a restart, does not read it all again.';
+
+  @override
+  String get smpMorning => 'Good morning';
+
+  @override
+  String get smpAfternoon => 'Good afternoon';
+
+  @override
+  String get smpEvening => 'Good evening';
+
+  @override
+  String smpMorningName(String name) {
+    return 'Good morning, $name';
+  }
+
+  @override
+  String smpAfternoonName(String name) {
+    return 'Good afternoon, $name';
+  }
+
+  @override
+  String smpEveningName(String name) {
+    return 'Good evening, $name';
+  }
+
+  @override
+  String get smpHeroLead => 'What do you need today?';
+
+  @override
+  String get smpAskHint => 'Ask me anything…';
+
+  @override
+  String get smpReplyHint => 'Reply…';
+
+  @override
+  String get smpSend => 'Send';
+
+  @override
+  String get smpSettings => 'Settings';
+
+  @override
+  String get smpInProgress => 'IN PROGRESS';
+
+  @override
+  String get smpNoTopics =>
+      'Nothing in progress. Write above what you need: I\'ll take care of it.';
+
+  @override
+  String get smpLoading => 'Loading…';
+
+  @override
+  String smpArchive(String n) {
+    return 'Archive ($n)';
+  }
+
+  @override
+  String get smpJustStarted => 'Just started';
+
+  @override
+  String smpFrom(String name) {
+    return 'from $name';
+  }
+
+  @override
+  String get smpUnread => 'Something new';
+
+  @override
+  String get smpWaiting => 'waiting for you';
+
+  @override
+  String get smpWorking => 'working';
+
+  @override
+  String get smpReady => 'ready';
+
+  @override
+  String get smpOtherOne => 'One thing waits for your answer';
+
+  @override
+  String smpOtherMany(String n) {
+    return '$n things wait for your answer';
+  }
+
+  @override
+  String get smpBack => 'Back';
+
+  @override
+  String get smpMore => 'More';
+
+  @override
+  String get smpRename => 'Rename';
+
+  @override
+  String get smpPin => 'Keep at the top';
+
+  @override
+  String get smpUnpin => 'Don\'t keep at the top';
+
+  @override
+  String get smpArchiveThis => 'Put in the archive';
+
+  @override
+  String get smpEmptyTopic => 'Nothing written here yet.';
+
+  @override
+  String get smpWorkingNow => 'I\'m working on it…';
+
+  @override
+  String get smpMove => 'Move';
+
+  @override
+  String get smpMovedHere => 'Brought here from another topic';
+
+  @override
+  String get smpRoutedIn => 'in:';
+
+  @override
+  String get smpRoutedUnsure => 'I wasn\'t sure, I put it in:';
+
+  @override
+  String smpMovedTo(String title) {
+    return 'Moved to «$title»';
+  }
+
+  @override
+  String get smpMovedElsewhere => 'Moved to another topic';
+
+  @override
+  String get smpDecide => 'A decision for you';
+
+  @override
+  String get smpAskAllow => 'Can I go ahead?';
+
+  @override
+  String get smpAskCritical => 'Careful: this can\'t be undone. Can I go ahead?';
+
+  @override
+  String smpFor(String title) {
+    return 'for: $title';
+  }
+
+  @override
+  String get smpYes => 'Yes, go ahead';
+
+  @override
+  String get smpNo => 'No';
+
+  @override
+  String get smpMoveTitle => 'Move to another topic';
+
+  @override
+  String get smpMoveLead => 'Your message and my answer go there, and I answer there again.';
+
+  @override
+  String get smpNewTopic => 'New topic';
+
+  @override
+  String get smpNewTopicName => 'What should it be called? (you can leave it empty)';
+
+  @override
+  String get smpSearchHint => 'Search in your topics';
+
+  @override
+  String get smpInArchive => 'IN THE ARCHIVE';
+
+  @override
+  String get smpArchiveTitle => 'Archive';
+
+  @override
+  String get smpArchiveLead =>
+      'Topics left untouched for a few days rest here. Tap one to take it back.';
+
+  @override
+  String get smpNothingFound => 'Nothing found with these words.';
+
+  @override
+  String get smpArchiveEmpty => 'The archive is empty.';
+
+  @override
+  String get smpRequestsTitle => 'Waiting for you';
+
+  @override
+  String get smpNothingWaits => 'Nothing waits for you.';
+
+  @override
+  String get smpNotify => 'Notifications on this device';
+
+  @override
+  String get smpNotifyBlocked => 'Blocked by the browser: allow them in its settings.';
+
+  @override
+  String get smpVoice => 'Voice';
+
+  @override
+  String get smpVoiceHelp => 'Talk to me and hear the answers, on this device.';
+
+  @override
+  String get smpSpend => 'Ask me before spending';
+
+  @override
+  String get smpSpendHelp => 'Before paying or buying anything I always ask you.';
+
+  @override
+  String get smpAlways => 'Always';
+
+  @override
+  String get smpYourName => 'Your name';
+
+  @override
+  String get smpYourNameLabel => 'What should I call you?';
+
+  @override
+  String get smpNoName => 'Add';
+
+  @override
+  String get smpLink => 'Link';
+
+  @override
+  String get smpLinked => 'Linked';
+
+  @override
+  String get smpTheme => 'Look';
+
+  @override
+  String get smpColour => 'Colour';
+
+  @override
+  String get smpLanguage => 'Language';
+
+  @override
+  String get smpFullView => 'Full view';
+
+  @override
+  String get smpFullViewHelp => 'Every setting, for who wants to see how it works inside.';
+
+  @override
+  String get smpSignOut => 'Sign out';
+
+  @override
+  String get uiTitle => 'Interface';
+
+  @override
+  String get uiHelp =>
+      'The simple one shows only your topics and a few settings; the full one shows everything. Each device remembers its own.';
+
+  @override
+  String get uiSimple => 'Simple';
+
+  @override
+  String get uiFull => 'Full';
+
+  @override
+  String get wzLook => 'Interface';
+
+  @override
+  String get wzLookQ => 'How would you like to see Rasgeth?';
+
+  @override
+  String get wzLookLead => 'You can change it whenever you like, on each device.';
+
+  @override
+  String get wzLookSimple => 'Simple';
+
+  @override
+  String get wzLookSimpleText =>
+      'A big box to ask for what you need, your topics in progress and a few settings. For everyday things.';
+
+  @override
+  String get wzLookFull => 'Full';
+
+  @override
+  String get wzLookFullText =>
+      'Agents, projects, tools, models and every setting. For who wants to see how it works inside.';
+
+  @override
+  String get wzLookName => 'What should we call you?';
+
+  @override
+  String get wzLookNameHint => 'Your name (optional)';
 }

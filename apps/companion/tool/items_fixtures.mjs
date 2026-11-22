@@ -275,6 +275,18 @@ const cases = [
       "Ecco:\n```widget Umidità\n<b>60%</b>\n```\nE la temperatura:\n```widget\n<i>21</i>\n```\n```widget Aperto\n<p>non chiuso",
     ),
   ]),
+  // 3.12: God's topics: how a message got here («in: Title · Move», unsure), one moved here from
+  // another topic, and an exchange moved away.
+  caseOf("topics", [
+    { type: "topic.opened", payload: { title: "Vacanza in Sardegna", by: "router" } },
+    { type: "topic.routed", payload: { via: "router", reason: "router", uncertain: true, confidence: 0.4 } },
+    user("Mi trovi un volo per Cagliari?"),
+    said("Ne ho trovati tre."),
+    { type: "topic.routed", payload: { via: "person", reason: "chosen" } },
+    user("E il regalo per la mamma?", { movedFrom: { sessionId: "sess_other", seq: 7 } }),
+    said("Ecco tre idee."),
+    { type: "message.moved", payload: { seq: 6, throughSeq: 7, toSessionId: "sess_gift", by: "person" } },
+  ]),
 ];
 
 const out = {

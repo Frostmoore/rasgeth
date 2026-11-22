@@ -1886,6 +1886,15 @@ class ChatItemView extends StatelessWidget {
         onOpen: a.openSession == null ? null : (s) => a.openSession!(s, a.agent?.id),
       ),
       CompactionItem() => CompactionMark(item: it, sessionId: a.sessionId ?? ''),
+      // God's topics (3.12): the routing line belongs to the simple view; a move is said here too.
+      RoutedItem() => const SizedBox.shrink(),
+      MovedItem() => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Text(
+          l.smpMovedElsewhere,
+          style: TextStyle(color: RgColors.of(context).dim, fontSize: 13),
+        ),
+      ),
     };
   }
 }

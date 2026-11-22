@@ -14,6 +14,7 @@ import 'fake_portrait.dart';
 import 'fake_skills.dart';
 import 'fake_vault.dart';
 import 'fake_system.dart';
+import 'fake_topics.dart';
 import 'helpers.dart';
 
 class FakeRedGiant {
@@ -48,6 +49,9 @@ class FakeRedGiant {
 
   /// G42.14: the system's routes in memory (null: the canned answers below).
   FakeSystem? system;
+
+  /// 3.12: God's topics in memory (null: no topics routes).
+  FakeTopics? topics;
   bool codeOn = false;
   int appProtocol = 1;
   int wrongTries = 0;
@@ -1008,6 +1012,7 @@ class FakeRedGiant {
     if (extensions case final x? when await x.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (vault case final v? when await v.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (system case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;
+    if (topics case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;
     final own = routes['${r.method} $path'];
     if (own != null) return own(r);
     if (await automations.handle(r, path, (s, b) => _json(r, s, b))) return;

@@ -18016,4 +18016,283 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get moSysPersistarLine =>
       'Il contesto di ogni conversazione con un modello locale è salvato su disco: tornandoci, anche dopo un riavvio, non si rilegge tutto da capo.';
+
+  @override
+  String get smpMorning => 'Buongiorno';
+
+  @override
+  String get smpAfternoon => 'Buon pomeriggio';
+
+  @override
+  String get smpEvening => 'Buonasera';
+
+  @override
+  String smpMorningName(String name) {
+    return 'Buongiorno, $name';
+  }
+
+  @override
+  String smpAfternoonName(String name) {
+    return 'Buon pomeriggio, $name';
+  }
+
+  @override
+  String smpEveningName(String name) {
+    return 'Buonasera, $name';
+  }
+
+  @override
+  String get smpHeroLead => 'Di cosa hai bisogno oggi?';
+
+  @override
+  String get smpAskHint => 'Chiedimi qualcosa…';
+
+  @override
+  String get smpReplyHint => 'Rispondi…';
+
+  @override
+  String get smpSend => 'Invia';
+
+  @override
+  String get smpSettings => 'Impostazioni';
+
+  @override
+  String get smpInProgress => 'IN CORSO';
+
+  @override
+  String get smpNoTopics => 'Niente in corso. Scrivi qui sopra cosa ti serve: ci penso io.';
+
+  @override
+  String get smpLoading => 'Un momento…';
+
+  @override
+  String smpArchive(String n) {
+    return 'Archivio ($n)';
+  }
+
+  @override
+  String get smpJustStarted => 'Appena iniziato';
+
+  @override
+  String smpFrom(String name) {
+    return 'da $name';
+  }
+
+  @override
+  String get smpUnread => 'Novità';
+
+  @override
+  String get smpWaiting => 'ti aspetto';
+
+  @override
+  String get smpWorking => 'al lavoro';
+
+  @override
+  String get smpReady => 'pronto';
+
+  @override
+  String get smpOtherOne => 'Una cosa aspetta una tua risposta';
+
+  @override
+  String smpOtherMany(String n) {
+    return '$n cose aspettano una tua risposta';
+  }
+
+  @override
+  String get smpBack => 'Indietro';
+
+  @override
+  String get smpMore => 'Altro';
+
+  @override
+  String get smpRename => 'Rinomina';
+
+  @override
+  String get smpPin => 'Tieni in cima';
+
+  @override
+  String get smpUnpin => 'Non tenere in cima';
+
+  @override
+  String get smpArchiveThis => 'Metti in archivio';
+
+  @override
+  String get smpEmptyTopic => 'Ancora niente qui.';
+
+  @override
+  String get smpWorkingNow => 'Ci sto lavorando…';
+
+  @override
+  String get smpMove => 'Sposta';
+
+  @override
+  String get smpMovedHere => 'Portato qui da un altro argomento';
+
+  @override
+  String get smpRoutedIn => 'in:';
+
+  @override
+  String get smpRoutedUnsure => 'Non ero sicuro, l\'ho messo in:';
+
+  @override
+  String smpMovedTo(String title) {
+    return 'Spostato in «$title»';
+  }
+
+  @override
+  String get smpMovedElsewhere => 'Spostato in un altro argomento';
+
+  @override
+  String get smpDecide => 'Una decisione per te';
+
+  @override
+  String get smpAskAllow => 'Posso procedere?';
+
+  @override
+  String get smpAskCritical => 'Attenzione: questa cosa non si può annullare. Posso procedere?';
+
+  @override
+  String smpFor(String title) {
+    return 'per: $title';
+  }
+
+  @override
+  String get smpYes => 'Sì, procedi';
+
+  @override
+  String get smpNo => 'No';
+
+  @override
+  String get smpMoveTitle => 'Sposta in un altro argomento';
+
+  @override
+  String get smpMoveLead =>
+      'Il tuo messaggio e la mia risposta vanno lì, e lì ti rispondo di nuovo.';
+
+  @override
+  String get smpNewTopic => 'Nuovo argomento';
+
+  @override
+  String get smpNewTopicName => 'Come lo chiamiamo? (puoi lasciarlo vuoto)';
+
+  @override
+  String get smpSearchHint => 'Cerca nei tuoi argomenti';
+
+  @override
+  String get smpInArchive => 'IN ARCHIVIO';
+
+  @override
+  String get smpArchiveTitle => 'Archivio';
+
+  @override
+  String get smpArchiveLead =>
+      'Qui riposano gli argomenti fermi da qualche giorno. Toccane uno per riprenderlo.';
+
+  @override
+  String get smpNothingFound => 'Niente con queste parole.';
+
+  @override
+  String get smpArchiveEmpty => 'L\'archivio è vuoto.';
+
+  @override
+  String get smpRequestsTitle => 'Ti aspettano';
+
+  @override
+  String get smpNothingWaits => 'Niente ti aspetta.';
+
+  @override
+  String get smpNotify => 'Avvisi su questo dispositivo';
+
+  @override
+  String get smpNotifyBlocked => 'Bloccati dal browser: permettili nelle sue impostazioni.';
+
+  @override
+  String get smpVoice => 'Voce';
+
+  @override
+  String get smpVoiceHelp => 'Parlami e ascolta le risposte, su questo dispositivo.';
+
+  @override
+  String get smpSpend => 'Chiedimi prima di spendere';
+
+  @override
+  String get smpSpendHelp => 'Prima di pagare o comprare qualcosa te lo chiedo sempre.';
+
+  @override
+  String get smpAlways => 'Sempre';
+
+  @override
+  String get smpYourName => 'Il tuo nome';
+
+  @override
+  String get smpYourNameLabel => 'Come ti chiamo?';
+
+  @override
+  String get smpNoName => 'Aggiungi';
+
+  @override
+  String get smpLink => 'Collega';
+
+  @override
+  String get smpLinked => 'Collegato';
+
+  @override
+  String get smpTheme => 'Aspetto';
+
+  @override
+  String get smpColour => 'Colore';
+
+  @override
+  String get smpLanguage => 'Lingua';
+
+  @override
+  String get smpFullView => 'Vista completa';
+
+  @override
+  String get smpFullViewHelp => 'Tutte le impostazioni, per chi vuole vedere come funziona dentro.';
+
+  @override
+  String get smpSignOut => 'Esci';
+
+  @override
+  String get uiTitle => 'Interfaccia';
+
+  @override
+  String get uiHelp =>
+      'Quella semplice mostra solo i tuoi argomenti e poche impostazioni; quella completa mostra tutto. Ogni dispositivo ricorda la sua.';
+
+  @override
+  String get uiSimple => 'Semplice';
+
+  @override
+  String get uiFull => 'Completa';
+
+  @override
+  String get wzLook => 'Interfaccia';
+
+  @override
+  String get wzLookQ => 'Come vuoi vedere Rasgeth?';
+
+  @override
+  String get wzLookLead => 'Puoi cambiarla quando vuoi, su ogni dispositivo.';
+
+  @override
+  String get wzLookSimple => 'Semplice';
+
+  @override
+  String get wzLookSimpleText =>
+      'Una grande casella per chiedere quello che ti serve, i tuoi argomenti in corso e poche impostazioni. Per le cose di tutti i giorni.';
+
+  @override
+  String get wzLookFull => 'Completa';
+
+  @override
+  String get wzLookFullText =>
+      'Agenti, progetti, strumenti, modelli e tutte le impostazioni. Per chi vuole vedere come funziona dentro.';
+
+  @override
+  String get wzLookName => 'Come ti chiamiamo?';
+
+  @override
+  String get wzLookNameHint => 'Il tuo nome (facoltativo)';
 }
