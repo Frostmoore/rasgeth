@@ -630,6 +630,10 @@ function fakeTools(o: { root: string; licence?: string; hang?: boolean; runs: Fa
   };
 }
 
+/** The computer running the tests: the install writes real folders, so its paths are this machine's. */
+const HOST_OS =
+  process.platform === "win32" ? "windows" : process.platform === "darwin" ? "macos" : "linux";
+
 async function setup(
   o: { licence?: string; hang?: boolean; slowTemp?: number; now?: () => number } = {},
 ) {
@@ -651,7 +655,7 @@ async function setup(
       return new Response(
         u.includes("sys-img")
           ? `<x><license id="android-sdk-license" type="text">Terms</license><remotePackage path="system-images;android-35;google_apis;x86_64"><revision><major>9</major></revision><uses-license ref="android-sdk-license"/><channelRef ref="channel-0"/><archives><archive><complete><size>1738815903</size><url>x.zip</url></complete></archive></archives></remotePackage></x>`
-          : XML.replace(/windows/g, "linux"),
+          : XML.replace(/windows/g, HOST_OS),
       );
     if (u === archive.url) return new Response(chunked(zip, 4));
     return new Response("no", { status: 404 });
@@ -659,9 +663,9 @@ async function setup(
   const jobs = new Jobs(o.now);
   const machine = new EmulatorMachine({
     settings: memorySettings(),
-    os: "linux",
+    os: HOST_OS,
     gather: async (s) => ({
-      os: "linux",
+      os: HOST_OS,
       arch: "x64",
       container: false,
       looked: [],

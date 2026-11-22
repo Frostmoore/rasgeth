@@ -6679,7 +6679,7 @@ const en = {
   emMiss_accel: "Hardware acceleration: without it emulators are too slow.",
   emMiss_emulator_old: "The emulator is old: {product} can propose the update, which you approve.",
   emMiss_xcode: "Xcode, for iOS simulators (from the App Store).",
-  emMiss_ios_bridge: "A bridge for touches on iOS simulators (comes with 3.11.1).",
+  emMiss_ios_bridge: "A bridge for touches on iOS simulators (comes with 3.12.2).",
   emLooked: "Where {product} looked",
   emFolder: "Folder of the Android SDK",
   emFolderLead:
@@ -6702,7 +6702,7 @@ const en = {
   eiTitle: "Install the Android pieces",
   eiTitleUpdate: "Update the emulator",
   eiLead:
-    "Rasgeth downloads them from Google only now, with your yes, and puts everything in this folder (the virtual phone goes where the emulator keeps them). Nothing else on the computer changes.",
+    "{product} downloads them from Google only now, with your yes, and puts everything in this folder (the virtual phone goes where the emulator keeps them). Nothing else on the computer changes.",
   eiReading: "Reading Google's list of packages…",
   eiFolder: "Folder",
   eiFolderStandard: "the standard place on this system",
@@ -6725,7 +6725,7 @@ const en = {
   eiLicencesLead:
     "Google's terms for these pieces, in full. Read them: the install starts only once you accept them.",
   eiLicenceAccept: "I read and accept these licences",
-  eiLicenceHelp: "Rasgeth says yes on your behalf only to these, only for this install.",
+  eiLicenceHelp: "{product} says yes on your behalf only to these, only for this install.",
   eiStart: "Install",
   eiStartUpdate: "Update",
   eiStopNow: "Stop",
@@ -6735,13 +6735,13 @@ const en = {
   eiFailed: "The install did not finish. What is already in the folder stays; you can try again.",
   eiCancelled: "Stopped. You can start again whenever you like.",
   eiBlock_container:
-    "Rasgeth runs in a container here, and emulators cannot run inside it. Pair a node (a computer with Rasgeth) and its emulators appear here.",
+    "{product} runs in a container here, and emulators cannot run inside it. Pair a node (a computer with {product}) and its emulators appear here.",
   eiBlock_unsupported:
     "Google makes no Android emulator for this system and processor. A node on another computer can bring one.",
   eiBlock_no_accel:
     "This computer has no hardware acceleration for virtual machines: an emulator would be far too slow to use. Nothing is installed; a node on a computer that has it is better.",
   eiBlock_no_java:
-    "Android's tools need Java 17 or newer, and none was found (JAVA_HOME, the PATH, Android Studio). Install a Java 17 (for example Eclipse Temurin or OpenLogic) or Android Studio, then look again. Rasgeth does not install Java by itself.",
+    "Android's tools need Java 17 or newer, and none was found (JAVA_HOME, the PATH, Android Studio). Install a Java 17 (for example Eclipse Temurin or OpenLogic) or Android Studio, then look again. {product} does not install Java by itself.",
   eiBlock_java_old:
     "The Java found is version {major}: Android's tools need 17 or newer. Install a Java 17 or set JAVA_HOME to one, then look again.",
   eiBlock_emulators_running: "An emulator is running: switch it off first, then update.",
@@ -6753,9 +6753,9 @@ const en = {
   eiBlock_nothing: "Nothing is missing here.",
   eiNote_node: "Settings › Nodes: pair a computer that can run emulators.",
   eiNote_xcode:
-    "iOS simulators need Xcode, from the App Store: Rasgeth does not install it. iOS comes with Rasgeth 3.11.1.",
+    "iOS simulators need Xcode, from the App Store: {product} does not install it. iOS comes with {product} 3.12.2.",
   eiNote_ios_bridge:
-    "iOS: the bridge for touches comes with Rasgeth 3.11.1; there is nothing to install now.",
+    "iOS: the bridge for touches comes with {product} 3.12.2; there is nothing to install now.",
   eiNote_kvm_group:
     "Linux: /dev/kvm is there but this user may not use it. An administrator can add the user to the kvm group, then log in again.",
   eiNote_bios:
@@ -14937,7 +14937,7 @@ const it: Record<Key, string> = {
   emMiss_emulator_old:
     "L'emulatore è vecchio: {product} può proporti l'aggiornamento, che approvi tu.",
   emMiss_xcode: "Xcode, per i simulatori iOS (dall'App Store).",
-  emMiss_ios_bridge: "Un ponte per i tocchi sui simulatori iOS (arriva con la 3.11.1).",
+  emMiss_ios_bridge: "Un ponte per i tocchi sui simulatori iOS (arriva con la 3.12.2).",
   emLooked: "Dove ha guardato {product}",
   emFolder: "Cartella dell'SDK Android",
   emFolderLead:
@@ -14960,7 +14960,7 @@ const it: Record<Key, string> = {
   eiTitle: "Installa i pezzi di Android",
   eiTitleUpdate: "Aggiorna l'emulatore",
   eiLead:
-    "Rasgeth li scarica da Google solo adesso, con il tuo sì, e mette tutto in questa cartella (il telefono virtuale va dove l'emulatore li tiene). Nient'altro cambia sul computer.",
+    "{product} li scarica da Google solo adesso, con il tuo sì, e mette tutto in questa cartella (il telefono virtuale va dove l'emulatore li tiene). Nient'altro cambia sul computer.",
   eiReading: "Leggo l'elenco dei pacchetti di Google…",
   eiFolder: "Cartella",
   eiFolderStandard: "il posto standard di questo sistema",
@@ -14985,7 +14985,7 @@ const it: Record<Key, string> = {
   eiLicencesLead:
     "Le condizioni di Google per questi pezzi, per intero. Leggile: l'installazione parte solo quando le accetti.",
   eiLicenceAccept: "Ho letto e accetto queste licenze",
-  eiLicenceHelp: "Rasgeth dice sì al posto tuo solo a queste, solo per questa installazione.",
+  eiLicenceHelp: "{product} dice sì al posto tuo solo a queste, solo per questa installazione.",
   eiStart: "Installa",
   eiStartUpdate: "Aggiorna",
   eiStopNow: "Ferma",
@@ -14995,13 +14995,13 @@ const it: Record<Key, string> = {
   eiFailed: "L'installazione non è finita. Quello che è già nella cartella resta; puoi riprovare.",
   eiCancelled: "Fermata. Puoi ripartire quando vuoi.",
   eiBlock_container:
-    "Qui Rasgeth gira in un container, e lì dentro gli emulatori non possono girare. Collega un nodo (un computer con Rasgeth) e i suoi emulatori compaiono qui.",
+    "Qui {product} gira in un container, e lì dentro gli emulatori non possono girare. Collega un nodo (un computer con {product}) e i suoi emulatori compaiono qui.",
   eiBlock_unsupported:
     "Google non fa un emulatore Android per questo sistema e questo processore. Un nodo su un altro computer può portarne uno.",
   eiBlock_no_accel:
     "Questo computer non ha l'accelerazione hardware per le macchine virtuali: un emulatore sarebbe troppo lento per usarlo. Non installo niente; meglio un nodo su un computer che ce l'ha.",
   eiBlock_no_java:
-    "Gli strumenti di Android vogliono Java 17 o più nuovo, e non l'ho trovato (JAVA_HOME, il PATH, Android Studio). Installa un Java 17 (per esempio Eclipse Temurin o OpenLogic) o Android Studio, poi guarda di nuovo. Rasgeth non installa Java da solo.",
+    "Gli strumenti di Android vogliono Java 17 o più nuovo, e non l'ho trovato (JAVA_HOME, il PATH, Android Studio). Installa un Java 17 (per esempio Eclipse Temurin o OpenLogic) o Android Studio, poi guarda di nuovo. {product} non installa Java da solo.",
   eiBlock_java_old:
     "Il Java trovato è la versione {major}: gli strumenti di Android vogliono la 17 o più nuova. Installa un Java 17 o fai puntare JAVA_HOME a uno, poi guarda di nuovo.",
   eiBlock_emulators_running: "C'è un emulatore acceso: spegnilo prima, poi aggiorna.",
@@ -15013,9 +15013,9 @@ const it: Record<Key, string> = {
   eiBlock_nothing: "Qui non manca niente.",
   eiNote_node: "Impostazioni › Nodi: collega un computer che può far girare gli emulatori.",
   eiNote_xcode:
-    "I simulatori iOS vogliono Xcode, dall'App Store: Rasgeth non lo installa. iOS arriva con Rasgeth 3.11.1.",
+    "I simulatori iOS vogliono Xcode, dall'App Store: {product} non lo installa. iOS arriva con {product} 3.12.2.",
   eiNote_ios_bridge:
-    "iOS: il ponte per i tocchi arriva con Rasgeth 3.11.1; adesso non c'è niente da installare.",
+    "iOS: il ponte per i tocchi arriva con {product} 3.12.2; adesso non c'è niente da installare.",
   eiNote_kvm_group:
     "Linux: /dev/kvm c'è ma questo utente non può usarlo. Un amministratore può aggiungere l'utente al gruppo kvm, poi si rientra.",
   eiNote_bios:

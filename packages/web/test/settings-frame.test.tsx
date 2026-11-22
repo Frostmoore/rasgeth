@@ -77,7 +77,7 @@ describe("Settings drawn as the wizard", () => {
     expect(r.container.querySelector(".st-pick")?.textContent).toContain("Telegram");
     fireEvent.click(r.container.querySelector(".st-pick") as HTMLElement);
     const sheet = r.container.querySelector(".ui-modal") as HTMLElement;
-    expect(sheet.querySelectorAll(".st-nav-item")).toHaveLength(30);
+    expect(sheet.querySelectorAll(".st-nav-item")).toHaveLength(31);
     // Rasgeth's named systems (3.10.3): the name, and under it what it is in the person's words.
     const named = [...nav.querySelectorAll(".st-nav-item .sys")].map((x) => [
       x.querySelector(".sys-name")?.textContent,

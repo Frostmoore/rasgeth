@@ -18905,7 +18905,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get syEmMiss_ios_bridge =>
-      'Un ponte per i tocchi sui simulatori iOS (arriva con la 3.11.1).';
+      'Un ponte per i tocchi sui simulatori iOS (arriva con la 3.12.2).';
 
   @override
   String get syEmMiss_platform_tools =>
@@ -19205,7 +19205,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get syEiNote_ios_bridge =>
-      'iOS: il ponte per i tocchi arriva con Rasgeth 3.11.1; adesso non c\'è niente da installare.';
+      'iOS: il ponte per i tocchi arriva con Rasgeth 3.12.2; adesso non c\'è niente da installare.';
 
   @override
   String get syEiNote_kvm_group =>
@@ -19217,7 +19217,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get syEiNote_xcode =>
-      'I simulatori iOS vogliono Xcode, dall\'App Store: Rasgeth non lo installa. iOS arriva con Rasgeth 3.11.1.';
+      'I simulatori iOS vogliono Xcode, dall\'App Store: Rasgeth non lo installa. iOS arriva con Rasgeth 3.12.2.';
 
   @override
   String get syEiReading => 'Leggo l\'elenco dei pacchetti di Google…';

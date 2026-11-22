@@ -484,7 +484,7 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
           const out = await d.install(i.device, file, ctx?.signal);
           if (!/Success/.test(out))
             throw new DeviceError(`The device refused the APK: ${out.slice(0, 500)}`);
-          return `Installed ${rel} on ${i.device}.`;
+          return `Installed ${rel.split(sep).join("/")} on ${i.device}.`;
         }),
     ),
     tool(

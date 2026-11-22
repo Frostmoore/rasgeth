@@ -8,10 +8,28 @@ import { join } from "node:path";
 import type { EmuDeviceView, NodesState, PairCode, PendingPair } from "@redgiant/protocol";
 import { afterEach, describe, expect, it } from "vitest";
 import { FakeDeviceHost } from "../src/emulators/host.js";
+import { EmulatorMachine, memorySettings } from "../src/emulators/machine.js";
 import { splitDeviceId } from "../src/emulators/remote.js";
 import { deviceTools } from "../src/emulators/tools.js";
 import { deviceCommandAllowed } from "../src/nodes/device.js";
 import { startServer, wsClient } from "./helpers.js";
+
+/** A machine with no SDK and no AVDs: the computer running the tests never shows through. */
+const noMachine = () =>
+  new EmulatorMachine({
+    settings: memorySettings(),
+    os: "linux",
+    gather: async (s) => ({
+      os: "linux",
+      arch: "x64",
+      container: false,
+      looked: [],
+      avds: [],
+      accel: { ok: true, kind: "kvm" },
+      maxRunning: s.maxRunning,
+      at: new Date().toISOString(),
+    }),
+  });
 
 type Server = Awaited<ReturnType<typeof startServer>>;
 const open: { close: () => Promise<unknown> }[] = [];
@@ -67,6 +85,7 @@ async function servers() {
     {},
     {
       deviceHost: here,
+      emulators: noMachine(),
       nodes: { hostName: "severino", reconnectMs: [60], waitMs: 3000, pollMs: 0 },
     },
   );
@@ -76,6 +95,7 @@ async function servers() {
     {},
     {
       deviceHost: there,
+      emulators: noMachine(),
       nodes: { hostName: "rig", reconnectMs: [60], waitMs: 3000, pollMs: 0 },
     },
   );

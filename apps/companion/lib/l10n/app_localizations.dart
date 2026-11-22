@@ -32532,7 +32532,7 @@ abstract class AppLocalizations {
   /// No description provided for @syEmMiss_ios_bridge.
   ///
   /// In en, this message translates to:
-  /// **'A bridge for touches on iOS simulators (comes with 3.11.1).'**
+  /// **'A bridge for touches on iOS simulators (comes with 3.12.2).'**
   String get syEmMiss_ios_bridge;
 
   /// No description provided for @syEmMiss_platform_tools.
@@ -33066,7 +33066,7 @@ abstract class AppLocalizations {
   /// No description provided for @syEiNote_ios_bridge.
   ///
   /// In en, this message translates to:
-  /// **'iOS: the bridge for touches comes with Rasgeth 3.11.1; there is nothing to install now.'**
+  /// **'iOS: the bridge for touches comes with Rasgeth 3.12.2; there is nothing to install now.'**
   String get syEiNote_ios_bridge;
 
   /// No description provided for @syEiNote_kvm_group.
@@ -33084,7 +33084,7 @@ abstract class AppLocalizations {
   /// No description provided for @syEiNote_xcode.
   ///
   /// In en, this message translates to:
-  /// **'iOS simulators need Xcode, from the App Store: Rasgeth does not install it. iOS comes with Rasgeth 3.11.1.'**
+  /// **'iOS simulators need Xcode, from the App Store: Rasgeth does not install it. iOS comes with Rasgeth 3.12.2.'**
   String get syEiNote_xcode;
 
   /// No description provided for @syEiReading.

@@ -18850,7 +18850,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'The emulator is old: Rasgeth can propose the update, which you approve.';
 
   @override
-  String get syEmMiss_ios_bridge => 'A bridge for touches on iOS simulators (comes with 3.11.1).';
+  String get syEmMiss_ios_bridge => 'A bridge for touches on iOS simulators (comes with 3.12.2).';
 
   @override
   String get syEmMiss_platform_tools => 'platform-tools (adb), to talk to emulators and phones.';
@@ -19148,7 +19148,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syEiNote_ios_bridge =>
-      'iOS: the bridge for touches comes with Rasgeth 3.11.1; there is nothing to install now.';
+      'iOS: the bridge for touches comes with Rasgeth 3.12.2; there is nothing to install now.';
 
   @override
   String get syEiNote_kvm_group =>
@@ -19159,7 +19159,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syEiNote_xcode =>
-      'iOS simulators need Xcode, from the App Store: Rasgeth does not install it. iOS comes with Rasgeth 3.11.1.';
+      'iOS simulators need Xcode, from the App Store: Rasgeth does not install it. iOS comes with Rasgeth 3.12.2.';
 
   @override
   String get syEiReading => 'Reading Google\'s list of packages…';
