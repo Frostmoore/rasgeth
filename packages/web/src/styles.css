@@ -20862,6 +20862,57 @@ html[data-theme="dark"] {
 .em-node + .em-node {
   margin-top: 16px;
 }
+/* A device live on the right (3.11): the phone's frame, its screen and its buttons. */
+.device-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  min-height: 0;
+}
+.device-view {
+  position: relative;
+  border: 10px solid #15161a;
+  border-radius: 30px;
+  overflow: hidden;
+  background: #000;
+  touch-action: none;
+  user-select: none;
+  max-width: 100%;
+}
+.device-frame.wide .device-view {
+  border-radius: 24px;
+}
+.device-view.mine {
+  box-shadow: 0 0 0 3px var(--accent);
+  cursor: pointer;
+}
+.device-view:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.device-view img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 260px);
+  width: auto;
+  height: auto;
+}
+.device-view .empty {
+  width: 260px;
+  height: 520px;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: #c9ccd4;
+  text-align: center;
+}
+.device-keys {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+}
 
 /* «Salvati» (G40.14): the person's saved passages. */
 .chats-head-actions {

@@ -16,6 +16,7 @@ import {
   debugLog,
   EmulatorMachine,
   exportBackup,
+  FakeDeviceHost,
   FirstBoot,
   GitHosts,
   HuggingFace,
@@ -1212,6 +1213,14 @@ const demoEmulators =
 const core = await RedGiantCore.create({
   db: wrap(pg),
   ...(demoEmulators && { emulators: demoEmulators }),
+  // DEMO_DEVICE_JPEG=<file> (3.11): the devices are acted out, every screen showing that picture.
+  // Without it the devices are this machine's own (adb's server; ANDROID_ADB_SERVER_PORT may be a
+  // tunnel to another machine's).
+  ...(process.env.DEMO_DEVICE_JPEG && {
+    deviceHost: new FakeDeviceHost(
+      (await readFile(process.env.DEMO_DEVICE_JPEG)).toString("base64"),
+    ),
+  }),
   providers: new ProviderRegistry()
     .register(
       new FakeProvider(brain, {

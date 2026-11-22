@@ -10,6 +10,7 @@ import {
   type ClientMessage,
   type CloudEmbeddingModel,
   type DeviceView,
+  type EmuDeviceView,
   type EmulatorsState,
   type Event,
   type FoundBackup,
@@ -1742,6 +1743,9 @@ export class Api {
     this.call<EmulatorsState>("GET", `/api/emulators${fresh ? "?fresh=1" : ""}`);
   setEmulatorSettings = (b: { sdkPath?: string | null; maxRunning?: number }) =>
     this.call<EmulatorsState>("PUT", "/api/emulators/settings", b);
+  emulatorDevices = () => this.call<{ devices: EmuDeviceView[] }>("GET", "/api/emulators/devices");
+  stopEmulatorDevice = (id: string) =>
+    this.call<{ devices: EmuDeviceView[] }>("POST", "/api/emulators/devices/stop", { id });
   nodeCode = () => this.call<PairCode>("POST", "/api/nodes/code");
   cancelNodeCode = () => this.call("DELETE", "/api/nodes/code");
   pairNode = (b: { address: string; code: string; name?: string }) =>

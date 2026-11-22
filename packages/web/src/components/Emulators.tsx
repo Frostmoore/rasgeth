@@ -7,6 +7,7 @@ import type {
   AttachedDevice,
   AvdReport,
   EmuAccel,
+  EmuDeviceView,
   EmulatorMachineView,
   EmulatorReport,
   EmulatorsState,
@@ -17,7 +18,7 @@ import type { ComponentChildren } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import { t } from "../i18n.js";
 import { IconAlert, IconEmulator, IconPhone, IconRefresh, IconServer } from "../icons.js";
-import { attempt, getApi } from "../state.js";
+import { attempt, getApi, openDevice } from "../state.js";
 import { Box, Chips, Facts, Head, Row, Sub, WzPage } from "./SettingsKit.js";
 import { Advanced, Field } from "./ui.js";
 
@@ -213,6 +214,70 @@ function NodeCard({ n }: { n: EmulatorMachineView }) {
   );
 }
 
+/** The devices one can open: AVDs on or off, running emulators, phones (3.11 phase 2). */
+export function DeviceList() {
+  const [list, setList] = useState<EmuDeviceView[]>();
+  const [error, setError] = useState<string>();
+  const load = () =>
+    void attempt(() => getApi().emulatorDevices()).then((r) => r && setList(r.devices));
+  useEffect(load, []);
+  const stop = async (d: EmuDeviceView) => {
+    setError(undefined);
+    try {
+      setList((await getApi().stopEmulatorDevice(d.id)).devices);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  };
+  return (
+    <Box class="em-devices">
+      {error && <p class="ui-error">{error}</p>}
+      {list === undefined ? (
+        <p class="st-note">{t("emLooking")}</p>
+      ) : list.length === 0 ? (
+        <p class="st-note">{t("emNoDevices")}</p>
+      ) : (
+        list.map((d) => (
+          <Row
+            key={d.id}
+            title={
+              <span class="em-name">
+                {d.kind === "phone" ? <IconPhone size={16} /> : <IconEmulator size={16} />} {d.name}
+                {d.ours && <span class="wz-badge">{t("emStartedHere")}</span>}
+              </span>
+            }
+            help={[
+              d.kind === "phone"
+                ? d.link === "wifi"
+                  ? t("emPhoneWifi")
+                  : t("emPhoneUsb")
+                : t("emRunningEmu"),
+              t(`dsState_${d.state}` as const),
+              d.serial,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+          >
+            <button
+              type="button"
+              class="wz-btn small primary"
+              disabled={d.state === "unauthorized" || d.state === "offline"}
+              onClick={() => openDevice(d.id, d.name)}
+            >
+              {t("emOpen")}
+            </button>
+            {d.kind === "emulator" && d.state === "on" && (
+              <button type="button" class="wz-btn small quiet" onClick={() => void stop(d)}>
+                {t("emStop")}
+              </button>
+            )}
+          </Row>
+        ))
+      )}
+    </Box>
+  );
+}
+
 export function Emulators() {
   const [state, setState] = useState<EmulatorsState>();
   const [path, setPath] = useState("");
@@ -266,6 +331,8 @@ export function Emulators() {
           </button>
         </div>
       </Box>
+      <Sub title={t("emDevices")} lead={t("emDevicesLead")} />
+      <DeviceList />
       <Sub title={t("emFolder")} lead={t("emFolderLead")} />
       <Box>
         <Field label={t("emFolderLabel")} help={t("emFolderHelp")} error={error}>
