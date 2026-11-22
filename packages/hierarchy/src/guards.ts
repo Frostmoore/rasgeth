@@ -1,4 +1,4 @@
-import type { AgentSessionOptions, ToolCallInfo } from "@redgiant/agent";
+import type { AgentSessionOptions, PermissionDecision, ToolCallInfo } from "@redgiant/agent";
 import { costUsd } from "@redgiant/providers";
 import type { PermissionBroker } from "./broker.js";
 import { budgetKeys, type PersistentBudget } from "./budget.js";
@@ -10,6 +10,39 @@ export interface SessionRules {
   beforeTool(call: ToolCallInfo): Promise<{ decision: "run" | "ask" | "block"; reasons: string[] }>;
   /** Before a model call: a rule's stop holds it. */
   modelGate(): Promise<{ allow: boolean; reason?: string }>;
+}
+
+/**
+ * A tool call checked by the person's rules first, then by the broker (3.12): a rule may block it
+ * or make only the person able to say yes; it never allows. Rules that cannot be read make it ask
+ * the person: never a yes on a failure. Used by every session and by the external (ACP) agents'
+ * own permission requests.
+ */
+export async function checkWithRules(
+  broker: PermissionBroker,
+  agent: AgentNode,
+  call: ToolCallInfo,
+  sessionId: string | undefined,
+  rules: SessionRules | undefined,
+  o: { ask?: boolean; signal?: AbortSignal } = {},
+): Promise<PermissionDecision> {
+  const r = rules
+    ? await rules.beforeTool(call).catch(() => ({
+        decision: "ask" as const,
+        reasons: ["the person's rules could not be read"],
+      }))
+    : undefined;
+  if (r?.decision === "block")
+    return { allow: false, reason: `blocked by the person's rule ${r.reasons.join("; ")}` };
+  return broker.check(agent, call, sessionId, {
+    ...(o.ask && { ask: true }),
+    ...(o.signal && { signal: o.signal }),
+    ...(r?.decision === "ask" && {
+      ask: true,
+      personOnly: true,
+      askReason: `the person's rule ${r.reasons.join("; ")}`,
+    }),
+  });
 }
 
 /**
@@ -27,29 +60,7 @@ export function hierarchyGuards(o: {
   const keys = () => budgetKeys(o.agent, o.resolve);
   const at = { ownerId: o.agent.ownerId, projectId: o.agent.projectId, agentId: o.agent.id };
   return {
-    permission: async (call, ctx) => {
-      // Rules that cannot be read make the call ask the person: never a yes on a failure.
-      const r = o.rules
-        ? await o.rules.beforeTool(call).catch(() => ({
-            decision: "ask" as const,
-            reasons: ["the person's rules could not be read"],
-          }))
-        : undefined;
-      if (r?.decision === "block")
-        return { allow: false, reason: `blocked by the person's rule ${r.reasons.join("; ")}` };
-      return o.broker.check(
-        o.agent,
-        call,
-        ctx.sessionId,
-        r?.decision === "ask"
-          ? {
-              ask: true,
-              personOnly: true,
-              askReason: `the person's rule ${r.reasons.join("; ")}`,
-            }
-          : {},
-      );
-    },
+    permission: (call, ctx) => checkWithRules(o.broker, o.agent, call, ctx.sessionId, o.rules),
     beforeModelCall: async () => {
       // A stop that cannot be read does not stop anything: the budgets still hold.
       const held = await o.rules?.modelGate().catch(() => ({ allow: true }));

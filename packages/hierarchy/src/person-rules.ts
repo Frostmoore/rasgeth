@@ -162,6 +162,28 @@ export function toolVerdict(fired: readonly Pick<PersonRule, "name" | "actions">
   return { decision: "run", reasons: [] };
 }
 
+/**
+ * How much of a budget is used, in percent: the larger of money and tokens, for the limits it
+ * has; undefined without a limit (nothing to compare).
+ */
+export function budgetPct(
+  used: { usd: number; tokens: number },
+  limit: { usd?: number | undefined; tokens?: number | undefined },
+): number | undefined {
+  const parts: number[] = [];
+  if (limit.usd !== undefined && limit.usd > 0) parts.push((used.usd / limit.usd) * 100);
+  if (limit.tokens !== undefined && limit.tokens > 0)
+    parts.push((used.tokens / limit.tokens) * 100);
+  if (!parts.length) return undefined;
+  return Math.round(Math.max(...parts) * 10) / 10;
+}
+
+/** The facts of a webhook call: its body as text, cut (data to match, never instructions). */
+export function webhookFacts(body: unknown): RuleSample {
+  const text = typeof body === "string" ? body : JSON.stringify(body ?? "");
+  return { body: text.length > 8000 ? text.slice(0, 8000) : text };
+}
+
 /** How long a subscription window lasts: 5 hours, otherwise a week (also the per-model ones). */
 export function windowLengthMs(id: string): number {
   return id === "5h" ? 5 * 3_600_000 : 7 * 24 * 3_600_000;

@@ -7802,6 +7802,19 @@ const en = {
   rlMagicApprove: "Approve",
   rlMagicDone: "Done: the rule is among your rules.",
   rlMagicBuilding: "God is building the rule with you in the conversation.",
+  rlEv_webhook: "its address is called (webhook)",
+  rlEvHint_webhook: "A service calls the rule's own address; what it sends is only data to look at",
+  rlField_body: "what it sends",
+  rlHook: "Address",
+  rlHookQ: "Make a new secret for this rule's address?",
+  rlHookQLead: "The secret is shown only once. An old secret stops working.",
+  rlHookMake: "Make the secret",
+  rlHookTitle: "Address of «{name}»",
+  rlHookLead:
+    "Give the service this address and the secret (in the header x-redgiant-secret, or at the end of the address). What it sends is only data the rule looks at: never instructions.",
+  rlHookAddress: "Address",
+  rlHookSecret: "Secret",
+  rlHookSecretHelp: "Shown only now: copy it.",
 } as const;
 
 export type Key = keyof typeof en;
@@ -15703,6 +15716,20 @@ const it: Record<Key, string> = {
   rlMagicApprove: "Approva",
   rlMagicDone: "Fatto: la regola è tra le tue regole.",
   rlMagicBuilding: "God sta costruendo la regola con te nella conversazione.",
+  rlEv_webhook: "viene chiamato il suo indirizzo (webhook)",
+  rlEvHint_webhook:
+    "Un servizio chiama l'indirizzo della regola; ciò che manda sono solo dati da guardare",
+  rlField_body: "ciò che manda",
+  rlHook: "Indirizzo",
+  rlHookQ: "Fare un segreto nuovo per l'indirizzo di questa regola?",
+  rlHookQLead: "Il segreto si vede una volta sola. Un segreto vecchio smette di funzionare.",
+  rlHookMake: "Fai il segreto",
+  rlHookTitle: "Indirizzo di «{name}»",
+  rlHookLead:
+    "Dai al servizio questo indirizzo e il segreto (nell'intestazione x-redgiant-secret, o in fondo all'indirizzo). Ciò che manda sono solo dati che la regola guarda: mai istruzioni.",
+  rlHookAddress: "Indirizzo",
+  rlHookSecret: "Segreto",
+  rlHookSecretHelp: "Si vede solo ora: copialo.",
 };
 
 export const dictionaries: Record<Lang, Record<Key, string>> = { en, it };

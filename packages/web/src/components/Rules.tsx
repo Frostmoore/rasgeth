@@ -27,6 +27,7 @@ import {
   IconAlert,
   IconBell,
   IconClock,
+  IconLink,
   IconPencil,
   IconPlay,
   IconPlus,
@@ -38,7 +39,7 @@ import {
   IconX,
   IconZap,
 } from "../icons.js";
-import { attempt, getApi } from "../state.js";
+import { attempt, getApi, rulesVersion } from "../state.js";
 import { explain } from "./Brain.js";
 import { Chat } from "./Chat.js";
 import { askConfirm } from "./dialogs.js";
@@ -46,7 +47,15 @@ import { MagicStart, type MagicWords, Steps } from "./MagicAutomation.js";
 import { Acts, Head, SCard, Seg, Sub, Switch, WzPage } from "./SettingsKit.js";
 import { DropChoice, Field, Modal } from "./ui.js";
 
-const EVENTS: RuleEventKind[] = ["usage", "budget", "tool", "file", "agent_done", "schedule"];
+const EVENTS: RuleEventKind[] = [
+  "usage",
+  "budget",
+  "tool",
+  "file",
+  "agent_done",
+  "schedule",
+  "webhook",
+];
 const NUMERIC: RuleField[] = ["marginPct", "usedPct", "budgetPct"];
 const TEXT_OPS: RuleOp[] = ["eq", "neq", "matches", "contains"];
 const NUMBER_OPS: RuleOp[] = ["lte", "lt", "gte", "gt", "eq", "neq"];
@@ -831,6 +840,7 @@ function RuleCard({
   onChange: () => void;
 }) {
   const [error, setError] = useState<string>();
+  const [hook, setHook] = useState<string | null>(null);
   return (
     <div class={`rl-card${r.enabled ? " on" : ""}`}>
       <div class="rl-card-head">
@@ -880,6 +890,25 @@ function RuleCard({
         <button type="button" class="wz-btn small" onClick={onHistory}>
           <IconUndo size={15} /> {t("rlHistory")}
         </button>
+        {r.when.event === "webhook" && (
+          <button
+            type="button"
+            class="wz-btn small"
+            onClick={() =>
+              void askConfirm(t("rlHookQ"), { text: t("rlHookQLead"), yes: t("rlHookMake") }).then(
+                (yes) => {
+                  if (!yes) return;
+                  void getApi()
+                    .rotateRuleSecret(r.id)
+                    .then((x) => setHook(x.webhookSecret))
+                    .catch((err) => setError(explain(err)));
+                },
+              )
+            }
+          >
+            <IconLink size={15} /> {t("rlHook")}
+          </button>
+        )}
         <button
           type="button"
           class="wz-btn small quiet"
@@ -896,6 +925,26 @@ function RuleCard({
           <IconTrash size={15} /> {t("rlRemove")}
         </button>
       </div>
+      {hook && (
+        <Modal title={t("rlHookTitle", { name: r.name })} onClose={() => setHook(null)}>
+          <p class="wz-lead2">{t("rlHookLead")}</p>
+          <Field label={t("rlHookAddress")}>
+            <input
+              class="wz-field mono"
+              readOnly
+              value={`${location.origin}/api/rules/${r.id}/hook`}
+            />
+          </Field>
+          <Field label={t("rlHookSecret")} help={t("rlHookSecretHelp")}>
+            <input class="wz-field mono" readOnly value={hook} />
+          </Field>
+          <Acts>
+            <button type="button" class="wz-btn primary" onClick={() => setHook(null)}>
+              {t("close")}
+            </button>
+          </Acts>
+        </Modal>
+      )}
     </div>
   );
 }
@@ -953,12 +1002,12 @@ export function Rules() {
       .magicRules()
       .then(setMagic, () => setMagic([]));
   };
+  // Read at once, and again whenever the server says the rules changed (a fire, a stop, a magic
+  // rule's proposal: `rules.changed`), never on a timer.
+  const version = rulesVersion.value;
   useEffect(() => {
     load();
-    // A stop or a fire happens without the page: read again now and then.
-    const timer = setInterval(load, 10_000);
-    return () => clearInterval(timer);
-  }, []);
+  }, [version]);
   const reopen = async (id: string) => {
     load();
     const m = await getApi()
@@ -967,10 +1016,8 @@ export function Rules() {
     if (m && open?.id === id) setOpen(m);
   };
   useEffect(() => {
-    if (!open || open.status !== "building") return;
-    const timer = setInterval(() => void reopen(open.id), 3000);
-    return () => clearInterval(timer);
-  }, [open?.id, open?.status]);
+    if (open) void reopen(open.id);
+  }, [version]);
   const rules = data?.rules ?? [];
   const hasMargin = rules.some((r) => r.origin === "template");
   return (

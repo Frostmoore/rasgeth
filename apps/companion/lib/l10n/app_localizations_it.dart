@@ -18465,4 +18465,41 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get prHub => 'Quando, se, allora: cosa Rasgeth tiene d’occhio per te';
+
+  @override
+  String get prEvWebhook => 'viene chiamato il suo indirizzo (webhook)';
+
+  @override
+  String get prFieldBody => 'ciò che manda';
+
+  @override
+  String get prHook => 'Indirizzo';
+
+  @override
+  String get prHookQ => 'Fare un segreto nuovo per l\'indirizzo di questa regola?';
+
+  @override
+  String get prHookQLead =>
+      'Il segreto si vede una volta sola. Un segreto vecchio smette di funzionare.';
+
+  @override
+  String get prHookMake => 'Fai il segreto';
+
+  @override
+  String prHookTitle(String name) {
+    return 'Indirizzo di «$name»';
+  }
+
+  @override
+  String get prHookLead =>
+      'Dai al servizio questo indirizzo e il segreto (nell\'intestazione x-redgiant-secret, o in fondo all\'indirizzo). Ciò che manda sono solo dati che la regola guarda: mai istruzioni.';
+
+  @override
+  String get prHookAddress => 'Indirizzo';
+
+  @override
+  String get prHookSecret => 'Segreto';
+
+  @override
+  String get prHookSecretHelp => 'Si vede solo ora: copialo.';
 }

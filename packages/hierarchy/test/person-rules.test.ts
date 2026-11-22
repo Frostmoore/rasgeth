@@ -6,11 +6,13 @@ import {
   conditionHolds,
   fireRules,
   GRANTS,
+  budgetPct,
   globMatch,
   ruleProblems,
   toolFacts,
   toolVerdict,
   tryExamples,
+  webhookFacts,
   windowMargin,
 } from "../src/index.js";
 
@@ -219,6 +221,41 @@ describe("tool verdict", () => {
     expect(toolVerdict([r("No push", [{ do: "block", text: "not today" }])]).reasons).toEqual([
       "«No push»: not today",
     ]);
+  });
+});
+
+describe("budget use", () => {
+  const cases: [
+    string,
+    Parameters<typeof budgetPct>[0],
+    Parameters<typeof budgetPct>[1],
+    number | undefined,
+  ][] = [
+    ["money", { usd: 8, tokens: 0 }, { usd: 10 }, 80],
+    ["tokens", { usd: 0, tokens: 500 }, { tokens: 2000 }, 25],
+    ["the larger of both", { usd: 9, tokens: 100 }, { usd: 10, tokens: 1000 }, 90],
+    ["over the limit", { usd: 12, tokens: 0 }, { usd: 10 }, 120],
+    ["no limit", { usd: 5, tokens: 5 }, {}, undefined],
+    ["a zero limit compares nothing", { usd: 5, tokens: 0 }, { usd: 0 }, undefined],
+  ];
+  it.each(cases)("%s", (_n, used, limit, want) => expect(budgetPct(used, limit)).toBe(want));
+});
+
+describe("webhook", () => {
+  it("the body is data to match, cut, never more", () => {
+    expect(webhookFacts({ amount: 120 })).toEqual({ body: '{"amount":120}' });
+    expect(webhookFacts("x".repeat(9000)).body).toHaveLength(8000);
+    const r = draft({
+      when: { event: "webhook" },
+      if: [{ field: "body", op: "contains", value: "failed" }],
+      actions: [{ do: "notify" }],
+    });
+    expect(ruleProblems(r)).toEqual([]);
+    expect(conditionHolds(r.if[0] as never, webhookFacts({ status: "FAILED" }))).toBe(true);
+    // Nothing runs before a webhook: it cannot ask or block.
+    expect(
+      ruleProblems(draft({ when: { event: "webhook" }, actions: [{ do: "block" }] })).join(),
+    ).toContain("works only before something runs");
   });
 });
 

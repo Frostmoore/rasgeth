@@ -1844,6 +1844,9 @@ export class Api {
   enableRule = (id: string, enabled: boolean) =>
     this.call<PersonRule>("POST", `/api/rules/${id}/enabled`, { enabled });
   removeRule = (id: string) => this.call("DELETE", `/api/rules/${id}`);
+  /** A webhook rule's secret, new, shown only now (3.12). */
+  rotateRuleSecret = (id: string) =>
+    this.call<{ webhookSecret: string }>("POST", `/api/rules/${id}/secret`, {});
   undoRule = (id: string) =>
     this.call<{ rule: PersonRule | null }>("POST", `/api/rules/${id}/undo`, {});
   tryRule = (rule: RuleDraftInput) => this.call<RuleTrial>("POST", "/api/rules/try", { rule });

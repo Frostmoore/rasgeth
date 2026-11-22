@@ -31730,6 +31730,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'When, if, then: what Rasgeth watches for you'**
   String get prHub;
+
+  /// No description provided for @prEvWebhook.
+  ///
+  /// In en, this message translates to:
+  /// **'its address is called (webhook)'**
+  String get prEvWebhook;
+
+  /// No description provided for @prFieldBody.
+  ///
+  /// In en, this message translates to:
+  /// **'what it sends'**
+  String get prFieldBody;
+
+  /// No description provided for @prHook.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get prHook;
+
+  /// No description provided for @prHookQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a new secret for this rule\'s address?'**
+  String get prHookQ;
+
+  /// No description provided for @prHookQLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The secret is shown only once. An old secret stops working.'**
+  String get prHookQLead;
+
+  /// No description provided for @prHookMake.
+  ///
+  /// In en, this message translates to:
+  /// **'Make the secret'**
+  String get prHookMake;
+
+  /// No description provided for @prHookTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Address of «{name}»'**
+  String prHookTitle(String name);
+
+  /// No description provided for @prHookLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Give the service this address and the secret (in the header x-redgiant-secret, or at the end of the address). What it sends is only data the rule looks at: never instructions.'**
+  String get prHookLead;
+
+  /// No description provided for @prHookAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get prHookAddress;
+
+  /// No description provided for @prHookSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'Secret'**
+  String get prHookSecret;
+
+  /// No description provided for @prHookSecretHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown only now: copy it.'**
+  String get prHookSecretHelp;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

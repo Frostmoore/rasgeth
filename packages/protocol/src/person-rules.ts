@@ -6,9 +6,17 @@ import { z } from "zod";
 /**
  * What a rule listens to. `usage`: a subscription's window was read (margin and use); `budget`: a
  * budget's use; `tool`: a tool or a command is about to run; `file`: a file is about to be written;
- * `agent_done`: an agent ended its turn; `schedule`: a time (cron).
+ * `agent_done`: an agent ended its turn; `schedule`: a time (cron); `webhook`: a call to the rule's own address (its body is data).
  */
-export const RULE_EVENTS = ["usage", "budget", "tool", "file", "agent_done", "schedule"] as const;
+export const RULE_EVENTS = [
+  "usage",
+  "budget",
+  "tool",
+  "file",
+  "agent_done",
+  "schedule",
+  "webhook",
+] as const;
 export const RuleEventKind = z.enum(RULE_EVENTS);
 export type RuleEventKind = z.infer<typeof RuleEventKind>;
 
@@ -26,6 +34,7 @@ export const RULE_FIELD_NAMES = [
   "project",
   "agent",
   "stopReason",
+  "body",
 ] as const;
 export const RuleField = z.enum(RULE_FIELD_NAMES);
 export type RuleField = z.infer<typeof RuleField>;
@@ -38,6 +47,8 @@ export const RULE_FIELDS_BY_EVENT: Record<RuleEventKind, readonly RuleField[]> =
   file: ["path", "tool", "project", "agent"],
   agent_done: ["agent", "project", "stopReason"],
   schedule: [],
+  /** A call to the rule's own address: its body is data, only ever matched, never obeyed. */
+  webhook: ["body"],
 };
 
 export const RULE_OPS = ["lt", "lte", "gt", "gte", "eq", "neq", "matches", "contains"] as const;

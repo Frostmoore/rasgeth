@@ -196,6 +196,21 @@ interface RunRow {
 const iso = (d: Date | string) => new Date(d).toISOString();
 const hash = (secret: string) => createHash("sha256").update(secret).digest("hex");
 const newSecret = () => `rgwh_${randomBytes(24).toString("base64url")}`;
+
+/**
+ * A webhook's secret (the automations' and, since 3.12, the person's rules'): made here, kept only
+ * as its hash, compared in constant time.
+ */
+export const webhookSecrets = {
+  make: newSecret,
+  hash,
+  matches(secret: string, expected: string | null | undefined): boolean {
+    if (!expected) return false;
+    const a = Buffer.from(hash(secret));
+    const b = Buffer.from(expected);
+    return a.length === b.length && timingSafeEqual(a, b);
+  },
+};
 const toRun = (r: RunRow): AutomationRun => ({
   id: r.id,
   automationId: r.automation_id,

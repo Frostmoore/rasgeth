@@ -12941,5 +12941,23 @@
   "prMagicGo": "Start with God",
   "prMagicSendNo": "Send the no",
   "prMagicWhy": "What is wrong (God reads it)",
-  "prHub": "When, if, then: what Rasgeth watches for you"
+  "prHub": "When, if, then: what Rasgeth watches for you",
+  "prEvWebhook": "its address is called (webhook)",
+  "prFieldBody": "what it sends",
+  "prHook": "Address",
+  "prHookQ": "Make a new secret for this rule's address?",
+  "prHookQLead": "The secret is shown only once. An old secret stops working.",
+  "prHookMake": "Make the secret",
+  "prHookTitle": "Address of «{name}»",
+  "@prHookTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "prHookLead": "Give the service this address and the secret (in the header x-redgiant-secret, or at the end of the address). What it sends is only data the rule looks at: never instructions.",
+  "prHookAddress": "Address",
+  "prHookSecret": "Secret",
+  "prHookSecretHelp": "Shown only now: copy it."
 }

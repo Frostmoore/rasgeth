@@ -306,6 +306,39 @@ void main() {
       await done(tester);
     });
 
+    testWidgets('rules.changed reads the list again at once; a webhook rule\'s address', (
+      tester,
+    ) async {
+      final app = await start(tester, size: const Size(1200, 2000));
+      await push(tester, const PersonRulesScreen());
+      expect(find.byKey(const Key('pr-rule-rule_w')), findsNothing);
+      // The server adds a webhook rule and says so: no timer, the page reads it at once.
+      fake.add('rule_w', {
+        'name': 'Deploy fallito',
+        'description': '',
+        'when': {'event': 'webhook'},
+        'if': [
+          {'field': 'body', 'op': 'contains', 'value': 'failed'},
+        ],
+        'actions': [
+          {'do': 'notify', 'text': ''},
+        ],
+        'examples': <String, dynamic>{},
+      }, enabled: true);
+      server.routes['POST /api/rules/rule_w/secret'] = (r) =>
+          server.answer(r, 200, {'webhookSecret': 'rgwh_secret'});
+      app.live.apply({'type': 'rules.changed'});
+      await _settle(tester);
+      expect(find.byKey(const Key('pr-rule-rule_w')), findsOneWidget);
+      expect(find.text('Quando viene chiamato il suo indirizzo (webhook)'), findsOneWidget);
+      expect(find.text('se ciò che manda contiene failed'), findsOneWidget);
+      await tap(tester, 'pr-hook-rule_w');
+      await tap(tester, 'dialog-yes');
+      expect(find.text('rgwh_secret'), findsOneWidget);
+      expect(find.text('${server.base.resolve('/api/rules/rule_w/hook')}'), findsOneWidget);
+      await done(tester);
+    });
+
     testWidgets('the editor: when, if, then, the examples, Try, save switched on', (tester) async {
       await start(tester, size: const Size(1200, 2600));
       await push(tester, const PersonRulesScreen());

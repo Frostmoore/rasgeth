@@ -57,6 +57,7 @@ import {
   CONCURRENT_TOOLS,
   can,
   canKnowledge,
+  budgetPct,
   hierarchyGuards,
   type SessionRules,
   type KeptWork,
@@ -1741,6 +1742,24 @@ export class RedGiantCore implements OrchestrationHost {
       isWatched: (sessionId) => core.isWatched(sessionId),
       onTurnEnded: (f) => core.onTurnEnded(f),
     });
+    // The person's rules hear every recorded spend, for the budgets with a limit (3.12).
+    core.budget.onRecorded((at, budgets) => {
+      void (async () => {
+        const readings: { id: string; name: string; pct: number }[] = [];
+        for (const b of budgets) {
+          const pct = budgetPct(b.used, b.limit);
+          if (pct === undefined || b.key.scope === "artifact") continue;
+          const name =
+            b.key.scope === "global"
+              ? "global"
+              : b.key.scope === "project"
+                ? ((await core.projectName(at.ownerId, b.key.id)) ?? b.key.id)
+                : (core.registry.get(b.key.id)?.name ?? b.key.id);
+          readings.push({ id: `${b.key.scope}:${b.key.id}`, name, pct });
+        }
+        if (readings.length) await core.rules.budget(at.ownerId, readings);
+      })().catch((err) => console.warn(`rules: ${(err as Error).message}`));
+    });
     // The person's rules hear every agent that ends its turn (3.12).
     core.onTurnEnded((t) => {
       const agent = core.registry.get(t.agentId);
@@ -2619,6 +2638,7 @@ export class RedGiantCore implements OrchestrationHost {
         agent,
         sessionId,
         broker: this.broker,
+        rules: this.sessionRules(agent),
         // Read at each start: a change in Settings applies from the next program started.
         config: () => {
           const c = this.acpWorkers.get(ownerId, agentId);

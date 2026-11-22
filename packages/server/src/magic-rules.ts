@@ -130,6 +130,7 @@ export class MagicRules {
       );
     });
     await this.o.host.send(ownerId, sessionId, text);
+    this.o.rules.touch(ownerId);
     return this.get(ownerId, id);
   }
 
@@ -156,6 +157,7 @@ export class MagicRules {
        WHERE id = $1`,
       [magic.id, JSON.stringify(proposal), draft.name],
     );
+    this.o.rules.touch(ownerId);
     return this.get(ownerId, magic.id);
   }
 
@@ -181,6 +183,7 @@ export class MagicRules {
       "UPDATE rg_magic_rules SET status = 'done', rule_id = $2, updated_at = now() WHERE id = $1",
       [id, made.id],
     );
+    this.o.rules.touch(ownerId);
     return { magic: await this.get(ownerId, id), rule: PersonRule.parse(made) };
   }
 
@@ -199,6 +202,7 @@ export class MagicRules {
         ? `I did not approve the rule. ${words}`
         : "I did not approve the rule. Ask me what to change.",
     );
+    this.o.rules.touch(ownerId);
     return this.get(ownerId, id);
   }
 
@@ -208,6 +212,7 @@ export class MagicRules {
       "UPDATE rg_magic_rules SET status = 'dismissed', updated_at = now() WHERE id = $1",
       [id],
     );
+    this.o.rules.touch(ownerId);
   }
 }
 

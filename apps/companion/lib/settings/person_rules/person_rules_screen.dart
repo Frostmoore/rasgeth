@@ -32,6 +32,7 @@ String ruleEventWord(AppLocalizations l, String e) => switch (e) {
   'file' => l.prEvFile,
   'agent_done' => l.prEvAgentDone,
   'schedule' => l.prEvSchedule,
+  'webhook' => l.prEvWebhook,
   _ => e,
 };
 
@@ -48,6 +49,7 @@ String ruleFieldWord(AppLocalizations l, String f) => switch (f) {
   'project' => l.prFieldProject,
   'agent' => l.prFieldAgent,
   'stopReason' => l.prFieldStop,
+  'body' => l.prFieldBody,
   _ => f,
 };
 
@@ -139,20 +141,55 @@ class _PersonRulesScreenState extends State<PersonRulesScreen> {
   RulesLoaded? _data;
   List<MagicRuleView> _magic = const [];
   String? _error;
-  Timer? _timer;
+  // Read again whenever the server says the rules changed (`rules.changed`), never on a timer.
+  late final ValueNotifier<int> _changed = AppScope.read(context).live.rulesChanged;
 
   @override
   void initState() {
     super.initState();
+    _changed.addListener(_reload);
     unawaited(_load());
-    // A stop or a fire happens without the page: read again now and then.
-    _timer = Timer.periodic(const Duration(seconds: 10), (_) => unawaited(_load()));
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _changed.removeListener(_reload);
     super.dispose();
+  }
+
+  void _reload() => unawaited(_load());
+
+  /// A webhook rule's address and a new secret, shown once.
+  Future<void> _hook(PersonRuleView r) async {
+    final l = AppLocalizations.of(context);
+    final yes = await askConfirm(context, title: l.prHookQ, body: l.prHookQLead, yes: l.prHookMake);
+    if (!yes || !mounted) return;
+    final c = AppScope.read(context).client;
+    if (c == null) return;
+    try {
+      final secret = await c.rotatePersonRuleSecret(r.id);
+      if (!mounted) return;
+      final address = c.base.resolve('/api/rules/${Uri.encodeComponent(r.id)}/hook').toString();
+      await openAutoWindow<void>(
+        context,
+        title: l.prHookTitle(r.name),
+        key: const Key('pr-hook-window'),
+        child: (ctx, close) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 10,
+          children: [
+            Text(l.prHookLead, style: TextStyle(color: RgColors.of(ctx).dim, height: 1.4)),
+            AutoLb(l.prHookAddress),
+            SelectableText(address, key: const Key('pr-hook-address')),
+            AutoLb(l.prHookSecret),
+            SelectableText(secret, key: const Key('pr-hook-secret')),
+            Text(l.prHookSecretHelp, style: TextStyle(color: RgColors.of(ctx).dim)),
+          ],
+        ),
+      );
+    } on Exception catch (e) {
+      if (mounted) setState(() => _error = rulesWhy(e));
+    }
   }
 
   Future<void> _load() async {
@@ -348,6 +385,7 @@ class _PersonRulesScreenState extends State<PersonRulesScreen> {
             onSwitch: (on) => _act((c) => c.enablePersonRule(r.id, on)),
             onEdit: () => _edit(r),
             onHistory: () => _history(r),
+            onHook: r.event == 'webhook' ? () => _hook(r) : null,
             onRemove: () async {
               final yes = await askConfirm(
                 context,
@@ -402,9 +440,11 @@ class _RuleTile extends StatelessWidget {
     required this.onEdit,
     required this.onHistory,
     required this.onRemove,
+    this.onHook,
   });
 
   final PersonRuleView rule;
+  final VoidCallback? onHook;
   final ValueChanged<bool> onSwitch;
   final VoidCallback onEdit;
   final VoidCallback onHistory;
@@ -459,6 +499,8 @@ class _RuleTile extends StatelessWidget {
                 onPressed: onHistory,
                 child: Text(l.prHistory),
               ),
+              if (onHook != null)
+                TextButton(key: Key('pr-hook-${r.id}'), onPressed: onHook, child: Text(l.prHook)),
               TextButton(
                 key: Key('pr-remove-${r.id}'),
                 onPressed: onRemove,
@@ -1080,23 +1122,23 @@ class _MagicRuleChat extends StatefulWidget {
 
 class _MagicRuleChatState extends State<_MagicRuleChat> {
   late MagicRuleView _m = widget.magic;
-  Timer? _timer;
   String? _error;
+  // God's proposal arrives as `rules.changed`: read again then, never on a timer.
+  late final ValueNotifier<int> _changed = AppScope.read(context).live.rulesChanged;
 
   @override
   void initState() {
     super.initState();
-    // God works in the conversation; the proposal is read again until it comes.
-    _timer = Timer.periodic(const Duration(seconds: 4), (_) {
-      if (_m.status == 'building') unawaited(_reload());
-    });
+    _changed.addListener(_again);
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _changed.removeListener(_again);
     super.dispose();
   }
+
+  void _again() => unawaited(_reload());
 
   Future<void> _reload() async {
     final c = AppScope.read(context).client;

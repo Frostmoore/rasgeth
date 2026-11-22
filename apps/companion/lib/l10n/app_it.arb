@@ -5272,5 +5272,16 @@
   "prMagicGo": "Inizia con God",
   "prMagicSendNo": "Manda il no",
   "prMagicWhy": "Cosa non va (God lo legge)",
-  "prHub": "Quando, se, allora: cosa Rasgeth tiene d’occhio per te"
+  "prHub": "Quando, se, allora: cosa Rasgeth tiene d’occhio per te",
+  "prEvWebhook": "viene chiamato il suo indirizzo (webhook)",
+  "prFieldBody": "ciò che manda",
+  "prHook": "Indirizzo",
+  "prHookQ": "Fare un segreto nuovo per l'indirizzo di questa regola?",
+  "prHookQLead": "Il segreto si vede una volta sola. Un segreto vecchio smette di funzionare.",
+  "prHookMake": "Fai il segreto",
+  "prHookTitle": "Indirizzo di «{name}»",
+  "prHookLead": "Dai al servizio questo indirizzo e il segreto (nell'intestazione x-redgiant-secret, o in fondo all'indirizzo). Ciò che manda sono solo dati che la regola guarda: mai istruzioni.",
+  "prHookAddress": "Indirizzo",
+  "prHookSecret": "Segreto",
+  "prHookSecretHelp": "Si vede solo ora: copialo."
 }

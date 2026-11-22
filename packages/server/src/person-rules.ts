@@ -6,12 +6,13 @@
 // times (`schedule`). Every change keeps the version before it (history, undo); a rule switches on
 // only when its two examples pass. The pure parts are in `@redgiant/hierarchy` (person-rules.ts).
 import { randomUUID } from "node:crypto";
-import { nextRun } from "@redgiant/automations";
+import { nextRun, webhookSecrets } from "@redgiant/automations";
 import type { SqlClient } from "@redgiant/events";
 import {
   fireRules,
   ruleProblems,
   toolFacts,
+  webhookFacts,
   toolVerdict,
   tryExamples,
   windowMargin,
@@ -34,6 +35,8 @@ import {
 
 export class RuleNotFoundError extends Error {}
 export class RuleStateError extends Error {}
+/** A webhook call with a wrong secret, for a rule that is off or not a webhook's. */
+export class RuleForbiddenError extends Error {}
 
 /** What the rules need from the core. */
 export interface RulesHost {
@@ -129,6 +132,12 @@ export async function migratePersonRules(db: SqlClient): Promise<void> {
       results   jsonb NOT NULL
     )`);
   await db.query(`
+    CREATE TABLE IF NOT EXISTS rg_person_rule_hooks (
+      rule_id     text PRIMARY KEY,
+      owner_id    text NOT NULL,
+      secret_hash text NOT NULL
+    )`);
+  await db.query(`
     CREATE TABLE IF NOT EXISTS rg_person_rule_holds (
       owner_id text NOT NULL,
       rule_id  text NOT NULL,
@@ -149,6 +158,8 @@ const WORDS = {
     agentDone: "{agent} finished ({stop})",
     tool: "{tool}{command}",
     time: "the time came",
+    budget: "budget {name}: {pct}% used",
+    webhook: "its address was called",
   },
   it: {
     fired: "Regola «{name}»",
@@ -161,6 +172,8 @@ const WORDS = {
     agentDone: "{agent} ha finito ({stop})",
     tool: "{tool}{command}",
     time: "è l'ora",
+    budget: "budget {name}: {pct}% usato",
+    webhook: "il suo indirizzo è stato chiamato",
   },
 } as const;
 type Word = keyof (typeof WORDS)["en"];
@@ -633,29 +646,101 @@ export class PersonRules {
     );
   }
 
+  /**
+   * A level read again (a window's use, a budget's): each item acts once when its rules start
+   * holding, and a stop that resumes by itself is lifted once they stop holding.
+   */
+  private async level(
+    ownerId: string,
+    event: "usage" | "budget",
+    items: { key: string; facts: RuleSample }[],
+  ): Promise<void> {
+    const rules = await this.list(ownerId);
+    if (!rules.some((r) => r.enabled && r.when.event === event)) return;
+    let active = this.active.get(ownerId) ?? new Set<string>();
+    for (const it of items) {
+      const r = fireRules(rules, event, it.facts, active, it.key);
+      active = r.active;
+      for (const rule of r.fired) await this.act(ownerId, rule, event, it.facts, {});
+      for (const rule of r.released)
+        if (rule.actions.some((a) => a.do === "stop" && a.resume === "auto"))
+          await this.release(ownerId, rule.id);
+    }
+    this.active.set(ownerId, active);
+  }
+
   /** A reading of the subscriptions' windows: the margin and the use of each. */
   async usage(
     ownerId: string,
     readings: Awaited<ReturnType<RulesHost["limits"]>>,
     now = this.now(),
   ): Promise<void> {
-    const rules = await this.list(ownerId);
-    if (!rules.some((r) => r.enabled && r.when.event === "usage")) return;
-    let active = this.active.get(ownerId) ?? new Set<string>();
+    const items: { key: string; facts: RuleSample }[] = [];
     for (const p of readings)
       for (const w of p.windows) {
         const facts: RuleSample = { provider: p.provider, window: w.id, usedPct: w.usedPct };
         const margin = windowMargin(w, now);
         if (margin !== undefined) facts.marginPct = margin;
-        const r = fireRules(rules, "usage", facts, active, `${p.provider}/${w.id}`);
-        active = r.active;
-        for (const rule of r.fired) await this.act(ownerId, rule, "usage", facts, {});
-        // A stop that resumes by itself is lifted once its conditions stop holding.
-        for (const rule of r.released)
-          if (rule.actions.some((a) => a.do === "stop" && a.resume === "auto"))
-            await this.release(ownerId, rule.id);
+        items.push({ key: `${p.provider}/${w.id}`, facts });
       }
-    this.active.set(ownerId, active);
+    await this.level(ownerId, "usage", items);
+  }
+
+  /** A spend was recorded (3.12): the budgets with a limit, by name, and how much is used. */
+  async budget(
+    ownerId: string,
+    readings: { id: string; name: string; pct: number }[],
+  ): Promise<void> {
+    await this.level(
+      ownerId,
+      "budget",
+      readings.map((b) => ({ key: `budget/${b.id}`, facts: { budget: b.name, budgetPct: b.pct } })),
+    );
+  }
+
+  /** A rule's webhook address: a new secret, shown only now (the server keeps its hash). */
+  async rotateSecret(ownerId: string, id: string): Promise<string> {
+    const r = await this.get(ownerId, id);
+    if (r.when.event !== "webhook")
+      throw new RuleStateError("This rule is not called by a webhook");
+    const secret = webhookSecrets.make();
+    await this.o.db.query(
+      `INSERT INTO rg_person_rule_hooks (rule_id, owner_id, secret_hash) VALUES ($1, $2, $3)
+       ON CONFLICT (rule_id) DO UPDATE SET secret_hash = EXCLUDED.secret_hash, owner_id = EXCLUDED.owner_id`,
+      [id, ownerId, webhookSecrets.hash(secret)],
+    );
+    return secret;
+  }
+
+  /**
+   * A call to a rule's address (3.12): its secret checked as the automations' are; the body is
+   * data, matched by the rule's conditions and never passed on as words to follow. A wrong secret,
+   * a rule switched off or not a webhook's: forbidden, nothing acts.
+   */
+  async webhook(id: string, secret: string, body: unknown): Promise<{ acted: boolean }> {
+    const [row] = await this.o.db.query<{ owner_id: string; secret_hash: string }>(
+      "SELECT owner_id, secret_hash FROM rg_person_rule_hooks WHERE rule_id = $1",
+      [id],
+    );
+    const rule = row ? (await this.list(row.owner_id)).find((r) => r.id === id) : undefined;
+    if (
+      !row ||
+      !rule ||
+      !rule.enabled ||
+      rule.when.event !== "webhook" ||
+      !webhookSecrets.matches(secret, row.secret_hash)
+    )
+      throw new RuleForbiddenError("Forbidden");
+    const facts = webhookFacts(body);
+    const { fired } = fireRules([rule], "webhook", facts);
+    // The fire is written down without the body: what was sent stays out of the person's list.
+    for (const r of fired) await this.act(row.owner_id, r, "webhook", {}, {});
+    return { acted: fired.length > 0 };
+  }
+
+  /** Something changed for a page to show (a magic rule's proposal). */
+  touch(ownerId: string): void {
+    this.changed(ownerId);
   }
 
   /** The clock: the rules' times, and the windows read every few minutes. */
@@ -747,6 +832,10 @@ export class PersonRules {
         stop: facts.stopReason ?? "",
       });
     if (event === "schedule") return this.say(ownerId, "time");
+    // A webhook's body is data: never repeated to the person or to anyone as words to follow.
+    if (event === "webhook") return this.say(ownerId, "webhook");
+    if (event === "budget")
+      return this.say(ownerId, "budget", { name: facts.budget ?? "", pct: facts.budgetPct ?? "?" });
     return this.say(ownerId, "tool", {
       tool: facts.tool ?? "",
       command: facts.command

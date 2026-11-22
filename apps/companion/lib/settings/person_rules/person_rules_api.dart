@@ -7,7 +7,7 @@ import '../../api/client.dart';
 String _id(String id) => Uri.encodeComponent(id);
 
 /// The events a rule listens to, in the page's order.
-const ruleEvents = ['usage', 'budget', 'tool', 'file', 'agent_done', 'schedule'];
+const ruleEvents = ['usage', 'budget', 'tool', 'file', 'agent_done', 'schedule', 'webhook'];
 
 /// Which facts each event has (`RULE_FIELDS_BY_EVENT`).
 const ruleFieldsByEvent = <String, List<String>>{
@@ -17,6 +17,7 @@ const ruleFieldsByEvent = <String, List<String>>{
   'file': ['path', 'tool', 'project', 'agent'],
   'agent_done': ['agent', 'project', 'stopReason'],
   'schedule': [],
+  'webhook': ['body'],
 };
 
 const ruleNumericFields = {'marginPct', 'usedPct', 'budgetPct'};
@@ -170,6 +171,12 @@ extension PersonRulesApi on RedGiantClient {
 
   /// `DELETE /api/rules/:id`.
   Future<void> removePersonRule(String id) => callJson('DELETE', '/api/rules/${_id(id)}');
+
+  /// `POST /api/rules/:id/secret`: a webhook rule's new secret, shown only now.
+  Future<String> rotatePersonRuleSecret(String id) async {
+    final j = objectOf(await callJson('POST', '/api/rules/${_id(id)}/secret', {}));
+    return j['webhookSecret'] is String ? j['webhookSecret'] as String : '';
+  }
 
   /// `POST /api/rules/:id/undo`: the version before the last change comes back.
   Future<void> undoPersonRule(String id) => callJson('POST', '/api/rules/${_id(id)}/undo', {});

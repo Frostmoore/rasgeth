@@ -18411,4 +18411,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get prHub => 'When, if, then: what Rasgeth watches for you';
+
+  @override
+  String get prEvWebhook => 'its address is called (webhook)';
+
+  @override
+  String get prFieldBody => 'what it sends';
+
+  @override
+  String get prHook => 'Address';
+
+  @override
+  String get prHookQ => 'Make a new secret for this rule\'s address?';
+
+  @override
+  String get prHookQLead => 'The secret is shown only once. An old secret stops working.';
+
+  @override
+  String get prHookMake => 'Make the secret';
+
+  @override
+  String prHookTitle(String name) {
+    return 'Address of «$name»';
+  }
+
+  @override
+  String get prHookLead =>
+      'Give the service this address and the secret (in the header x-redgiant-secret, or at the end of the address). What it sends is only data the rule looks at: never instructions.';
+
+  @override
+  String get prHookAddress => 'Address';
+
+  @override
+  String get prHookSecret => 'Secret';
+
+  @override
+  String get prHookSecretHelp => 'Shown only now: copy it.';
 }

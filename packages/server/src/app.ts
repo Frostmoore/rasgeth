@@ -112,7 +112,7 @@ import { LoginError } from "./login.js";
 import { MachineError, type MachinePatch } from "./machines.js";
 import { MagicNotFoundError, MagicStateError } from "./magic.js";
 import { MagicRuleNotFoundError } from "./magic-rules.js";
-import { RuleNotFoundError, RuleStateError } from "./person-rules.js";
+import { RuleForbiddenError, RuleNotFoundError, RuleStateError } from "./person-rules.js";
 import { MagicExtNotFoundError, MagicExtStateError } from "./magic-extensions.js";
 import { nodeRoutes } from "./nodes/routes.js";
 import { personRoutes } from "./person-routes.js";
@@ -993,7 +993,9 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       // The wake-word models (G38.4): public speech models (Apache-2.0), read by the page's
       // worker, which cannot send the sign-in; only the prepared files, never anything else.
       (c.req.method === "GET" && c.req.path.startsWith("/api/voice/wake-models/")) ||
-      /^\/api\/automations\/[\w-]+\/hook(\/[\w-]+)?$/.test(c.req.path)
+      /^\/api\/automations\/[\w-]+\/hook(\/[\w-]+)?$/.test(c.req.path) ||
+      // A person's rule called by a webhook (3.12): its own secret, checked by the rules.
+      /^\/api\/rules\/[\w-]+\/hook(\/[\w-]+)?$/.test(c.req.path)
     )
       return next();
     const principal = await auth.authenticate(bearer(c.req.header("authorization")));
@@ -3950,6 +3952,10 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     if (!b.success) return c.json({ error: "enabled is needed" }, 400);
     return c.json(await core.rules.setEnabled(owner(c), c.req.param("id"), b.data.enabled), 200);
   });
+  // A webhook rule's secret: new, shown only now (the address is /api/rules/<id>/hook).
+  app.post("/api/rules/:id/secret", async (c) =>
+    c.json({ webhookSecret: await core.rules.rotateSecret(owner(c), c.req.param("id")) }, 200),
+  );
   app.post("/api/rules/:id/undo", async (c) =>
     c.json({ rule: await core.rules.undo(owner(c), c.req.param("id")) }, 200),
   );
@@ -4434,6 +4440,24 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   };
   app.post("/api/automations/:id/hook", (c) => hook(c, c.req.header("x-redgiant-secret") ?? ""));
   app.post("/api/automations/:id/hook/:secret", (c) => hook(c, c.req.param("secret")));
+  // A person's rule called by a webhook (3.12): the body is data for its conditions, never
+  // instructions; the same size limit and secret as the automations'.
+  const ruleHook = async (c: Context<Env>, secret: string) => {
+    const body = await c.req.text();
+    if (body.length > 1_048_576) return c.json({ error: "Body larger than 1 MB" }, 413);
+    let payload: unknown = body;
+    try {
+      payload = body ? JSON.parse(body) : {};
+    } catch {}
+    try {
+      return c.json(await core.rules.webhook(c.req.param("id") ?? "", secret, payload), 202);
+    } catch (err) {
+      if (err instanceof RuleForbiddenError) return c.json({ error: "Forbidden" }, 403);
+      throw err;
+    }
+  };
+  app.post("/api/rules/:id/hook", (c) => ruleHook(c, c.req.header("x-redgiant-secret") ?? ""));
+  app.post("/api/rules/:id/hook/:secret", (c) => ruleHook(c, c.req.param("secret")));
 
   app.openapi(routes.verifyLog, async (c) => c.json(await core.store.verify(), 200));
 
