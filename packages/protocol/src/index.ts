@@ -65,6 +65,7 @@ export * from "./shell-summary.js";
 export * from "./shell-words.js";
 export * from "./skill-updates.js";
 export * from "./tools.js";
+export * from "./topics.js";
 export * from "./vault.js";
 export * from "./video-analysis.js";
 export * from "./video-assemble.js";

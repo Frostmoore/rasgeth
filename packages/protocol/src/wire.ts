@@ -17,6 +17,7 @@ import { Event } from "./events.js";
 import { ImagePart } from "./messages.js";
 import { Answers, QuestionRequestInfo } from "./questions.js";
 import { RequestWords } from "./request-words.js";
+import { TopicRef, TopicRouted } from "./topics.js";
 import { ARTIFACT_ERRORS_MAX, ArtifactError, ArtifactRef } from "./widget.js";
 
 /** Bumped on every breaking change of the client/server protocol. */
@@ -47,6 +48,11 @@ export const PermissionRequestInfo = z.object({
    * do not run `requestSentence` themselves (RGCompanion). Added by the server when it sends.
    */
   words: RequestWords.optional(),
+  /**
+   * The topic of God it belongs to («for: Title», 3.12): God's own, or the one found up the chain
+   * of tasks for an agent under him; absent without a chain (automations).
+   */
+  topic: TopicRef.optional(),
 });
 export type PermissionRequestInfo = z.infer<typeof PermissionRequestInfo>;
 
@@ -327,6 +333,14 @@ export const ServerMessage = z.discriminatedUnion("type", [
    * lists again (the page and the app also «Removed agents» with `agents`); nothing else is carried.
    */
   z.object({ type: z.literal("lists.changed"), lists: z.array(ListName).min(1) }),
+  /**
+   * To every page and app of the owner (3.12): God's topics changed (one opened, routed to,
+   * summarized, archived, restored, read, moved; a state or a count changed). Read
+   * `GET /api/god/topics` again; nothing else is carried.
+   */
+  z.object({ type: z.literal("topics.changed") }),
+  /** A message to God was routed to a topic (from any channel: page, app, chats, assistants). */
+  z.object({ type: z.literal("session.routed"), sessionId: z.string(), routed: TopicRouted }),
   /** Sent after a follow, once the stored history has been replayed. */
   z.object({ type: z.literal("session.synced"), sessionId: z.string(), lastSeq: z.number().int() }),
   /**

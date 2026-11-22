@@ -9,6 +9,15 @@ import { MessageMetrics } from "./metrics.js";
 import { PortraitAgents, PortraitTraitPayload } from "./portrait.js";
 import { ProductsShownPayload } from "./products.js";
 import { Answers, Question } from "./questions.js";
+import {
+  MessageMovedPayload,
+  TaskRedirectedPayload,
+  TopicArchivedPayload,
+  TopicOpenedPayload,
+  TopicRestoredPayload,
+  TopicRoutedPayload,
+  TopicSummarizedPayload,
+} from "./topics.js";
 
 /** Hex-encoded SHA-256. */
 export const Sha256Hex = z.string().regex(/^[0-9a-f]{64}$/);
@@ -125,6 +134,11 @@ export const EventBody = z.discriminatedUnion("type", [
        * their words were not blanked, by their choice (the log's Redactor still applies).
        */
       secretOk: z.boolean().optional(),
+      /**
+       * Moved here from another topic by the person (3.12, «Move»): where it was written. God's
+       * earlier answer rides in `notes` as data.
+       */
+      movedFrom: z.object({ sessionId: z.string(), seq: z.number().int() }).optional(),
     }),
   }),
   z.object({ type: z.literal("message.assistant.delta"), payload: text }),
@@ -917,6 +931,23 @@ export const EventBody = z.discriminatedUnion("type", [
       outcome: z.enum(["started", "withdrawn", "refused"]),
     }),
   }),
+  /**
+   * God's conversations by topic (3.12, `topics.ts`): a topic is one of God's sessions with its
+   * own prefix. History never reads these: routing, summaries, archive and moves only add events.
+   */
+  z.object({ type: z.literal("topic.opened"), payload: TopicOpenedPayload }),
+  /** Why the next `message.user` came to this topic; written before it. */
+  z.object({ type: z.literal("topic.routed"), payload: TopicRoutedPayload }),
+  z.object({ type: z.literal("topic.summarized"), payload: TopicSummarizedPayload }),
+  z.object({ type: z.literal("topic.archived"), payload: TopicArchivedPayload }),
+  z.object({ type: z.literal("topic.restored"), payload: TopicRestoredPayload }),
+  /**
+   * An exchange moved to another topic («Move»), in the topic it left: its model history does not
+   * change; the next turn here carries a one-line note to leave it out.
+   */
+  z.object({ type: z.literal("message.moved"), payload: MessageMovedPayload }),
+  /** A task handed over in a moved exchange: its report goes to the new topic. */
+  z.object({ type: z.literal("task.redirected"), payload: TaskRedirectedPayload }),
   z.object({
     type: z.literal("redaction"),
     payload: z.object({ targetSeq: z.number().int(), reason: z.string() }),

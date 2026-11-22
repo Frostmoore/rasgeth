@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TopicRef } from "./topics.js";
 
 /** A question an agent asks the human (G20.3): pick one or more options, or write another answer. */
 export const Question = z.object({
@@ -25,6 +26,8 @@ export const QuestionRequestInfo = z.object({
   questions: z.array(Question).min(1).max(4),
   plan: z.string().optional(),
   createdAt: z.iso.datetime(),
+  /** The topic of God it belongs to («for: Title», 3.12). */
+  topic: TopicRef.optional(),
 });
 export type QuestionRequestInfo = z.infer<typeof QuestionRequestInfo>;
 
