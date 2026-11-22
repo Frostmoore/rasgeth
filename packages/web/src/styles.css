@@ -24203,3 +24203,14 @@ fieldset.saved-filter legend {
     grid-template-columns: 1fr;
   }
 }
+/* The wizard's look centres text: a rule's card, a stop, the history and the editor read left. */
+.rl-card,
+.rl-hold,
+.rl-history,
+.rl-editor,
+.rl-magic-list {
+  text-align: left;
+}
+.rl-card-head .wz-switch {
+  flex: none;
+}
