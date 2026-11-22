@@ -24697,12 +24697,33 @@ button.smp-row {
 .smp-modal .smp-lbl {
   padding: 12px 12px 4px;
 }
+.smp-row {
+  border-radius: 0;
+}
+.smp-other {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.smp-other input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 9px 12px;
+  font: inherit;
+  font-size: 15px;
+  background: var(--panel);
+  color: var(--text);
+}
 @media (max-width: 760px) {
   .smp-row .wz-seg button {
     padding-inline: 9px;
   }
-  .smp-settings .smp-row:has(.wz-seg) {
-    flex-wrap: wrap;
+  .smp-row.stack {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 }
 fieldset.smp-decide {

@@ -345,8 +345,8 @@ describe("a topic", () => {
     expect(r.container.querySelector(".md-read strong")?.textContent).toBe("89 €");
     expect(r.container.textContent).not.toContain("web_search");
     const line = r.container.querySelector(".smp-routed.unsure");
-    expect(line?.textContent).toContain("Non ero sicuro");
-    expect(line?.textContent).toContain("Vacanza in Sardegna");
+    expect(line?.textContent).toContain("Non ero sicuro: l'ho messo qui");
+    expect(line?.textContent).toContain("Sposta");
     expect(r.getByPlaceholderText("Rispondi…")).toBeTruthy();
   });
 
@@ -406,6 +406,49 @@ describe("a topic", () => {
       decision: "allow",
       remember: false,
       scope: "once",
+    });
+    vi.useRealTimers();
+  });
+
+  it("asks a plain question with its buttons, as the board («Vuoi che lo prenoti?»)", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const asked = {
+      requestId: "q1",
+      questions: [
+        {
+          question: "Vuoi che lo prenoti?",
+          options: [{ label: "Sì, prenota" }, { label: "Mostrami gli altri" }],
+          multiSelect: false,
+        },
+      ],
+    };
+    state.sessionView("t_trip").value = {
+      ...state.sessionView("t_trip").value,
+      events: [...tripEvents(), ev(7, "question.asked", asked)],
+    };
+    state.questions.value = [
+      {
+        ...asked,
+        sessionId: "t_trip",
+        agentId: "god",
+        agentName: "God",
+        projectId: null,
+        createdAt: iso(7),
+      },
+    ] as never;
+    state.openTopic("t_trip", "Vacanza in Sardegna");
+    const r = render(<SimpleApp />);
+    const box = r.container.querySelector(".smp-decide") as HTMLElement;
+    expect(box.textContent).toContain("Vuoi che lo prenoti?");
+    expect(box.querySelectorAll(".smp-btn")).toHaveLength(3);
+    await act(async () => {
+      vi.advanceTimersByTime(1000);
+    });
+    fireEvent.click(r.getByText("Sì, prenota"));
+    expect(sent).toContainEqual({
+      type: "question.answer",
+      requestId: "q1",
+      answers: [["Sì, prenota"]],
     });
     vi.useRealTimers();
   });

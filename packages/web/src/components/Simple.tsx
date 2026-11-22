@@ -48,6 +48,7 @@ import {
   openTopic,
   personName,
   projects,
+  questions,
   refreshTopics,
   restoreTopic,
   searchArchive,
@@ -451,8 +452,15 @@ function DocItem({
       const title = topicTitle(topicId) ?? "";
       return (
         <p class={`smp-routed${item.uncertain ? " unsure" : ""}`}>
+          {/* Unsure: said short, the topic is the one on screen; sure: «in: Title». */}
           <span>
-            {item.uncertain ? t("smpRoutedUnsure") : t("smpRoutedIn")} <b>{title}</b>
+            {item.uncertain ? (
+              t("smpRoutedUnsure")
+            ) : (
+              <>
+                {t("smpRoutedIn")} <b>{title}</b>
+              </>
+            )}
           </span>
           {item.userSeq !== undefined && (
             <>
@@ -491,15 +499,11 @@ function DocItem({
         />
       );
     case "question":
-      return item.answers === undefined ? (
-        <div class="smp-decide">
-          <QuestionCard
-            requestId={item.requestId}
-            questions={item.questions}
-            plan={item.plan}
-            open
-          />
-        </div>
+      return item.answers === undefined &&
+        questions.value.some((q) => q.requestId === item.requestId) ? (
+        <QuestionBox
+          q={{ requestId: item.requestId, questions: item.questions, plan: item.plan }}
+        />
       ) : (
         <div class="smp-decided">
           <QuestionCard
@@ -570,14 +574,71 @@ export function Decision({ r }: { r: PermissionRequestInfo }) {
   );
 }
 
-/** A question waiting for the person, in the same box. */
-function QuestionBox({ q }: { q: QuestionRequestInfo }) {
+/**
+ * A question waiting for the person, in the same box. One plain choice (the board's «Vuoi che lo
+ * prenoti?») is its buttons, the first one filled, with «Altro…» for words of one's own; anything
+ * else (several questions, several choices, a plan) is the usual card.
+ */
+function QuestionBox({
+  q,
+}: {
+  q: Pick<QuestionRequestInfo, "requestId" | "questions" | "plan"> & {
+    topic?: QuestionRequestInfo["topic"];
+  };
+}) {
+  const { ref, armed } = useArmed<HTMLDivElement>(q.requestId);
+  const [other, setOther] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
+  const one = q.questions.length === 1 && q.plan === undefined ? q.questions[0] : undefined;
+  const answer = (text: string) => {
+    if (!armed || sent || !text.trim()) return;
+    getLive().send({ type: "question.answer", requestId: q.requestId, answers: [[text.trim()]] });
+    setSent(true);
+  };
   return (
     <div class="smp-decide">
       {q.topic && simpleScreen.value.kind !== "topic" && (
         <span class="smp-note">{t("smpFor", { title: q.topic.title })}</span>
       )}
-      <QuestionCard requestId={q.requestId} questions={q.questions} plan={q.plan} open />
+      {one && !one.multiSelect ? (
+        <>
+          <b>{one.question}</b>
+          <div ref={ref} class={`smp-decide-acts${armed && !sent ? "" : " arming"}`}>
+            {one.options.map((o, n) => (
+              <button
+                type="button"
+                key={o.label}
+                class={n === 0 ? "smp-btn" : "smp-btn soft"}
+                title={o.description}
+                onClick={() => answer(o.label)}
+              >
+                {o.label}
+              </button>
+            ))}
+            {other === null && (
+              <button type="button" class="smp-btn soft" onClick={() => setOther("")}>
+                {t("smpOther")}
+              </button>
+            )}
+          </div>
+          {other !== null && (
+            <div class="smp-other">
+              <input
+                value={other}
+                placeholder={t("smpOtherHint")}
+                aria-label={t("smpOtherHint")}
+                onInput={(e) => setOther((e.target as HTMLInputElement).value)}
+                onKeyDown={(e) => e.key === "Enter" && answer(other)}
+              />
+              <button type="button" class="smp-btn" onClick={() => answer(other)}>
+                {t("smpSend")}
+              </button>
+            </div>
+          )}
+        </>
+      ) : (
+        <QuestionCard requestId={q.requestId} questions={q.questions} plan={q.plan} open />
+      )}
     </div>
   );
 }
@@ -755,11 +816,14 @@ function SetRow({
   help,
   children,
   onClick,
+  stack,
 }: {
   title: string;
   help?: string;
   children?: ComponentChildren;
   onClick?: () => void;
+  /** On a phone the control goes under the words (a row of choices, the colours). */
+  stack?: boolean;
 }) {
   const body = (
     <>
@@ -775,7 +839,7 @@ function SetRow({
       {body}
     </button>
   ) : (
-    <div class="smp-row">{body}</div>
+    <div class={`smp-row${stack ? " stack" : ""}`}>{body}</div>
   );
 }
 
@@ -841,7 +905,7 @@ function SettingsScreen() {
             </SetRow>
           </div>
           <div class="smp-grp">
-            <SetRow title={t("smpTheme")}>
+            <SetRow title={t("smpTheme")} stack>
               <Seg
                 label={t("smpTheme")}
                 value={theme.value}
@@ -853,10 +917,10 @@ function SettingsScreen() {
                 ]}
               />
             </SetRow>
-            <SetRow title={t("smpColour")}>
+            <SetRow title={t("smpColour")} stack>
               <AccentPicker />
             </SetRow>
-            <SetRow title={t("smpLanguage")}>
+            <SetRow title={t("smpLanguage")} stack>
               <Seg
                 label={t("smpLanguage")}
                 value={lang.value}
