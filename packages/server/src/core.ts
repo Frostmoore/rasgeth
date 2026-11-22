@@ -54,12 +54,11 @@ import {
   type ApprovalRequest,
   allows,
   budgetKeys,
+  budgetPct,
   CONCURRENT_TOOLS,
   can,
   canKnowledge,
-  budgetPct,
   hierarchyGuards,
-  type SessionRules,
   type KeptWork,
   type KnowledgeTarget,
   type LockedFolder,
@@ -67,6 +66,7 @@ import {
   PermissionBroker,
   PersistentBudget,
   type PolicySettings,
+  type SessionRules,
 } from "@redgiant/hierarchy";
 import {
   type AcpWorkerConfig,
@@ -107,7 +107,6 @@ import {
   PRODUCT_NAME,
   ProjectMaxAgents,
   type Recipe,
-  type RuleHold,
   type RefineEstimate,
   type RefineRequest,
   type RefineResult,
@@ -115,6 +114,7 @@ import {
   type RenderWhere,
   RequestSettings,
   type RgVideo,
+  type RuleHold,
   renderMachines,
   renderWhere,
   replyLanguageLine,
@@ -272,13 +272,13 @@ import {
   magicTools,
   migrateMagic,
 } from "./magic.js";
-import { MAGIC_RULE_PROMPT, MagicRules, magicRuleTools, migrateMagicRules } from "./magic-rules.js";
 import {
   MAGIC_EXT_PROMPT,
   MagicExtensions,
   magicExtTools,
   migrateMagicExtensions,
 } from "./magic-extensions.js";
+import { MAGIC_RULE_PROMPT, MagicRules, magicRuleTools, migrateMagicRules } from "./magic-rules.js";
 import {
   imapMailClient,
   type MailClient,
@@ -316,6 +316,7 @@ import {
   OwnerSettings,
   PersonRequests,
 } from "./person-requests.js";
+import { migratePersonRules, PersonRules } from "./person-rules.js";
 import {
   migratePlatform,
   PlatformChanges,
@@ -377,7 +378,6 @@ import {
   transcribe,
 } from "./voice.js";
 import { WakeModels } from "./wake-models.js";
-import { migratePersonRules, PersonRules } from "./person-rules.js";
 
 /** What started an automation's run, in the words the agent reads with its data (G33.3). */
 const STARTED_BY: Partial<Record<RunContext["trigger"], string>> = {

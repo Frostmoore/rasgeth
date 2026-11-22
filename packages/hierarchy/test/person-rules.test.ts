@@ -3,10 +3,10 @@
 import { RuleDraft, type RuleDraftInput, type RuleSample } from "@redgiant/protocol";
 import { describe, expect, it } from "vitest";
 import {
+  budgetPct,
   conditionHolds,
   fireRules,
   GRANTS,
-  budgetPct,
   globMatch,
   ruleProblems,
   toolFacts,
