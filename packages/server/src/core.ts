@@ -58,6 +58,7 @@ import {
   can,
   canKnowledge,
   hierarchyGuards,
+  type SessionRules,
   type KeptWork,
   type KnowledgeTarget,
   type LockedFolder,
@@ -104,6 +105,7 @@ import {
   PRODUCT_NAME,
   ProjectMaxAgents,
   type Recipe,
+  type RuleHold,
   type RefineEstimate,
   type RefineRequest,
   type RefineResult,
@@ -268,6 +270,7 @@ import {
   magicTools,
   migrateMagic,
 } from "./magic.js";
+import { MAGIC_RULE_PROMPT, MagicRules, magicRuleTools, migrateMagicRules } from "./magic-rules.js";
 import {
   MAGIC_EXT_PROMPT,
   MagicExtensions,
@@ -371,6 +374,7 @@ import {
   transcribe,
 } from "./voice.js";
 import { WakeModels } from "./wake-models.js";
+import { migratePersonRules, PersonRules } from "./person-rules.js";
 
 /** What started an automation's run, in the words the agent reads with its data (G33.3). */
 const STARTED_BY: Partial<Record<RunContext["trigger"], string>> = {
@@ -863,6 +867,12 @@ export class RedGiantCore implements OrchestrationHost {
   readonly magic: MagicAutomations;
   /** Integrations and extensions built in a conversation with God (G38.3). */
   readonly magicExt: MagicExtensions;
+  /** The person's rules (3.12): when, if, then, enforced by Rasgeth itself. */
+  readonly rules: PersonRules;
+  /** Rules built in a conversation with God (3.12). */
+  readonly magicRules: MagicRules;
+  /** Projects' names, for the rules' conditions (a person writes a name, not an id). */
+  private readonly projectNames = new Map<string, string>();
   /** The keychain (G33.4): credentials agents use by name, never seeing them. */
   readonly vault: Vault;
   /** Browsers linked to the keychain (G36.21): the extension's device tokens. */
@@ -1479,6 +1489,38 @@ export class RedGiantCore implements OrchestrationHost {
       automations: this.automations,
       host: this.magicHost,
     });
+    this.rules = new PersonRules({
+      db: o.db,
+      host: {
+        language: (ownerId) => (this.language(ownerId) === "it" ? "it" : "en"),
+        notify: (ownerId, text, to, info) => this.ruleNotify(ownerId, text, to, info),
+        interrupt: (ownerId, hold) => this.interruptHeld(ownerId, hold),
+        toolsOff: async (ownerId, kits, tools) => {
+          if (kits.length)
+            await this.setKits(ownerId, Object.fromEntries(kits.map((k) => [k, "off" as const])));
+          if (tools.length) {
+            const now = await this.toolChoices.get(ownerId);
+            await this.setToolsOff(ownerId, [...new Set([...now.off, ...tools])]);
+          }
+        },
+        runAutomation: async (ownerId, name) => {
+          const a = (await this.automations.list(ownerId)).find(
+            (x) => x.id === name || x.name === name,
+          );
+          if (!a) throw new Error(`no automation called "${name}"`);
+          const { run, done } = await this.automations.runNow(ownerId, a.id);
+          done.catch(() => {});
+          return `automation ${a.name}: ${run.status}`;
+        },
+        runCommand: (ownerId, command, project, rule) =>
+          this.ruleCommand(ownerId, command, project, rule),
+        limits: () => this.limits(),
+        owners: async () => [
+          ...new Set(this.registry.list({ activeOnly: true }).map((a) => a.ownerId)),
+        ],
+      },
+    });
+    this.magicRules = new MagicRules({ db: o.db, rules: this.rules, host: this.magicHost });
     this.magicExt = new MagicExtensions({
       db: o.db,
       builder: this.extensions,
@@ -1673,6 +1715,8 @@ export class RedGiantCore implements OrchestrationHost {
     await migrateAutomations(o.db);
     await migrateMagic(o.db);
     await migrateMagicExtensions(o.db);
+    await migratePersonRules(o.db);
+    await migrateMagicRules(o.db);
     await migratePlatform(o.db);
     await migratePersonRequests(o.db);
     await migrateRooms(o.db);
@@ -1696,6 +1740,20 @@ export class RedGiantCore implements OrchestrationHost {
       machineName: (ownerId) => core.nodes.machineName(ownerId),
       isWatched: (sessionId) => core.isWatched(sessionId),
       onTurnEnded: (f) => core.onTurnEnded(f),
+    });
+    // The person's rules hear every agent that ends its turn (3.12).
+    core.onTurnEnded((t) => {
+      const agent = core.registry.get(t.agentId);
+      if (!agent) return;
+      void core.projectName(t.ownerId, agent.projectId).then((project) =>
+        core.rules.agentDone(t.ownerId, {
+          agentId: agent.id,
+          agent: agent.name,
+          projectId: agent.projectId,
+          ...(project && { project }),
+          stopReason: t.stopReason,
+        }),
+      );
     });
     // The artifacts' bridge from the start: it follows the person's deletions and moves (3.6).
     void core.artifactBridge;
@@ -2054,6 +2112,11 @@ export class RedGiantCore implements OrchestrationHost {
         : undefined;
     // A magic integration's or extension's conversation (G38.3): its agent builds one package.
     const magicExtSession = await this.magicExt.forSession(sessionId).catch(() => undefined);
+    // A magic rule's conversation (3.12): God builds one rule with the person.
+    const magicRuleSession =
+      agent.kind === "god"
+        ? await this.magicRules.forSession(sessionId).catch(() => undefined)
+        : undefined;
     const tools: Tool[] = ws
       ? baseTools({
           workspace: ws,
@@ -2094,6 +2157,7 @@ export class RedGiantCore implements OrchestrationHost {
       ...platformConfigTools(agent, this.config, this),
       // Only a magic automation's conversation proposes one (G33.3); fixed for its whole life.
       ...(magicSession ? magicTools(agent, this.magic, this.magicHost) : []),
+      ...(magicRuleSession ? magicRuleTools(agent, this.magicRules) : []),
       ...magicExtTools(agent, magicExtSession, this.magicExt),
       ...platformCodeTools(agent, this.code),
       ...questionTools(agent, {
@@ -2382,6 +2446,7 @@ export class RedGiantCore implements OrchestrationHost {
         await this.subprojectNote(agent),
         // A magic automation's conversation knows its task from the start (G33.3).
         magicSession ? MAGIC_PROMPT : "",
+        magicRuleSession ? MAGIC_RULE_PROMPT : "",
         magicExtSession?.agentId === agent.id ? MAGIC_EXT_PROMPT : "",
         // Text, widget, artifact, board or project (3.5.9): for every agent that can show files;
         // the everyday Chat's version welcomes widgets, as its own instructions do (2026-11-17).
@@ -2491,6 +2556,7 @@ export class RedGiantCore implements OrchestrationHost {
         resolve: this.registry.resolve,
         broker: this.broker,
         budget: this.budget,
+        rules: this.sessionRules(agent),
       }),
     };
     const session = preview
@@ -2570,6 +2636,7 @@ export class RedGiantCore implements OrchestrationHost {
       resolve: this.registry.resolve,
       broker: this.broker,
       budget: this.budget,
+      rules: this.sessionRules(agent),
     });
     const options = {
       store: this.store,
@@ -8922,11 +8989,139 @@ export class RedGiantCore implements OrchestrationHost {
     };
   }
 
+  /** A project's name (cached), for the person's rules; undefined without a project. */
+  async projectName(
+    ownerId: string,
+    projectId: string | null | undefined,
+  ): Promise<string | undefined> {
+    if (!projectId) return undefined;
+    const known = this.projectNames.get(projectId);
+    if (known) return known;
+    const p = await this.projects.get(ownerId, projectId).catch(() => undefined);
+    if (p) this.projectNames.set(projectId, p.name);
+    return p?.name ?? projectId;
+  }
+
+  /** The person's rules as one agent's session sees them (3.12). */
+  private sessionRules(agent: AgentRecord): SessionRules {
+    return {
+      beforeTool: async (call) =>
+        this.rules.beforeTool(
+          agent.ownerId,
+          {
+            agentId: agent.id,
+            agent: agent.name,
+            projectId: agent.projectId,
+            ...(agent.projectId && {
+              project: await this.projectName(agent.ownerId, agent.projectId),
+            }),
+          },
+          call,
+        ),
+      modelGate: () =>
+        this.rules.modelGate(agent.ownerId, { agentId: agent.id, projectId: agent.projectId }),
+    };
+  }
+
+  /**
+   * A rule's notice (3.12): the open pages and apps (as an automation's notice), the devices when
+   * none is open or when asked, and the linked chats. Resolves to where it arrived.
+   */
+  private async ruleNotify(
+    ownerId: string,
+    text: string,
+    to: readonly string[],
+    info: { ruleId: string; ruleName: string; fireId: string },
+  ): Promise<string[]> {
+    const out: string[] = [];
+    const notice = {
+      automationId: `rule:${info.ruleId}`,
+      runId: info.fireId,
+      name: info.ruleName,
+      status: "ok",
+      sessionId: null,
+    } satisfies NoticeInfo;
+    let shown = false;
+    if (to.includes("page") || to.includes("app"))
+      for (const l of this.noticeListeners) shown = l(ownerId, text, notice) || shown;
+    if (shown) out.push("page");
+    if (to.includes("app") || !shown) {
+      this.push.automationNotice(ownerId, text, notice);
+      out.push("app");
+    }
+    if (to.includes("chats")) {
+      const r = await this.notify?.(ownerId, text).catch(() => undefined);
+      if (r && (r as NotifyReport).delivered?.length) out.push("chats");
+    }
+    return out;
+  }
+
+  /** The turns a rule's stop cuts once its time to save is over (3.12). */
+  private async interruptHeld(ownerId: string, hold: RuleHold): Promise<number> {
+    let n = 0;
+    for (const l of [...this.live.values()]) {
+      if (l.ownerId !== ownerId || !l.running) continue;
+      if (hold.scope === "project" && l.projectId !== hold.projectId) continue;
+      if (hold.scope === "agent" && l.agentId !== hold.agentId) continue;
+      if (await this.interrupt(ownerId, l.id).catch(() => false)) n++;
+    }
+    return n;
+  }
+
+  /**
+   * A rule's command (3.12): asked as God's own command would be (the danger policy, criticalOf,
+   * the person for what needs them; a failure or no answer is a no), then run in a sandbox with
+   * the agents' environment (no secrets), never on the server's own.
+   */
+  private async ruleCommand(
+    ownerId: string,
+    command: string,
+    project: string | undefined,
+    rule: { id: string; name: string },
+  ): Promise<{ exitCode: number; output: string }> {
+    const god = this.registry.list({ ownerId, activeOnly: true }).find((a) => a.kind === "god");
+    if (!god) throw new Error("there is no God yet to run it as");
+    let spec: SandboxSpec;
+    if (project) {
+      const p = (await this.projects.list(ownerId)).find(
+        (x) => x.id === project || x.name.toLowerCase() === project.toLowerCase(),
+      );
+      if (!p) throw new Error(`no project called "${project}"`);
+      this.assertActive(ownerId, p.id);
+      spec = {
+        id: `${ownerId}-${p.id}`,
+        localPath: p.path,
+        mount: { type: "bind", source: p.path },
+      };
+    } else {
+      const platform = this.platformPath(ownerId);
+      await mkdir(platform, { recursive: true });
+      spec = {
+        id: `${ownerId}-rules`,
+        localPath: platform,
+        mount: { type: "bind", source: platform },
+      };
+    }
+    const decision = await this.broker.check(god, {
+      callId: `rule-${rule.id}-${randomUUID().slice(0, 8)}`,
+      name: "bash",
+      input: { command, description: `the person's rule «${rule.name}»` },
+    });
+    if (!decision.allow) throw new Error(`not run: ${decision.reason ?? "not approved"}`);
+    const ws = (await this.sandboxFor(spec)).workspace();
+    const r = await ws.exec(command, { timeoutMs: 5 * 60_000 });
+    return {
+      exitCode: r.exitCode ?? -1,
+      output: `${r.stdout}${r.stderr}`.slice(-4000),
+    };
+  }
+
   /** Stops every running turn and denies every open approval (shutdown). */
   async close(): Promise<void> {
     this.closing = true;
     await this.nodes.stop();
     await this.automations.stop();
+    await this.rules.stop();
     // Edits accepted are in the log already; the files are written before closing.
     await this.editor.close().catch(() => {});
     this.email.stop();

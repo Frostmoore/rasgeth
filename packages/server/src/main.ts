@@ -623,6 +623,14 @@ setStallLog((line) => {
   shutdownHooks.push(async () => catalog.stop());
 }
 await core.automations.start();
+// The person's rules (3.12): their clock (times, the subscriptions' windows). A ready-made rule
+// set is added only where the installation asks for it (the user's own: weekly-margin), off for
+// no one else; added once, switched on, and from then on the person's to change.
+if (env.REDGIANT_RULES_SEED === "weekly-margin")
+  await core.rules
+    .addTemplate(owner, "weekly-margin", { enable: true, by: "installation", once: true })
+    .catch((err) => console.warn(`rules: ${(err as Error).message}`));
+core.rules.start();
 // Windows without Git (RedGiant 3.0): the portable one comes down once, with its bar.
 void ensureGit(core.jobs, owner, dataDir).catch((err) =>
   console.warn(`git: ${(err as Error).message}`),

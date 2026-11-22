@@ -47,6 +47,7 @@ export * from "./models-catalog.js";
 export * from "./nodes.js";
 export * from "./password-export.js";
 export * from "./paths.js";
+export * from "./person-rules.js";
 export * from "./person-settings.js";
 export * from "./portrait.js";
 export * from "./products.js";

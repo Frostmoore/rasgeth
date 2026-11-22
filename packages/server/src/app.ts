@@ -111,6 +111,8 @@ import { localModelChoices } from "./local-models.js";
 import { LoginError } from "./login.js";
 import { MachineError, type MachinePatch } from "./machines.js";
 import { MagicNotFoundError, MagicStateError } from "./magic.js";
+import { MagicRuleNotFoundError } from "./magic-rules.js";
+import { RuleNotFoundError, RuleStateError } from "./person-rules.js";
 import { MagicExtNotFoundError, MagicExtStateError } from "./magic-extensions.js";
 import { nodeRoutes } from "./nodes/routes.js";
 import { personRoutes } from "./person-routes.js";
@@ -1008,10 +1010,16 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       err instanceof AutomationNotFoundError ||
       err instanceof MailboxNotFoundError ||
       err instanceof MagicNotFoundError ||
-      err instanceof MagicExtNotFoundError
+      err instanceof MagicExtNotFoundError ||
+      err instanceof RuleNotFoundError ||
+      err instanceof MagicRuleNotFoundError
     )
       return c.json({ error: err.message }, 404);
-    if (err instanceof MagicStateError || err instanceof MagicExtStateError)
+    if (
+      err instanceof MagicStateError ||
+      err instanceof MagicExtStateError ||
+      err instanceof RuleStateError
+    )
       return c.json({ error: err.message }, 400);
     if (err instanceof RecipeError) return c.json({ error: err.message }, 400);
     // A mandatory update is waiting (G36.19): refused, nothing lost; the page shows its window.
@@ -3894,6 +3902,90 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   });
   app.delete("/api/magic/:id", async (c) => {
     await core.magic.dismiss(owner(c), c.req.param("id"));
+    return c.json({ ok: true }, 200);
+  });
+  // The person's rules (3.12, Settings > Rules): when, if, then; history and undo; examples tried
+  // before a rule switches on; the stops in place and «Resume». A rule never allows anything.
+  const ruleBody = async (c: { req: { json(): Promise<unknown> } }) =>
+    ((await c.req.json().catch(() => ({}))) ?? {}) as Record<string, unknown>;
+  app.get("/api/rules", async (c) => {
+    const o = owner(c);
+    const [rules, holds, fires] = await Promise.all([
+      core.rules.list(o),
+      core.rules.holdsOf(o),
+      core.rules.fires(o, 30),
+    ]);
+    return c.json({ rules, holds, fires }, 200);
+  });
+  app.post("/api/rules", async (c) => {
+    const b = await ruleBody(c);
+    return c.json(await core.rules.create(owner(c), b.rule, { enable: b.enable === true }), 201);
+  });
+  app.post("/api/rules/try", async (c) => c.json(core.rules.trial((await ruleBody(c)).rule), 200));
+  app.post("/api/rules/template", async (c) => {
+    const b = z
+      .object({ template: z.enum(["weekly-margin"]), enable: z.boolean().optional() })
+      .safeParse(await c.req.json().catch(() => ({})));
+    if (!b.success) return c.json({ error: "Which ready-made rule?" }, 400);
+    return c.json(
+      await core.rules.addTemplate(owner(c), b.data.template, {
+        ...(b.data.enable !== undefined && { enable: b.data.enable }),
+      }),
+      201,
+    );
+  });
+  app.post("/api/rules/resume", async (c) => {
+    const b = await ruleBody(c);
+    await core.rules.resume(owner(c), typeof b.ruleId === "string" ? b.ruleId : undefined);
+    return c.json({ holds: await core.rules.holdsOf(owner(c)) }, 200);
+  });
+  app.get("/api/rules/history", async (c) =>
+    c.json(await core.rules.history(owner(c), c.req.query("id") || undefined), 200),
+  );
+  app.put("/api/rules/:id", async (c) =>
+    c.json(await core.rules.update(owner(c), c.req.param("id"), (await ruleBody(c)).rule), 200),
+  );
+  app.post("/api/rules/:id/enabled", async (c) => {
+    const b = z.object({ enabled: z.boolean() }).safeParse(await c.req.json().catch(() => ({})));
+    if (!b.success) return c.json({ error: "enabled is needed" }, 400);
+    return c.json(await core.rules.setEnabled(owner(c), c.req.param("id"), b.data.enabled), 200);
+  });
+  app.post("/api/rules/:id/undo", async (c) =>
+    c.json({ rule: await core.rules.undo(owner(c), c.req.param("id")) }, 200),
+  );
+  app.delete("/api/rules/:id", async (c) => {
+    await core.rules.remove(owner(c), c.req.param("id"));
+    return c.json({ ok: true }, 200);
+  });
+  // Magic rules (3.12): a conversation with God that ends in a proposal beside it.
+  app.get("/api/magic-rules", async (c) => c.json(await core.magicRules.list(owner(c)), 200));
+  app.post("/api/magic-rules", async (c) => {
+    const b = z
+      .object({ request: z.string().trim().min(1).max(20_000) })
+      .safeParse(await c.req.json().catch(() => ({})));
+    if (!b.success) return c.json({ error: "Write what the rule should do" }, 400);
+    return c.json(await core.magicRules.create(owner(c), b.data.request), 201);
+  });
+  app.get("/api/magic-rules/:id", async (c) =>
+    c.json(await core.magicRules.get(owner(c), c.req.param("id")), 200),
+  );
+  app.post("/api/magic-rules/:id/approve", async (c) => {
+    const b = await ruleBody(c);
+    return c.json(await core.magicRules.approve(owner(c), c.req.param("id"), b.rule), 200);
+  });
+  app.post("/api/magic-rules/:id/reject", async (c) => {
+    const b = await ruleBody(c);
+    return c.json(
+      await core.magicRules.reject(
+        owner(c),
+        c.req.param("id"),
+        typeof b.reason === "string" ? b.reason.slice(0, 4000) : undefined,
+      ),
+      200,
+    );
+  });
+  app.delete("/api/magic-rules/:id", async (c) => {
+    await core.magicRules.dismiss(owner(c), c.req.param("id"));
     return c.json({ ok: true }, 200);
   });
   // Magic integrations and extensions (G38.3): a conversation with God that ends in a tested
