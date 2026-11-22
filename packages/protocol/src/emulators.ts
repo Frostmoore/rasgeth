@@ -235,7 +235,88 @@ export interface EmuDeviceView {
   ours?: boolean;
   /** Who drives it now. */
   control: "agents" | "person";
+  /** On a node (3.11 phase 4): the node's name; its id ends with `@<fingerprint>`. */
+  machine?: string;
 }
 
 /** An emulator is an id `avd:<name>` or a serial `emulator-<port>`; anything else is a real phone. */
-export const isEmulatorId = (id: string): boolean => /^(avd:|emulator-\d+$)/.test(id);
+export const isEmulatorId = (id: string): boolean => /^(avd:|emulator-\d+(@|$))/.test(id);
+
+// ---- Phase 5: the guided install of the Android SDK pieces, only with the person's yes ----
+
+/** One step of the guided install, in the order it runs. */
+export type EmuInstallStepId =
+  | "cmdline-tools" // Google's official zip, pinned and checked, into `<sdk>/cmdline-tools/<dir>`
+  | "licences" // the licences the person read and accepted (their recorded yes)
+  | "platform-tools"
+  | "emulator"
+  | "emulator-update" // `emulator-old`: the emulator package again, at its latest stable version
+  | "system-image"
+  | "avd";
+
+export interface EmuInstallStep {
+  id: EmuInstallStepId;
+  /** sdkmanager's package (`platform-tools`, `system-images;android-35;google_apis;x86_64`). */
+  package?: string;
+  /** What it downloads, when known. */
+  bytes?: number;
+  /** For `cmdline-tools`: its version; for an update, the version it brings. */
+  version?: string;
+  /** For `avd`: the virtual device's name. */
+  avd?: string;
+}
+
+/** Why nothing can be installed here (the page says it in words and what to do instead). */
+export type EmuInstallBlock =
+  | "container" // RedGiant runs in a container: emulators come from a node
+  | "unsupported" // Google has no emulator for this system and processor
+  | "no-accel" // no hardware acceleration: emulators would be far too slow
+  | "no-java" // sdkmanager and avdmanager need Java 17 or newer
+  | "java-old"
+  | "emulators-running" // the emulator cannot be replaced while one runs
+  | "folder-relative"
+  | "folder-not-empty" // the folder holds other things and is not an SDK
+  | "offline" // Google's list of packages (and the licences) could not be read
+  | "nothing"; // nothing is missing
+
+/** What the page explains without installing anything. */
+export type EmuInstallNote = "node" | "xcode" | "ios-bridge" | "kvm-group" | "bios";
+
+export interface EmuInstallPlan {
+  /** Present only when the plan can start: `start` needs it (and is the person's yes). */
+  planId?: string;
+  /** The SDK folder everything goes into (and nothing outside it, apart from the AVD). */
+  target: string;
+  /** No SDK yet and no folder chosen: the standard place of this system. */
+  targetStandard: boolean;
+  /** Where the AVD is created (the emulator's own place). */
+  avdHome?: string;
+  steps: EmuInstallStep[];
+  /** The full text of every licence the steps need, to read and accept. */
+  licences: { id: string; text: string }[];
+  /** Everything to download, in bytes (0 when unknown). */
+  bytes: number;
+  blocked?: EmuInstallBlock;
+  accelReason?: EmuAccel["reason"];
+  notes: EmuInstallNote[];
+  /** The Java found (sdkmanager runs with it). */
+  java?: { path: string; major: number };
+}
+
+/** An AVD name as avdmanager accepts it. */
+export const AVD_NAME_RE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
+
+export const EmuInstallPlanBody = z.object({
+  /** Another folder for a new SDK (absolute path). */
+  target: z.string().trim().min(1).max(400).optional(),
+  avdName: z.string().trim().regex(AVD_NAME_RE).optional(),
+  /** Only the update of the emulator (the `emulator-old` proposal). */
+  only: z.literal("emulator-update").optional(),
+});
+export type EmuInstallPlanBody = z.infer<typeof EmuInstallPlanBody>;
+
+export const EmuInstallStartBody = z.object({
+  planId: z.string().min(1).max(100),
+  /** The person read and accepted the plan's licences (required when it has any). */
+  licenceAccepted: z.boolean().optional(),
+});

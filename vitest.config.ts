@@ -23,6 +23,13 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.ts"],
     // Live tests call real models; they run only with `pnpm test:live`.
     // RGCompanion (apps/companion) is Flutter: `flutter test` runs its tests (companion.yml).
-    exclude: ["**/node_modules/**", "**/*.live.test.ts", "**/*.docker.test.ts", "apps/**"],
+    // Real Android devices (3.11): `REDGIANT_DEVICE_TESTS=1 pnpm test:device` on a machine with adb.
+    exclude: [
+      "**/node_modules/**",
+      "**/*.live.test.ts",
+      "**/*.docker.test.ts",
+      "**/*.device.test.ts",
+      "apps/**",
+    ],
   },
 });

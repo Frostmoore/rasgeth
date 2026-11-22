@@ -155,6 +155,7 @@ import {
 } from "@redgiant/sandbox";
 import { readRelease } from "@redgiant/supervisor";
 import {
+  agentEnv,
   BackgroundCommands,
   baseTools,
   LocalWorkspace,
@@ -246,7 +247,9 @@ import {
 import { AndroidHost } from "./emulators/android.js";
 import { Devices } from "./emulators/devices.js";
 import type { DeviceHost } from "./emulators/host.js";
+import { EmulatorInstaller, type InstallerOptions } from "./emulators/install.js";
 import { EMULATOR_SETTINGS_OWNER, EmulatorMachine } from "./emulators/machine.js";
+import { DeviceHub } from "./emulators/remote.js";
 import { deviceTools } from "./emulators/tools.js";
 import { engineTranscripts, fingerprints, rewriteTranscript, tainted } from "./erase-message.js";
 import { ffmpegOnPath, locateFfmpeg } from "./ffmpeg.js";
@@ -447,6 +450,8 @@ export interface CoreOptions {
   };
   /** Emulators (3.11): tests give a machine with fixed facts; by default this machine is read. */
   emulators?: EmulatorMachine;
+  /** The guided install (3.11 phase 5): tests give fake downloads and programs. */
+  emuInstall?: Partial<Omit<InstallerOptions, "jobs" | "machine">>;
   /** Devices in the Canvas (3.11): tests give a `FakeDeviceHost`; by default adb and scrcpy. */
   deviceHost?: DeviceHost;
   /** The editor's timings (G37.1): tests save at once and hold the person's place briefly. */
@@ -1456,6 +1461,12 @@ export class RedGiantCore implements OrchestrationHost {
           set: (v) => this.emulatorSettings.set(EMULATOR_SETTINGS_OWNER, v),
         },
       });
+    this.emuInstall = new EmulatorInstaller({
+      jobs: this.jobs,
+      machine: this.emulators,
+      env: () => agentEnv(),
+      ...o.emuInstall,
+    });
     this.emuDevices = new Devices({
       host:
         o.deviceHost ??
@@ -1498,6 +1509,7 @@ export class RedGiantCore implements OrchestrationHost {
           ...(o.videoMedia?.run && { run: o.videoMedia.run }),
         },
         emulators: () => this.emulators.report(),
+        devices: () => this.emuDevices,
         providers: o.providers,
         sandboxKind: this.sandbox.kind,
         sandbox: async (_ownerId, key, dir) =>
@@ -1507,6 +1519,7 @@ export class RedGiantCore implements OrchestrationHost {
       }),
       ...o.nodes,
     });
+    this.deviceHub = new DeviceHub({ local: this.emuDevices, nodes: this.nodes });
     // A node's models «via <node>» appear and go with it (G39.4).
     this.nodes.onChange((ownerId) => void this.syncNodeProviders(ownerId).catch(() => {}));
     this.mail = new MailService({
@@ -2326,7 +2339,7 @@ export class RedGiantCore implements OrchestrationHost {
     // Devices (3.11): the machine's emulators and phones, for every agent that does work.
     if (ws && ["assistant", "orchestrator", "agent", "subagent"].includes(agent.kind))
       tools.push(
-        ...deviceTools(this.emuDevices, {
+        ...deviceTools(this.deviceHub.of(ownerId), {
           root: ws.root,
           vision: (() => {
             try {
@@ -5629,10 +5642,14 @@ export class RedGiantCore implements OrchestrationHost {
   readonly mediaMachine: MediaMachineLike;
   /** 3.11: this machine's Android SDK, emulators, phones and simulators (Settings › Emulators). */
   readonly emulators: EmulatorMachine;
+  /** 3.11 phase 5: the guided install of the Android SDK pieces, only with the person's yes. */
+  readonly emuInstall: EmulatorInstaller;
   /** The machine's emulator settings, one value in `rg_settings` (owner `machine`). */
   readonly emulatorSettings: OwnerSettings<EmulatorSettings>;
   /** 3.11: the devices in the Canvas (AVDs, running emulators, phones), for the person and the agents. */
   readonly emuDevices: Devices;
+  /** 3.11 phase 4: this machine's devices and the nodes', per person (`of(ownerId)`). */
+  readonly deviceHub: DeviceHub;
 
   /** The machines a video can be rendered on (G41.7): this one first, then the nodes. */
   async renderMachines(owner: string): Promise<RenderMachine[]> {

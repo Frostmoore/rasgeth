@@ -137,6 +137,32 @@ const TABLE: Row[] = [
     [DEVICE_PHONE_APP, "critical-system"],
     { rules: [{ tool: "*", decision: "allow" }] },
   ],
+  // A node's devices (3.11 phase 4): `<id>@<node>`, the same rules.
+  [
+    "installing on a node's emulator",
+    "auto",
+    "device_install",
+    { device: "avd:Pixel_8@SHA256:rigRigRig", apk: APK },
+    "ask",
+    [DEVICE_INSTALL],
+  ],
+  [
+    "installing on a node's running emulator",
+    "auto",
+    "device_install",
+    { device: "emulator-5554@SHA256:rigRigRig", apk: APK },
+    "ask",
+    [DEVICE_INSTALL],
+  ],
+  [
+    "launching on a node's phone",
+    "auto",
+    "device_launch",
+    { device: "R58N12ABCDE@SHA256:rigRigRig", package: "com.example.app" },
+    "ask",
+    [DEVICE_PHONE_APP],
+  ],
+  ["a tap on a node's emulator", "auto", "device_tap", { device: "avd:Pixel_8@SHA256:rig", ref: 1 }, "allow", []],
   [
     "installing in plan mode",
     "plan",

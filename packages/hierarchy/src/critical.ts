@@ -1414,7 +1414,7 @@ export function criticalOf(call: ToolCallInfo, ctx: CriticalContext = {}): Criti
   if (
     name === "device_install" &&
     typeof input.device === "string" &&
-    !/^(avd:|emulator-\d+$)/.test(input.device)
+    !/^(avd:|emulator-\d+(@|$))/.test(input.device)
   )
     add("critical-system", `installs an app on your phone ${short(input.device)}`, {
       action: "phone-install",

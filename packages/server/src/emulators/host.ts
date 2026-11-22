@@ -11,6 +11,18 @@ export interface DeviceFrame {
   height: number;
 }
 
+/** One H.264 packet as scrcpy sent it (3.11 phase 7): Annex B, a configuration or a frame. */
+export interface VideoPacket {
+  /** base64 of the Annex B bytes. */
+  data: string;
+  /** SPS/PPS: a decoder starts (again) from it. */
+  config: boolean;
+  /** A key frame: a decoder may start from the configuration and it. */
+  key: boolean;
+  width: number;
+  height: number;
+}
+
 /** A device adb sees now. */
 export interface HostDevice {
   serial: string;
@@ -26,6 +38,8 @@ export interface HostDevice {
 export interface DeviceScreen {
   size(): { width: number; height: number };
   input(e: DeviceInput): Promise<void>;
+  /** Asks the device for a key frame soon (someone started watching the H.264). */
+  keyframe?(): Promise<void>;
   close(): Promise<void>;
 }
 
@@ -39,6 +53,8 @@ export interface DeviceHost {
     serial: string,
     onFrame: (f: DeviceFrame) => void,
     ended: (error?: string) => void,
+    /** 3.11 phase 7: the H.264 itself, for pages that decode it (WebCodecs). */
+    onVideo?: (p: VideoPacket) => void,
   ): Promise<DeviceScreen>;
   /** A command on the device (`args` are passed one by one, never through a shell string). */
   shell(serial: string, args: readonly string[]): Promise<string>;
@@ -84,6 +100,12 @@ export class FakeDeviceHost implements DeviceHost {
   answers: Record<string, string> = {};
   /** Frames sent by an open screen (each `frame()` call sends one). */
   private readonly open = new Map<string, (f: DeviceFrame) => void>();
+  private readonly video = new Map<string, (p: VideoPacket) => void>();
+
+  /** Sends an H.264 packet to an open screen. */
+  packet(serial: string, p: Partial<VideoPacket> = {}): void {
+    this.video.get(serial)?.({ data: "AAAA", config: false, key: false, width: 576, height: 1280, ...p });
+  }
   private next = 5556;
 
   /** `frame`: the picture every screen sends (base64 JPEG; the demo gives a real one). */
@@ -106,11 +128,21 @@ export class FakeDeviceHost implements DeviceHost {
     this.attached = this.attached.filter((d) => d.serial !== serial);
   }
 
-  async screen(serial: string, onFrame: (f: DeviceFrame) => void): Promise<DeviceScreen> {
+  async screen(
+    serial: string,
+    onFrame: (f: DeviceFrame) => void,
+    _ended?: (error?: string) => void,
+    onVideo?: (p: VideoPacket) => void,
+  ): Promise<DeviceScreen> {
     this.calls.push(`screen ${serial}`);
     this.open.set(serial, onFrame);
+    if (onVideo) this.video.set(serial, onVideo);
     onFrame({ data: this.picture, width: 576, height: 1280 });
     return {
+      keyframe: async () => {
+        this.calls.push(`keyframe ${serial}`);
+        this.video.get(serial)?.({ data: "S0VZ", config: false, key: true, width: 576, height: 1280 });
+      },
       size: () => ({ width: 576, height: 1280 }),
       input: async (event) => {
         this.inputs.push({ serial, event });

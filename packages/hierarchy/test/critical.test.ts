@@ -524,6 +524,24 @@ const TABLE: Case[] = [
     null,
   ],
   [
+    "installing on a node's phone",
+    "device_install",
+    { device: "R58N12ABCDE@SHA256:rig", apk: "/work/app/a.apk" },
+    "critical-system",
+  ],
+  [
+    "installing on a node's emulator",
+    "device_install",
+    { device: "avd:Pixel_8@SHA256:rig", apk: "/work/app/a.apk" },
+    null,
+  ],
+  [
+    "installing on a node's running emulator",
+    "device_install",
+    { device: "emulator-5554@SHA256:rig", apk: "/work/app/a.apk" },
+    null,
+  ],
+  [
     "launching an app on a phone",
     "device_launch",
     { device: "R58N12ABCDE", package: "com.example" },

@@ -11,7 +11,7 @@ import { isAbsolute, relative, resolve, sep } from "node:path";
 import type { Tool, ToolContext } from "@redgiant/agent";
 import { DEVICE_BUTTONS, DEVICE_KEYS, type DeviceInput } from "@redgiant/protocol";
 import { z } from "zod";
-import { DeviceError, type Devices } from "./devices.js";
+import { type DeviceAccess, DeviceError } from "./devices.js";
 
 /** One element of the screen, as uiautomator says it. */
 export interface UiNode {
@@ -122,7 +122,7 @@ export interface DeviceToolsOptions {
   waitMs?: number;
 }
 
-export function deviceTools(d: Devices, o: DeviceToolsOptions): Tool[] {
+export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
   /** The tree of each device, kept until a new frame arrives. */
   const trees = new Map<string, { seq: number; nodes: UiNode[] }>();
   const sleep = (ms: number, signal?: AbortSignal) =>
@@ -137,8 +137,7 @@ export function deviceTools(d: Devices, o: DeviceToolsOptions): Tool[] {
     const seq = d.seq(device);
     const kept = trees.get(device);
     if (!fresh && kept && seq !== undefined && kept.seq === seq) return kept.nodes;
-    const serial = await d.serial(device);
-    const out = await d.host.shell(serial, ["uiautomator", "dump", "/dev/tty"]);
+    const out = await d.shell(device, ["uiautomator", "dump", "/dev/tty"]);
     const start = out.indexOf("<?xml");
     const end = out.lastIndexOf("</hierarchy>");
     const nodes = start >= 0 && end > start ? parseUiTree(out.slice(start, end + 12)) : [];
@@ -482,8 +481,7 @@ export function deviceTools(d: Devices, o: DeviceToolsOptions): Tool[] {
           const rel = relative(root, file);
           if (rel.startsWith("..") || isAbsolute(rel) || rel.split(sep)[0] === "..")
             throw new DeviceError("The APK must be in your workspace");
-          const serial = await d.serial(i.device, ctx?.signal);
-          const out = await d.host.install(serial, file);
+          const out = await d.install(i.device, file, ctx?.signal);
           if (!/Success/.test(out))
             throw new DeviceError(`The device refused the APK: ${out.slice(0, 500)}`);
           return `Installed ${rel} on ${i.device}.`;
@@ -506,10 +504,9 @@ export function deviceTools(d: Devices, o: DeviceToolsOptions): Tool[] {
       }),
       (i: { device: string; package: string; activity?: string }, ctx) =>
         act(i.device, ctx, async () => {
-          const serial = await d.serial(i.device, ctx?.signal);
           const out = i.activity
-            ? await d.host.shell(serial, ["am", "start", "-n", `${i.package}/${i.activity}`])
-            : await d.host.shell(serial, [
+            ? await d.shell(i.device, ["am", "start", "-n", `${i.package}/${i.activity}`], ctx?.signal)
+            : await d.shell(i.device, [
                 "monkey",
                 "-p",
                 i.package,
@@ -546,15 +543,14 @@ export function deviceTools(d: Devices, o: DeviceToolsOptions): Tool[] {
       }),
       async (i: { device: string; package?: string; lines?: number; contains?: string }, ctx) => {
         try {
-          const serial = await d.serial(i.device, ctx?.signal);
           const n = String(i.lines ?? 200);
           let args = ["logcat", "-d", "-t", n, "*:W"];
           if (i.package) {
-            const pid = (await d.host.shell(serial, ["pidof", i.package])).trim().split(/\s+/)[0];
+            const pid = (await d.shell(i.device, ["pidof", i.package], ctx?.signal)).trim().split(/\s+/)[0];
             if (!pid) return `${i.package} is not running.`;
             args = ["logcat", "-d", "-t", n, `--pid=${pid}`];
           }
-          let text = await d.host.shell(serial, args);
+          let text = await d.shell(i.device, args, ctx?.signal);
           if (i.contains) {
             const want = i.contains.toLowerCase();
             text = text

@@ -384,20 +384,34 @@ export function attachWebSocket(
           case "device.watch": {
             if (offDevices.has(msg.id)) return;
             const id = msg.id;
+            const h264 = msg.format === "h264";
+            // JPEGs until the first video packet (a node's device sends JPEG only).
+            let videoSeen = false;
             offDevices.set(id, () => {});
             // Not awaited: opening may start an AVD (a minute), and this connection's other
-            // messages must not wait for it.
-            void core.emuDevices
-              .watch(id, (e) =>
-                e.type === "frame"
-                  ? send({ type: "device.frame", id, ...e.frame })
-                  : send({
+            // messages must not wait for it. A page that decodes H.264 gets the video, not JPEGs.
+            void core.deviceHub
+              .of(owner)
+              .watch(
+                id,
+                (e) => {
+                  if (e.type === "frame") {
+                    if (!h264 || !videoSeen) send({ type: "device.frame", id, ...e.frame });
+                  } else if (e.type === "video") {
+                    if (h264) {
+                      videoSeen = true;
+                      send({ type: "device.video", id, ...e.packet });
+                    }
+                  } else
+                    send({
                       type: "device.state",
                       id,
                       state: e.state,
                       control: e.control,
                       ...(e.error && { error: e.error }),
-                    }),
+                    });
+                },
+                { video: h264 },
               )
               .then((off) => {
                 if (offDevices.has(id)) offDevices.set(id, off);
@@ -410,10 +424,11 @@ export function attachWebSocket(
             offDevices.delete(msg.id);
             return;
           case "device.control":
-            core.emuDevices.setControl(msg.id, msg.take ? "person" : "agents");
+            core.deviceHub.of(owner).setControl(msg.id, msg.take ? "person" : "agents");
             return;
           case "device.input":
-            await core.emuDevices
+            await core.deviceHub
+              .of(owner)
               .input(msg.id, msg.event, "person")
               .catch((err: unknown) =>
                 fail("device", err instanceof Error ? err.message : String(err)),

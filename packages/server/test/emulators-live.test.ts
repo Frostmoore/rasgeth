@@ -97,6 +97,13 @@ describe("devices in the Canvas", () => {
     d.close();
   });
 
+  it("two emulators of the same AVD: the second one goes by its serial", async () => {
+    const { d, host } = make();
+    host.attached.push({ serial: "emulator-5556", kind: "emulator", state: "device", avd: "Pixel_8" });
+    expect((await d.list()).map((x) => x.id)).toEqual(["avd:Pixel_8", "R58N12ABCDE", "emulator-5556", "avd:Tablet"]);
+    d.close();
+  });
+
   it("starts an AVD when it is opened, within the limit", async () => {
     const { d, host } = make(2);
     const states: string[] = [];
@@ -176,6 +183,28 @@ describe("the device's messages", () => {
   const open: { close: () => Promise<unknown> }[] = [];
   afterEach(async () => {
     for (const s of open.splice(0)) await s.close().catch(() => {});
+  });
+
+  it("H.264 to a page that decodes it (phase 7): a key frame asked, JPEG until the first packet", async () => {
+    const host = new FakeDeviceHost();
+    const s = await startServer([], {}, { deviceHost: host });
+    open.push(s);
+    const jpeg = await wsClient(s.url);
+    jpeg.send({ type: "device.watch", id: "avd:Pixel_8" });
+    await jpeg.waitFor("device.frame", (m) => m.id === "avd:Pixel_8");
+    const c = await wsClient(s.url);
+    c.send({ type: "device.watch", id: "avd:Pixel_8", format: "h264" });
+    await c.waitFor("device.video", (m) => m.key && m.data === "S0VZ");
+    expect(host.calls).toContain("keyframe emulator-5554");
+    host.packet("emulator-5554", { data: "REVM" });
+    await c.waitFor("device.video", (m) => m.data === "REVM");
+    host.frame("emulator-5554", "TkVX");
+    await jpeg.waitFor("device.frame", (m) => m.data === "TkVX");
+    await new Promise((r) => setTimeout(r, 100));
+    expect(c.messages.some((m) => m.type === "device.frame" && m.data === "TkVX")).toBe(false);
+    expect(jpeg.messages.some((m) => m.type === "device.video")).toBe(false);
+    c.close();
+    jpeg.close();
   });
 
   it("frames and states to the page; the person's gestures reach the device, never the log", async () => {

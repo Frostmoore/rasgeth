@@ -121,6 +121,7 @@ export type NodeOp =
   | "complete"
   | "storage"
   | "media"
+  | "device"
   | "cancel"
   | "grant.set"
   | "grant.revoke"
@@ -136,6 +137,8 @@ const OP_ACTION: Record<NodeOp, NodeAction> = {
   storage: "use",
   // G41.7: ffmpeg, files and renders in the asker's folder (`nodeMedia`: «use» is enough).
   media: "use",
+  // 3.11: its emulators and phones (looked at, driven, apps installed on its emulators only).
+  device: "use",
   // Stops one of the asker's own operations (by its id): nothing else can be named.
   cancel: "see",
   "grant.set": "grant",
@@ -196,6 +199,8 @@ export interface NodeHandlers {
   storage?(c: NodeCaller, body: unknown): Promise<unknown>;
   /** G41.7: ffmpeg, files in pieces, renders. */
   media?(c: NodeCaller, body: unknown): Promise<unknown>;
+  /** 3.11: its devices (list, watch in pieces, input, a few commands, installs on emulators). */
+  device?(c: NodeCaller, body: unknown): Promise<unknown>;
 }
 
 export interface NodesOptions {
@@ -993,6 +998,7 @@ export class Nodes {
     const quiet =
       op === "status" ||
       op === "fs" ||
+      (op === "device" && body.action !== "install" && body.action !== "stop") ||
       (op === "media" &&
         (body.action === "state" ||
           ((body.action === "put" || body.action === "get") && Number(body.offset) > 0)));
@@ -1064,6 +1070,8 @@ export class Nodes {
         return need(h.storage)(c, body);
       case "media":
         return need(h.media)(c, body);
+      case "device":
+        return need(h.device)(c, body);
       case "cancel":
         return { stopped: false };
       case "grant.set": {
@@ -1684,6 +1692,8 @@ function describe(op: NodeOp, body: Record<string, unknown>): string {
   if (op === "complete") return `model ${String(body.provider ?? "")}/${String(body.model ?? "")}`;
   if (op === "storage") return `storage ${String(body.action ?? "")} ${String(body.name ?? "")}`;
   if (op === "fs") return `files ${String(body.action ?? "")} ${String(body.path ?? "")}`;
+  if (op === "device")
+    return `device ${String(body.action ?? "")} ${String(body.id ?? "")}`.slice(0, 500);
   if (op === "media")
     return `video ${String(body.action ?? "")}${typeof body.name === "string" ? ` ${body.name}` : ""}`.slice(
       0,

@@ -172,7 +172,12 @@ export const ClientMessage = z.discriminatedUnion("type", [
     title: z.string().max(200).optional(),
   }),
   // A device in the Canvas (3.11): its screen, and the person's hands on it (never logged).
-  z.object({ type: z.literal("device.watch"), id: z.string().min(1).max(200) }),
+  z.object({
+    type: z.literal("device.watch"),
+    id: z.string().min(1).max(200),
+    /** 3.11 phase 7: `h264` for a page that decodes it (WebCodecs); JPEG frames otherwise. */
+    format: z.enum(["jpeg", "h264"]).optional(),
+  }),
   z.object({ type: z.literal("device.unwatch"), id: z.string().min(1).max(200) }),
   z.object({
     type: z.literal("device.control"),
@@ -433,6 +438,16 @@ export const ServerMessage = z.discriminatedUnion("type", [
     type: z.literal("device.frame"),
     id: z.string(),
     data: z.string(),
+    width: z.number(),
+    height: z.number(),
+  }),
+  /** The H.264 itself (3.11 phase 7), to a page that asked for it: Annex B, base64. */
+  z.object({
+    type: z.literal("device.video"),
+    id: z.string(),
+    data: z.string(),
+    config: z.boolean(),
+    key: z.boolean(),
     width: z.number(),
     height: z.number(),
   }),

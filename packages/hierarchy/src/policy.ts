@@ -25,7 +25,7 @@ export const DEVICE_INSTALL = "device-install";
 /** Installing or launching an app on a real phone (3.11): the person's alone. */
 export const DEVICE_PHONE_APP = "device-phone-app";
 /** A device id that is an emulator (`avd:<name>`, `emulator-<port>`); anything else is a phone. */
-const EMULATOR_ID = "^(avd:|emulator-\\d+$)";
+const EMULATOR_ID = "^(avd:|emulator-\\d+(@|$))";
 
 /**
  * Another agent's model changing (G38.9, decision «Il modello degli agenti lo sceglie la persona»):
@@ -193,7 +193,7 @@ export const DEFAULT_DANGER_RULES: DangerRule[] = [
     label: "Installs or launches an app on a real phone",
     tool: "device_*",
     field: "device",
-    pattern: "^(?!avd:|emulator-\\d+$).+",
+    pattern: "^(?!avd:|emulator-\\d+(@|$)).+",
     except: [
       "device_list",
       "device_open",

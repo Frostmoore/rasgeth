@@ -29,6 +29,7 @@ import {
   type DeviceScreen,
   type HostDevice,
   KEY_CODES,
+  type VideoPacket,
 } from "./host.js";
 import { H264ToJpeg, scrcpyJar } from "./jpeg.js";
 
@@ -193,6 +194,7 @@ export class AndroidHost implements DeviceHost {
     serial: string,
     onFrame: (f: DeviceFrame) => void,
     ended: (error?: string) => void,
+    onVideo?: (p: VideoPacket) => void,
   ): Promise<DeviceScreen> {
     await this.server();
     const [jar, ffmpeg] = await Promise.all([scrcpyJar(), this.o.ffmpeg()]);
@@ -237,6 +239,13 @@ export class AndroidHost implements DeviceHost {
           write(p) {
             if (p.type === "configuration") decoder.configure(p.data);
             else decoder.data(p.data);
+            onVideo?.({
+              data: Buffer.from(p.data).toString("base64"),
+              config: p.type === "configuration",
+              key: p.type === "configuration" || p.keyframe === true,
+              width: video.width,
+              height: video.height,
+            });
           },
         }),
       )
@@ -328,6 +337,9 @@ export class AndroidHost implements DeviceHost {
     return {
       size: () => ({ width: video.width, height: video.height }),
       input,
+      keyframe: async () => {
+        await ctl.resetVideo().catch(() => {});
+      },
       close: async () => {
         finish();
         await sc.close().catch(() => {});
