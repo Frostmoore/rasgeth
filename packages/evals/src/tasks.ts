@@ -417,6 +417,84 @@ print("ok")
     ),
   },
   {
+    // 3.11: an app tried on a device (the `devices` kit), or read from its screen when there is
+    // no emulator: one button does nothing (its listener was put on another one by mistake).
+    id: "device-broken-button",
+    title: "Try an Android app and fix the button that does nothing",
+    plain: true,
+    files: {
+      "app/src/main/res/layout/activity_main.xml": `<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
+    <EditText android:id="@+id/note" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Note" />
+    <Button android:id="@+id/btn_add" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Add" />
+    <Button android:id="@+id/btn_clear" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Clear" />
+    <Button android:id="@+id/btn_save" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Save" />
+    <TextView android:id="@+id/list" android:layout_width="match_parent" android:layout_height="wrap_content" />
+</LinearLayout>
+`,
+      "app/src/main/java/com/example/notes/MainActivity.kt": `package com.example.notes
+
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+    private val notes = mutableListOf<String>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        findViewById<Button>(R.id.btn_add).setOnClickListener { addNote() }
+        findViewById<Button>(R.id.btn_clear).setOnClickListener { clearNotes() }
+        findViewById<Button>(R.id.btn_clear).setOnClickListener { saveNotes() }
+    }
+
+    private fun addNote() {
+        val field = findViewById<EditText>(R.id.note)
+        notes.add(field.text.toString())
+        field.text.clear()
+        show()
+    }
+
+    private fun clearNotes() {
+        notes.clear()
+        show()
+    }
+
+    private fun saveNotes() {
+        openFileOutput("notes.txt", MODE_PRIVATE).use { it.write(notes.joinToString("\\n").toByteArray()) }
+    }
+
+    private fun show() {
+        findViewById<TextView>(R.id.list).text = notes.joinToString("\\n")
+    }
+}
+`,
+      "screen.xml": `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="com.example.notes" clickable="false" bounds="[0,0][1080,2400]"><node index="0" text="" resource-id="com.example.notes:id/note" class="android.widget.EditText" clickable="true" focused="false" password="false" bounds="[0,150][1080,280]" /><node index="1" text="Add" resource-id="com.example.notes:id/btn_add" class="android.widget.Button" clickable="true" bounds="[0,290][260,420]" /><node index="2" text="Clear" resource-id="com.example.notes:id/btn_clear" class="android.widget.Button" clickable="true" bounds="[0,430][260,560]" /><node index="3" text="Save" resource-id="com.example.notes:id/btn_save" class="android.widget.Button" clickable="true" bounds="[0,570][260,700]" /><node index="4" text="" resource-id="com.example.notes:id/list" class="android.widget.TextView" clickable="false" bounds="[0,710][1080,900]" /></node></hierarchy>
+`,
+    },
+    prompt:
+      "Try the notes app in app/: one of its buttons does nothing when tapped. If an Android emulator is available, use the device tools to look at it and try it (screen.xml is a dump of its screen, for when no device is there). Find which button it is and fix the code so every button does its job. In your answer, name the button that was broken.",
+    verifier: py(
+      "_verify.py",
+      `import re
+src = open("app/src/main/java/com/example/notes/MainActivity.kt").read()
+calls = re.findall(r"findViewById<Button>[(]R[.]id[.](\\w+)[)][.]setOnClickListener [{] (\\w+)[(][)] [}]", src)
+wired = {}
+for button, fn in calls:
+    assert button not in wired, "two listeners on " + button
+    wired[button] = fn
+assert wired == {"btn_add": "addNote", "btn_clear": "clearNotes", "btn_save": "saveNotes"}, wired
+answer = open("_answer.md").read().lower()
+assert "save" in answer or "salva" in answer, "the answer does not name the broken button"
+print("ok")
+`,
+    ),
+  },
+  {
     id: "debug-log",
     title: "Find a bug from a crash log",
     files: {

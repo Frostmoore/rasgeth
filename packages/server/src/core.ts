@@ -243,8 +243,13 @@ import {
   type MailboxInput,
   type MailSender,
 } from "./email.js";
+import { AndroidHost } from "./emulators/android.js";
+import { Devices } from "./emulators/devices.js";
+import type { DeviceHost } from "./emulators/host.js";
 import { EMULATOR_SETTINGS_OWNER, EmulatorMachine } from "./emulators/machine.js";
+import { deviceTools } from "./emulators/tools.js";
 import { engineTranscripts, fingerprints, rewriteTranscript, tainted } from "./erase-message.js";
+import { ffmpegOnPath, locateFfmpeg } from "./ffmpeg.js";
 import { FileTriggers } from "./file-triggers.js";
 import type { GitHosts } from "./git-hosts.js";
 import { IMAGE_MODEL, imageFileName } from "./images.js";
@@ -442,6 +447,8 @@ export interface CoreOptions {
   };
   /** Emulators (3.11): tests give a machine with fixed facts; by default this machine is read. */
   emulators?: EmulatorMachine;
+  /** Devices in the Canvas (3.11): tests give a `FakeDeviceHost`; by default adb and scrcpy. */
+  deviceHost?: DeviceHost;
   /** The editor's timings (G37.1): tests save at once and hold the person's place briefly. */
   editor?: Pick<EditorHostOptions, "saveDelayMs" | "lockMs" | "watchMs" | "now">;
   /** What applies the document editor's actions on the server (tests: a fake; LibreOffice otherwise). */
@@ -1449,6 +1456,37 @@ export class RedGiantCore implements OrchestrationHost {
           set: (v) => this.emulatorSettings.set(EMULATOR_SETTINGS_OWNER, v),
         },
       });
+    this.emuDevices = new Devices({
+      host:
+        o.deviceHost ??
+        new AndroidHost({
+          tools: async () => {
+            const r = await this.emulators.report();
+            const sdk = r.android.sdk;
+            const exe = r.os === "windows" ? ".exe" : "";
+            if (!sdk) return {};
+            return {
+              ...(sdk.platformTools && { adb: join(sdk.root, "platform-tools", `adb${exe}`) }),
+              ...(sdk.emulator && { emulator: join(sdk.root, "emulator", `emulator${exe}`) }),
+            };
+          },
+          // ffmpeg alone is enough here; the pinned build is downloaded only when there is none.
+          ffmpeg: async () =>
+            locateFfmpeg(dirname(o.workspacesDir))?.ffmpeg ??
+            ffmpegOnPath() ??
+            (
+              await this.mediaMachine.ensure({
+                signal: new AbortController().signal,
+                progress: () => {},
+              })
+            ).ffmpeg,
+        }),
+      avds: async () =>
+        (await this.emulators.report()).android.avds
+          .filter((a) => !a.imageMissing)
+          .map((a) => a.name),
+      maxRunning: () => this.emulators.settings().maxRunning,
+    });
     this.nodes = new Nodes({
       db: o.db,
       vault: () => this.vault,
@@ -2276,6 +2314,20 @@ export class RedGiantCore implements OrchestrationHost {
     if (this.browsers && ["assistant", "orchestrator", "agent", "subagent"].includes(agent.kind))
       tools.push(
         ...browserTools(this.browsers.get(ownerId), {
+          vision: (() => {
+            try {
+              return this.o.providers.get(model.provider).modelInfo(model.model).vision === true;
+            } catch {
+              return false;
+            }
+          })(),
+        }),
+      );
+    // Devices (3.11): the machine's emulators and phones, for every agent that does work.
+    if (ws && ["assistant", "orchestrator", "agent", "subagent"].includes(agent.kind))
+      tools.push(
+        ...deviceTools(this.emuDevices, {
+          root: ws.root,
           vision: (() => {
             try {
               return this.o.providers.get(model.provider).modelInfo(model.model).vision === true;
@@ -5579,6 +5631,8 @@ export class RedGiantCore implements OrchestrationHost {
   readonly emulators: EmulatorMachine;
   /** The machine's emulator settings, one value in `rg_settings` (owner `machine`). */
   readonly emulatorSettings: OwnerSettings<EmulatorSettings>;
+  /** 3.11: the devices in the Canvas (AVDs, running emulators, phones), for the person and the agents. */
+  readonly emuDevices: Devices;
 
   /** The machines a video can be rendered on (G41.7): this one first, then the nodes. */
   async renderMachines(owner: string): Promise<RenderMachine[]> {
@@ -8950,6 +9004,7 @@ export class RedGiantCore implements OrchestrationHost {
   async close(): Promise<void> {
     this.closing = true;
     await this.nodes.stop();
+    this.emuDevices.close();
     await this.automations.stop();
     // Edits accepted are in the log already; the files are written before closing.
     await this.editor.close().catch(() => {});

@@ -1212,6 +1212,8 @@ const PAY_BUTTON =
 const OUTBOUND = (name: string) =>
   name.startsWith("mcp__") ||
   name.startsWith("browser_") ||
+  // A device's text goes into an app that has the network (3.11).
+  name.startsWith("device_") ||
   name.startsWith("repo_") ||
   [
     "fetch",
@@ -1408,6 +1410,16 @@ export function criticalOf(call: ToolCallInfo, ctx: CriticalContext = {}): Criti
     }
     textRules(JSON.stringify(call.input ?? ""), add);
   }
+  // An app installed on a real phone (3.11): always the person's (on an emulator, an ordinary request).
+  if (
+    name === "device_install" &&
+    typeof input.device === "string" &&
+    !/^(avd:|emulator-\d+$)/.test(input.device)
+  )
+    add("critical-system", `installs an app on your phone ${short(input.device)}`, {
+      action: "phone-install",
+      target: input.device,
+    });
   if (name === "browser_click" && typeof input.name === "string" && PAY_BUTTON.test(input.name))
     add("critical-payment", `presses «${short(input.name)}» in the browser`, {
       action: "pay-button",

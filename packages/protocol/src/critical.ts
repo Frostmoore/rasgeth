@@ -194,6 +194,8 @@ export const CRITICAL_ACTIONS = [
   "remote-power",
   "remote-install",
   "remote-delete-outside",
+  // A real phone (3.11): an app installed on it.
+  "phone-install",
 ] as const;
 export type CriticalAction = (typeof CRITICAL_ACTIONS)[number];
 
@@ -301,6 +303,7 @@ const SENTENCES: Record<Lang, Record<CriticalAction, Sentence>> = {
     "remote-sudo": (_, x) => `Runs a command as administrator: ${x.t}`,
     "remote-power": () => "Switches the machine off or restarts it",
     "remote-install": (_, x) => `Installs or removes system programs: ${x.t}`,
+    "phone-install": (_, x) => `Installs an app on your phone ${x.t}`,
     "remote-delete-outside": (_, x) => `${x.del} outside the machine's working folder: ${x.t}`,
   },
   it: {
@@ -364,6 +367,7 @@ const SENTENCES: Record<Lang, Record<CriticalAction, Sentence>> = {
     "remote-sudo": (_, x) => `Esegue un comando come amministratore: ${x.t}`,
     "remote-power": () => "Spegne o riavvia la macchina",
     "remote-install": (_, x) => `Installa o toglie programmi di sistema: ${x.t}`,
+    "phone-install": (_, x) => `Installa un'app sul tuo telefono ${x.t}`,
     "remote-delete-outside": (_, x) =>
       `${x.del} fuori dalla cartella di lavoro della macchina: ${x.t}`,
   },

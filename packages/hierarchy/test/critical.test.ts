@@ -496,6 +496,46 @@ const TABLE: Case[] = [
   ["pressing Buy", "browser_click", { name: "Buy now" }, "critical-payment"],
   ["pressing Paga ora", "browser_click", { name: "Paga ora" }, "critical-payment"],
   ["pressing Send", "browser_click", { name: "Send" }, null],
+
+  // Devices (3.11): an app installed on a real phone is the person's, always; on an emulator it is
+  // an ordinary request. A key typed into a device leaves (the device has the network).
+  [
+    "installing an app on a phone",
+    "device_install",
+    { device: "R58N12ABCDE", apk: "/work/app/a.apk" },
+    "critical-system",
+  ],
+  [
+    "installing on a phone over Wi-Fi",
+    "device_install",
+    { device: "192.168.1.40:5555", apk: "/work/app/a.apk" },
+    "critical-system",
+  ],
+  [
+    "installing on an emulator",
+    "device_install",
+    { device: "avd:Pixel_8", apk: "/work/app/a.apk" },
+    null,
+  ],
+  [
+    "installing on a running emulator",
+    "device_install",
+    { device: "emulator-5554", apk: "/work/app/a.apk" },
+    null,
+  ],
+  [
+    "launching an app on a phone",
+    "device_launch",
+    { device: "R58N12ABCDE", package: "com.example" },
+    null,
+  ],
+  [
+    "typing a GitHub token on a device",
+    "device_type",
+    { device: "avd:Pixel_8", text: GH },
+    "critical-secret",
+  ],
+  ["typing a word on a device", "device_type", { device: "avd:Pixel_8", text: "hello" }, null],
   [
     "a Stripe charge from the shell",
     ...bash("curl https://api.stripe.com/v1/charges -u sk_x: -d amount=500"),

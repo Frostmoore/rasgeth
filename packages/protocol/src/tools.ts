@@ -31,6 +31,7 @@ export const TOOL_KITS = [
   "platform",
   "knowledge",
   "browser",
+  "devices",
   "canvas",
   "present",
   "images",
@@ -102,6 +103,8 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   one("fetch", "web", "core"),
   one("web_search", "web", "core"),
   { id: "browser", group: "web", prefix: "browser_", kit: "browser" },
+  // Android emulators and phones in the Canvas (3.11): looked at and driven like the browser.
+  { id: "device", group: "web", prefix: "device_", kit: "devices" },
   one("memory", "memory", "core"),
   // The person's documents (G36.5): only the collections the agent may read.
   one("search_knowledge", "memory", "knowledge"),

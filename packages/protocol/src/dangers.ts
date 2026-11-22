@@ -73,6 +73,14 @@ const en: Record<string, Words> = {
     name: "Removing an agent from the team",
     hint: "God or an orchestrator removes an agent and those below it: their turns stop, their tasks close; the history stays and they can be restored. Off by default: nobody is asked; on, only you approve it.",
   },
+  "device-install": {
+    name: "Installing an app on an emulator",
+    hint: "An agent installs an app built in the project on an Android emulator to try it.",
+  },
+  "device-phone-app": {
+    name: "Installing or launching an app on a real phone",
+    hint: "On a phone attached over USB or Wi-Fi: only you approve it, and installing always asks you.",
+  },
 };
 
 const it: Record<string, Words> = {
@@ -139,6 +147,14 @@ const it: Record<string, Words> = {
   "remove-agent": {
     name: "Rimuovere un agente dalla squadra",
     hint: "God o un orchestratore rimuove un agente e chi è sotto di lui: i turni si fermano, i compiti si chiudono; la storia resta e si possono ripristinare. Spento di serie: non si chiede a nessuno; acceso, lo approvi solo tu.",
+  },
+  "device-install": {
+    name: "Installare un'app su un emulatore",
+    hint: "Un agente installa su un emulatore Android un'app costruita nel progetto, per provarla.",
+  },
+  "device-phone-app": {
+    name: "Installare o aprire un'app su un telefono vero",
+    hint: "Su un telefono collegato via USB o Wi-Fi: lo approvi solo tu, e installare chiede sempre a te.",
   },
 };
 
