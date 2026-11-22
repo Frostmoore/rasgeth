@@ -46,6 +46,7 @@ import 'voice/hands_free/runtime.dart';
 import 'voice/hands_free/vosk.dart' show WakeEngine;
 import 'voice/hands_free/wake_model.dart' show WebFetch;
 import 'settings/general_words.g.dart' show newsVersion;
+import 'theme/colors.dart' show RgAccent;
 
 /// The computers' layout from this width (G40.17): a 1024-pixel window still gets it, a window
 /// made as narrow as a phone gets the phone's.
@@ -254,6 +255,9 @@ class AppController extends ChangeNotifier {
 
   ThemeMode themeMode = ThemeMode.system;
 
+  /// The accent colour (3.10.4, «Tu › Aspetto»), kept on this device like the theme.
+  RgAccent accent = RgAccent.red;
+
   /// null: the system's language.
   Locale? locale;
   bool reduceMotion = false;
@@ -397,6 +401,12 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setAccent(RgAccent a) {
+    accent = a;
+    unawaited(prefs.set('accent', a == RgAccent.red ? null : a.name));
+    notifyListeners();
+  }
+
   void setLocale(Locale? l) {
     locale = l;
     unawaited(prefs.set('locale', l?.languageCode));
@@ -491,6 +501,7 @@ class AppController extends ChangeNotifier {
   Future<void> restore({LaunchHandoff? handoff}) async {
     final theme = await prefs.get('theme');
     themeMode = ThemeMode.values.firstWhere((m) => m.name == theme, orElse: () => ThemeMode.system);
+    accent = RgAccent.parse(await prefs.get('accent'));
     final lang = await prefs.get('locale');
     locale = lang == null ? null : Locale(lang);
     reduceMotion = await prefs.get('reduceMotion') == '1';

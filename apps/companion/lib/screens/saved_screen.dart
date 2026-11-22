@@ -872,7 +872,7 @@ class _SavedCardState extends State<SavedCard> {
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 8, 6, 4),
             child: it.markdown != null
-                ? SafeMarkdown(it.markdown!)
+                ? SafeMarkdown(it.markdown!, reading: true)
                 : SelectableText(it.text, style: TextStyle(color: c.text, fontSize: 15)),
           ),
           if (_editing) ...[

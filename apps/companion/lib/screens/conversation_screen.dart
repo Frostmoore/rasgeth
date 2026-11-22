@@ -43,6 +43,7 @@ import '../ui/turn_progress.dart';
 import '../ui/paste_files.dart';
 import '../ui/words.dart';
 import '../ui/chat/chat_image.dart';
+import '../ui/chat/following_list.dart';
 import '../ui/chat/chat_parts.dart';
 import '../ui/chat/question_card.dart';
 import '../ui/chat/request_cards.dart';
@@ -193,8 +194,8 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
   final _quotes = <Quote>[];
   final _scroll = ScrollController();
 
-  /// Near the newest message (the page's `atBottom`, within 120 px): else «Vai in fondo».
-  bool _atBottom = true;
+  /// Following the newest text (3.10.4, `following_list.dart`): «Vai in fondo», «Nuovo testo».
+  final _follow = FollowController();
   final _keys = <int, GlobalKey>{};
 
   /// 3.8.7: a widget keeps its frame (and what it counted) while messages arrive below it.
@@ -228,10 +229,6 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
     app.showingConversation(widget.sessionId);
     _shown = app.live.canvasShown.listen(_canvasShown);
     _canvas.addListener(_canvasChanged);
-    _scroll.addListener(() {
-      final at = !_scroll.hasClients || _scroll.offset < 120;
-      if (at != _atBottom && mounted) setState(() => _atBottom = at);
-    });
     _pending = widget.jump;
     if (_pending != null) {
       view.addListener(_tryJump);
@@ -259,6 +256,7 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
     unawaited(_shown?.cancel());
     _canvas.dispose();
     _scroll.dispose();
+    _follow.dispose();
     app.unfollow(widget.sessionId);
     app.hidingConversation(widget.sessionId);
     // A voice failure belongs to this conversation (told after the tree is unlocked).
@@ -405,6 +403,7 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
         });
       }
     });
+    _follow.stop();
     WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_scrollTo(j.seq)));
   }
 
@@ -590,6 +589,8 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
       secretOk = how == 'anyway';
     }
     setState(() => _sending = true);
+    // A message sent: following the conversation again (3.10.4).
+    _follow.resume();
     final c = app.client;
     var ok = false;
     final quotes = List.of(_quotes);
@@ -1107,14 +1108,16 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
                             showCanvas: (title, target) => _showCanvas(title, target, force: true),
                           );
                           final liveAt = stored.length + extras.length;
-                          final list = ListView.builder(
-                            key: const Key('conversation-items'),
+                          // 3.10.4: follows the newest text only while the person lets it.
+                          return FollowingList(
+                            listKey: const Key('conversation-items'),
                             controller: _scroll,
-                            reverse: true,
+                            follow: _follow,
+                            count: total,
+                            history: stored.length,
+                            settled: view.synced || !app.isLive,
                             padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-                            itemCount: total,
-                            itemBuilder: (context, i) {
-                              final at = total - 1 - i;
+                            itemBuilder: (context, at) {
                               final afterAt = liveAt + (live == null ? 0 : 1);
                               if (at >= afterAt) {
                                 return Padding(
@@ -1140,49 +1143,6 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
                                 child: ChatItemView(item: item, actions: actions),
                               );
                             },
-                          );
-                          // Scrolled up: «Vai in fondo» (the page's `.to-bottom`), centred low.
-                          return Stack(
-                            children: [
-                              list,
-                              if (!_atBottom)
-                                Positioned(
-                                  left: 0,
-                                  right: 0,
-                                  bottom: 12,
-                                  child: Center(
-                                    child: Tooltip(
-                                      message: l.cvToBottom,
-                                      child: Material(
-                                        color: c.panel2,
-                                        shape: CircleBorder(side: BorderSide(color: c.line)),
-                                        elevation: 4,
-                                        shadowColor: Colors.black54,
-                                        child: InkWell(
-                                          key: const Key('to-bottom'),
-                                          customBorder: const CircleBorder(),
-                                          onTap: () => _scroll.animateTo(
-                                            0,
-                                            duration: const Duration(milliseconds: 220),
-                                            curve: Curves.easeOut,
-                                          ),
-                                          child: SizedBox(
-                                            width: 40,
-                                            height: 40,
-                                            child: Center(
-                                              child: RgIcon(
-                                                RgIcons.arrowDown,
-                                                size: 18,
-                                                color: c.text,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                            ],
                           );
                         },
                       ),
@@ -2493,9 +2453,10 @@ class _AssistantViewState extends State<AssistantView> {
         streamingWithoutWidgets(it.text, AppLocalizations.of(context).widgetPreparing),
         cursor: true,
         cursorStill: (app?.reduceMotion ?? false) || MediaQuery.disableAnimationsOf(context),
+        reading: true,
       );
     }
-    if (it.seq == null) return SafeMarkdown(it.text);
+    if (it.seq == null) return SafeMarkdown(it.text, reading: true);
     final lit = a.lit;
     final marked = lit != null && lit.seq == it.seq
         ? markPassage(it.text, lit.text, start: lit.start, end: lit.end)

@@ -96,6 +96,35 @@ class RgColors extends ThemeExtension<RgColors> {
   final Color user;
   final Color code;
 
+  /// This palette with [accent]'s shades for its brightness (3.10.4, styles.css
+  /// `html[data-accent=…]`): red is the palette's own.
+  RgColors withAccent(RgAccent accent, Brightness brightness) {
+    final s = accent.shades(brightness);
+    if (s == null) return this;
+    return RgColors(
+      bg: bg,
+      panel: panel,
+      panel2: panel2,
+      line: line,
+      text: text,
+      dim: dim,
+      accent: s.accent,
+      accent2: s.accent2,
+      accentSoft: s.accentSoft,
+      accentDim: s.accentDim,
+      ok: ok,
+      warn: warn,
+      warnText: warnText,
+      err: err,
+      critical: critical,
+      criticalInk: criticalInk,
+      criticalSoft: criticalSoft,
+      criticalText: criticalText,
+      user: s.user,
+      code: code,
+    );
+  }
+
   static RgColors of(BuildContext context) =>
       Theme.of(context).extension<RgColors>() ??
       (Theme.of(context).brightness == Brightness.dark ? dark : light);
@@ -130,4 +159,103 @@ class RgColors extends ThemeExtension<RgColors> {
       code: l(code, other.code),
     );
   }
+}
+
+/// One accent's shades for one theme (the page's `--accent`, `--accent-2`, `--accent-soft`,
+/// `--accent-dim` and `--user`).
+@immutable
+class AccentShades {
+  const AccentShades(this.accent, this.accent2, this.accentSoft, this.accentDim, this.user);
+
+  final Color accent;
+  final Color accent2;
+  final Color accentSoft;
+  final Color accentDim;
+  final Color user;
+}
+
+/// The accent colour chosen in «Tu › Aspetto» (3.10.4), the page's `accent.ts`: Rasgeth's red
+/// (the default) or one of four others, the same shades as styles.css (colors_parity_test).
+/// Each is checked for contrast: white on [AccentShades.accent] 4.5:1 (light) and 3.5:1 (dark),
+/// [AccentShades.accent2] (links, list marks) 4.5:1 on the panel.
+enum RgAccent {
+  red(null, null),
+  amber(
+    AccentShades(
+      Color(0xFFA8640C),
+      Color(0xFF8F5208),
+      Color(0xFFF8E3C4),
+      Color(0xFFEABF7F),
+      Color(0xFFEFE8DC),
+    ),
+    AccentShades(
+      Color(0xFFBD7810),
+      Color(0xFFEB9A2A),
+      Color(0xFF2E2516),
+      Color(0xFF45331A),
+      Color(0xFF2B241A),
+    ),
+  ),
+  green(
+    AccentShades(
+      Color(0xFF2C8156),
+      Color(0xFF226F49),
+      Color(0xFFC3F0DA),
+      Color(0xFF7BD8AA),
+      Color(0xFFDDECE5),
+    ),
+    AccentShades(
+      Color(0xFF22985D),
+      Color(0xFF3EC27F),
+      Color(0xFF182A21),
+      Color(0xFF1E3C2D),
+      Color(0xFF1C2822),
+    ),
+  ),
+  blue(
+    AccentShades(
+      Color(0xFF3273BF),
+      Color(0xFF2563AB),
+      Color(0xFFD9E7F9),
+      Color(0xFFA9C9EC),
+      Color(0xFFE3E9F1),
+    ),
+    AccentShades(
+      Color(0xFF3587E4),
+      Color(0xFF5FA5F7),
+      Color(0xFF1C2735),
+      Color(0xFF223750),
+      Color(0xFF1E2630),
+    ),
+  ),
+  violet(
+    AccentShades(
+      Color(0xFF8A59CB),
+      Color(0xFF7C41CB),
+      Color(0xFFEBE2F8),
+      Color(0xFFD2BDED),
+      Color(0xFFEBE7F2),
+    ),
+    AccentShades(
+      Color(0xFF9F6CE3),
+      Color(0xFFB98EF2),
+      Color(0xFF2D213B),
+      Color(0xFF412C5E),
+      Color(0xFF2A2233),
+    ),
+  );
+
+  const RgAccent(this._light, this._dark);
+
+  final AccentShades? _light;
+  final AccentShades? _dark;
+
+  /// Null for red: the palette's own shades.
+  AccentShades? shades(Brightness b) => b == Brightness.dark ? _dark : _light;
+
+  /// The swatch: the light theme's accent.
+  Color get swatch => _light?.accent ?? RgColors.light.accent;
+
+  static RgAccent parse(String? name) =>
+      RgAccent.values.firstWhere((a) => a.name == name, orElse: () => RgAccent.red);
 }

@@ -70,10 +70,16 @@ class SafeMarkdown extends StatelessWidget {
     this.selectable = true,
     this.cursor = false,
     this.cursorStill = false,
+    this.reading = false,
   });
 
   final String data;
   final bool selectable;
+
+  /// An answer to read (3.10.4, «Lettura comoda», the page's `.md-read`): bigger text with room
+  /// between lines and paragraphs, headings with the accent's bar. Off: the compact look of cards
+  /// and summaries.
+  final bool reading;
 
   /// An answer being written: the cursor after its last character (3.8.5, `stream_cursor.dart`).
   final bool cursor;
@@ -103,9 +109,19 @@ class SafeMarkdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = RgColors.of(context);
+    final look = reading ? MarkdownLook.reading : MarkdownLook.compact;
     final base = Theme.of(context).textTheme.bodyMedium!
-        .copyWith(color: c.text, fontSize: 15, height: 1.4);
-    final code = base.copyWith(fontFamily: 'monospace', fontSize: 13.5, backgroundColor: c.panel2);
+        .copyWith(color: c.text, fontSize: look.body, height: look.height);
+    final code = base.copyWith(
+      fontFamily: 'monospace',
+      fontSize: reading ? look.body * 0.86 : 13.5,
+      backgroundColor: c.panel2,
+    );
+    TextStyle heading(double size) => base.copyWith(
+      fontSize: size,
+      fontWeight: FontWeight.w700,
+      height: reading ? 1.25 : base.height,
+    );
     final marked = data.contains(markOpen);
     return MarkdownBody(
       // Sources as links once the answer is whole (the page's `renderAnswer`).
@@ -118,6 +134,16 @@ class SafeMarkdown extends StatelessWidget {
       inlineSyntaxes: [if (marked) _MarkSyntax(), if (cursor) StreamCursorSyntax()],
       builders: {
         if (marked) 'rgmark': _MarkBuilder(c.accentDim),
+        if (reading)
+          for (final (tag, bar) in const [('h1', 4.0), ('h2', 4.0), ('h3', 3.0)])
+            tag: HeadingBarBuilder(
+              bar: bar,
+              color: c.accent,
+              selectable: selectable && !cursor,
+              code: code,
+              mark: c.accentDim,
+              still: cursorStill,
+            ),
         if (cursor) 'rgcursor': StreamCursorBuilder(still: cursorStill),
         if (cursor)
           'pre': StreamCursorCodeBuilder(
@@ -162,8 +188,17 @@ class SafeMarkdown extends StatelessWidget {
       ),
       styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
         p: base,
-        listBullet: base,
-        a: base.copyWith(color: c.accent, decoration: TextDecoration.underline),
+        // Reading: paragraphs 16 apart (6 between blocks plus 10 under a paragraph), list items 6,
+        // headings 18 above and 10 below, as the page's `.md-read`.
+        blockSpacing: reading ? 6 : null,
+        pPadding: reading ? const EdgeInsets.only(bottom: 10) : null,
+        listBullet: reading ? base.copyWith(color: c.accent2) : base,
+        a: base.copyWith(
+          color: reading ? c.accent2 : c.accent,
+          decoration: TextDecoration.underline,
+          decorationColor: reading ? c.accent2 : c.accent,
+        ),
+        strong: const TextStyle(fontWeight: FontWeight.w700),
         code: code,
         codeblockDecoration: BoxDecoration(
           color: c.panel2,
@@ -171,14 +206,114 @@ class SafeMarkdown extends StatelessWidget {
           border: Border.all(color: c.line),
         ),
         blockquoteDecoration: BoxDecoration(
-          border: Border(left: BorderSide(color: c.accentDim, width: 3)),
+          border: Border(
+            left: BorderSide(
+              // Reading: a neutral soft bar, the accent stays for headings, marks and links.
+              color: reading ? c.text.withValues(alpha: 0.2) : c.accentDim,
+              width: 3,
+            ),
+          ),
         ),
-        h1: base.copyWith(fontSize: 21, fontWeight: FontWeight.w700),
-        h2: base.copyWith(fontSize: 18.5, fontWeight: FontWeight.w700),
-        h3: base.copyWith(fontSize: 16.5, fontWeight: FontWeight.w700),
+        blockquote: reading ? base.copyWith(color: Color.lerp(c.panel, c.text, 0.85)) : null,
+        blockquotePadding: reading ? const EdgeInsets.fromLTRB(12, 2, 0, 2) : null,
+        h1: heading(look.h1),
+        h2: heading(look.h2),
+        h3: heading(look.h3),
         tableBody: base,
         tableHead: base.copyWith(fontWeight: FontWeight.w700),
       ),
+    );
+  }
+}
+
+/// The sizes of the two looks (3.10.4): the page's `.md` and `.md.md-read`.
+class MarkdownLook {
+  const MarkdownLook._(this.body, this.height, this.h1, this.h2, this.h3);
+
+  /// Cards, summaries, plans: as before 3.10.4.
+  static const compact = MarkdownLook._(15, 1.4, 21, 18.5, 16.5);
+
+  /// Answers (the person's choice «Lettura comoda», memory/decisioni.md).
+  static const reading = MarkdownLook._(17, 1.55, 24, 20.5, 18.5);
+
+  final double body;
+  final double height;
+  final double h1;
+  final double h2;
+  final double h3;
+}
+
+/// A heading with the accent's bar on its left (3.10.4, the page's `.md-read h1`): 12 px between
+/// the bar and the words, the inline marks of the words kept (bold, italic, code, a lit passage).
+class HeadingBarBuilder extends MarkdownElementBuilder {
+  HeadingBarBuilder({
+    required this.bar,
+    required this.color,
+    required this.selectable,
+    required this.code,
+    required this.mark,
+    this.still = false,
+  });
+
+  final double bar;
+  final Color color;
+  final bool selectable;
+  final TextStyle code;
+  final Color mark;
+
+  /// An answer being written: its cursor without the flicker («Reduce motion»).
+  final bool still;
+
+  @override
+  bool isBlockElement() => true;
+
+  List<InlineSpan> _spans(List<md.Node>? nodes, TextStyle style) => [
+    for (final n in nodes ?? const <md.Node>[])
+      if (n is md.Element)
+        switch (n.tag) {
+          'code' => TextSpan(
+            text: n.textContent,
+            style: style.merge(code.copyWith(fontSize: (style.fontSize ?? 17) * 0.86)),
+          ),
+          'em' => TextSpan(
+            children: _spans(n.children, style.copyWith(fontStyle: FontStyle.italic)),
+          ),
+          'del' => TextSpan(
+            children: _spans(n.children, style.copyWith(decoration: TextDecoration.lineThrough)),
+          ),
+          'rgmark' => TextSpan(
+            text: n.textContent,
+            style: style.copyWith(backgroundColor: mark),
+          ),
+          'rgcursor' => WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: StreamCursor(height: (style.fontSize ?? 17) * 1.05, still: still),
+          ),
+          _ => TextSpan(children: _spans(n.children, style)),
+        }
+      else
+        TextSpan(text: n.textContent),
+  ];
+
+  @override
+  Widget? visitElementAfterWithContext(
+    BuildContext context,
+    md.Element element,
+    TextStyle? preferredStyle,
+    TextStyle? parentStyle,
+  ) {
+    final style = preferredStyle ?? const TextStyle();
+    final span = TextSpan(style: style, children: _spans(element.children, style));
+    return Container(
+      key: Key('md-heading-${element.tag}'),
+      margin: const EdgeInsets.only(top: 2, bottom: 4),
+      padding: const EdgeInsets.only(left: 12),
+      decoration: BoxDecoration(
+        border: Border(
+          left: BorderSide(color: color, width: bar),
+        ),
+      ),
+      child: selectable ? SelectableText.rich(span) : Text.rich(span),
     );
   }
 }

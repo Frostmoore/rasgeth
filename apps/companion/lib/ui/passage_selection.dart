@@ -89,7 +89,7 @@ class _SelectableAnswerState extends State<SelectableAnswer> {
       },
       child: SelectionListener(
         selectionNotifier: _where,
-        child: SafeMarkdown(widget.data, selectable: false),
+        child: SafeMarkdown(widget.data, selectable: false, reading: true),
       ),
     );
   }

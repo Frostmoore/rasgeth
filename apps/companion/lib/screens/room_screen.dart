@@ -452,7 +452,7 @@ class _Line extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 6),
-            SafeMarkdown(line.text),
+            SafeMarkdown(line.text, reading: true),
           ],
         ),
       ),

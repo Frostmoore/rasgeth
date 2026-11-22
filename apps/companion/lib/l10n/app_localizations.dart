@@ -273,6 +273,54 @@ abstract class AppLocalizations {
   /// **'Dark'**
   String get themeDark;
 
+  /// No description provided for @accentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Accent colour'**
+  String get accentLabel;
+
+  /// No description provided for @accentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The colour of buttons, links and the headings\' bar, in both themes.'**
+  String get accentHint;
+
+  /// No description provided for @accentRed.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth red'**
+  String get accentRed;
+
+  /// No description provided for @accentAmber.
+  ///
+  /// In en, this message translates to:
+  /// **'Amber'**
+  String get accentAmber;
+
+  /// No description provided for @accentGreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Green'**
+  String get accentGreen;
+
+  /// No description provided for @accentBlue.
+  ///
+  /// In en, this message translates to:
+  /// **'Blue'**
+  String get accentBlue;
+
+  /// No description provided for @accentViolet.
+  ///
+  /// In en, this message translates to:
+  /// **'Violet'**
+  String get accentViolet;
+
+  /// No description provided for @newText.
+  ///
+  /// In en, this message translates to:
+  /// **'New text'**
+  String get newText;
+
   /// No description provided for @languageLabel.
   ///
   /// In en, this message translates to:

@@ -460,7 +460,7 @@ class _AnswerState extends State<_Answer> {
                     ),
                 ],
               ),
-            if (e.text.isNotEmpty) SafeMarkdown(e.text),
+            if (e.text.isNotEmpty) SafeMarkdown(e.text, reading: true),
           ],
         ),
       ),

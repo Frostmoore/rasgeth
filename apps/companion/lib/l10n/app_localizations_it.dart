@@ -102,6 +102,31 @@ class AppLocalizationsIt extends AppLocalizations {
   String get themeDark => 'Scuro';
 
   @override
+  String get accentLabel => 'Colore d\'accento';
+
+  @override
+  String get accentHint =>
+      'Il colore di pulsanti, link e della barra dei titoli, in entrambi i temi.';
+
+  @override
+  String get accentRed => 'Rosso Rasgeth';
+
+  @override
+  String get accentAmber => 'Ambra';
+
+  @override
+  String get accentGreen => 'Verde';
+
+  @override
+  String get accentBlue => 'Azzurro';
+
+  @override
+  String get accentViolet => 'Viola';
+
+  @override
+  String get newText => 'Nuovo testo';
+
+  @override
   String get languageLabel => 'Lingua';
 
   @override

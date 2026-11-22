@@ -72,4 +72,24 @@ void main() {
       expect(diff, isEmpty);
     });
   }
+
+  // 3.10.4: every accent's shades, the page's `html[data-accent=…]` blocks.
+  for (final a in RgAccent.values.where((a) => a != RgAccent.red)) {
+    for (final (name, selector, b) in [
+      ('light', 'html[data-accent="${a.name}"]', Brightness.light),
+      ('dark', 'html[data-accent="${a.name}"][data-theme="dark"]', Brightness.dark),
+    ]) {
+      test('the ${a.name} accent, $name: the same shades as the page', () {
+        final page = _block(css, selector);
+        final s = a.shades(b)!;
+        expect({
+          'accent': _hex(s.accent),
+          'accent-2': _hex(s.accent2),
+          'accent-soft': _hex(s.accentSoft),
+          'accent-dim': _hex(s.accentDim),
+          'user': _hex(s.user),
+        }, page);
+      });
+    }
+  }
 }

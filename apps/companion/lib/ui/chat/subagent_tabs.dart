@@ -21,6 +21,7 @@ import '../../theme/colors.dart';
 import '../icons.dart';
 import '../turn_progress.dart';
 import 'command_strip.dart';
+import 'following_list.dart';
 import 'request_cards.dart';
 
 /// One level of tabs: the conversation whose tabs it shows, and the tab chosen in it.
@@ -527,6 +528,10 @@ class _SubagentViewState extends State<SubagentView> {
   Timer? _tick;
   bool _taskOpen = true;
 
+  /// 3.10.4: the sub-agent's answer followed only while the person lets it.
+  final _scroll = ScrollController();
+  final _follow = FollowController();
+
   @override
   void initState() {
     super.initState();
@@ -537,6 +542,8 @@ class _SubagentViewState extends State<SubagentView> {
   @override
   void dispose() {
     _tick?.cancel();
+    _scroll.dispose();
+    _follow.dispose();
     app.unfollow(widget.tab.childSessionId);
     super.dispose();
   }
@@ -649,15 +656,22 @@ class _SubagentViewState extends State<SubagentView> {
           children: [
             CommandStrip(sessionId: tab.childSessionId, view: view),
             Expanded(
-              child: ListView.builder(
-                key: Key('sub-view-${tab.childSessionId}'),
-                reverse: true,
+              child: FollowingList(
+                listKey: Key('sub-view-${tab.childSessionId}'),
+                controller: _scroll,
+                follow: _follow,
+                count: body.length,
+                // The task card and the stored items; the answer being written comes after.
+                history:
+                    1 +
+                    items.length -
+                    (items.lastOrNull is AssistantItem && (items.last as AssistantItem).live
+                        ? 1
+                        : 0),
+                settled: view.synced || !app.isLive,
                 padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-                itemCount: body.length,
-                itemBuilder: (context, i) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: body[body.length - 1 - i],
-                ),
+                itemBuilder: (context, at) =>
+                    Padding(padding: const EdgeInsets.only(bottom: 10), child: body[at]),
               ),
             ),
             _SubBar(

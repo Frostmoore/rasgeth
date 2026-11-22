@@ -20,6 +20,7 @@ import '../screens/first_start_screen.dart' show openExternal;
 import '../screens/new_agent_screen.dart' show RgSwitch;
 import '../screens/update_screen.dart' show openUpdateScreen;
 import '../theme/colors.dart';
+import '../ui/accent_picker.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/model_sheet.dart';
@@ -437,6 +438,12 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                 },
                 onChanged: (v) => app.setThemeMode(ThemeMode.values.byName(v)),
               ),
+            ),
+            Divider(height: 1, color: c.line),
+            _Line(
+              title: l.accentLabel,
+              help: l.accentHint,
+              child: AccentPicker(key: const Key('general-accent'), app: app),
             ),
             Divider(height: 1, color: c.line),
             _Line(

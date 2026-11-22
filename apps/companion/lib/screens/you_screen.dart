@@ -12,6 +12,7 @@ import '../api/transport.dart';
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
+import '../ui/accent_picker.dart';
 import '../ui/common.dart';
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
@@ -106,6 +107,10 @@ class YouScreen extends StatelessWidget {
             selected: {app.themeMode},
             onSelectionChanged: (s) => app.setThemeMode(s.first),
           ),
+        ),
+        _Row(
+          label: l.accentLabel,
+          child: AccentPicker(key: const Key('accent-choice'), app: app),
         ),
         _Row(
           label: l.languageLabel,

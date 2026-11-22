@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'colors.dart';
 
-/// The app's theme for one brightness, built on [RgColors].
-ThemeData buildTheme(Brightness brightness) {
-  final c = brightness == Brightness.dark ? RgColors.dark : RgColors.light;
+/// The app's theme for one brightness and the chosen accent (3.10.4), built on [RgColors].
+ThemeData buildTheme(Brightness brightness, [RgAccent accent = RgAccent.red]) {
+  final c = (brightness == Brightness.dark ? RgColors.dark : RgColors.light).withAccent(
+    accent,
+    brightness,
+  );
   final scheme = ColorScheme(
     brightness: brightness,
     primary: c.accent,
