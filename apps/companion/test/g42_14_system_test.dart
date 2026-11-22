@@ -310,6 +310,10 @@ void main() {
     expect(find.text('Emulatore · Medium_Phone_API_35'), findsOneWidget);
     expect(find.text('Telefono via Wi-Fi · aspetta il tuo sì sul telefono'), findsOneWidget);
     expect(find.textContaining("L'emulatore è vecchio"), findsOneWidget);
+    // 3.11 phase 2: the devices one can open, between this machine and the SDK folder.
+    expect(find.byKey(const Key('sy-em-dev-emulator-5554')), findsOneWidget);
+    expect(find.byKey(const Key('sy-em-open-avd:Tablet')), findsOneWidget);
+    expect(find.byKey(const Key('sy-em-stop-avd:Tablet')), findsNothing);
     // The nodes: a Mac with Xcode and no SDK, and one older than 3.11.
     expect(find.text('Mac mini'), findsOneWidget);
     expect(find.text('iPhone 18 (iOS 27.2)'), findsOneWidget);

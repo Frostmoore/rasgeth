@@ -18169,4 +18169,83 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get syHubEmulators =>
       'Android emulators, phones and iOS simulators, here and on the nodes';
+
+  @override
+  String get syAgents => 'Agents';
+
+  @override
+  String get syDsBack => 'Back';
+
+  @override
+  String syDsError(String error) {
+    return 'It cannot be shown: $error';
+  }
+
+  @override
+  String get syDsHome => 'Home';
+
+  @override
+  String get syDsRecents => 'Recent apps';
+
+  @override
+  String get syDsRotate => 'Turn';
+
+  @override
+  String syDsScreen(String name) {
+    return 'The screen of $name';
+  }
+
+  @override
+  String get syDsShared =>
+      'The agents\' device: you see what they do. Take control to use it yourself.';
+
+  @override
+  String get syDsStarting => 'Starting the emulator without a window: it takes about a minute.';
+
+  @override
+  String get syDsYours =>
+      'Yours now: tap, hold, swipe and type on it. Nothing you do here reaches a model or the log. Give it back when you are done.';
+
+  @override
+  String get syEmDevices => 'Devices';
+
+  @override
+  String get syEmDevicesLead =>
+      'Open one to see it live on the right: an emulator that is off starts without a window.';
+
+  @override
+  String get syEmNoDevices => 'No device here yet.';
+
+  @override
+  String get syEmOpen => 'Open';
+
+  @override
+  String get syEmStartedHere => 'started by Rasgeth';
+
+  @override
+  String get syEmStop => 'Switch off';
+
+  @override
+  String get syScreenGiveBack => 'Give it back to the agents';
+
+  @override
+  String get syScreenStarting => 'Starting the browser…';
+
+  @override
+  String get syScreenTake => 'Take control';
+
+  @override
+  String get syDsState_off => 'off';
+
+  @override
+  String get syDsState_offline => 'not responding';
+
+  @override
+  String get syDsState_on => 'on';
+
+  @override
+  String get syDsState_starting => 'starting…';
+
+  @override
+  String get syDsState_unauthorized => 'waiting for your yes on the phone';
 }

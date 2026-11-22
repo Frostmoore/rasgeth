@@ -209,6 +209,62 @@ class BrowserView extends ChangeNotifier {
   }
 }
 
+/// One Android emulator or phone as a screen watches it (3.11 phase 2, the page's
+/// `DeviceScreenState`): the latest frame (`device.frame`, JPEG) and its state (`device.state`).
+class DeviceView {
+  Uint8List? frame;
+  int width = 0;
+  int height = 0;
+
+  /// off | starting | on | unauthorized | offline.
+  String state = 'starting';
+
+  /// agents or person.
+  String control = 'agents';
+
+  /// Why it cannot be shown, in the server's words.
+  String? error;
+
+  bool get mine => control == 'person';
+  bool get wide => frame != null && width > height;
+}
+
+/// Every device watched, by id (`avd:<name>` or adb's serial).
+class DeviceViews extends ChangeNotifier {
+  final _all = <String, DeviceView>{};
+
+  /// The devices a screen watches now (watched again after a drop).
+  final watched = <String>{};
+
+  DeviceView of(String id) => _all.putIfAbsent(id, DeviceView.new);
+
+  void apply(Map<String, dynamic> m) {
+    final id = m['id'];
+    if (id is! String || id.isEmpty) return;
+    final d = of(id);
+    switch (m['type']) {
+      case 'device.frame':
+        try {
+          d.frame = base64Decode(m['data'] as String? ?? '');
+        } on FormatException {
+          return;
+        }
+        d.width = (m['width'] as num?)?.toInt() ?? d.width;
+        d.height = (m['height'] as num?)?.toInt() ?? d.height;
+      case 'device.state':
+        d.state = m['state'] as String? ?? d.state;
+        d.control = m['control'] == 'person' ? 'person' : 'agents';
+        d.error = m['error'] as String?;
+      default:
+        return;
+    }
+    notifyListeners();
+  }
+
+  /// A screen closed: what it showed goes (the next one starts again from «starting»).
+  void forget(String id) => _all.remove(id);
+}
+
 class LiveModel extends ChangeNotifier {
   LiveModel({DateTime Function()? now}) : now = now ?? DateTime.now;
 
@@ -286,6 +342,9 @@ class LiveModel extends ChangeNotifier {
 
   /// The shared browser, while a screen watches it.
   final browser = BrowserView();
+
+  /// The devices (emulators, phones) while a screen watches them (3.11 phase 2).
+  final devices = DeviceViews();
 
   /// Where the last answered request was decided (`via`), for the person to see.
   String? lastClosedVia;
@@ -415,6 +474,9 @@ class LiveModel extends ChangeNotifier {
         return;
       case 'browser.frame' || 'browser.state' || 'error':
         browser.apply(m);
+        return;
+      case 'device.frame' || 'device.state':
+        devices.apply(m);
         return;
       case 'turns.queue':
         turns = TurnQueue.fromJson(m);

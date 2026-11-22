@@ -256,6 +256,37 @@ class FakeSystem {
   };
 
   // ---- emulators (3.11) ----
+  /// The devices one can open (3.11 phase 2, `EmuDeviceView`): an emulator Rasgeth started, one
+  /// off, a phone waiting for its yes.
+  List<Map<String, dynamic>> emulatorDevices = [
+    {
+      'id': 'emulator-5554',
+      'name': 'Pixel_8',
+      'kind': 'emulator',
+      'state': 'on',
+      'avd': 'Pixel_8',
+      'serial': 'emulator-5554',
+      'ours': true,
+      'control': 'agents',
+    },
+    {
+      'id': 'avd:Tablet',
+      'name': 'Tablet',
+      'kind': 'emulator',
+      'state': 'off',
+      'avd': 'Tablet',
+      'control': 'agents',
+    },
+    {
+      'id': 'R58N12ABCDE',
+      'name': 'SM A525F',
+      'kind': 'phone',
+      'state': 'unauthorized',
+      'serial': 'R58N12ABCDE',
+      'link': 'usb',
+      'control': 'agents',
+    },
+  ];
   Map<String, dynamic> emulatorSettings = {'sdkPath': null, 'maxRunning': 2};
   Map<String, dynamic> emulatorReport = {
     'os': 'windows',
@@ -645,6 +676,26 @@ class FakeSystem {
       // ---- emulators (3.11) ----
       case 'GET /api/emulators':
         return ok(_emulators());
+      case 'GET /api/emulators/devices':
+        return ok({'devices': emulatorDevices});
+      case 'POST /api/emulators/devices/stop':
+        final d = emulatorDevices.where((x) => x['id'] == b['id']).firstOrNull;
+        if (d == null || d['kind'] != 'emulator') return no(404, 'No such emulator');
+        emulatorDevices = [
+          for (final x in emulatorDevices)
+            if (x['id'] == b['id'])
+              {
+                'id': 'avd:${x['avd']}',
+                'name': x['name'],
+                'kind': 'emulator',
+                'state': 'off',
+                'avd': x['avd'],
+                'control': 'agents',
+              }
+            else
+              x,
+        ];
+        return ok({'devices': emulatorDevices});
       case 'PUT /api/emulators/settings':
         if (b.containsKey('sdkPath')) {
           final p = b['sdkPath'];

@@ -91,6 +91,31 @@ class EmulatorsState {
   final List<EmulatorMachineView> nodes;
 }
 
+/// `EmuDeviceView` (3.11 phase 2): a device one can open, an AVD (on or off), a running
+/// emulator, a phone over USB or Wi-Fi.
+class EmuDeviceView {
+  EmuDeviceView(Map<String, dynamic> j)
+    : id = _s(j['id']) ?? '',
+      name = _s(j['name']) ?? '',
+      kind = j['kind'] == 'phone' ? 'phone' : 'emulator',
+      state = _s(j['state']) ?? 'off',
+      serial = _s(j['serial']),
+      link = _s(j['link']),
+      ours = j['ours'] == true;
+
+  final String id, name;
+
+  /// emulator | phone.
+  final String kind;
+
+  /// off | starting | on | unauthorized | offline.
+  final String state;
+  final String? serial, link;
+
+  /// Rasgeth started it.
+  final bool ours;
+}
+
 /// `BlockDisk`.
 class BlockDisk {
   BlockDisk(Map<String, dynamic> j)
@@ -461,6 +486,17 @@ extension SystemApi on RedGiantClient {
       'maxRunning': ?maxRunning,
     }),
   );
+
+  /// `GET /api/emulators/devices`: the devices one can open (3.11 phase 2).
+  Future<List<EmuDeviceView>> emulatorDevices() async => [
+    for (final d in _l((await _get('/api/emulators/devices'))['devices'])) EmuDeviceView(d),
+  ];
+
+  /// `POST /api/emulators/devices/stop`: switches an emulator off; the devices after it.
+  Future<List<EmuDeviceView>> stopEmulatorDevice(String id) async => [
+    for (final d in _l((await _do('POST', '/api/emulators/devices/stop', {'id': id}))['devices']))
+      EmuDeviceView(d),
+  ];
 
   // ---- nodes ----
 

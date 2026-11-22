@@ -18223,4 +18223,83 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get syHubEmulators => 'Emulatori Android, telefoni e simulatori iOS, qui e sui nodi';
+
+  @override
+  String get syAgents => 'Agenti';
+
+  @override
+  String get syDsBack => 'Indietro';
+
+  @override
+  String syDsError(String error) {
+    return 'Non si può mostrare: $error';
+  }
+
+  @override
+  String get syDsHome => 'Home';
+
+  @override
+  String get syDsRecents => 'App recenti';
+
+  @override
+  String get syDsRotate => 'Ruota';
+
+  @override
+  String syDsScreen(String name) {
+    return 'Lo schermo di $name';
+  }
+
+  @override
+  String get syDsShared =>
+      'Il dispositivo degli agenti: vedi cosa fanno. Prendi il controllo per usarlo tu.';
+
+  @override
+  String get syDsStarting => 'Accendo l\'emulatore senza finestra: ci vuole circa un minuto.';
+
+  @override
+  String get syDsYours =>
+      'Adesso è tuo: tocca, tieni premuto, scorri e scrivi. Quello che fai qui non arriva a nessun modello né nel registro. Restituiscilo quando hai finito.';
+
+  @override
+  String get syEmDevices => 'Dispositivi';
+
+  @override
+  String get syEmDevicesLead =>
+      'Aprine uno per vederlo dal vivo a destra: un emulatore spento si accende senza finestra.';
+
+  @override
+  String get syEmNoDevices => 'Ancora nessun dispositivo qui.';
+
+  @override
+  String get syEmOpen => 'Apri';
+
+  @override
+  String get syEmStartedHere => 'acceso da Rasgeth';
+
+  @override
+  String get syEmStop => 'Spegni';
+
+  @override
+  String get syScreenGiveBack => 'Restituisci agli agenti';
+
+  @override
+  String get syScreenStarting => 'Avvio il browser…';
+
+  @override
+  String get syScreenTake => 'Prendi il controllo';
+
+  @override
+  String get syDsState_off => 'spento';
+
+  @override
+  String get syDsState_offline => 'non risponde';
+
+  @override
+  String get syDsState_on => 'acceso';
+
+  @override
+  String get syDsState_starting => 'si accende…';
+
+  @override
+  String get syDsState_unauthorized => 'aspetta il tuo sì sul telefono';
 }

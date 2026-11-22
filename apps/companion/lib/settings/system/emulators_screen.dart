@@ -2,13 +2,16 @@
 // have for Android emulators, Android phones (USB or Wi-Fi) and iOS simulators, and what is missing,
 // in words. Read-only apart from this machine's two choices: the folder of an Android SDK (when it
 // is not in a place Rasgeth looks at by itself; the server refuses a folder without an SDK, in its
-// words) and how many emulators may run at once. Nothing is installed or started from here.
+// words) and how many emulators may run at once. Nothing is installed from here. The devices one
+// can open (3.11 phase 2, the page's DeviceList): «Open» shows one live (an emulator that is off
+// starts without a window), «Switch off» stops a running emulator.
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 
 import '../../api/client.dart';
 import '../../l10n/app_localizations.dart';
+import '../../screens/device_screen.dart';
 import '../../theme/colors.dart';
 import '../../ui/icons.dart';
 import '../../ui/settings_kit.dart';
@@ -156,6 +159,8 @@ class _EmulatorsScreenState extends State<EmulatorsScreen> {
               ),
             ],
           ),
+          SysSub(l.syEmDevices, lead: l.syEmDevicesLead),
+          const DeviceList(),
           SysSub(l.syEmFolder, lead: l.syEmFolderLead),
           SysBox(
             children: [
@@ -208,6 +213,132 @@ class _EmulatorsScreenState extends State<EmulatorsScreen> {
             for (final n in s.nodes) _NodeBox(n: n),
         ],
       ],
+    );
+  }
+}
+
+/// The devices one can open (the page's `DeviceList`): name, kind or link, state, serial, «started
+/// by Rasgeth», «Open» and, for an emulator that is on, «Switch off».
+class DeviceList extends StatefulWidget {
+  const DeviceList({super.key});
+
+  @override
+  State<DeviceList> createState() => _DeviceListState();
+}
+
+class _DeviceListState extends State<DeviceList> {
+  List<EmuDeviceView>? _list;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_run((c) => c.emulatorDevices()));
+  }
+
+  Future<void> _run(Future<List<EmuDeviceView>> Function(RedGiantClient c) f) async {
+    final c = sysClient(context);
+    if (c == null) return;
+    setState(() => _error = null);
+    try {
+      final list = await f(c);
+      if (mounted) setState(() => _list = list);
+    } on ApiException catch (e) {
+      if (mounted) setState(() => _error = sysError(AppLocalizations.of(context), e));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final list = _list;
+    return SysBox(
+      key: const Key('sy-em-devices'),
+      children: [
+        if (_error != null) SysNote(text: _error!, icon: RgIcons.alert, tone: 'error'),
+        if (list == null && _error == null)
+          SysText(l.syEmLooking, dim: true)
+        else if (list != null && list.isEmpty)
+          SysText(l.syEmNoDevices, dim: true)
+        else
+          for (final d in list ?? const <EmuDeviceView>[])
+            _DeviceRow(d: d, onStop: () => _run((c) => c.stopEmulatorDevice(d.id))),
+      ],
+    );
+  }
+}
+
+class _DeviceRow extends StatelessWidget {
+  const _DeviceRow({required this.d, required this.onStop});
+
+  final EmuDeviceView d;
+  final VoidCallback onStop;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final help = [
+      d.kind == 'phone' ? (d.link == 'wifi' ? l.syEmPhoneWifi : l.syEmPhoneUsb) : l.syEmRunningEmu,
+      sw(l, 'dsState_${d.state}'),
+      ?d.serial,
+    ].where((x) => x.isNotEmpty).join(' · ');
+    return Padding(
+      key: Key('sy-em-dev-${d.id}'),
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          RgIcon(d.kind == 'phone' ? RgIcons.phone : RgIcons.emulator, size: 18, color: c.dim),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(
+                      d.name,
+                      style: TextStyle(color: c.text, fontWeight: FontWeight.w700),
+                    ),
+                    if (d.ours)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(999),
+                          border: Border.all(color: c.line),
+                        ),
+                        child: Text(
+                          l.syEmStartedHere,
+                          style: TextStyle(color: c.dim, fontSize: 11.5),
+                        ),
+                      ),
+                  ],
+                ),
+                Text(help, style: TextStyle(color: c.dim, fontSize: 12.5)),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          FilledButton(
+            key: Key('sy-em-open-${d.id}'),
+            onPressed: d.state == 'unauthorized' || d.state == 'offline'
+                ? null
+                : () => openDeviceScreen(context, d.id, d.name),
+            child: Text(l.syEmOpen),
+          ),
+          if (d.kind == 'emulator' && d.state == 'on') ...[
+            const SizedBox(width: 6),
+            OutlinedButton(
+              key: Key('sy-em-stop-${d.id}'),
+              onPressed: onStop,
+              child: Text(l.syEmStop),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }

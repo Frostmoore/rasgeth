@@ -1421,6 +1421,42 @@
         302
       ],
       "note": "Sent by the page's editors; in the app the page inside embed=canvas uses its own connection (G42.17b)."
+    },
+    "device.watch": {
+      "app": "native",
+      "files": [
+        "lib/screens/device_screen.dart",
+        "lib/api/live_model.dart"
+      ],
+      "phase": "3.11.0",
+      "note": "Native (3.11): the device's screen opens and watches its id; an AVD that is off starts on the server."
+    },
+    "device.unwatch": {
+      "app": "native",
+      "files": [
+        "lib/screens/device_screen.dart",
+        "lib/api/live_model.dart"
+      ],
+      "phase": "3.11.0",
+      "note": "Native (3.11): closing the device's view stops its frames."
+    },
+    "device.control": {
+      "app": "native",
+      "files": [
+        "lib/screens/device_screen.dart",
+        "lib/api/live_model.dart"
+      ],
+      "phase": "3.11.0",
+      "note": "Native (3.11): «Take control» and «Give back», as on the page."
+    },
+    "device.input": {
+      "app": "native",
+      "files": [
+        "lib/screens/device_screen.dart",
+        "lib/api/live_model.dart"
+      ],
+      "phase": "3.11.0",
+      "note": "Native (3.11): tap, hold and swipe with the finger or the mouse, the phone's buttons, turning it, the keyboard; only while the person has control, never logged."
     }
   },
   "server": {
@@ -1814,6 +1850,24 @@
       ],
       "phase": "3.8.10",
       "note": "The queue of agents waiting for a place: wall tiles, status bar, conversation banner, the queue window with «Move ahead»."
+    },
+    "device.frame": {
+      "app": "native",
+      "files": [
+        "lib/screens/device_screen.dart",
+        "lib/api/live_model.dart"
+      ],
+      "phase": "3.11.0",
+      "note": "Native (3.11): the JPEG frame drawn in the phone's frame."
+    },
+    "device.state": {
+      "app": "native",
+      "files": [
+        "lib/screens/device_screen.dart",
+        "lib/api/live_model.dart"
+      ],
+      "phase": "3.11.0",
+      "note": "Native (3.11): starting, on, off, waiting for the phone's yes, who drives it, why it cannot be shown."
     }
   },
   "places": {

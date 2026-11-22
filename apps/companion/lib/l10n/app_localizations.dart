@@ -31274,6 +31274,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Android emulators, phones and iOS simulators, here and on the nodes'**
   String get syHubEmulators;
+
+  /// No description provided for @syAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get syAgents;
+
+  /// No description provided for @syDsBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get syDsBack;
+
+  /// No description provided for @syDsError.
+  ///
+  /// In en, this message translates to:
+  /// **'It cannot be shown: {error}'**
+  String syDsError(String error);
+
+  /// No description provided for @syDsHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get syDsHome;
+
+  /// No description provided for @syDsRecents.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent apps'**
+  String get syDsRecents;
+
+  /// No description provided for @syDsRotate.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn'**
+  String get syDsRotate;
+
+  /// No description provided for @syDsScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'The screen of {name}'**
+  String syDsScreen(String name);
+
+  /// No description provided for @syDsShared.
+  ///
+  /// In en, this message translates to:
+  /// **'The agents\' device: you see what they do. Take control to use it yourself.'**
+  String get syDsShared;
+
+  /// No description provided for @syDsStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting the emulator without a window: it takes about a minute.'**
+  String get syDsStarting;
+
+  /// No description provided for @syDsYours.
+  ///
+  /// In en, this message translates to:
+  /// **'Yours now: tap, hold, swipe and type on it. Nothing you do here reaches a model or the log. Give it back when you are done.'**
+  String get syDsYours;
+
+  /// No description provided for @syEmDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices'**
+  String get syEmDevices;
+
+  /// No description provided for @syEmDevicesLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Open one to see it live on the right: an emulator that is off starts without a window.'**
+  String get syEmDevicesLead;
+
+  /// No description provided for @syEmNoDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'No device here yet.'**
+  String get syEmNoDevices;
+
+  /// No description provided for @syEmOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get syEmOpen;
+
+  /// No description provided for @syEmStartedHere.
+  ///
+  /// In en, this message translates to:
+  /// **'started by Rasgeth'**
+  String get syEmStartedHere;
+
+  /// No description provided for @syEmStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch off'**
+  String get syEmStop;
+
+  /// No description provided for @syScreenGiveBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Give it back to the agents'**
+  String get syScreenGiveBack;
+
+  /// No description provided for @syScreenStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting the browser…'**
+  String get syScreenStarting;
+
+  /// No description provided for @syScreenTake.
+  ///
+  /// In en, this message translates to:
+  /// **'Take control'**
+  String get syScreenTake;
+
+  /// No description provided for @syDsState_off.
+  ///
+  /// In en, this message translates to:
+  /// **'off'**
+  String get syDsState_off;
+
+  /// No description provided for @syDsState_offline.
+  ///
+  /// In en, this message translates to:
+  /// **'not responding'**
+  String get syDsState_offline;
+
+  /// No description provided for @syDsState_on.
+  ///
+  /// In en, this message translates to:
+  /// **'on'**
+  String get syDsState_on;
+
+  /// No description provided for @syDsState_starting.
+  ///
+  /// In en, this message translates to:
+  /// **'starting…'**
+  String get syDsState_starting;
+
+  /// No description provided for @syDsState_unauthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'waiting for your yes on the phone'**
+  String get syDsState_unauthorized;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

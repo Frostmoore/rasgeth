@@ -12785,5 +12785,43 @@
   "syEmUnauthorized": "waiting for your yes on the phone",
   "syEmXcode": "Xcode",
   "syOffline": "offline",
-  "syHubEmulators": "Android emulators, phones and iOS simulators, here and on the nodes"
+  "syHubEmulators": "Android emulators, phones and iOS simulators, here and on the nodes",
+  "syAgents": "Agents",
+  "syDsBack": "Back",
+  "syDsError": "It cannot be shown: {error}",
+  "@syDsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "syDsHome": "Home",
+  "syDsRecents": "Recent apps",
+  "syDsRotate": "Turn",
+  "syDsScreen": "The screen of {name}",
+  "@syDsScreen": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syDsShared": "The agents' device: you see what they do. Take control to use it yourself.",
+  "syDsStarting": "Starting the emulator without a window: it takes about a minute.",
+  "syDsYours": "Yours now: tap, hold, swipe and type on it. Nothing you do here reaches a model or the log. Give it back when you are done.",
+  "syEmDevices": "Devices",
+  "syEmDevicesLead": "Open one to see it live on the right: an emulator that is off starts without a window.",
+  "syEmNoDevices": "No device here yet.",
+  "syEmOpen": "Open",
+  "syEmStartedHere": "started by Rasgeth",
+  "syEmStop": "Switch off",
+  "syScreenGiveBack": "Give it back to the agents",
+  "syScreenStarting": "Starting the browser…",
+  "syScreenTake": "Take control",
+  "syDsState_off": "off",
+  "syDsState_offline": "not responding",
+  "syDsState_on": "on",
+  "syDsState_starting": "starting…",
+  "syDsState_unauthorized": "waiting for your yes on the phone"
 }
