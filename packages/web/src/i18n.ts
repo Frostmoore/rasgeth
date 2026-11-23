@@ -2497,6 +2497,15 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news3121Home: "God and Satellite at home",
+  news3121HomeText:
+    "The simple interface opens with God, big, in the middle, moving with what is really happening, and Satellite, the Chat, on its orbit: swipe and it comes in front for everyday chats. At the bottom, all your agents: touch one and say hello. Conversations show only what matters, your message appears at once, and the simple interface is the one new installations start with.",
+  news3121Nudges: "God writes first, now and then",
+  news3121NudgesText:
+    "At most once a day, never at night: something waiting for you, or just «what are we working on today?». Opening it starts nothing; a new topic begins only if you answer. Switch it off or change how often in Settings.",
+  news3121Emulators: "Emulators in the Canvas",
+  news3121EmulatorsText:
+    "An Android emulator found on the computer, or on a node, opens in the Canvas, for you and for the agents trying the apps they build; installing the tools is one guided step, with your yes. iOS comes next.",
   news3120Simple: "A simple interface, for everyone",
   news3120SimpleText:
     "For anyone who just wants an assistant: a greeting, one big box to ask anything, the things in progress as cards that say in words whether they wait for you, and answers to read like a page, with your decisions as buttons. No technical words in view; the full interface is one switch away in Settings › General.",
@@ -10792,6 +10801,15 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news3121Home: "God e Satellite in primo piano",
+  news3121HomeText:
+    "L'interfaccia semplice si apre con God, grande, al centro, che si muove con quello che succede davvero, e Satellite, la Chat, sulla sua orbita: scorri e passa davanti per le chiacchiere di tutti i giorni. In fondo, tutti i tuoi agenti: tocca e salutali. Le conversazioni mostrano solo quello che conta, il tuo messaggio compare subito, e le installazioni nuove partono dall'interfaccia semplice.",
+  news3121Nudges: "Ogni tanto God scrive per primo",
+  news3121NudgesText:
+    "Al massimo una volta al giorno, mai di notte: qualcosa che ti aspetta, o solo «a cosa lavoriamo oggi?». Aprirlo non fa partire niente; un argomento nuovo nasce solo se rispondi. Lo spegni o ne cambi la frequenza nelle Impostazioni.",
+  news3121Emulators: "Gli emulatori nel Canvas",
+  news3121EmulatorsText:
+    "Un emulatore Android trovato sul computer, o su un nodo, si apre nel Canvas, per te e per gli agenti che provano le app che costruiscono; installare gli strumenti è un passo guidato, con il tuo sì. iOS arriva dopo.",
   news3120Simple: "Un'interfaccia semplice, per tutti",
   news3120SimpleText:
     "Per chi vuole solo un assistente: un saluto, una casella grande per chiedere qualsiasi cosa, le cose in corso come schede che dicono a parole se ti aspettano, e risposte da leggere come una pagina, con le tue decisioni come pulsanti. Niente parole tecniche in vista; l'interfaccia completa è a un interruttore in Impostazioni › Generale.",

@@ -4,10 +4,13 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.12.0';
+const newsVersion = '3.12.1';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.12.1', 'news3121Home', 'news3121HomeText'),
+  NewsRow('3.12.1', 'news3121Nudges', 'news3121NudgesText'),
+  NewsRow('3.12.1', 'news3121Emulators', 'news3121EmulatorsText'),
   NewsRow('3.12.0', 'news3120Simple', 'news3120SimpleText'),
   NewsRow('3.12.0', 'news3120Topics', 'news3120TopicsText'),
   NewsRow('3.12.0', 'news3120Rules', 'news3120RulesText'),
@@ -175,38 +178,14 @@ const agentLanguages = <AgentLanguageRow>[
   AgentLanguageRow('es', 'Español', 'Spanish', 'Spagnolo', common: true),
   AgentLanguageRow('fr', 'Français', 'French', 'Francese', common: true),
   AgentLanguageRow('de', 'Deutsch', 'German', 'Tedesco', common: true),
-  AgentLanguageRow(
-    'pt-BR',
-    'Português (Brasil)',
-    'Portuguese (Brazil)',
-    'Portoghese (Brasile)',
-    common: true,
-  ),
-  AgentLanguageRow(
-    'zh-Hans',
-    '中文（简体）',
-    'Chinese (Simplified)',
-    'Cinese (semplificato)',
-    common: true,
-  ),
+  AgentLanguageRow('pt-BR', 'Português (Brasil)', 'Portuguese (Brazil)', 'Portoghese (Brasile)', common: true),
+  AgentLanguageRow('zh-Hans', '中文（简体）', 'Chinese (Simplified)', 'Cinese (semplificato)', common: true),
   AgentLanguageRow('hi', 'हिन्दी', 'Hindi', 'Hindi', common: true),
   AgentLanguageRow('ar', 'العربية', 'Arabic', 'Arabo', common: true),
   AgentLanguageRow('ru', 'Русский', 'Russian', 'Russo', common: true),
   AgentLanguageRow('ja', '日本語', 'Japanese', 'Giapponese', common: true),
-  AgentLanguageRow(
-    'pt-PT',
-    'Português (Portugal)',
-    'Portuguese (Portugal)',
-    'Portoghese (Portogallo)',
-    common: false,
-  ),
-  AgentLanguageRow(
-    'zh-Hant',
-    '中文（繁體）',
-    'Chinese (Traditional)',
-    'Cinese (tradizionale)',
-    common: false,
-  ),
+  AgentLanguageRow('pt-PT', 'Português (Portugal)', 'Portuguese (Portugal)', 'Portoghese (Portogallo)', common: false),
+  AgentLanguageRow('zh-Hant', '中文（繁體）', 'Chinese (Traditional)', 'Cinese (tradizionale)', common: false),
   AgentLanguageRow('ko', '한국어', 'Korean', 'Coreano', common: false),
   AgentLanguageRow('bn', 'বাংলা', 'Bengali', 'Bengalese', common: false),
   AgentLanguageRow('ur', 'اردو', 'Urdu', 'Urdu', common: false),
@@ -216,13 +195,7 @@ const agentLanguages = <AgentLanguageRow>[
   AgentLanguageRow('pl', 'Polski', 'Polish', 'Polacco', common: false),
   AgentLanguageRow('uk', 'Українська', 'Ukrainian', 'Ucraino', common: false),
   AgentLanguageRow('sv', 'Svenska', 'Swedish', 'Svedese', common: false),
-  AgentLanguageRow(
-    'nb',
-    'Norsk (bokmål)',
-    'Norwegian (Bokmål)',
-    'Norvegese (bokmål)',
-    common: false,
-  ),
+  AgentLanguageRow('nb', 'Norsk (bokmål)', 'Norwegian (Bokmål)', 'Norvegese (bokmål)', common: false),
   AgentLanguageRow('da', 'Dansk', 'Danish', 'Danese', common: false),
   AgentLanguageRow('fi', 'Suomi', 'Finnish', 'Finlandese', common: false),
   AgentLanguageRow('is', 'Íslenska', 'Icelandic', 'Islandese', common: false),
@@ -279,112 +252,28 @@ const agentLanguages = <AgentLanguageRow>[
 ];
 
 const searchProviders = <SearchProviderRow>[
-  SearchProviderRow(
-    'searxng',
-    'SearXNG',
-    needsUrl: true,
-    keyUrl: 'https://docs.searxng.org/admin/installation.html',
-    keyExample: null,
-  ),
-  SearchProviderRow(
-    'brave',
-    'Brave Search',
-    needsUrl: false,
-    keyUrl: 'https://api-dashboard.search.brave.com/app/keys',
-    keyExample: 'BSA…',
-  ),
-  SearchProviderRow(
-    'tavily',
-    'Tavily',
-    needsUrl: false,
-    keyUrl: 'https://app.tavily.com/home',
-    keyExample: 'tvly-…',
-  ),
-  SearchProviderRow(
-    'exa',
-    'Exa',
-    needsUrl: false,
-    keyUrl: 'https://dashboard.exa.ai/api-keys',
-    keyExample: null,
-  ),
-  SearchProviderRow(
-    'serper',
-    'Serper (Google)',
-    needsUrl: false,
-    keyUrl: 'https://serper.dev/api-keys',
-    keyExample: null,
-  ),
+  SearchProviderRow('searxng', 'SearXNG', needsUrl: true, keyUrl: 'https://docs.searxng.org/admin/installation.html', keyExample: null),
+  SearchProviderRow('brave', 'Brave Search', needsUrl: false, keyUrl: 'https://api-dashboard.search.brave.com/app/keys', keyExample: 'BSA…'),
+  SearchProviderRow('tavily', 'Tavily', needsUrl: false, keyUrl: 'https://app.tavily.com/home', keyExample: 'tvly-…'),
+  SearchProviderRow('exa', 'Exa', needsUrl: false, keyUrl: 'https://dashboard.exa.ai/api-keys', keyExample: null),
+  SearchProviderRow('serper', 'Serper (Google)', needsUrl: false, keyUrl: 'https://serper.dev/api-keys', keyExample: null),
 ];
 
 const sttProviders = <SttProviderRow>[
-  SttProviderRow(
-    'openai',
-    'OpenAI',
-    keyUrl: 'https://platform.openai.com/api-keys',
-    keyExample: 'sk-proj-…',
-    models: [
+  SttProviderRow('openai', 'OpenAI', keyUrl: 'https://platform.openai.com/api-keys', keyExample: 'sk-proj-…', models: [
       SttModelRow('gpt-transcribe', 'GPT Transcribe', usd: 0.0045, per: 'minute', closes: null),
-      SttModelRow(
-        'gpt-4o-mini-transcribe',
-        'GPT-4o mini Transcribe',
-        usd: 0.003,
-        per: 'minute',
-        closes: '2027-02-26',
-      ),
-      SttModelRow(
-        'gpt-4o-transcribe',
-        'GPT-4o Transcribe',
-        usd: 0.006,
-        per: 'minute',
-        closes: '2027-02-26',
-      ),
+      SttModelRow('gpt-4o-mini-transcribe', 'GPT-4o mini Transcribe', usd: 0.003, per: 'minute', closes: '2027-02-26'),
+      SttModelRow('gpt-4o-transcribe', 'GPT-4o Transcribe', usd: 0.006, per: 'minute', closes: '2027-02-26'),
       SttModelRow('whisper-1', 'Whisper', usd: 0.006, per: 'minute', closes: '2027-02-26'),
-    ],
-  ),
-  SttProviderRow(
-    'groq',
-    'Groq',
-    keyUrl: 'https://console.groq.com/keys',
-    keyExample: 'gsk_…',
-    models: [
-      SttModelRow(
-        'whisper-large-v3-turbo',
-        'Whisper Large v3 Turbo',
-        usd: 0.0006666666666666666,
-        per: 'minute',
-        closes: null,
-      ),
-      SttModelRow(
-        'whisper-large-v3',
-        'Whisper Large v3',
-        usd: 0.00185,
-        per: 'minute',
-        closes: null,
-      ),
-    ],
-  ),
-  SttProviderRow(
-    'elevenlabs',
-    'ElevenLabs',
-    keyUrl: 'https://elevenlabs.io/app/settings/api-keys',
-    keyExample: 'sk_…',
-    models: [
-      SttModelRow(
-        'scribe_v3',
-        'Scribe v3',
-        usd: 0.0033333333333333335,
-        per: 'minute',
-        closes: null,
-      ),
-      SttModelRow(
-        'scribe_v2',
-        'Scribe v2',
-        usd: 0.0033333333333333335,
-        per: 'minute',
-        closes: null,
-      ),
-    ],
-  ),
+  ]),
+  SttProviderRow('groq', 'Groq', keyUrl: 'https://console.groq.com/keys', keyExample: 'gsk_…', models: [
+      SttModelRow('whisper-large-v3-turbo', 'Whisper Large v3 Turbo', usd: 0.0006666666666666666, per: 'minute', closes: null),
+      SttModelRow('whisper-large-v3', 'Whisper Large v3', usd: 0.00185, per: 'minute', closes: null),
+  ]),
+  SttProviderRow('elevenlabs', 'ElevenLabs', keyUrl: 'https://elevenlabs.io/app/settings/api-keys', keyExample: 'sk_…', models: [
+      SttModelRow('scribe_v3', 'Scribe v3', usd: 0.0033333333333333335, per: 'minute', closes: null),
+      SttModelRow('scribe_v2', 'Scribe v2', usd: 0.0033333333333333335, per: 'minute', closes: null),
+  ]),
 ];
 
 /// The page's words for the news, the search services and the named systems.
@@ -422,6 +311,12 @@ const generalWords = <String, Map<String, String>>{
     'news3120SimpleText': 'Per chi vuole solo un assistente: un saluto, una casella grande per chiedere qualsiasi cosa, le cose in corso come schede che dicono a parole se ti aspettano, e risposte da leggere come una pagina, con le tue decisioni come pulsanti. Niente parole tecniche in vista; l\'interfaccia completa è a un interruttore in Impostazioni › Generale.',
     'news3120Topics': 'God mette in ordine le conversazioni per argomento',
     'news3120TopicsText': 'Scrivi a God sempre in un posto solo: ogni messaggio va nell\'argomento giusto, o ne apre uno nuovo con il suo titolo. Se finisce nel posto sbagliato, lo Sposti con un tocco. Gli argomenti fermi da tre giorni vanno in archivio e tornano quando ne riparli.',
+    'news3121Emulators': 'Gli emulatori nel Canvas',
+    'news3121EmulatorsText': 'Un emulatore Android trovato sul computer, o su un nodo, si apre nel Canvas, per te e per gli agenti che provano le app che costruiscono; installare gli strumenti è un passo guidato, con il tuo sì. iOS arriva dopo.',
+    'news3121Home': 'God e Satellite in primo piano',
+    'news3121HomeText': 'L\'interfaccia semplice si apre con God, grande, al centro, che si muove con quello che succede davvero, e Satellite, la Chat, sulla sua orbita: scorri e passa davanti per le chiacchiere di tutti i giorni. In fondo, tutti i tuoi agenti: tocca e salutali. Le conversazioni mostrano solo quello che conta, il tuo messaggio compare subito, e le installazioni nuove partono dall\'interfaccia semplice.',
+    'news3121Nudges': 'Ogni tanto God scrive per primo',
+    'news3121NudgesText': 'Al massimo una volta al giorno, mai di notte: qualcosa che ti aspetta, o solo «a cosa lavoriamo oggi?». Aprirlo non fa partire niente; un argomento nuovo nasce solo se rispondi. Lo spegni o ne cambi la frequenza nelle Impostazioni.',
     'news321Linux': 'Strato dopo in anticipo anche su Linux',
     'news321LinuxText': 'L\'interruttore sperimentale «Strato dopo in anticipo» di SSD stream ora funziona anche su Linux con una scheda NVIDIA, con un\'immagine del motore tutta sua scaricata solo quando lo accendi.',
     'news321Settings': 'Le Impostazioni nello stile della configurazione',
@@ -711,10 +606,8 @@ const generalWords = <String, Map<String, String>>{
     'searchCard_brave': 'Ha un indice suo, indipendente da Google e Bing; rispetta la privacy. Credito gratuito ogni mese, poi a consumo.',
     'searchCard_exa': 'Cerca per significato: forte su documentazione, articoli scientifici e tecnici. Credito gratuito all\'inizio.',
     'searchCard_searxng': 'Gratis, senza chiave né account: un motore di ricerca che gira a casa tua (lo avvia Rasgeth, dove può, oppure usi il tuo).',
-    'searchCard_serper':
-        'I risultati di Google, veloce ed economico. 2.500 ricerche gratis all\'iscrizione.',
-    'searchCard_tavily':
-        'Fatto per gli agenti: estratti già puliti di ogni pagina. 1.000 ricerche gratis al mese.',
+    'searchCard_serper': 'I risultati di Google, veloce ed economico. 2.500 ricerche gratis all\'iscrizione.',
+    'searchCard_tavily': 'Fatto per gli agenti: estratti già puliti di ogni pagina. 1.000 ricerche gratis al mese.',
     'searchHow_brave': 'Apri la pagina della Brave Search API (link qui sotto) e crea un account.\nIn Subscriptions scegli il piano gratuito (o uno a pagamento).\nIn API Keys premi «Add API key», copiala e incollala qui.',
     'searchHow_exa': 'Apri la dashboard di Exa (link qui sotto) e crea un account.\nIn API Keys crea una chiave e copiala.\nIncollala qui: i nuovi account hanno un credito gratuito.',
     'searchHow_searxng': 'La via più semplice: premi «Avvia il motore di ricerca di Rasgeth», in cima a questa finestra, e Rasgeth fa tutto da solo.\nSe invece hai già un tuo SearXNG, scrivi il suo indirizzo nella casella qui sotto (per esempio http://192.168.1.20:8080) e premi «Usa questo».\nNel suo settings.yml, tra i search.formats ci deve essere «json», altrimenti Rasgeth non legge le risposte.',
@@ -733,8 +626,7 @@ const generalWords = <String, Map<String, String>>{
     'sysPersistar': 'Persistar',
     'sysPersistarLine': 'Il contesto di ogni conversazione con un modello locale è salvato su disco: tornandoci, anche dopo un riavvio, non si rilegge tutto da capo.',
     'sysPersistarWhat': 'il contesto di ogni conversazione salvato su disco',
-    'wzStreamInfo1':
-        'Per modelli più grandi della scheda video, e per un contesto molto più lungo.',
+    'wzStreamInfo1': 'Per modelli più grandi della scheda video, e per un contesto molto più lungo.',
   },
   'en': {
     'news3100App': 'Everything in the app',
@@ -769,6 +661,12 @@ const generalWords = <String, Map<String, String>>{
     'news3120SimpleText': 'For anyone who just wants an assistant: a greeting, one big box to ask anything, the things in progress as cards that say in words whether they wait for you, and answers to read like a page, with your decisions as buttons. No technical words in view; the full interface is one switch away in Settings › General.',
     'news3120Topics': 'God sorts your conversations by topic',
     'news3120TopicsText': 'Write to God always in one place: each message goes to the topic it belongs to, or opens a new one with its title. If it lands in the wrong place, Move it with a tap. Topics left alone for three days rest in the archive and come back when you write about them.',
+    'news3121Emulators': 'Emulators in the Canvas',
+    'news3121EmulatorsText': 'An Android emulator found on the computer, or on a node, opens in the Canvas, for you and for the agents trying the apps they build; installing the tools is one guided step, with your yes. iOS comes next.',
+    'news3121Home': 'God and Satellite at home',
+    'news3121HomeText': 'The simple interface opens with God, big, in the middle, moving with what is really happening, and Satellite, the Chat, on its orbit: swipe and it comes in front for everyday chats. At the bottom, all your agents: touch one and say hello. Conversations show only what matters, your message appears at once, and the simple interface is the one new installations start with.',
+    'news3121Nudges': 'God writes first, now and then',
+    'news3121NudgesText': 'At most once a day, never at night: something waiting for you, or just «what are we working on today?». Opening it starts nothing; a new topic begins only if you answer. Switch it off or change how often in Settings.',
     'news321Linux': 'Next layer ahead on Linux too',
     'news321LinuxText': 'The experimental «Next layer ahead» switch of SSD stream now works on Linux with an NVIDIA card too, with an engine image of its own downloaded only when you turn it on.',
     'news321Settings': 'Settings in the setup\'s style',
@@ -1059,8 +957,7 @@ const generalWords = <String, Map<String, String>>{
     'searchCard_exa': 'Searches by meaning: strong on documentation, papers and technical articles. Free credit to start.',
     'searchCard_searxng': 'Free, no key, no account: a search engine that runs at your place (Rasgeth starts it, where it can, or you use yours).',
     'searchCard_serper': 'Google\'s results, fast and cheap. 2,500 free searches when you sign up.',
-    'searchCard_tavily':
-        'Made for AI agents: clean extracts of each page. 1,000 free searches a month.',
+    'searchCard_tavily': 'Made for AI agents: clean extracts of each page. 1,000 free searches a month.',
     'searchHow_brave': 'Open the Brave Search API page (link below) and create an account.\nChoose the free plan (or a paid one) under Subscriptions.\nUnder API Keys press «Add API key», copy it and paste it here.',
     'searchHow_exa': 'Open Exa\'s dashboard (link below) and create an account.\nUnder API Keys create a key and copy it.\nPaste it here: new accounts get free credit.',
     'searchHow_searxng': 'Easiest: press «Start Rasgeth\'s search engine» at the top of this window, and Rasgeth does everything by itself.\nIf you already have your own SearXNG instead, write its address in the box below (for example http://192.168.1.20:8080) and press «Use this».\nIn its settings.yml, «json» must be among search.formats, or Rasgeth cannot read its answers.',

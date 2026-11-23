@@ -408,10 +408,14 @@ Rasgeth is in pre-alpha. What comes next, in order:
   any OpenTimelineIO tool. The same editor in the app, with its keys, files dragged from its tree and the
   render in the system's notifications. Part two adds keyframes and picture in picture, colour and LUTs,
   cuts on the beat, slip/slide/roll, speed and still frames, and Resolve timelines in. Then 3D generation with local or cloud engines, finished in Blender.
-- **3.11 — Emulators in the Canvas**: an Android emulator or the iOS simulator found on the computer
-  opens in the Canvas, for you and for the agents trying the apps they build.
 - **3.12 — Simple interface**: an assistant for everyone, with no technical words in view (the full interface
   one switch away), God's conversations sorted by topic, and your own rules in Settings › Rules.
+- **3.12.1 — God and Satellite, emulators**: God big at home with Satellite, the Chat, on its orbit, your agents at
+  the bottom, God writing first now and then; Android emulators in the Canvas, for you and the agents.
+- **3.12.2 — Search in the conversation**: images, products, trains and flights, routes as widgets inside the
+  answers; iOS simulators.
+- **3.12.3 — Ready settings for agents**: research, email, messages, spreadsheets and diary set up well from the
+  start; topics from Telegram too.
 - **4.0 — Alpha**: documentation, security and privacy pages, and a stability round on everything.
 - **Then** the beta (community, documentation site) and the production release.
 
