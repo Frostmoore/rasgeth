@@ -92,7 +92,9 @@
         "lib/desktop/mascot_rail.dart",
         "lib/ui/pause_agent.dart",
         "lib/ui/remove_agent.dart",
-        "lib/screens/removed_agents_screen.dart"
+        "lib/screens/removed_agents_screen.dart",
+        "lib/settings/agents/agent_connections.dart",
+        "lib/settings/agents/agent_sets.g.dart"
       ],
       "phase": "G42.4",
       "rows": [
@@ -159,7 +161,8 @@
         "lib/settings/automations/automation_types.dart",
         "lib/settings/automations/time_zone.dart",
         "lib/settings/api/automations_api.dart",
-        "lib/settings/agents/assistant_parts.dart"
+        "lib/settings/agents/assistant_parts.dart",
+        "lib/settings/channels/calendars.dart"
       ],
       "phase": "G42.9",
       "rows": [

@@ -272,7 +272,8 @@ void main() {
       await _settle(tester);
       await tap(tester, 'new-kind-agent');
       await tap(tester, 'new-agent-next');
-      expect(find.text('Passo 2 di 8'), findsOneWidget);
+      expect(find.text('Passo 2 di 9'), findsOneWidget);
+      await tap(tester, 'new-agent-next');
       await tap(tester, 'new-project-demo');
       // Demo has a subproject: where it works.
       expect(find.text('Dove lavora'), findsOneWidget);
@@ -351,6 +352,9 @@ void main() {
       await tap(tester, 'new-kind-assistant');
       expect(find.byKey(const Key('new-agent-ask-god')), findsOneWidget);
       await tap(tester, 'new-agent-next');
+      // 3.12.3: «Parti da…», here an empty agent made step by step.
+      expect(find.byKey(const Key('new-agent-start')), findsOneWidget);
+      await tap(tester, 'new-agent-next');
       await tap(tester, 'new-job-secretary');
       await tap(tester, 'new-agent-next');
       expect(
@@ -365,8 +369,8 @@ void main() {
       // Only the services added for everyone, with their state.
       expect(find.text('Notion'), findsOneWidget);
       expect(find.text('Funziona · 5 strumenti'), findsOneWidget);
-      expect(find.byKey(const Key('new-service-demo-db')), findsNothing);
-      await tap(tester, 'new-service-notion');
+      expect(find.byKey(const Key('conn-mcp-demo-db')), findsNothing);
+      await tap(tester, 'conn-mcp-notion');
       await tap(tester, 'new-agent-next');
       await tap(tester, 'new-agent-next');
       await tap(tester, 'new-mode-manual');
@@ -383,7 +387,9 @@ void main() {
       expect(made['kind'], 'assistant');
       expect(made['parentId'], 'a0');
       expect(made['name'], 'Segretaria');
-      expect(made['connections'], ['notion']);
+      expect(made['connections'], [
+        {'kind': 'mcp', 'ref': 'notion'},
+      ]);
       expect(made['mode'], 'manual');
       expect(made['role'], startsWith('Tieni in ordine'));
       expect(made.containsKey('projectId'), isFalse);
@@ -479,20 +485,11 @@ void main() {
         AgentSettingsScreen(agentId: 'a5', agent: a5, initial: AgentGroup.assistant),
       );
       expect(find.byKey(const Key('as-assistant')), findsOneWidget);
-      expect(find.text('Devi accedere'), findsOneWidget);
       expect(find.text('Il punto del mattino'), findsOneWidget);
       expect(find.text('Dal lunedì al venerdì alle 08:00 · Attiva'), findsOneWidget);
       // Another agent's routine is not here; nor a project's skill.
       expect(find.byKey(const Key('as-routine-r2')), findsNothing);
       expect(find.byKey(const Key('as-skill-altro')), findsNothing);
-      // Services: switch one on, save.
-      await tap(tester, 'as-service-notion');
-      await tap(tester, 'as-save-services');
-      expect(server.patches.last, {
-        'agent': 'a5',
-        'connections': ['notion'],
-      });
-      expect(find.text('Salvato: vale per le sue conversazioni nuove.'), findsOneWidget);
       // A routine off.
       await tap(tester, 'as-routine-r1');
       expect(enabled.single, {'enabled': false});

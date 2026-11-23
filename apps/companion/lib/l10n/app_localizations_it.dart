@@ -19606,4 +19606,192 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get syDvTouchHint =>
       'Più tocchi di fila non hanno cambiato lo schermo: forse i tocchi non arrivano.';
+
+  @override
+  String get sxCalAdd => 'Aggiungi un calendario';
+
+  @override
+  String get sxCalAddText => 'CalDAV o un indirizzo iCal';
+
+  @override
+  String get sxCalAgents => 'Gli agenti possono usarlo';
+
+  @override
+  String get sxCalAgentsHelp =>
+      'Spento finché non lo dici tu. Un agente deve comunque averlo collegato nelle sue impostazioni.';
+
+  @override
+  String get sxCalGoogleNote =>
+      'Scrivere su Google Calendar con l\'accesso non c\'è: un calendario di Google si legge dal suo indirizzo segreto iCal.';
+
+  @override
+  String get sxCalKind => 'Tipo';
+
+  @override
+  String get sxCalKind_caldav => 'CalDAV';
+
+  @override
+  String get sxCalKind_ics => 'Indirizzo iCal';
+
+  @override
+  String get sxCalName => 'Nome';
+
+  @override
+  String get sxCalNameHelp => 'Come lo chiami tu e come lo chiamano gli agenti («Casa», «Lavoro»).';
+
+  @override
+  String get sxCalNew => 'Nuovo calendario';
+
+  @override
+  String get sxCalPassword => 'Password';
+
+  @override
+  String get sxCalPasswordHelp =>
+      'Una password per app, se il servizio le ha. Va nel portachiavi e non si vede più.';
+
+  @override
+  String get sxCalPurpose =>
+      'Calendari che gli agenti possono leggere, e in cui possono scrivere col tuo sì. CalDAV (iCloud, Nextcloud, Fastmail…) legge e scrive; un indirizzo iCal (per esempio quello segreto di Google) legge soltanto.';
+
+  @override
+  String get sxCalRemove => 'Togli';
+
+  @override
+  String get sxCalSave => 'Aggiungi';
+
+  @override
+  String get sxCalState_caldav => 'CalDAV · si scrive';
+
+  @override
+  String get sxCalState_ics => 'iCal · solo lettura';
+
+  @override
+  String get sxCalTesting => 'Provo…';
+
+  @override
+  String get sxCalUrlCaldav => 'Indirizzo del calendario';
+
+  @override
+  String get sxCalUrlCaldavHelp =>
+      'L\'indirizzo CalDAV del calendario, come lo mostra il servizio (per iCloud, Nextcloud o Fastmail).';
+
+  @override
+  String get sxCalUrlIcs => 'Indirizzo iCal';
+
+  @override
+  String get sxCalUrlIcsHelp =>
+      'Per Google: Impostazioni del calendario > «Indirizzo segreto in formato iCal». Chi lo ha può leggere il calendario: resta nel portachiavi.';
+
+  @override
+  String get sxCalUser => 'Utente';
+
+  @override
+  String get sxConnCalendars => 'Calendari';
+
+  @override
+  String get sxConnChatHelp => 'Può scriverti su questa chat.';
+
+  @override
+  String get sxConnChats => 'Chat';
+
+  @override
+  String sxConnCount(String n) {
+    return '$n collegati';
+  }
+
+  @override
+  String get sxConnGone => 'Non c\'è più';
+
+  @override
+  String get sxConnHelp =>
+      'Cosa può raggiungere questo agente, quanti ne vuoi. Vede solo quello che gli colleghi: nient\'altro di tuo.';
+
+  @override
+  String get sxConnMailboxes => 'Caselle di posta';
+
+  @override
+  String get sxConnNoCalendars =>
+      'Nessun calendario è aperto agli agenti: aggiungine uno in Impostazioni > Automazioni > Calendari.';
+
+  @override
+  String get sxConnNoChats => 'Nessuna chat è collegata: collegane una in Impostazioni > Chat.';
+
+  @override
+  String get sxConnNoMailboxes =>
+      'Nessuna casella è aperta agli agenti: aggiungine una e accendi «Gli agenti possono usarla» in Impostazioni > Automazioni.';
+
+  @override
+  String get sxConnReadOnly => 'Solo lettura';
+
+  @override
+  String get sxConnSaved => 'Salvato. Le nuove conversazioni lo usano subito.';
+
+  @override
+  String get sxConnServices => 'Servizi';
+
+  @override
+  String get sxConnWritable => 'Può aggiungere eventi (te lo chiede sempre)';
+
+  @override
+  String sxSetAsks(String what) {
+    return 'Ti chiede prima: $what';
+  }
+
+  @override
+  String get sxSetEffort_high => 'alto';
+
+  @override
+  String get sxSetEffort_low => 'basso';
+
+  @override
+  String get sxSetEffort_max => 'massimo';
+
+  @override
+  String get sxSetEffort_medium => 'medio';
+
+  @override
+  String sxSetModel(String effort, String speed) {
+    return 'Modello: $speed, effort $effort';
+  }
+
+  @override
+  String get sxSetNone => 'Un agente vuoto';
+
+  @override
+  String get sxSetNoneHint => 'Scegli tu il suo lavoro, passo per passo.';
+
+  @override
+  String get sxSetSpeed_default => 'il tuo di sempre';
+
+  @override
+  String get sxSetSpeed_fast => 'veloce';
+
+  @override
+  String get sxSetStartFrom => 'Parti da…';
+
+  @override
+  String get sxSetStartHelp =>
+      'Impostazioni pronte, non funzioni nuove: preparano le istruzioni dell\'agente, gli strumenti e cosa ti chiede. Dopo puoi cambiare tutto.';
+
+  @override
+  String sxSetWants(String what) {
+    return 'Da collegare: $what';
+  }
+
+  @override
+  String get sxSetWantsNothing => 'Niente da collegare';
+
+  @override
+  String get sxAgentTab_connections => 'Collegamenti';
+
+  @override
+  String get sxCalTitle => 'Calendari';
+
+  @override
+  String get sxConnTitle => 'Collegamenti';
+
+  @override
+  String sxSetUsed(String name) {
+    return 'Creato dal set «$name»';
+  }
 }

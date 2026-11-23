@@ -72,7 +72,7 @@ beforeEach(() => {
 afterEach(cleanup);
 
 const click = (el: Element) => fireEvent.click(el);
-const byText = (c: HTMLElement, text: string) => {
+const byText = (c: ParentNode, text: string) => {
   const all = [...c.querySelectorAll("button, strong, h3, h4, li, p, span, label")];
   // The exact words first (a longer text may contain them), then any text that has them.
   return (all.find((e) => e.textContent?.trim() === text) ??
