@@ -37,6 +37,8 @@ const { EmulatorInstall, installOffer } = await import("../src/components/Emulat
 const { MachineReport } = await import("../src/components/Emulators.js");
 const { iosBlockText } = await import("../src/components/IosBridgeInstall.js");
 const { DeviceScreen } = await import("../src/components/DeviceScreen.js");
+const { asking } = await import("../src/components/dialogs.js");
+const { deviceScreens } = await import("../src/state.js");
 
 const mac = (over: Partial<EmulatorReport> = {}): EmulatorReport => ({
   os: "macos",
@@ -118,7 +120,7 @@ describe("the iOS bridge's install", () => {
     }
     const keys = (d: Record<string, string>) =>
       Object.keys(d)
-        .filter((k) => /^(ib|emIos|emRunningSim|emMiss_ios)/.test(k))
+        .filter((k) => /^(ib|emIos|emRunningSim|emMiss_ios|dvRepair|dvTouch)/.test(k))
         .sort();
     expect(keys(dictionaries.it)).toEqual(keys(dictionaries.en));
     expect(keys(dictionaries.en)).toContain("ibLead");
@@ -152,6 +154,47 @@ describe("the report", () => {
       <MachineReport r={{ ...mac(), os: "linux", arch: "x64", missing: [], ios: undefined }} />,
     );
     expect(v.container.textContent).toContain("pair a Mac as a node");
+  });
+});
+
+describe("Repair touches", () => {
+  const answer = async (yes: boolean) => {
+    await waitFor(() => expect(asking.value).toHaveLength(1));
+    const a = asking.value[0] as { title: string; text?: string; done: (y: boolean) => void };
+    a.done(yes);
+    asking.value = [];
+    return a;
+  };
+
+  it("asks first in our Modal, saying what it does, and only a yes repairs", async () => {
+    deviceScreens.value = {};
+    const v = render(<DeviceScreen device="ios:UDID" title="iPhone 18" />);
+    fireEvent.click(v.getByText("Repair touches"));
+    const q = await answer(false);
+    expect(q.title).toBe("Repair the touches of iPhone 18?");
+    expect(q.text).toContain("restarts the simulator's home screen and closes the apps open on it");
+    await new Promise((r) => setTimeout(r, 10));
+    expect(calls.some((c) => c[0] === "repairDeviceTouches")).toBe(false);
+    fireEvent.click(v.getByText("Repair touches"));
+    await answer(true);
+    await waitFor(() =>
+      expect(calls.find((c) => c[0] === "repairDeviceTouches")?.[1]).toEqual(["ios:UDID"]),
+    );
+  });
+
+  it("is offered with a hint when taps changed nothing, never on Android, in Settings too", async () => {
+    deviceScreens.value = {
+      "ios:UDID": { state: "on", control: "agents", hint: "touches" },
+    };
+    const v = render(<DeviceScreen device="ios:UDID" title="iPhone 18" />);
+    expect(v.container.textContent).toContain("Several taps in a row changed nothing");
+    cleanup();
+    const a = render(<DeviceScreen device="avd:Pixel" title="Pixel" />);
+    expect(a.container.textContent).not.toContain("Repair touches");
+    lang.value = "it";
+    cleanup();
+    const it = render(<DeviceScreen device="ios:UDID" title="iPhone 18" />);
+    expect(it.container.textContent).toContain("Ripara i tocchi");
   });
 });
 

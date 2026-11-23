@@ -20,6 +20,7 @@ import { t } from "../i18n.js";
 import { IconAlert, IconEmulator, IconPhone, IconRefresh, IconServer } from "../icons.js";
 import { attempt, getApi, openDevice } from "../state.js";
 import { EmulatorInstall } from "./EmulatorInstall.js";
+import { repairTouches } from "./RepairTouches.js";
 import { Box, Chips, Facts, Head, Row, Sub, WzPage } from "./SettingsKit.js";
 import { Advanced, Field } from "./ui.js";
 
@@ -281,6 +282,15 @@ export function DeviceList() {
             >
               {t("emOpen")}
             </button>
+            {d.platform === "ios" && d.state === "on" && (
+              <button
+                type="button"
+                class="wz-btn small quiet"
+                onClick={() => void repairTouches(d.id, d.name).then(load)}
+              >
+                {t("dvRepair")}
+              </button>
+            )}
             {d.kind === "emulator" && d.state === "on" && (
               <button type="button" class="wz-btn small quiet" onClick={() => void stop(d)}>
                 {t("emStop")}

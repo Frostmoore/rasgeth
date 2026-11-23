@@ -8,6 +8,7 @@ import { H264Canvas, hasVideoDecoder } from "../device-video.js";
 import { t } from "../i18n.js";
 import { IconChevronLeft, IconHome, IconRotate, IconSquare } from "../icons.js";
 import { deviceScreens, deviceVideoSinks, getLive } from "../state.js";
+import { repairTouches } from "./RepairTouches.js";
 
 /** Keys sent as such; everything else printable is typed as text. */
 const KEYS = new Set([
@@ -112,6 +113,18 @@ export function DeviceScreen({ device, title }: { device: string; title: string 
       <p class={`ui-help screen-note${mine ? " mine" : ""}`}>
         {s.error ? t("dsError", { error: s.error }) : mine ? t("dsYours") : t("dsShared")}
       </p>
+      {ios && (
+        <p class="ui-help screen-note">
+          {s.hint === "touches" && <span>{t("dvTouchHint")} </span>}
+          <button
+            type="button"
+            class={`wz-btn small ${s.hint === "touches" ? "primary" : "quiet"}`}
+            onClick={() => void repairTouches(device, title)}
+          >
+            {t("dvRepair")}
+          </button>
+        </p>
+      )}
       <div class={`device-frame${wide ? " wide" : ""}`}>
         {/* biome-ignore lint/a11y/noNoninteractiveTabindex: while it is the person's, the screen takes their keyboard. */}
         <div
