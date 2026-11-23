@@ -74,6 +74,9 @@ class _CodeBlockState extends State<CodeBlock> {
     final c = RgColors.of(context);
     final l = AppLocalizations.of(context);
     final ext = _extOf(widget.lang);
+    // Inside an answer's selection the code is part of it (3.12.3); alone it selects by itself.
+    final inArea = SelectionContainer.maybeOf(context) != null;
+    Widget code(TextSpan span) => inArea ? Text.rich(span) : SelectableText.rich(span);
     const mono = TextStyle(fontFamily: 'monospace', fontSize: 13, height: 1.45);
     return Container(
       key: const Key('code-block'),
@@ -87,44 +90,47 @@ class _CodeBlockState extends State<CodeBlock> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(12, 2, 4, 2),
-            decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: Color(0x14FFFFFF))),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(widget.lang, style: const TextStyle(color: _head, fontSize: 11)),
-                ),
-                TextButton(
-                  key: const Key('code-copy'),
-                  style: TextButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    minimumSize: const Size(0, 28),
+          // The head (language, «Copia») is not part of a selection of the answer.
+          SelectionContainer.disabled(
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(12, 2, 4, 2),
+              decoration: const BoxDecoration(
+                border: Border(bottom: BorderSide(color: Color(0x14FFFFFF))),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(widget.lang, style: const TextStyle(color: _head, fontSize: 11)),
                   ),
-                  onPressed: () async {
-                    await Clipboard.setData(ClipboardData(text: widget.code));
-                    if (!mounted) return;
-                    setState(() => _copied = true);
-                    _back?.cancel();
-                    _back = Timer(const Duration(milliseconds: 1500), () {
-                      if (mounted) setState(() => _copied = false);
-                    });
-                  },
-                  child: Text(
-                    _copied ? l.cvCopied : l.cvCopy,
-                    style: const TextStyle(color: _head, fontSize: 11.5),
+                  TextButton(
+                    key: const Key('code-copy'),
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      minimumSize: const Size(0, 28),
+                    ),
+                    onPressed: () async {
+                      await Clipboard.setData(ClipboardData(text: widget.code));
+                      if (!mounted) return;
+                      setState(() => _copied = true);
+                      _back?.cancel();
+                      _back = Timer(const Duration(milliseconds: 1500), () {
+                        if (mounted) setState(() => _copied = false);
+                      });
+                    },
+                    child: Text(
+                      _copied ? l.cvCopied : l.cvCopy,
+                      style: const TextStyle(color: _head, fontSize: 11.5),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.all(10),
-            child: SelectableText.rich(
+            child: code(
               TextSpan(
                 style: mono.copyWith(color: RgColors.dark.text),
                 children: [
