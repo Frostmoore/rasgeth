@@ -733,7 +733,7 @@ export function requestReasons(lang: string, r: { reasons: readonly string[] }):
  * Requests the person always answers one by one: an email leaving, another agent's model, and a
  * change to the platform itself (a yes to archiving one project is not a yes to every change).
  */
-const ONE_BY_ONE = ["outgoing-mail", "agent-model", "platform"];
+const ONE_BY_ONE = ["outgoing-mail", "agent-model", "platform", "calendar-write"];
 
 /**
  * Whether a request offers «Always allow for this job» (3.9.8): a danger (the ordinary ones have

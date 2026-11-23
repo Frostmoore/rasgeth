@@ -338,6 +338,18 @@ const TABLE: Row[] = [
     "Avvia l'automazione «Rapporto»",
     "Runs the automation “Rapporto”",
   ],
+  [
+    "calendar_create_event",
+    { calendar: "Home", summary: "Dentist", start: "2026-11-27T15:00:00Z" },
+    "Aggiunge l'evento «Dentist» (2026-11-27T15:00:00Z) al calendario «Home»",
+    "Adds the event “Dentist” (2026-11-27T15:00:00Z) to the calendar “Home”",
+  ],
+  [
+    "chat_send",
+    { chat: "telegram", text: "Anna asks" },
+    "Scrive a te su telegram: «Anna asks»",
+    "Writes to you on telegram: “Anna asks”",
+  ],
   // The fallback: never the raw input.
   ["weird_tool", { a: 1 }, "Usa lo strumento weird_tool", "Uses the tool weird_tool"],
   ["mcp__broken", null, "Usa lo strumento mcp__broken", "Uses the tool mcp__broken"],
@@ -449,6 +461,7 @@ describe("«Always allow for this job» is offered (3.9.8)", () => {
       false,
     ],
     ["an email leaving", r(["outgoing-mail"], { tool: "mail_send" }), false],
+    ["a calendar event", r(["calendar-write"], { tool: "calendar_create_event" }), false],
     ["another agent's model", r(["agent-model"], { tool: "set_agent_model" }), false],
     ["a platform change", r(["platform"], { tool: "platform_project" }), false],
     ["a switched-off tool asked back", r(["containers"], { tool: "request_tool" }), false],
