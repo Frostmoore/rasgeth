@@ -250,9 +250,12 @@ import {
   type MailSender,
 } from "./email.js";
 import { AndroidHost } from "./emulators/android.js";
-import { Devices } from "./emulators/devices.js";
+import { Devices, type IosDeviceHost } from "./emulators/devices.js";
+import { iosBridgeScript } from "./emulators/gather.js";
 import type { DeviceHost } from "./emulators/host.js";
 import { EmulatorInstaller, type InstallerOptions } from "./emulators/install.js";
+import { IosBridgeInstaller, type IosBridgeInstallerOptions } from "./emulators/install-ios.js";
+import { IosHost } from "./emulators/ios.js";
 import { EMULATOR_SETTINGS_OWNER, EmulatorMachine } from "./emulators/machine.js";
 import { DeviceHub } from "./emulators/remote.js";
 import { deviceTools } from "./emulators/tools.js";
@@ -466,6 +469,9 @@ export interface CoreOptions {
   emulators?: EmulatorMachine;
   /** The guided install (3.11 phase 5): tests give fake downloads and programs. */
   emuInstall?: Partial<Omit<InstallerOptions, "jobs" | "machine">>;
+  /** Tests: the iOS bridge's installer and host (fakes instead of the real programs). */
+  iosInstall?: Partial<Omit<IosBridgeInstallerOptions, "jobs" | "machine" | "dir">>;
+  iosHost?: IosDeviceHost;
   /** Devices in the Canvas (3.11): tests give a `FakeDeviceHost`; by default adb and scrcpy. */
   deviceHost?: DeviceHost;
   /** The editor's timings (G37.1): tests save at once and hold the person's place briefly. */
@@ -1518,6 +1524,7 @@ export class RedGiantCore implements OrchestrationHost {
     this.emulators =
       o.emulators ??
       new EmulatorMachine({
+        iosBridgeDir: join(dirname(o.workspacesDir), "ios-bridge"),
         settings: {
           get: () => this.emulatorSettings.get(EMULATOR_SETTINGS_OWNER),
           set: (v) => this.emulatorSettings.set(EMULATOR_SETTINGS_OWNER, v),
@@ -1529,7 +1536,27 @@ export class RedGiantCore implements OrchestrationHost {
       env: () => agentEnv(),
       ...o.emuInstall,
     });
+    this.iosInstall = new IosBridgeInstaller({
+      jobs: this.jobs,
+      machine: this.emulators,
+      dir: join(dirname(o.workspacesDir), "ios-bridge"),
+      ...o.iosInstall,
+    });
+    // iOS simulators only on a Mac, and only once the bridge is there (looked at when one opens).
+    const iosHost =
+      o.iosHost ??
+      (process.platform === "darwin"
+        ? new IosHost({
+            bridge: async () => {
+              const dir = this.emulators.iosBridgeDir;
+              if (!dir) return undefined;
+              const r = await this.emulators.report();
+              return r.ios?.bridge ? iosBridgeScript(dir) : undefined;
+            },
+          })
+        : undefined);
     this.emuDevices = new Devices({
+      ...(iosHost && { ios: iosHost }),
       host:
         o.deviceHost ??
         new AndroidHost({
@@ -5893,6 +5920,7 @@ export class RedGiantCore implements OrchestrationHost {
   readonly emulators: EmulatorMachine;
   /** 3.11 phase 5: the guided install of the Android SDK pieces, only with the person's yes. */
   readonly emuInstall: EmulatorInstaller;
+  readonly iosInstall: IosBridgeInstaller;
   /** The machine's emulator settings, one value in `rg_settings` (owner `machine`). */
   readonly emulatorSettings: OwnerSettings<EmulatorSettings>;
   /** 3.11: the devices in the Canvas (AVDs, running emulators, phones), for the person and the agents. */

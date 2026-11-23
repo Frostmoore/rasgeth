@@ -8,11 +8,14 @@
 //                                  this machine (3.11 phase 5): steps, sizes, licence texts, planId
 //   POST /api/emulators/install/start {planId, licenceAccepted}   the person's yes: the plan runs
 //                                  as a job (followed and cancelled through /api/jobs)
+//   POST /api/emulators/ios-bridge/plan   the iOS bridge's guided install (3.12.2): what, where, why not
+//   POST /api/emulators/ios-bridge/start {planId}   the person's yes: serve-sim is downloaded as a job
 import {
   EmuInstallPlanBody,
   EmuInstallStartBody,
   EmulatorSettingsBody,
   type EmulatorsState,
+  IosBridgeStartBody,
 } from "@redgiant/protocol";
 import type { Context, Hono } from "hono";
 import type { RedGiantCore } from "../core.js";
@@ -87,6 +90,21 @@ export function emulatorRoutes<E extends { Variables: any }>(
     if (!parsed.success) return c.json({ error: "Which plan?" }, 400);
     try {
       return c.json({ jobId: core.emuInstall.start(owner(c), parsed.data).id });
+    } catch (err) {
+      if (err instanceof InstallError)
+        return c.json({ error: err.message, code: err.code }, err.code === "busy" ? 409 : 400);
+      throw err;
+    }
+  });
+  // 3.12.2: the iOS bridge, the same way: a plan the person sees, then their yes.
+  app.post("/api/emulators/ios-bridge/plan", async (c) =>
+    c.json(await core.iosInstall.plan(owner(c))),
+  );
+  app.post("/api/emulators/ios-bridge/start", async (c) => {
+    const parsed = IosBridgeStartBody.safeParse(await c.req.json().catch(() => null));
+    if (!parsed.success) return c.json({ error: "Which plan?" }, 400);
+    try {
+      return c.json({ jobId: core.iosInstall.start(owner(c), parsed.data).id });
     } catch (err) {
       if (err instanceof InstallError)
         return c.json({ error: err.message, code: err.code }, err.code === "busy" ? 409 : 400);

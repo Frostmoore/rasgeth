@@ -493,7 +493,9 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
           const ios = isIosId(i.device);
           if (ios ? !/\.app\/?$/i.test(i.apk) : !/\.apk$/i.test(i.apk))
             throw new DeviceError(
-              ios ? "Only .app folders are installed on a simulator" : "Only .apk files are installed",
+              ios
+                ? "Only .app folders are installed on a simulator"
+                : "Only .apk files are installed",
             );
           const root = await realpath(o.root).catch(() => o.root);
           const file = await realpath(isAbsolute(i.apk) ? i.apk : resolve(root, i.apk)).catch(
@@ -615,7 +617,12 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
                 .join("\n");
             }
             const lines = text.trim().split("\n");
-            return lines.slice(-(i.lines ?? 200)).join("\n").slice(-20_000) || "Nothing in the log.";
+            return (
+              lines
+                .slice(-(i.lines ?? 200))
+                .join("\n")
+                .slice(-20_000) || "Nothing in the log."
+            );
           }
           if (i.package && !PACKAGE.test(i.package)) throw new DeviceError("Not a package name");
           const n = String(i.lines ?? 200);

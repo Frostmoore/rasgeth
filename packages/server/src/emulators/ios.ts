@@ -25,7 +25,7 @@ export class IosError extends Error {}
 export type Run = (
   file: string,
   args: string[],
-  o: { timeoutMs: number; signal?: AbortSignal },
+  o: { timeoutMs: number; signal?: AbortSignal; env?: NodeJS.ProcessEnv },
 ) => Promise<{ code: number | null; out: string; err: string }>;
 
 /** `execFile` (no shell): the answer even when the program fails. */
@@ -38,6 +38,7 @@ export const runProgram: Run = (file, args, o) =>
         timeout: o.timeoutMs,
         maxBuffer: 32 * 1024 * 1024,
         ...(o.signal && { signal: o.signal }),
+        ...(o.env && { env: o.env }),
       },
       (err, out, errOut) => {
         const code =
@@ -259,7 +260,11 @@ const BUTTONS: Record<string, { button: string; page?: number; usage?: number }>
   volume_down: { button: "volume-down", page: 12, usage: 234 },
 };
 
-export type Orientation = "portrait" | "landscape_left" | "portrait_upside_down" | "landscape_right";
+export type Orientation =
+  | "portrait"
+  | "landscape_left"
+  | "portrait_upside_down"
+  | "landscape_right";
 
 /** The touches that make a gesture, as serve-sim takes them (fractions of the screen). Pure. */
 export function touchPlan(
@@ -332,7 +337,10 @@ export class IosHost implements DeviceHost {
   }
 
   private async simctl(args: string[], timeoutMs = 60_000, signal?: AbortSignal) {
-    const r = await this.run("xcrun", ["simctl", ...args], { timeoutMs, ...(signal && { signal }) });
+    const r = await this.run("xcrun", ["simctl", ...args], {
+      timeoutMs,
+      ...(signal && { signal }),
+    });
     if (r.code !== 0) throw new IosError((r.err || r.out || "simctl failed").trim().slice(0, 600));
     return r.out;
   }
@@ -607,7 +615,18 @@ export class IosHost implements DeviceHost {
           predicate = `${kind} == "${name}"`;
         } else if (kind !== "all") throw new IosError("Unknown log filter");
         const out = await this.simctl(
-          ["spawn", udid, "log", "show", "--last", `${minutes}m`, "--style", "compact", "--predicate", predicate],
+          [
+            "spawn",
+            udid,
+            "log",
+            "show",
+            "--last",
+            `${minutes}m`,
+            "--style",
+            "compact",
+            "--predicate",
+            predicate,
+          ],
           90_000,
         );
         return out;

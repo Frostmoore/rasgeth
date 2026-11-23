@@ -35,7 +35,9 @@ export function tarFolder(dir: string): Promise<Buffer> {
       ["-cf", "-", "-C", dirname(dir), basename(dir)],
       { encoding: "buffer", maxBuffer: 512 * 1024 * 1024, timeout: 120_000 },
       (e, out, err) =>
-        e ? reject(new DeviceError(`tar: ${String(err || e.message).slice(0, 300)}`)) : resolve(out),
+        e
+          ? reject(new DeviceError(`tar: ${String(err || e.message).slice(0, 300)}`))
+          : resolve(out),
     );
   });
 }
