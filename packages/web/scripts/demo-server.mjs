@@ -1423,8 +1423,21 @@ licensed to you subject to the terms of the License Agreement.</license><channel
 <remotePackage path="emulator"><revision><major>37</major><minor>3</minor><micro>10</micro></revision><uses-license ref="android-sdk-license"/><channelRef ref="channel-0"/><archives><archive><complete><size>456613348</size><url>e.zip</url></complete></archive></archives></remotePackage>
 <remotePackage path="platform-tools"><revision><major>37</major><minor>0</minor><micro>3</micro></revision><uses-license ref="android-sdk-license"/><channelRef ref="channel-0"/><archives><archive><complete><size>8188601</size><url>p.zip</url></complete></archive></archives></remotePackage>
 <remotePackage path="system-images;android-35;google_apis;x86_64"><revision><major>9</major></revision><uses-license ref="android-sdk-license"/><channelRef ref="channel-0"/><archives><archive><complete><size>1738815903</size><url>i.zip</url></complete></archive></archives></remotePackage></x>`;
+// DEMO_SECRETARY=1 (3.12.4): Meta's and Telegram's APIs are a function here, never the network.
+const demoSecretaryFetch = async (url, init) => {
+  const u = String(url);
+  const json = (o, status = 200) =>
+    new Response(JSON.stringify(o), { status, headers: { "content-type": "application/json" } });
+  if (u.includes("graph.facebook.com")) {
+    if (!String(init?.headers?.authorization ?? "").includes("EAAG-demo-token"))
+      return json({ error: { message: "Invalid OAuth access token", code: 190 } }, 401);
+    return json({ display_phone_number: "+39 333 1234567", verified_name: "Salone Marta" });
+  }
+  return json({ ok: true, result: { id: 7, username: "salone_marta_bot", first_name: "Salone" } });
+};
 const core = await RedGiantCore.create({
   db: wrap(pg),
+  ...(process.env.DEMO_SECRETARY === "1" && { secretaryFetch: demoSecretaryFetch }),
   ...(demoEmulators && { emulators: demoEmulators }),
   ...(process.env.DEMO_INSTALL_FAKE && {
     emuInstall: {
@@ -2024,6 +2037,85 @@ const researcher = await core.registry.create(
     role: "Search the web and bring back what you find, with the sources.",
   },
 );
+// DEMO_SECRETARY=1 (3.12.4): a connected WhatsApp number and a Telegram bot, contacts with their
+// conversations, and requests waiting for the person with a ready reply (rows written straight).
+if (process.env.DEMO_SECRETARY === "1") {
+  // The setup would write its own address over this one: it is kept as it is.
+  core.setPublicUrl("https://rasgeth.example.test");
+  core.setPublicUrl = () => {};
+  const secretary = await core.registry.create(me, {
+    kind: "assistant",
+    parentId: god.id,
+    name: "Segretario del salone",
+    systemPrompt: "Salone Marta. Aperto dal martedi al sabato, 9-18. Taglio 25 euro. Via Roma 1.",
+    model: { provider: "fake", model: "m" },
+  });
+  const store = core.secretary.store;
+  const wa = await store.addAccount({
+    ownerId: "local",
+    channel: "whatsapp",
+    name: "Salone Marta",
+    agentId: secretary.id,
+    label: "+39 333 1234567",
+    config: { phoneNumberId: "1055555555" },
+    limitHour: 6,
+  });
+  await store.updateAccount(wa.id, { webhookOk: true });
+  await core.vault.setSystem("local", `secretary:${wa.id}:token`, "EAAG-demo-token-0000000000", {
+    name: "secretary-demo-token",
+    service: "WhatsApp Business",
+    category: "api",
+    hosts: ["graph.facebook.com"],
+    section: "secretary",
+    kind: "chat",
+    what: "token of the secretary's WhatsApp number",
+  });
+  const tg = await store.addAccount({
+    ownerId: "local",
+    channel: "telegram",
+    name: "Bot del salone",
+    agentId: secretary.id,
+    label: "@salone_marta_bot",
+    config: {},
+    limitHour: 6,
+  });
+  const say = async (c, dir, by, text, minutes) =>
+    store.addMessage(c, { dir, by, text, at: new Date(Date.now() - minutes * 60_000) });
+  const luca = await store.upsertContact(wa.id, "393331112222", "Luca Bianchi");
+  await say(luca, "in", "contact", "Buongiorno, fate il taglio uomo? Quanto costa?", 40);
+  await say(
+    luca,
+    "out",
+    "agent",
+    "Buongiorno! Si, il taglio costa 25 euro. Siamo in Via Roma 1, dal martedi al sabato dalle 9 alle 18.",
+    39,
+  );
+  await say(luca, "in", "contact", "Perfetto. Potrei venire sabato alle 11 con mio figlio?", 8);
+  await store.addPending(luca.id, {
+    reason: "commitment",
+    summary: "Luca chiede un appuntamento per sabato alle 11, per due persone (lui e il figlio).",
+    draft: "Ciao Luca, sabato alle 11 per due va benissimo. Vi aspettiamo in Via Roma 1!",
+  });
+  const anna = await store.upsertContact(wa.id, "393478889999", "Anna");
+  await say(anna, "in", "contact", "Fate anche la tinta? Mi serve un prezzo", 190);
+  await say(
+    anna,
+    "out",
+    "agent",
+    "Per la tinta serve un preventivo: lo passo subito a Marta.",
+    189,
+  );
+  await store.addPending(anna.id, {
+    reason: "price",
+    summary: "Anna chiede il prezzo della tinta, che non e nei listini che hai scritto.",
+    draft:
+      "Ciao Anna, la tinta parte da 45 euro, dipende dalla lunghezza. Vuoi passare per un preventivo?",
+  });
+  const gino = await store.upsertContact(tg.id, "555111", "Gino");
+  await say(gino, "in", "contact", "A che ora chiudete oggi?", 120);
+  await say(gino, "out", "agent", "Oggi chiudiamo alle 18.", 119);
+}
+
 // DEMO_SETS=1 (3.12.3): mailboxes, calendars and linked chats to connect to an agent, and one
 // agent connected to several of each (the settings of the person written straight, no real server).
 if (process.env.DEMO_SETS === "1") {
