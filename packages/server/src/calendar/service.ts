@@ -6,7 +6,7 @@
 // CalDAV account, REPORT to list, PUT to write; the fetch is a parameter, so tests use a fake.
 import { randomUUID } from "node:crypto";
 import type { SqlClient } from "@redgiant/events";
-import type { CalendarEvent, CalendarInfo } from "@redgiant/protocol";
+import { type CalendarEvent, type CalendarInfo, PRODUCT_NAME } from "@redgiant/protocol";
 import type { Vault } from "../vault.js";
 import { buildIcs, eventsBetween, parseIcs, type RawEvent } from "./ics.js";
 
@@ -304,7 +304,7 @@ export class CalendarService {
       );
     const secret = this.secret(owner, c.id);
     if (secret === undefined) throw new CalendarError(`The password of "${c.name}" is missing`);
-    const uid = `${randomUUID()}@redgiant`;
+    const uid = `${randomUUID()}@${PRODUCT_NAME.toLowerCase()}`;
     const url = `${c.url.replace(/\/+$/, "")}/${uid}.ics`;
     const res = await this.request(url, {
       method: "PUT",

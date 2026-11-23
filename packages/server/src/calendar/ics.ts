@@ -2,7 +2,7 @@
 // DTSTART/DTEND (UTC, with TZID, floating or whole-day), DURATION, LOCATION, DESCRIPTION, EXDATE
 // and the usual RRULE (DAILY, WEEKLY with BYDAY, MONTHLY, YEARLY; INTERVAL, COUNT, UNTIL). Other
 // rule parts are ignored, and a rule that cannot be read leaves the event as a single one.
-import type { CalendarEvent } from "@redgiant/protocol";
+import { type CalendarEvent, PRODUCT_NAME } from "@redgiant/protocol";
 
 export interface RawEvent {
   uid: string;
@@ -322,7 +322,7 @@ export function buildIcs(
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//RedGiant//Calendar//EN",
+    `PRODID:-//${PRODUCT_NAME}//Calendar//EN`,
     "BEGIN:VEVENT",
     `UID:${ev.uid}`,
     `DTSTAMP:${stamp(now)}`,
