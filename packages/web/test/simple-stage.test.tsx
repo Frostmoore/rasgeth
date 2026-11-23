@@ -476,7 +476,7 @@ describe("the agents' strip at the bottom (3.12.1, «Striscia fitta»)", () => {
     const after = [...r.container.querySelectorAll(".smp-sm")] as HTMLElement[];
     // The very same nodes (no re-mount): a class change on a node is what a transition animates.
     expect(after).toHaveLength(3);
-    after.forEach((el, i) => expect(el).toBe(before[i]));
+    for (const [i, el] of after.entries()) expect(el).toBe(before[i]);
     expect(r.container.querySelector(".smp-balloon")).toBe(balloon1);
     expect(balloon0 === null || balloon0 === balloon1).toBe(true);
     expect(after[2]?.classList.contains("on")).toBe(true);

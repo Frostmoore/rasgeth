@@ -325,9 +325,13 @@ describe("the retitling of migrated topics", () => {
     const { s, god, calls } = await start(["{}"]);
     const first =
       "Devo creare un plugin wordpress per mio zio.  Ha iniziato a fare tutto lui che non ha funzionato\nmi aiuti?";
-    await legacy(s, god, "sess_z", "Devo creare un plugin wordpress per mio zio. Ha iniziato a fare tutto lui che no", [
-      [first, "ok", DAY],
-    ]);
+    await legacy(
+      s,
+      god,
+      "sess_z",
+      "Devo creare un plugin wordpress per mio zio. Ha iniziato a fare tutto lui che no",
+      [[first, "ok", DAY]],
+    );
     await legacy(s, god, "sess_y", "devo creare un plugin…", [[first, "ok", 2 * DAY]]);
     // The person's own words are never a beginning of the first message.
     await legacy(s, god, "sess_x", "Il sito di mio zio", [[first, "ok", 3 * DAY]]);
@@ -344,7 +348,11 @@ describe("the retitling of migrated topics", () => {
       "SELECT id, title FROM rg_sessions WHERE owner_id = $1 ORDER BY id",
       [ME],
     );
-    expect(rows.map((r) => r.title)).toEqual(["Il sito di mio zio", "A real title", "A real title"]);
+    expect(rows.map((r) => r.title)).toEqual([
+      "Il sito di mio zio",
+      "A real title",
+      "A real title",
+    ]);
     expect(await s.core.topics.retitleMigrated(ME)).toBe(0);
   });
 
