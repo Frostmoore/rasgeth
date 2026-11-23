@@ -24587,6 +24587,11 @@ html[data-theme="dark"] .app-simple {
   top: 8px;
   left: 20px;
   padding: 0;
+  /* Fades out while a pick is active: the enlarged mascot would cover it (3.12.3). */
+  transition: opacity 0.15s ease;
+}
+.smp-strip-t.hide {
+  opacity: 0;
 }
 .smp-strip {
   display: flex;
@@ -24698,6 +24703,7 @@ html[data-theme="dark"] .app-simple {
 @media (prefers-reduced-motion: reduce) {
   .smp-sm,
   .smp-sm.on .mascot,
+  .smp-strip-t,
   .smp-balloon {
     transition: none;
     animation: none;

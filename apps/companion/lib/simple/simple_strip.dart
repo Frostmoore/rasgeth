@@ -163,14 +163,20 @@ class _SimpleStripState extends State<SimpleStrip> {
                         ),
                         padding: const EdgeInsets.only(left: 20, top: 8),
                         alignment: Alignment.topLeft,
-                        child: Text(
-                          l.smpYourAgents,
-                          style: TextStyle(
-                            fontSize: 13,
-                            height: 1.2,
-                            color: c.dim,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.5,
+                        // Fades out while a pick is active: the enlarged mascot would cover it.
+                        child: AnimatedOpacity(
+                          key: const Key('strip-title-fade'),
+                          opacity: at >= 0 ? 0 : 1,
+                          duration: reduced ? Duration.zero : const Duration(milliseconds: 150),
+                          child: Text(
+                            l.smpYourAgents,
+                            style: TextStyle(
+                              fontSize: 13,
+                              height: 1.2,
+                              color: c.dim,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
+                            ),
                           ),
                         ),
                       ),

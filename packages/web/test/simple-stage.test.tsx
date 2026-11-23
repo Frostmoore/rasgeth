@@ -490,6 +490,21 @@ describe("the agents' strip at the bottom (3.12.1, «Striscia fitta»)", () => {
     expect(css).toMatch(/prefers-reduced-motion: reduce\) \{\s*\.smp-sm,[^}]*transition: none/);
   });
 
+  it("fades the title out while a pick is active and back after (3.12.3)", async () => {
+    state.agents.value = team();
+    state.chatAgentId.value = "chat";
+    const r = render(<SimpleApp />);
+    const title = r.container.querySelector(".smp-strip-t") as HTMLElement;
+    expect(title.classList.contains("hide")).toBe(false);
+    fireEvent.focus(r.container.querySelector(".smp-sm") as HTMLElement);
+    expect(title.classList.contains("hide")).toBe(true);
+    fireEvent.pointerDown(r.container.querySelector(".smp-hero") ?? document.body);
+    await waitFor(() => expect(title.classList.contains("hide")).toBe(false));
+    const css = readFileSync(join(import.meta.dirname, "..", "src", "styles.css"), "utf8");
+    expect(css).toMatch(/\.smp-strip-t \{[^}]*transition: opacity 0\.15s/);
+    expect(css).toMatch(/\.smp-strip-t\.hide \{\s*opacity: 0/);
+  });
+
   it("is as tall as one mascot and its title, the balloon opening above (3.12.3)", () => {
     const css = readFileSync(join(import.meta.dirname, "..", "src", "styles.css"), "utf8");
     const wrap = css.match(/\n\.smp-strip-wrap \{[^}]*\}/)?.[0] ?? "";
