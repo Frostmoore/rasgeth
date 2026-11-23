@@ -720,6 +720,9 @@ class FakeSystem {
         return ok(_emulators());
       case 'GET /api/emulators/devices':
         return ok({'devices': emulatorDevices});
+      case 'POST /api/emulators/devices/repair':
+        if (!('${b['id']}'.startsWith('ios:'))) return no(400, 'Only an iOS simulator is repaired');
+        return ok({'ok': true});
       case 'POST /api/emulators/devices/stop':
         final d = emulatorDevices.where((x) => x['id'] == b['id']).firstOrNull;
         if (d == null || d['kind'] != 'emulator') return no(404, 'No such emulator');

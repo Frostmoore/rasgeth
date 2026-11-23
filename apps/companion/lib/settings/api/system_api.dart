@@ -557,6 +557,11 @@ extension SystemApi on RedGiantClient {
       EmuDeviceView(d),
   ];
 
+  /// `POST /api/emulators/devices/repair` (3.12.2): the person's repair of an iOS simulator's
+  /// touches (restarts its home screen); only after a confirmation.
+  Future<void> repairDeviceTouches(String id) =>
+      _do('POST', '/api/emulators/devices/repair', {'id': id});
+
   /// `POST /api/emulators/install/plan` (3.11 phase 5): what the guided install would do here.
   Future<EmuInstallPlan> emulatorInstallPlan({
     String? target,

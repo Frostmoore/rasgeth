@@ -19479,4 +19479,23 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get syIbVersion => 'Versione';
+
+  @override
+  String get syDvRepair => 'Ripara i tocchi';
+
+  @override
+  String syDvRepairQ(String name) {
+    return 'Riparare i tocchi di $name?';
+  }
+
+  @override
+  String get syDvRepairText =>
+      'Questo riavvia la schermata iniziale del simulatore e chiude le app aperte. Usalo solo quando i tocchi e i tasti non arrivano più al simulatore. Rasgeth non lo fa mai da solo.';
+
+  @override
+  String get syDvRepairYes => 'Ripara';
+
+  @override
+  String get syDvTouchHint =>
+      'Più tocchi di fila non hanno cambiato lo schermo: forse i tocchi non arrivano.';
 }

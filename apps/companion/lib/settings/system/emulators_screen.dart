@@ -17,6 +17,7 @@ import '../../ui/icons.dart';
 import '../../ui/settings_kit.dart';
 import '../api/system_api.dart';
 import 'emulator_install.dart';
+import 'repair_touches.dart';
 import 'system_kit.dart';
 
 Future<void> openEmulatorsSettings(BuildContext context) =>
@@ -326,6 +327,15 @@ class _DeviceRow extends StatelessWidget {
                   ],
                 ),
                 Text(help, style: TextStyle(color: c.dim, fontSize: 12.5)),
+                if (d.platform == 'ios' && d.state == 'on')
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: OutlinedButton(
+                      key: Key('sy-em-repair-${d.id}'),
+                      onPressed: () => unawaited(repairTouches(context, d.id, d.name)),
+                      child: Text(l.syDvRepair),
+                    ),
+                  ),
               ],
             ),
           ),

@@ -6,6 +6,9 @@
 // `simctl` screenshot, and cleans up: the bridge stopped, a simulator it booted shut down again,
 // the temp folder removed. Nothing outside the temp folder is written.
 //
+// It also prints Settings' first accessibility elements and types an accented string plus an emoji
+// into Safari's address bar through the pasteboard (watch whether iOS asks to allow the paste).
+//
 //   node scripts/ios-trial.mjs --yes [--udid <udid>] [--keep]
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -105,6 +108,43 @@ try {
   await screen.input({ kind: "swipe", x: 0.5, y: 0.7, x2: 0.5, y2: 0.3, ms: 300 });
   await sleep(1500);
   console.log(`frames so far: ${frames}`);
+
+  step("accessibility: the first elements of Settings");
+  const readAx = async () => JSON.parse(await host.shell(pick.udid, ["ax"]));
+  console.log(await host.shell(pick.udid, ["launch", "com.apple.Preferences"]));
+  await sleep(2500);
+  const ax = await readAx();
+  console.log("screen", ax.screen, "elements", ax.elements?.length);
+  for (const e of (ax.elements ?? []).slice(0, 15))
+    console.log(`  ${e.type ?? e.role} ${JSON.stringify(e.label)} ${JSON.stringify(e.frame)}`);
+  if (!ax.elements?.length) throw new Error("The accessibility snapshot has no elements");
+
+  step("text in any language: pasteboard and Cmd+V into Safari's address bar");
+  const wanted = "Perché sì, è così 😀";
+  await host.shell(pick.udid, ["launch", "com.apple.mobilesafari"]);
+  await sleep(3000);
+  const snap = await readAx();
+  const field = (snap.elements ?? []).find((e) =>
+    /TextField|SearchField|Address|URL/i.test(`${e.type} ${e.role} ${e.label}`),
+  );
+  if (!field) console.log("  no address bar found: tap a text field by hand within 8 s");
+  else
+    await screen.input({
+      kind: "tap",
+      x: (field.frame.x + field.frame.width / 2) / snap.screen.width,
+      y: (field.frame.y + field.frame.height / 2) / snap.screen.height,
+    });
+  await sleep(field ? 1500 : 8000);
+  await screen.input({ kind: "text", text: wanted });
+  await sleep(1500);
+  const after = (await readAx()).elements ?? [];
+  const seen = after.some((e) => `${e.value ?? ""} ${e.label ?? ""}`.includes("Perché sì"));
+  console.log(
+    seen
+      ? "  the text shows in the field: OK (note whether iOS asked to allow the paste)"
+      : "  the text is NOT in the accessibility tree: look for a paste prompt on the screen",
+  );
+  await writeFile(join(work, "after-text.json"), JSON.stringify(after, null, 1));
   console.log("size now", screen.size());
   await screen.close();
   console.log("screen ended callbacks:", ended);

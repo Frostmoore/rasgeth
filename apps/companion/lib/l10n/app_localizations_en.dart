@@ -19420,4 +19420,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syIbVersion => 'Version';
+
+  @override
+  String get syDvRepair => 'Repair touches';
+
+  @override
+  String syDvRepairQ(String name) {
+    return 'Repair the touches of $name?';
+  }
+
+  @override
+  String get syDvRepairText =>
+      'This restarts the simulator\'s home screen and closes the apps open on it. Use it only when taps and keys no longer reach the simulator. Rasgeth never does it by itself.';
+
+  @override
+  String get syDvRepairYes => 'Repair';
+
+  @override
+  String get syDvTouchHint =>
+      'Several taps in a row changed nothing on the screen: touches may not be arriving.';
 }

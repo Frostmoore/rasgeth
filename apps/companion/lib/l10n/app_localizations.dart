@@ -33548,6 +33548,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version'**
   String get syIbVersion;
+
+  /// No description provided for @syDvRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Repair touches'**
+  String get syDvRepair;
+
+  /// No description provided for @syDvRepairQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Repair the touches of {name}?'**
+  String syDvRepairQ(String name);
+
+  /// No description provided for @syDvRepairText.
+  ///
+  /// In en, this message translates to:
+  /// **'This restarts the simulator\'s home screen and closes the apps open on it. Use it only when taps and keys no longer reach the simulator. Rasgeth never does it by itself.'**
+  String get syDvRepairText;
+
+  /// No description provided for @syDvRepairYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Repair'**
+  String get syDvRepairYes;
+
+  /// No description provided for @syDvTouchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Several taps in a row changed nothing on the screen: touches may not be arriving.'**
+  String get syDvTouchHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

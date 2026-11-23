@@ -13428,5 +13428,17 @@
   "syIbStepDownload": "Downloading serve-sim",
   "syIbStepInstall": "Installing it in the folder",
   "syIbTitle": "iOS bridge",
-  "syIbVersion": "Version"
+  "syIbVersion": "Version",
+  "syDvRepair": "Repair touches",
+  "syDvRepairQ": "Repair the touches of {name}?",
+  "@syDvRepairQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syDvRepairText": "This restarts the simulator's home screen and closes the apps open on it. Use it only when taps and keys no longer reach the simulator. Rasgeth never does it by itself.",
+  "syDvRepairYes": "Repair",
+  "syDvTouchHint": "Several taps in a row changed nothing on the screen: touches may not be arriving."
 }

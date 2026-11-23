@@ -247,6 +247,8 @@ void main() {
     ];
     await open(tester);
     expect(find.text('Simulatore iOS · acceso · iOS 27.2'), findsOneWidget);
+    expect(find.byKey(const Key('sy-em-repair-ios:UDID1')), findsOneWidget);
+    expect(find.byKey(const Key('sy-em-repair-emulator-5554')), findsNothing);
     await tap(tester, 'sy-em-open-ios:UDID1');
     await _settle(tester, 8);
     expect(server.deviceActs, ['watch ios:UDID1']);
@@ -254,6 +256,19 @@ void main() {
     expect(find.byKey(const Key('dv-rotate')), findsOneWidget);
     expect(find.byKey(const Key('dv-back')), findsNothing);
     expect(find.byKey(const Key('dv-recents')), findsNothing);
+    // «Repair touches»: shown with a hint when taps changed nothing; asked first, then done.
+    expect(find.byKey(const Key('dv-touch-hint')), findsNothing);
+    await tester.runAsync(() async => server.deviceState('ios:UDID1', hint: 'touches'));
+    await _settle(tester);
+    expect(find.byKey(const Key('dv-touch-hint')), findsOneWidget);
+    await tap(tester, 'dv-repair');
+    expect(find.textContaining('chiude le app aperte'), findsOneWidget);
+    expect(sys.calls, isNot(contains('POST /api/emulators/devices/repair')));
+    await tap(tester, 'dialog-no');
+    expect(sys.calls, isNot(contains('POST /api/emulators/devices/repair')));
+    await tap(tester, 'dv-repair');
+    await tap(tester, 'dialog-yes');
+    expect(sys.bodies['POST /api/emulators/devices/repair'], {'id': 'ios:UDID1'});
     await done(tester);
   });
 

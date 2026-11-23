@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import '../api/live_model.dart';
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';
+import '../settings/system/repair_touches.dart';
 import '../settings/system/system_kit.dart' show sw;
 import '../theme/colors.dart';
 import '../ui/icons.dart';
@@ -205,6 +206,27 @@ class _DeviceScreenState extends State<DeviceScreen> {
                   ),
                 ),
               ),
+              if (widget.id.startsWith('ios:'))
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                  child: Wrap(
+                    spacing: 10,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      if (d.hint == 'touches')
+                        Text(
+                          l.syDvTouchHint,
+                          key: const Key('dv-touch-hint'),
+                          style: TextStyle(color: c.err, fontSize: 12.5),
+                        ),
+                      OutlinedButton(
+                        key: const Key('dv-repair'),
+                        onPressed: () => unawaited(repairTouches(context, widget.id, widget.title)),
+                        child: Text(l.syDvRepair),
+                      ),
+                    ],
+                  ),
+                ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),

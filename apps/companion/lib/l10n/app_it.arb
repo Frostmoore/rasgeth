@@ -5575,5 +5575,10 @@
   "syIbStepDownload": "Scarico serve-sim",
   "syIbStepInstall": "Lo installo nella cartella",
   "syIbTitle": "Ponte iOS",
-  "syIbVersion": "Versione"
+  "syIbVersion": "Versione",
+  "syDvRepair": "Ripara i tocchi",
+  "syDvRepairQ": "Riparare i tocchi di {name}?",
+  "syDvRepairText": "Questo riavvia la schermata iniziale del simulatore e chiude le app aperte. Usalo solo quando i tocchi e i tasti non arrivano più al simulatore. Rasgeth non lo fa mai da solo.",
+  "syDvRepairYes": "Ripara",
+  "syDvTouchHint": "Più tocchi di fila non hanno cambiato lo schermo: forse i tocchi non arrivano."
 }

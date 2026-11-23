@@ -558,7 +558,7 @@ class FakeRedGiant {
   final deviceActs = <String>[];
   String deviceStateOf = 'on';
 
-  void deviceState(String id, {String? error}) {
+  void deviceState(String id, {String? error, String? hint}) {
     for (final ws in deviceWatchers[id] ?? const <WebSocket>{}) {
       if (!_dead.contains(ws)) {
         ws.add(
@@ -568,6 +568,7 @@ class FakeRedGiant {
             'state': deviceStateOf,
             'control': deviceControl[id] ?? 'agents',
             'error': ?error,
+            'hint': ?hint,
           }),
         );
       }
