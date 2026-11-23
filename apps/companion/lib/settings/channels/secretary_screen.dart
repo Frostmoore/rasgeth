@@ -160,11 +160,8 @@ extension SecretaryApi on RedGiantClient {
   Future<void> secretarySend(String id, String text) =>
       callJson('POST', '/api/secretary/contacts/${_id(id)}/send', {'text': text});
 
-  Future<void> secretaryApprove(String id, [String? text]) => callJson(
-    'POST',
-    '/api/secretary/pending/${_id(id)}/approve',
-    {if (text != null) 'text': text},
-  );
+  Future<void> secretaryApprove(String id, [String? text]) =>
+      callJson('POST', '/api/secretary/pending/${_id(id)}/approve', {'text': ?text});
 
   Future<void> secretaryRefuse(String id) =>
       callJson('POST', '/api/secretary/pending/${_id(id)}/refuse');
