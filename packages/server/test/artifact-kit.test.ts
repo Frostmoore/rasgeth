@@ -175,7 +175,7 @@ nope();
     expect(widget.indexOf("<script")).toBe(widget.indexOf(WEBRTC_LOCKDOWN_TAG));
     expect(at(widget, '<style id="rg-kit">')).toBeLessThan(at(widget, '<p class="rg-muted">'));
     expect(KIT_STYLE).toContain("--rg-pad:16px");
-    expect(KIT_STYLE_WIDGET).toContain("--rg-pad:4px");
+    expect(KIT_STYLE_WIDGET).toContain("--rg-pad:6px");
   });
 
   it("has both themes, follows the host's, and is transparent (no black box in the chat)", async () => {

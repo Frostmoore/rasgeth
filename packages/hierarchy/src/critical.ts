@@ -1221,6 +1221,8 @@ const OUTBOUND = (name: string) =>
     "publish_board",
     // Its picture and page addresses are downloaded by the server (G40.16).
     "show_products",
+    // The page loads a gallery's pictures from the addresses given (3.12.2).
+    "show_results",
     "image_generation",
     "video_generation",
     "audio_generation",

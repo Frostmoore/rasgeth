@@ -91,6 +91,7 @@ import { AccentPicker } from "./AccentPicker.js";
 import { useArmed } from "./armed.js";
 import { FileCard } from "./Chat.js";
 import { askText } from "./dialogs.js";
+import { FoundCard } from "./FoundWidgets.js";
 import { useFollow } from "./follow-hook.js";
 import { Mascot } from "./Mascot.js";
 import { NudgeControls } from "./NudgeControls.js";
@@ -757,6 +758,8 @@ function DocItem({
       );
     case "products":
       return <ProductCards title={item.title} products={item.products} />;
+    case "found":
+      return <FoundCard widget={item.widget} sessionId={topicId} />;
     case "file":
       return <FileCard item={item} />;
     default:

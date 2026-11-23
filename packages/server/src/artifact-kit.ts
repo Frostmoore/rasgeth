@@ -387,7 +387,7 @@ const squeeze = (css: string) => css.replace(/\n/g, "");
 /** The kit for an artifact (its own page in the Canvas: some air around it). */
 export const KIT_STYLE = squeeze(kitCss("16px"));
 /** The kit for a widget (in a card of the chat, which gives the air; room for focus rings). */
-export const KIT_STYLE_WIDGET = squeeze(kitCss("4px"));
+export const KIT_STYLE_WIDGET = squeeze(kitCss("6px"));
 
 /**
  * The kit's few lines of script, run by the runtime: the slider's fill and value bubble (a pill

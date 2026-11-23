@@ -1223,3 +1223,56 @@ export const IconCaption = ({ size = 15 }: P) => (
     <path d="M7 12.5h6M15 12.5h2M7 15.5h3M12 15.5h5" />
   </Svg>
 );
+
+/** A star (a shop's rating): filled. */
+export const IconStar = ({ size = 14 }: P) => (
+  <Svg size={size} fill>
+    <path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z" />
+  </Svg>
+);
+/** A train. */
+export const IconTrain = ({ size = 16 }: P) => (
+  <Svg size={size}>
+    <rect x="5" y="3" width="14" height="14" rx="3" />
+    <path d="M5 11h14M9 21l2-4M15 21l-2-4" />
+    <circle cx="9" cy="14" r=".6" />
+    <circle cx="15" cy="14" r=".6" />
+  </Svg>
+);
+/** A plane. */
+export const IconPlane = ({ size = 16 }: P) => (
+  <Svg size={size}>
+    <path d="M10.5 13.5L3 11l1.5-2 7.5.5 4-5.5a1.8 1.8 0 0 1 3 2l-3.5 6 2 7-2 .5-4-5.5-3 .5z" />
+  </Svg>
+);
+/** A map pin. */
+export const IconMapPin = ({ size = 16 }: P) => (
+  <Svg size={size}>
+    <path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z" />
+    <circle cx="12" cy="10" r="2.5" />
+  </Svg>
+);
+/** Going on foot. */
+export const IconWalk = ({ size = 16 }: P) => (
+  <Svg size={size}>
+    <circle cx="13" cy="4.5" r="1.8" />
+    <path d="M9 21l2-6 2.5 2.5V21M11 15l.5-5 3 1.5 2 3M11.5 10L8 12" />
+  </Svg>
+);
+/** Public transport. */
+export const IconBus = ({ size = 16 }: P) => (
+  <Svg size={size}>
+    <rect x="4" y="3" width="16" height="15" rx="3" />
+    <path d="M4 11h16M7 21v-3M17 21v-3" />
+    <circle cx="8" cy="14.5" r=".6" />
+    <circle cx="16" cy="14.5" r=".6" />
+  </Svg>
+);
+/** A car. */
+export const IconCar = ({ size = 16 }: P) => (
+  <Svg size={size}>
+    <path d="M5 16V12l2-5h10l2 5v4M3 16h18M5 16v3M19 16v3" />
+    <circle cx="8" cy="13.5" r=".6" />
+    <circle cx="16" cy="13.5" r=".6" />
+  </Svg>
+);

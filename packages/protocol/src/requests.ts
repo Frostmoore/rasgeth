@@ -440,6 +440,20 @@ const SENTENCES: Record<string, Record<Lang, Sentence>> = {
     en: ({ i }) =>
       `Shows you ${Array.isArray(i.products) ? i.products.length : "some"} products as cards`,
   },
+  show_results: {
+    it: ({ i }) =>
+      i.kind === "trips"
+        ? "Ti mostra le soluzioni di viaggio"
+        : i.kind === "route"
+          ? "Ti mostra un percorso su una mappa"
+          : "Ti mostra una galleria di immagini",
+    en: ({ i }) =>
+      i.kind === "trips"
+        ? "Shows you the travel options"
+        : i.kind === "route"
+          ? "Shows you a route on a map"
+          : "Shows you a gallery of pictures",
+  },
   publish_board: {
     it: ({ i, q }) => `Pubblica la tavola ${q(str(i.title) ?? "?")}`,
     en: ({ i, q }) => `Publishes the board ${q(str(i.title) ?? "?")}`,

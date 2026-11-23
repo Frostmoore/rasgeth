@@ -1,4 +1,10 @@
 /* RedGiant — laid out like Officina: light and dark themes (or the system's), red accent. */
+/* Every widget in a conversation (search results, interactive widgets, generated pictures) has the
+   same fixed largest width on large screens (not a share of the window); narrower, it takes the
+   whole line. */
+:root {
+  --chat-widget-max: 640px;
+}
 :root {
   --bg: #f6f7f9;
   --panel: #ffffff;
@@ -7602,8 +7608,8 @@ a.button.primary {
 }
 .chat-image img {
   display: block;
-  max-width: min(100%, 480px);
-  max-height: 360px;
+  max-width: min(100%, var(--chat-widget-max));
+  max-height: 480px;
   width: auto;
   height: auto;
   border-radius: 8px;
@@ -7638,7 +7644,7 @@ a.button.primary {
   font-size: 0.92em;
 }
 .md img {
-  max-width: min(100%, 480px);
+  max-width: min(100%, var(--chat-widget-max));
   max-height: 360px;
   height: auto;
   border-radius: 8px;
@@ -7672,7 +7678,7 @@ a.button.primary {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  max-width: min(100%, 860px);
+  max-width: min(100%, var(--chat-widget-max));
 }
 .products-title {
   font-size: 13px;
@@ -19000,8 +19006,8 @@ fieldset.vw-seg {
 .widget-card {
   flex: none;
   align-self: stretch;
-  max-width: 760px;
-  padding: 8px 10px 10px;
+  max-width: var(--chat-widget-max);
+  padding: 12px 16px 16px;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--panel);
@@ -19011,8 +19017,8 @@ fieldset.vw-seg {
   display: flex;
   align-items: center;
   gap: 8px;
-  min-height: 26px;
-  padding: 0 0 4px 4px;
+  min-height: 28px;
+  padding: 0 0 8px 2px;
   font-size: 12px;
   color: var(--dim);
 }
@@ -19096,7 +19102,7 @@ fieldset.vw-seg {
   flex: none;
 }
 .widget-card .artifact-ask {
-  margin: 8px -10px -10px;
+  margin: 10px -16px -16px;
   border-radius: 0 0 11px 11px;
 }
 .canvas-head .art-make {
@@ -25615,4 +25621,417 @@ fieldset.smp-decide {
 .smp-routing-line {
   color: var(--dim);
   font-size: 0.85em;
+}
+
+/* Stars of a product's rating (3.12.2): five drawn stars, the lit ones clipped to the rating. */
+.stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--dim);
+}
+.stars-row {
+  position: relative;
+  display: inline-block;
+  height: 13px;
+  line-height: 0;
+}
+.stars-row svg {
+  flex: none;
+}
+.stars-off,
+.stars-on {
+  display: inline-flex;
+  white-space: nowrap;
+}
+.stars-off {
+  color: var(--line);
+}
+.stars-on {
+  position: absolute;
+  inset: 0 auto 0 0;
+  overflow: hidden;
+  color: var(--warn);
+}
+.stars-n {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Search widgets in an answer (3.12.2): the same fixed largest width as every widget of a
+   conversation, with room around the header, the rows and the map. */
+.found {
+  align-self: stretch;
+  box-sizing: border-box;
+  max-width: var(--chat-widget-max);
+  padding: 16px 18px 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: 0 1px 2px rgb(16 24 40 / 0.04);
+}
+.found-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin: 0 0 12px;
+}
+.found-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 650;
+  font-size: 14px;
+}
+.found-sub {
+  font-size: 12.5px;
+  color: var(--dim);
+}
+.found-gallery {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 6px;
+  height: 260px;
+}
+.found-gallery.n1 {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+.found-gallery.n2,
+.found-gallery.n3 {
+  grid-template-rows: 1fr 1fr;
+}
+.found-tile {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--panel-2);
+  cursor: zoom-in;
+}
+.found-tile.main {
+  grid-row: 1 / span 2;
+}
+.found-pic {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.found-pic.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dim);
+  background: var(--panel-2);
+}
+.found-pic.large {
+  object-fit: contain;
+  max-height: 70vh;
+}
+.found-more {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0 0 0 / 0.5);
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+}
+.found-all {
+  margin: 12px 0 0;
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.found-all:hover {
+  border-color: var(--accent-dim);
+}
+.found-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+}
+.found-grid .found-tile {
+  aspect-ratio: 4 / 3;
+}
+.found-lightbox {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+.found-lightbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.found-cap {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  justify-content: center;
+  font-size: 13px;
+}
+.found-cap a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.found-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+}
+.found-nav:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.found-offers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.found-offer {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+.found-times {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.found-arrow {
+  width: 18px;
+  height: 1px;
+  background: var(--dim);
+  position: relative;
+}
+.found-arrow::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-top: 1px solid var(--dim);
+  border-right: 1px solid var(--dim);
+  transform: rotate(45deg);
+}
+.found-offer-body,
+.found-offer-side {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.found-offer-side {
+  align-items: flex-end;
+}
+.found-label {
+  font-weight: 600;
+  font-size: 14px;
+}
+.found-price {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.found-choose,
+.found-maps {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 16px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.found-maps {
+  margin-left: auto;
+  background: transparent;
+  color: var(--accent);
+}
+.found-choose:hover {
+  background: var(--accent-2);
+}
+.found-map {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+}
+.found-map-bg {
+  fill: var(--panel-2);
+}
+.found-map-grid {
+  stroke: var(--line);
+  stroke-width: 1;
+  opacity: 0.6;
+}
+.found-map-casing {
+  fill: none;
+  stroke: var(--panel);
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.found-map-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.found-map-start {
+  fill: var(--panel);
+  stroke: var(--accent);
+  stroke-width: 4;
+}
+.found-map-end {
+  fill: var(--accent);
+  stroke: var(--panel);
+  stroke-width: 3;
+}
+.found-map-dot {
+  fill: var(--panel);
+}
+.found-map-label {
+  fill: var(--text);
+  font-size: 13px;
+  font-weight: 650;
+  paint-order: stroke;
+  stroke: var(--panel-2);
+  stroke-width: 4;
+}
+.found-route-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 14px 0 10px;
+}
+.found-duration {
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+.found-modes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.found-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel-2);
+  color: var(--dim);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.found-mode.on {
+  background: var(--accent-soft);
+  border-color: var(--accent-dim);
+  color: var(--text);
+}
+.found-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.found-steps li {
+  display: flex;
+  gap: 12px;
+  font-size: 13.5px;
+}
+.found-step-min {
+  flex: none;
+  min-width: 52px;
+  color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+.found-note {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--dim);
+}
+@media (max-width: 560px) {
+  .found {
+    padding: 14px;
+  }
+  .found-gallery {
+    height: 220px;
+  }
+  .found-offer {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .found-offer-side {
+    align-items: flex-end;
+  }
+  .found-choose {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+  .found-maps {
+    margin-left: 0;
+  }
+}
+/* A whole product card opens the shop (3.12.2): the «Open» link covers it. */
+.product-card {
+  position: relative;
+}
+.product-open::after {
+  content: "";
+  position: absolute;
+  inset: 0;
 }

@@ -5,6 +5,7 @@ import type {
   AssistantPart,
   CanvasState,
   Event,
+  FoundWidget,
   ImagePart,
   JobProgress,
   MessageMetrics,
@@ -166,6 +167,8 @@ export type ChatItem =
     }
   /** Product cards an agent showed (G40.16): a carousel with the server's pictures. */
   | { kind: "products"; key: string; title?: string; products: ProductCard[] }
+  /** A search widget (3.12.2): pictures, trains or flights, a route. */
+  | { kind: "found"; key: string; widget: FoundWidget }
   /** A board of variants (G25.4): a card that opens it, with what the person said. */
   | {
       kind: "variants";
@@ -576,6 +579,9 @@ export function buildItems(events: Event[]): ChatItem[] {
           ...(e.payload.title && { title: e.payload.title }),
           products: e.payload.products,
         });
+        break;
+      case "found.shown":
+        items.push({ kind: "found", key, widget: e.payload });
         break;
       case "canvas.show":
         items.push({ kind: "canvas", key, title: e.payload.title, target: e.payload.target });
@@ -2995,6 +3001,7 @@ const DOCUMENT_KINDS = new Set<ChatItem["kind"]>([
   "assistant",
   "question",
   "products",
+  "found",
   "file",
   "widget",
   "routed",

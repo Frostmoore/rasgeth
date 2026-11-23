@@ -4,7 +4,7 @@
 import type { ProductCard } from "@redgiant/protocol";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { lang, t } from "../i18n.js";
-import { IconBag, IconChevronLeft, IconChevronRight, IconExternal } from "../icons.js";
+import { IconBag, IconChevronLeft, IconChevronRight, IconExternal, IconStar } from "../icons.js";
 import { getApi } from "../state.js";
 
 /** A page people may open from a card: http or https only. */
@@ -68,6 +68,32 @@ function Picture({ image, name, load }: { image?: string; name: string; load: Lo
   );
 }
 
+/** Five stars, filled to the rating (0 to 5), with the number and, when known, the reviews. */
+export function Stars({ rating, reviews }: { rating: number; reviews?: number | undefined }) {
+  const row = (
+    <>
+      {[0, 1, 2, 3, 4].map((i) => (
+        <IconStar key={i} size={13} />
+      ))}
+    </>
+  );
+  return (
+    <span class="stars" title={t("foundRating", { n: rating.toFixed(1) })}>
+      <span class="stars-row" aria-hidden="true">
+        <span class="stars-off">{row}</span>
+        <span
+          class="stars-on"
+          style={{ width: `${(Math.min(5, Math.max(0, rating)) / 5) * 100}%` }}
+        >
+          {row}
+        </span>
+      </span>
+      <span class="stars-n">{rating.toFixed(1)}</span>
+      {reviews !== undefined && <span class="stars-reviews">({reviews})</span>}
+    </span>
+  );
+}
+
 function Card({ p, load }: { p: ProductCard; load: Load }) {
   const link = safeLink(p.url);
   const price = priceText(p.price, p.currency);
@@ -78,6 +104,7 @@ function Card({ p, load }: { p: ProductCard; load: Load }) {
         <strong class="product-name" title={p.name}>
           {p.name}
         </strong>
+        {p.rating !== undefined && <Stars rating={p.rating} reviews={p.reviews} />}
         {price && <span class="product-price">{price}</span>}
         {p.shop && <span class="product-shop">{p.shop}</span>}
         {p.description && <p class="product-desc">{p.description}</p>}

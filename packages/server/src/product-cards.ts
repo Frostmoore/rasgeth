@@ -26,6 +26,8 @@ const Product = z.object({
   shop: z.string().trim().max(80).optional(),
   url: WebLink,
   image_url: WebLink.optional(),
+  rating: z.number().min(0).max(5).optional(),
+  reviews: z.number().int().nonnegative().optional(),
   description: z.string().trim().max(300).optional(),
   source: z.number().int().min(1).max(99).optional(),
 });
@@ -89,6 +91,8 @@ export function showProductsTool(_agent: AgentRecord, host: ProductsToolHost): T
                   type: "string",
                   description: "The address of its picture (http or https), from the page",
                 },
+                rating: { type: "number", description: "The shop's rating, 0 to 5" },
+                reviews: { type: "number", description: "How many reviews it rests on" },
                 description: { type: "string", description: "One line about it" },
                 source: {
                   type: "number",
@@ -115,6 +119,8 @@ export function showProductsTool(_agent: AgentRecord, host: ProductsToolHost): T
           ...(p.currency && { currency: p.currency }),
           ...(p.shop && { shop: p.shop }),
           url: p.url,
+          ...(p.rating !== undefined && { rating: p.rating }),
+          ...(p.reviews !== undefined && { reviews: p.reviews }),
           ...(p.description && { description: p.description }),
           ...(p.source !== undefined && { source: p.source }),
           ...(p.image_url && { imageUrl: p.image_url }),

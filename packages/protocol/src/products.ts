@@ -35,6 +35,9 @@ export const ProductCard = z.object({
   shop: z.string().max(80).optional(),
   /** The product's page: opened only when the person presses «Open». */
   url: WebLink,
+  /** The shop's rating, 0 to 5, and how many reviews it rests on (stars in the card). */
+  rating: z.number().min(0).max(5).optional(),
+  reviews: z.number().int().nonnegative().optional(),
   /** One line about it. */
   description: z.string().max(300).optional(),
   /** The number of the web source it comes from, as the answer cites it ([1], [2]…). */

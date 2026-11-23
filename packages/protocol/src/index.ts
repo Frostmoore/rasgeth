@@ -26,6 +26,7 @@ export * from "./events.js";
 export * from "./ffmpeg.js";
 export * from "./find-timing.js";
 export * from "./firstboot.js";
+export * from "./found.js";
 export * from "./image-filters.js";
 export * as imagePx from "./image-pixels.js";
 export * from "./image-text.js";

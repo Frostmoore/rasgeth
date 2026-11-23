@@ -4,6 +4,7 @@ import { AutomationRunStatus, AutomationTrigger } from "./automations.js";
 import { CanvasDo, CanvasTargetSchema } from "./canvas.js";
 import { MAX_NOTES, MAX_QUOTES, MessageQuote } from "./chat-tools.js";
 import { DocDecidedPayload, DocOpsPayload, DocProposedPayload, DocReplacedPayload } from "./doc.js";
+import { FoundWidget } from "./found.js";
 import { AssistantPart, ImagePart, NativeContent, StopReason } from "./messages.js";
 import { MessageMetrics } from "./metrics.js";
 import { PortraitAgents, PortraitTraitPayload } from "./portrait.js";
@@ -482,6 +483,11 @@ export const EventBody = z.discriminatedUnion("type", [
    * references, drawn as a carousel; the model read only a summary in words.
    */
   z.object({ type: z.literal("products.shown"), payload: ProductsShownPayload }),
+  /**
+   * A search widget an agent showed (3.12.2, show_results): a gallery of pictures, trains or
+   * flights, a route. The data is in the log, so it comes back on reload and in rebuildHistory.
+   */
+  z.object({ type: z.literal("found.shown"), payload: FoundWidget }),
   /** A compaction undone by the person: the whole history comes back (nothing was deleted). */
   z.object({
     type: z.literal("compaction.undone"),

@@ -306,6 +306,8 @@ export const READ_ONLY_TOOLS = new Set([
   "view_image",
   // Product cards (G40.16): shown in the answer; the server only downloads public pictures.
   "show_products",
+  // Widgets for pictures, trains, flights and routes (3.12.2): only shown, nothing is paid.
+  "show_results",
   "list_agents",
   "read_agent",
   "board_list",

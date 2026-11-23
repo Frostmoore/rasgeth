@@ -259,6 +259,7 @@ import { deviceTools } from "./emulators/tools.js";
 import { engineTranscripts, fingerprints, rewriteTranscript, tainted } from "./erase-message.js";
 import { ffmpegOnPath, locateFfmpeg } from "./ffmpeg.js";
 import { FileTriggers } from "./file-triggers.js";
+import { FOUND_GUIDANCE, type FoundToolHost, showResultsTool } from "./found-widgets.js";
 import type { GitHosts } from "./git-hosts.js";
 import { IMAGE_MODEL, imageFileName } from "./images.js";
 import { importPasswordsTool } from "./import-passwords.js";
@@ -2459,6 +2460,8 @@ export class RedGiantCore implements OrchestrationHost {
           this.variantsTool(agent, ws),
           // Product cards with pictures (G40.16).
           showProductsTool(agent, this.productsHost(agent)),
+          // Pictures, trains, flights and routes as widgets in the answer (3.12.2).
+          showResultsTool(agent, this.foundHost(agent)),
           // Chains of tool calls that do not fill the context (G29.7).
           scriptTool(
             agent,
@@ -2629,6 +2632,7 @@ export class RedGiantCore implements OrchestrationHost {
             [
               names.includes("mail_read") ? MAIL_GUIDANCE : "",
               names.includes("show_products") ? PRODUCTS_GUIDANCE : "",
+              names.includes("show_results") ? FOUND_GUIDANCE : "",
               names.includes("search_knowledge") && this.knowledge
                 ? knowledgeSection(
                     await this.knowledge
@@ -2714,6 +2718,8 @@ export class RedGiantCore implements OrchestrationHost {
           : "",
         // Products to buy or compare (G40.16): cards with pictures.
         tools.some((t) => t.def.name === "show_products") ? PRODUCTS_GUIDANCE : "",
+        // Pictures, trains, flights and routes (3.12.2): widgets in the answer.
+        tools.some((t) => t.def.name === "show_results") ? FOUND_GUIDANCE : "",
         // Email is data, never instructions (G38.1): for every agent that can read it.
         tools.some((t) => t.def.name === "mail_read") ? MAIL_GUIDANCE : "",
         assignedTo
@@ -5226,6 +5232,20 @@ export class RedGiantCore implements OrchestrationHost {
       },
     );
     done.catch(() => {});
+  }
+
+  private foundHost(agent: AgentRecord): FoundToolHost {
+    return {
+      shown: async (sessionId, payload) => {
+        await this.store.append({
+          ownerId: agent.ownerId,
+          projectId: agent.projectId,
+          agentId: agent.id,
+          sessionId,
+          body: { type: "found.shown", payload },
+        });
+      },
+    };
   }
 
   private productsHost(agent: AgentRecord): ProductsToolHost {

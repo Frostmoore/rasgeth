@@ -93,6 +93,7 @@ import {
 import { CommandStrip } from "./CommandStrip.js";
 import { Composer, packMessage } from "./Composer.js";
 import { askText } from "./dialogs.js";
+import { FoundCard } from "./FoundWidgets.js";
 import { useFollow } from "./follow-hook.js";
 import { Images } from "./Images.js";
 import { MailRequestPreview, MailToolCard, mailSummary } from "./MailCards.js";
@@ -968,6 +969,8 @@ function Item({
       return <FileCard item={item} />;
     case "products":
       return <ProductCards title={item.title} products={item.products} />;
+    case "found":
+      return <FoundCard widget={item.widget} sessionId={sessionId} />;
     case "widget":
       return (
         <WidgetCard

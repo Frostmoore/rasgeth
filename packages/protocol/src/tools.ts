@@ -135,6 +135,8 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   one("send_file", "canvas", "core"),
   // Product cards with pictures (G40.16): things to buy or compare, in a carousel.
   one("show_products", "canvas", "present"),
+  // Pictures, trains, flights and routes as widgets in the answer (3.12.2).
+  one("show_results", "canvas", "present"),
   one("publish_board", "canvas", "present"),
   one("image_generation", "canvas", "images"),
   one("video_generation", "canvas", "video"),
