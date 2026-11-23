@@ -88,6 +88,8 @@ const lastSent = () => sent()?.at(-1);
 const topics = async () => (await (s as Server).core.topics.list("me")).topics;
 const events = (sid: string) => (s as Server).core.store.list({ sessionId: sid });
 const types = (es: Event[]) => es.map((e) => e.type);
+const keyboard = (body: Record<string, unknown> | undefined) =>
+  (body?.reply_markup as Keyboard | undefined)?.inline_keyboard ?? [];
 type Keyboard = { inline_keyboard: { text: string; callback_data: string }[][] };
 
 describe("God's topics on Telegram", () => {
@@ -170,12 +172,12 @@ describe("God's topics on Telegram", () => {
     await say(tg?.text(USER, "Prepara il preventivo per Rossi"));
     await say(tg?.text(USER, "/nuovo"));
     await say(tg?.text(USER, "Backup NAS"));
-    const button = (lastSent()?.body.reply_markup as Keyboard).inline_keyboard[0]?.[0];
+    const button = keyboard(lastSent()?.body)[0]?.[0];
     expect(button?.text).toBe("Move");
     await say(tg?.button(USER, button?.callback_data as string));
     const menu = lastSent()?.body;
     expect(menu?.text).toBe("Move this exchange to:");
-    const rows = (menu?.reply_markup as Keyboard).inline_keyboard;
+    const rows = keyboard(menu);
     // The other active topic, then «New topic».
     expect(rows.map((x) => x[0]?.text)).toEqual(["Preventivo Rossi", "New topic"]);
     await say(tg?.button(USER, rows[0]?.[0]?.callback_data as string));
@@ -191,7 +193,7 @@ describe("God's topics on Telegram", () => {
     ).toBe(true);
     // /sposta then «New topic» opens one.
     await say(tg?.text(USER, "/sposta"));
-    const rows2 = (lastSent()?.body.reply_markup as Keyboard).inline_keyboard;
+    const rows2 = keyboard(lastSent()?.body);
     await say(tg?.button(USER, rows2.at(-1)?.[0]?.callback_data as string));
     expect((await topics()).length).toBe(3);
   });
