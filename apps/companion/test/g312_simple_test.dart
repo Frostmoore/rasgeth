@@ -545,6 +545,21 @@ void main() {
       await done(tester);
     });
 
+    testWidgets('3.12.3: the title fades out while a pick is active, and back', (tester) async {
+      await open(tester, size: const Size(390, 844));
+      double op() =>
+          tester.widget<AnimatedOpacity>(find.byKey(const Key('strip-title-fade'))).opacity;
+      expect(op(), 1);
+      await tester.tap(find.byKey(const Key('strip-a2')));
+      await _settle(tester, 2);
+      expect(op(), 0);
+      await tester.tapAt(const Offset(200, 40));
+      await _settle(tester, 2);
+      await tester.pump(const Duration(seconds: 1));
+      expect(op(), 1);
+      await done(tester);
+    });
+
     testWidgets(
       '3.12.3: a pick change animates: the old shrinks, the new grows, the balloon slides',
       (tester) async {
