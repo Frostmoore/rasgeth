@@ -419,6 +419,34 @@ void main() {
       await done(tester);
     });
 
+    testWidgets('3.12.2: the strip floats; one balloon follows the pick; a tap outside deselects', (
+      tester,
+    ) async {
+      await open(tester, size: const Size(390, 844));
+      final strip = find.byKey(const Key('simple-strip'));
+      expect(strip, findsOneWidget);
+      // Floating: at the bottom of the window, still there after the content scrolled.
+      expect(tester.getBottomLeft(strip).dy, closeTo(844, 1));
+      await tester.drag(find.byType(SingleChildScrollView).first, const Offset(0, -600));
+      await _settle(tester, 2);
+      expect(tester.getBottomLeft(strip).dy, closeTo(844, 1));
+      // The pick changes: the old one back to its size, the new one grown, one balloon.
+      await tester.tap(find.byKey(const Key('strip-a2')));
+      await _settle(tester, 2);
+      await tester.tap(find.byKey(const Key('strip-a1')));
+      await _settle(tester, 2);
+      expect(find.byKey(const Key('strip-balloon')), findsOneWidget);
+      // A tap on the strip itself keeps the pick; one outside picks nobody.
+      await tester.tapAt(tester.getTopLeft(strip) + const Offset(200, 8));
+      await _settle(tester, 2);
+      expect(find.byKey(const Key('strip-balloon')), findsOneWidget);
+      await tester.tapAt(const Offset(200, 40));
+      await _settle(tester, 2);
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.byKey(const Key('strip-balloon')), findsNothing);
+      await done(tester);
+    });
+
     testWidgets('3.12.1: a card shows the agents of its topic; a card with nobody, none', (
       tester,
     ) async {

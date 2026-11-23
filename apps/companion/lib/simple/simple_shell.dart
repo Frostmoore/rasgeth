@@ -460,154 +460,163 @@ class _TodayScreenState extends State<TodayScreen> {
                   if (context.mounted) unawaited(openTopic(context, id, s.titleOf(id) ?? ''));
                 });
               }
-              return SingleChildScrollView(
-                child: _Column(
-                  width: 980,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 8, 8, 0),
-                        child: Row(
-                          children: [
-                            Text(
-                              kProductName,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 15,
-                                color: c.dim,
-                              ),
-                            ),
-                            const Spacer(),
-                            IconButton(
-                              key: const Key('simple-settings'),
-                              tooltip: l.smpSettings,
-                              onPressed: () => Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) => const SimpleSettingsScreen(),
-                                ),
-                              ),
-                              icon: RgIcon(RgIcons.settings, size: 21, color: c.text),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // 3.12.1: God giant at the centre, above the greeting.
-                      const SimpleStage(),
-                      if (!chat && s.nudge != null) _NudgeBalloon(nudge: s.nudge!),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
+              // The scroll, and the agents' strip floating under it (3.12.2): always in sight.
+              return Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: _Column(
+                        width: 980,
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Text(
-                              _greeting(l, app.personName.trim()),
-                              key: const Key('simple-greeting'),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.w700,
-                                color: c.text,
-                                height: 1.2,
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 8, 8, 0),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    kProductName,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 15,
+                                      color: c.dim,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  IconButton(
+                                    key: const Key('simple-settings'),
+                                    tooltip: l.smpSettings,
+                                    onPressed: () => Navigator.of(context).push(
+                                      MaterialPageRoute<void>(
+                                        builder: (_) => const SimpleSettingsScreen(),
+                                      ),
+                                    ),
+                                    icon: RgIcon(RgIcons.settings, size: 21, color: c.text),
+                                  ),
+                                ],
                               ),
                             ),
-                            const SizedBox(height: 6),
-                            Text(
-                              chat ? l.smpChatLead : (s.invite ?? l.smpHeroLead),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 15.5, color: c.dim),
+                            // 3.12.1: God giant at the centre, above the greeting.
+                            const SimpleStage(),
+                            if (!chat && s.nudge != null) _NudgeBalloon(nudge: s.nudge!),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    _greeting(l, app.personName.trim()),
+                                    key: const Key('simple-greeting'),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.w700,
+                                      color: c.text,
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    chat ? l.smpChatLead : (s.invite ?? l.smpHeroLead),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 15.5, color: c.dim),
+                                  ),
+                                ],
+                              ),
                             ),
+                            AskBox(
+                              key: Key('simple-ask-${s.front.name}'),
+                              big: true,
+                              hint: chat ? l.smpChatHint : l.smpAskHint,
+                              send: chat ? satelliteLilac : null,
+                              onTyping: s.typed,
+                              onSend: (text) async {
+                                if (chat) {
+                                  final sid = await s.askChat(
+                                    text,
+                                    chatAgent: app.ensureChatAgent,
+                                    send: app.send,
+                                  );
+                                  if (sid == null || !context.mounted) return false;
+                                  unawaited(openChat(context, sid, _shortTitle(text)));
+                                  return true;
+                                }
+                                // A generic nudge's invitation goes once the person writes.
+                                s.wrote();
+                                final r = await s.ask(text);
+                                if (r == null || !context.mounted) return false;
+                                unawaited(openTopic(context, r.sessionId, r.routed.title));
+                                return true;
+                              },
+                            ),
+                            if (!chat && s.routingText != null) _Routing(text: s.routingText!),
+                            if (s.error != null) _ErrorLine(s.error!),
+                            if (chat) _RecentChats(app: app),
+                            if (!chat && others > 0)
+                              _WaitingLine(
+                                text: others == 1 ? l.smpOtherOne : l.smpOtherMany('$others'),
+                                onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute<void>(
+                                    builder: (_) => const SimpleRequestsScreen(),
+                                  ),
+                                ),
+                              ),
+                            // The ready-made assistants (3.12, still to be defined): none, nothing shown.
+                            if (!chat && s.assistants.isNotEmpty) _Assistants(list: s.assistants),
+                            if (!chat)
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
+                                child: Text(
+                                  l.smpInProgress,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: c.dim,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ),
+                            if (chat)
+                              const SizedBox.shrink()
+                            else if (s.topics.isEmpty && s.trouble != null)
+                              _TopicsTrouble(why: s.trouble!)
+                            else if (s.topics.isEmpty)
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                child: Text(
+                                  s.loaded ? l.smpNoTopics : l.smpLoading,
+                                  style: TextStyle(color: c.dim, fontSize: 15, height: 1.45),
+                                ),
+                              )
+                            else
+                              _Cards(topics: s.topics),
+                            if (!chat)
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(12, 6, 20, 24),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: TextButton.icon(
+                                    key: const Key('simple-archive'),
+                                    onPressed: () => Navigator.of(context).push(
+                                      MaterialPageRoute<void>(
+                                        builder: (_) => const SimpleArchiveScreen(),
+                                      ),
+                                    ),
+                                    icon: RgIcon(RgIcons.archive, size: 16, color: c.accent2),
+                                    label: Text(
+                                      l.smpArchive('${s.archivedCount}'),
+                                      style: TextStyle(color: c.accent2, fontSize: 14.5),
+                                    ),
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
                       ),
-                      AskBox(
-                        key: Key('simple-ask-${s.front.name}'),
-                        big: true,
-                        hint: chat ? l.smpChatHint : l.smpAskHint,
-                        send: chat ? satelliteLilac : null,
-                        onTyping: s.typed,
-                        onSend: (text) async {
-                          if (chat) {
-                            final sid = await s.askChat(
-                              text,
-                              chatAgent: app.ensureChatAgent,
-                              send: app.send,
-                            );
-                            if (sid == null || !context.mounted) return false;
-                            unawaited(openChat(context, sid, _shortTitle(text)));
-                            return true;
-                          }
-                          // A generic nudge's invitation goes once the person writes.
-                          s.wrote();
-                          final r = await s.ask(text);
-                          if (r == null || !context.mounted) return false;
-                          unawaited(openTopic(context, r.sessionId, r.routed.title));
-                          return true;
-                        },
-                      ),
-                      if (!chat && s.routingText != null) _Routing(text: s.routingText!),
-                      if (s.error != null) _ErrorLine(s.error!),
-                      if (chat) _RecentChats(app: app),
-                      if (!chat && others > 0)
-                        _WaitingLine(
-                          text: others == 1 ? l.smpOtherOne : l.smpOtherMany('$others'),
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute<void>(builder: (_) => const SimpleRequestsScreen()),
-                          ),
-                        ),
-                      // The ready-made assistants (3.12, still to be defined): none, nothing shown.
-                      if (!chat && s.assistants.isNotEmpty) _Assistants(list: s.assistants),
-                      if (!chat)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
-                          child: Text(
-                            l.smpInProgress,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: c.dim,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      if (chat)
-                        const SizedBox.shrink()
-                      else if (s.topics.isEmpty && s.trouble != null)
-                        _TopicsTrouble(why: s.trouble!)
-                      else if (s.topics.isEmpty)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                          child: Text(
-                            s.loaded ? l.smpNoTopics : l.smpLoading,
-                            style: TextStyle(color: c.dim, fontSize: 15, height: 1.45),
-                          ),
-                        )
-                      else
-                        _Cards(topics: s.topics),
-                      if (!chat)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(12, 6, 20, 24),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: TextButton.icon(
-                              key: const Key('simple-archive'),
-                              onPressed: () => Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) => const SimpleArchiveScreen(),
-                                ),
-                              ),
-                              icon: RgIcon(RgIcons.archive, size: 16, color: c.accent2),
-                              label: Text(
-                                l.smpArchive('${s.archivedCount}'),
-                                style: TextStyle(color: c.accent2, fontSize: 14.5),
-                              ),
-                            ),
-                          ),
-                        ),
-                      // 3.12.1: every agent's mascot in a strip at the bottom.
-                      const SimpleStrip(),
-                    ],
+                    ),
                   ),
-                ),
+                  // 3.12.1: every agent's mascot in a strip at the bottom.
+                  const SimpleStrip(),
+                ],
               );
             },
           ),

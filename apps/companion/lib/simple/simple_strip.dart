@@ -2,7 +2,9 @@
 // tavole-mascotte-chat/striscia-fitta.html): the mascots of every agent, overlapping by almost
 // half. The mouse over it, or a finger sliding along it, enlarges the one under it (its neighbours
 // a little); it makes a small movement and a balloon with its name and live state appears above;
-// tapping the balloon opens its conversation.
+// tapping the balloon opens its conversation. 3.12.2: the strip floats at the bottom of the
+// screen (outside what scrolls), the one balloon slides to the newly picked one and fades, and a
+// tap outside the strip and its balloon picks nobody.
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -64,6 +66,17 @@ class SimpleStrip extends StatefulWidget {
 class _SimpleStripState extends State<SimpleStrip> {
   String? _on;
 
+  /// The balloon's agent: the last one picked, kept while the balloon fades out.
+  String? _shown;
+
+  void _pick(String? id) {
+    if (id == _on) return;
+    setState(() {
+      _on = id;
+      if (id != null) _shown = id;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final app = AppScope.of(context);
@@ -76,103 +89,131 @@ class _SimpleStripState extends State<SimpleStrip> {
     // Overlapping by almost half.
     final step = size * 0.55;
     final at = list.indexWhere((a) => a.id == _on);
+    final shownAt = list.indexWhere((a) => a.id == (_on ?? _shown));
     final reduced = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
-    return Container(
-      key: const Key('simple-strip'),
-      margin: const EdgeInsets.only(top: 18),
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: c.line)),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Colors.transparent, c.text.withValues(alpha: 0.05)],
+    final slide = reduced ? Duration.zero : const Duration(milliseconds: 220);
+    return TapRegion(
+      onTapOutside: (_) => _pick(null),
+      child: Container(
+        key: const Key('simple-strip'),
+        decoration: BoxDecoration(
+          color: c.bg,
+          border: Border(top: BorderSide(color: c.line)),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.transparent, c.text.withValues(alpha: 0.05)],
+          ),
         ),
-      ),
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: Text(
-              l.smpYourAgents,
-              style: TextStyle(
-                fontSize: 13,
-                color: c.dim,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.5,
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Text(
+                l.smpYourAgents,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: c.dim,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
-          ),
-          LayoutBuilder(
-            builder: (context, box) {
-              final width = step * (list.length - 1) + size;
-              final left0 = math.max(0.0, (box.maxWidth - width) / 2);
-              final centres = [for (var i = 0; i < list.length; i++) left0 + i * step + size / 2];
-              void under(double x) {
-                final i = nearestIndex(centres, x);
-                if (i >= 0 && list[i].id != _on) setState(() => _on = list[i].id);
-              }
+            LayoutBuilder(
+              builder: (context, box) {
+                final width = step * (list.length - 1) + size;
+                final left0 = math.max(0.0, (box.maxWidth - width) / 2);
+                final centres = [for (var i = 0; i < list.length; i++) left0 + i * step + size / 2];
+                void under(double x) {
+                  final i = nearestIndex(centres, x);
+                  if (i >= 0) _pick(list[i].id);
+                }
 
-              // The picked one on top, its neighbours under it, the rest in order.
-              final order = [for (var i = 0; i < list.length; i++) i]
-                ..sort((a, b) {
-                  int rank(int i) => i == at ? 2 : (at >= 0 && (i - at).abs() == 1 ? 1 : 0);
-                  final r = rank(a).compareTo(rank(b));
-                  return r != 0 ? r : b.compareTo(a);
-                });
-              return MouseRegion(
-                onHover: (e) => under(e.localPosition.dx),
-                onExit: (_) => setState(() => _on = null),
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onPanDown: (d) => under(d.localPosition.dx),
-                  onPanUpdate: (d) => under(d.localPosition.dx),
-                  child: SizedBox(
-                    height: size * 1.75 + 64,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        for (final i in order)
-                          Positioned(
-                            left: centres[i] - size / 2,
-                            bottom: 0,
-                            child: _Mini(
-                              key: Key('strip-${list[i].id}'),
-                              agent: list[i],
-                              size: size,
-                              scale: i == at ? 1.75 : (at >= 0 && (i - at).abs() == 1 ? 1.22 : 1.0),
-                              on: i == at,
-                              reduced: reduced,
-                              onFocus: () => setState(() => _on = list[i].id),
-                            ),
-                          ),
-                        if (at >= 0)
-                          Positioned(
-                            left: 0,
-                            right: 0,
-                            top: 0,
-                            child: Align(
-                              alignment: Alignment(
-                                box.maxWidth <= 0 ? 0 : (centres[at] / box.maxWidth) * 2 - 1,
-                                -1,
-                              ),
-                              child: _Balloon(
-                                agent: list[at],
-                                state: words.stateWord(l, app.live.mascotStateOf(list[at].id)),
-                                onTap: () =>
-                                    unawaited(openAgentConversation(context, app, list[at])),
+                // The picked one on top, its neighbours under it, the rest in order.
+                final order = [for (var i = 0; i < list.length; i++) i]
+                  ..sort((a, b) {
+                    int rank(int i) => i == at ? 2 : (at >= 0 && (i - at).abs() == 1 ? 1 : 0);
+                    final r = rank(a).compareTo(rank(b));
+                    return r != 0 ? r : b.compareTo(a);
+                  });
+                return MouseRegion(
+                  onHover: (e) => under(e.localPosition.dx),
+                  onExit: (_) => _pick(null),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onPanDown: (d) => under(d.localPosition.dx),
+                    onPanUpdate: (d) => under(d.localPosition.dx),
+                    child: SizedBox(
+                      height: size * 1.75 + 64,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          for (final i in order)
+                            Positioned(
+                              left: centres[i] - size / 2,
+                              bottom: 0,
+                              child: _Mini(
+                                key: Key('strip-${list[i].id}'),
+                                agent: list[i],
+                                size: size,
+                                scale: i == at
+                                    ? 1.75
+                                    : (at >= 0 && (i - at).abs() == 1 ? 1.22 : 1.0),
+                                on: i == at,
+                                reduced: reduced,
+                                onFocus: () => _pick(list[i].id),
                               ),
                             ),
-                          ),
-                      ],
+                          if (shownAt >= 0)
+                            Positioned(
+                              left: 0,
+                              right: 0,
+                              top: 0,
+                              child: IgnorePointer(
+                                ignoring: at < 0,
+                                child: AnimatedAlign(
+                                  duration: slide,
+                                  curve: Curves.easeOut,
+                                  alignment: Alignment(
+                                    box.maxWidth <= 0
+                                        ? 0
+                                        : (centres[shownAt] / box.maxWidth) * 2 - 1,
+                                    -1,
+                                  ),
+                                  child: AnimatedOpacity(
+                                    key: const Key('strip-balloon-fade'),
+                                    duration: slide,
+                                    opacity: at >= 0 ? 1 : 0,
+                                    onEnd: () {
+                                      if (_on == null && _shown != null && mounted) {
+                                        setState(() => _shown = null);
+                                      }
+                                    },
+                                    child: _Balloon(
+                                      agent: list[shownAt],
+                                      state: words.stateWord(
+                                        l,
+                                        app.live.mascotStateOf(list[shownAt].id),
+                                      ),
+                                      onTap: () => unawaited(
+                                        openAgentConversation(context, app, list[shownAt]),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-          ),
-        ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

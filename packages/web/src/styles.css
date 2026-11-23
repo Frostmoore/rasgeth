@@ -24231,6 +24231,7 @@ html[data-theme="dark"] .app-simple {
 }
 .smp-today .smp-wrap {
   overflow-y: auto;
+  /* The strip's wrapper is its last child, pushed to the bottom when the content is short. */
   max-width: 980px;
 }
 .smp-error {
@@ -24563,17 +24564,22 @@ html[data-theme="dark"] .app-simple {
 }
 /* The agents' strip (3.12.1, «Striscia fitta»): overlapping by almost half; the one under the
    mouse or the finger grows (its neighbours a little) and its balloon says name and state. */
+.smp-today .smp-wrap > .smp-strip-wrap {
+  margin-top: auto;
+}
 .smp-strip-wrap {
-  position: relative;
+  /* Floats at the bottom of the window (3.12.2): over the scrolled content, always in sight; as
+     the last child it also takes its own room, so the last cards are never hidden. */
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
   margin: 18px 0 0;
-  /* Room for the balloon above the enlarged one. */
-  padding: 104px 12px 18px;
+  /* Room for the balloon above the enlarged one; the phone's safe area below. */
+  padding: 104px 12px calc(18px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--line);
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    color-mix(in srgb, var(--text) 5%, transparent)
-  );
+  background:
+    linear-gradient(to bottom, transparent, color-mix(in srgb, var(--text) 5%, transparent)),
+    var(--bg);
 }
 .smp-strip-t {
   position: absolute;
@@ -24654,6 +24660,13 @@ html[data-theme="dark"] .app-simple {
   border-radius: 12px;
   padding: 6px 12px 7px;
   white-space: nowrap;
+  /* One balloon that slides to the picked one and fades in and out (3.12.2). */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s;
   font: inherit;
   font-size: 14px;
   color: var(--text);
@@ -24661,6 +24674,11 @@ html[data-theme="dark"] .app-simple {
   z-index: 60;
   text-align: left;
   box-shadow: 0 6px 18px color-mix(in srgb, #000 30%, transparent);
+}
+.smp-balloon.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 .smp-balloon b {
   font-weight: 600;
@@ -24677,7 +24695,8 @@ html[data-theme="dark"] .app-simple {
 }
 @media (prefers-reduced-motion: reduce) {
   .smp-sm,
-  .smp-sm.on .mascot {
+  .smp-sm.on .mascot,
+  .smp-balloon {
     transition: none;
     animation: none;
   }

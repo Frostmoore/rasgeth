@@ -3,6 +3,8 @@
 // greeting; its mood follows the page's real facts (typing, routing, work, a decision waiting,
 // work finished, an error) and, still, it makes a small gesture now and then, never the same twice
 // in a row and never with reduced motion. Timers are vitest's fake ones, never real time.
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import type { TopicView } from "@redgiant/protocol";
 import { act, cleanup, fireEvent, render, waitFor } from "@testing-library/preact";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -422,6 +424,40 @@ describe("the agents' strip at the bottom (3.12.1, «Striscia fitta»)", () => {
     fireEvent.focus(minis[1] as HTMLElement);
     fireEvent.click(r.container.querySelector(".smp-balloon") as HTMLElement);
     await waitFor(() => expect(state.simpleScreen.value).toMatchObject({ kind: "chat", id: "s4" }));
+  });
+
+  it("keeps one balloon when the pick changes, and a press outside picks nobody (3.12.2)", async () => {
+    state.agents.value = team();
+    state.chatAgentId.value = "chat";
+    const r = render(<SimpleApp />);
+    const minis = [...r.container.querySelectorAll(".smp-sm")] as HTMLElement[];
+    expect(r.container.querySelector(".smp-balloon.show")).toBeNull();
+    fireEvent.focus(minis[0] as HTMLElement);
+    fireEvent.focus(minis[1] as HTMLElement);
+    // One balloon for the whole strip: the old one shrank, the new one grew, the balloon moved.
+    expect(r.container.querySelectorAll(".smp-balloon")).toHaveLength(1);
+    expect(r.container.querySelectorAll(".smp-sm.on")).toHaveLength(1);
+    expect(minis[0]?.classList.contains("on")).toBe(false);
+    expect(minis[1]?.classList.contains("on")).toBe(true);
+    expect(r.container.querySelector(".smp-balloon.show b")?.textContent).toBe("Ada");
+    // A press on the strip itself keeps the pick.
+    fireEvent.pointerDown(r.container.querySelector(".smp-strip") as HTMLElement, { clientX: 0 });
+    expect(r.container.querySelector(".smp-balloon.show")).not.toBeNull();
+    // A press outside the strip and its balloon: nobody is picked, the sizes are back.
+    fireEvent.pointerDown(r.container.querySelector(".smp-hero") ?? document.body);
+    await waitFor(() => expect(r.container.querySelector(".smp-balloon.show")).toBeNull());
+    expect(r.container.querySelectorAll(".smp-sm.on, .smp-sm.near")).toHaveLength(0);
+  });
+
+  it("floats at the bottom of the window, with room under the content (3.12.2)", () => {
+    const css = readFileSync(join(import.meta.dirname, "..", "src", "styles.css"), "utf8");
+    const rule = css.match(/\n\.smp-strip-wrap \{[^}]*\}/)?.[0] ?? "";
+    expect(rule).toContain("position: sticky");
+    expect(rule).toContain("bottom: 0");
+    expect(rule).toContain("env(safe-area-inset-bottom");
+    // Opaque over the content, in both themes (the page's own background).
+    expect(rule).toContain("var(--bg)");
+    expect(css).toMatch(/\.smp-today \.smp-wrap > \.smp-strip-wrap \{\s*margin-top: auto;/);
   });
 
   it("starts a conversation with an agent that has none", async () => {
