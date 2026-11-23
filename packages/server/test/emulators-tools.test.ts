@@ -3,7 +3,7 @@
 // password field, APKs only from the workspace, apps launched by package, logs by package, waiting
 // for a text, and the agents waiting while the person has control. The `devices` kit is off by
 // default and its tools are in the catalog.
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, realpath, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { TOOL_CATALOG, TOOL_KITS } from "@redgiant/protocol";
@@ -130,7 +130,10 @@ describe("the device tools", () => {
     expect(
       text(await run(tools, "device_install", { device: "avd:Pixel_8", apk: "build/app.apk" })),
     ).toBe("Installed build/app.apk on avd:Pixel_8.");
-    expect(host.calls.at(-1)).toBe(`install emulator-5554 ${join(root, "build", "app.apk")}`);
+    // The real path (macOS /private/var, Windows short names), as the tool resolves it.
+    expect(host.calls.at(-1)).toBe(
+      `install emulator-5554 ${join(await realpath(root), "build", "app.apk")}`,
+    );
     expect(
       text(await run(tools, "device_install", { device: "avd:Pixel_8", apk: "/etc/passwd.apk" })),
     ).toMatch(/no \/etc\/passwd.apk|in your workspace/);

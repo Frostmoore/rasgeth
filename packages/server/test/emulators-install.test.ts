@@ -186,7 +186,7 @@ const rows: Row[] = [
     notes: ["kvm-group", "node"],
   },
   {
-    name: "RedGiant in a container: nothing here, a node",
+    name: "Rasgeth in a container: nothing here, a node",
     r: report({ os: "linux", container: true, missing: ["sdk", "accel"] }),
     f: { home: "/home/node", env: {} },
     steps: [],
@@ -854,7 +854,8 @@ describe("the install runs only with the person's yes", () => {
     const plan = await s.installer.plan("me", {});
     const job = s.installer.start("me", { planId: plan.planId as string, licenceAccepted: true });
     const seen: number[] = [];
-    for (let i = 0; i < 400; i++) {
+    // Up to 15 s: a slow machine (macOS on CI) reaches the step later.
+    for (let i = 0; i < 1500; i++) {
       const j = s.jobs.get("me", job.id) as Job;
       const p = j.steps.find((x) => x.id === "platform-tools")?.progress;
       if (p) seen.push(p.done);
@@ -864,7 +865,7 @@ describe("the install runs only with the person's yes", () => {
     // 40% of 8 188 601 bytes from the percent (3.3 MB); 6 MB already in the folder.
     expect(seen).toContain(6_000_000);
     expect((await s.jobs.settled(job.id))?.state).toBe("done");
-  }, 20_000);
+  }, 30_000);
 
   it("a member outside the folder stops the unpacking (zip-slip)", async () => {
     const root = await mkdtemp(join(tmpdir(), "rg-zipslip-"));
