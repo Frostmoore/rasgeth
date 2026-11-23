@@ -33332,6 +33332,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name}, {state}'**
   String smpAgentIs(String name, String state);
+
+  /// No description provided for @nudgeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A word from God now and then'**
+  String get nudgeTitle;
+
+  /// No description provided for @nudgeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'At most once a day, never at night: about something waiting for you, or a good morning. It asks nothing.'**
+  String get nudgeHelp;
+
+  /// No description provided for @nudgeEvery.
+  ///
+  /// In en, this message translates to:
+  /// **'How often'**
+  String get nudgeEvery;
+
+  /// No description provided for @nudgeDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Once a day'**
+  String get nudgeDay;
+
+  /// No description provided for @nudgeTwoDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Every other day'**
+  String get nudgeTwoDays;
+
+  /// No description provided for @nudgeWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Once a week'**
+  String get nudgeWeek;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

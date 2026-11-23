@@ -15,6 +15,7 @@ import '../api/client.dart';
 import '../api/code.dart' show JobView;
 import '../api/settings_types.dart';
 import '../app_state.dart';
+import '../simple/nudge_controls.dart';
 import '../l10n/app_localizations.dart';
 import '../screens/first_start_screen.dart' show openExternal;
 import '../screens/new_agent_screen.dart' show RgSwitch;
@@ -452,6 +453,9 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                 onChanged: app.setUi,
               ),
             ),
+            Divider(height: 1, color: c.line),
+            // 3.12.1: God's friendly nudges, on or off and how often.
+            _Line(title: l.nudgeTitle, help: l.nudgeHelp, child: const NudgeControls()),
             Divider(height: 1, color: c.line),
             _Line(
               title: l.accentLabel,

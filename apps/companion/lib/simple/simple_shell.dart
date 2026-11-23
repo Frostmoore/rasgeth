@@ -29,6 +29,7 @@ import '../ui/rg_menu.dart';
 import '../screens/new_agent_screen.dart' show RgSwitch;
 import '../mascot/mascot_view.dart';
 import '../ui/words.dart' as words;
+import 'nudge_controls.dart';
 import 'simple_giant.dart';
 import 'simple_strip.dart';
 import 'simple_model.dart';
@@ -244,6 +245,60 @@ String _shortTitle(String text) {
   return t.length > 48 ? '${t.substring(0, 47)}…' : t;
 }
 
+/// God's friendly nudge under him (3.12.1): a tap opens its topic, or only «Oggi»'s invitation;
+/// nothing is created until the person writes.
+class _NudgeBalloon extends StatelessWidget {
+  const _NudgeBalloon({required this.nudge});
+
+  final GodNudge nudge;
+
+  @override
+  Widget build(BuildContext context) {
+    final app = AppScope.read(context);
+    final c = RgColors.of(context);
+    final l = AppLocalizations.of(context);
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 520),
+        child: Container(
+          key: const Key('simple-nudge'),
+          margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          decoration: BoxDecoration(
+            color: c.panel,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: c.accent, width: 1.5),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: InkWell(
+                  key: const Key('simple-nudge-open'),
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () => app.simple.openNudge(topicId: nudge.topicId, text: nudge.text),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 4, 12),
+                    child: Text(
+                      nudge.text,
+                      style: TextStyle(color: c.text, fontSize: 15.5, height: 1.4),
+                    ),
+                  ),
+                ),
+              ),
+              IconButton(
+                key: const Key('simple-nudge-close'),
+                tooltip: l.close,
+                onPressed: app.simple.closeNudge,
+                icon: RgIcon(RgIcons.x, size: 16, color: c.dim),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// Satellite's list: the Chat's latest conversations, newest first.
 class _RecentChats extends StatelessWidget {
   const _RecentChats({required this.app});
@@ -394,6 +449,13 @@ class _TodayScreenState extends State<TodayScreen> {
               final others = other.approvals.length + other.questions.length;
               // Satellite in front (3.12.1): the Chat's words, box and latest conversations.
               final chat = s.front == StageFront.chat;
+              // A nudge about a topic opened it (3.12.1): once, after this frame.
+              if (s.openTopicId case final id?) {
+                s.openTopicId = null;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (context.mounted) unawaited(openTopic(context, id, s.titleOf(id) ?? ''));
+                });
+              }
               return SingleChildScrollView(
                 child: _Column(
                   width: 980,
@@ -428,6 +490,7 @@ class _TodayScreenState extends State<TodayScreen> {
                       ),
                       // 3.12.1: God giant at the centre, above the greeting.
                       const SimpleStage(),
+                      if (!chat && s.nudge != null) _NudgeBalloon(nudge: s.nudge!),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
                         child: Column(
@@ -445,7 +508,7 @@ class _TodayScreenState extends State<TodayScreen> {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              chat ? l.smpChatLead : l.smpHeroLead,
+                              chat ? l.smpChatLead : (s.invite ?? l.smpHeroLead),
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 15.5, color: c.dim),
                             ),
@@ -469,6 +532,8 @@ class _TodayScreenState extends State<TodayScreen> {
                             unawaited(openChat(context, sid, _shortTitle(text)));
                             return true;
                           }
+                          // A generic nudge's invitation goes once the person writes.
+                          s.wrote();
                           final r = await s.ask(text);
                           if (r == null || !context.mounted) return false;
                           unawaited(openTopic(context, r.sessionId, r.routed.title));
@@ -720,9 +785,7 @@ class _CardMascots extends StatelessWidget {
   Widget build(BuildContext context) {
     final app = AppScope.of(context);
     final l = AppLocalizations.of(context);
-    final list = [
-      for (final id in ids) ?app.agents.where((a) => a.id == id).firstOrNull,
-    ];
+    final list = [for (final id in ids) ?app.agents.where((a) => a.id == id).firstOrNull];
     if (list.isEmpty) return const SizedBox.shrink();
     const size = 28.0;
     return Padding(
@@ -1850,6 +1913,14 @@ class _SimpleSettingsScreenState extends State<SimpleSettingsScreen> {
                                   ),
                                 ),
                               ),
+                            ),
+                            // God's friendly nudges (3.12.1): on or off, and how often.
+                            _Row(
+                              key: const Key('simple-nudges'),
+                              title: l.nudgeTitle,
+                              help: l.nudgeHelp,
+                              wide: true,
+                              trailing: const NudgeControls(),
                             ),
                             _Row(
                               title: l.smpSpend,

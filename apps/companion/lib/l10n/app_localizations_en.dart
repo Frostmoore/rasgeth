@@ -19299,4 +19299,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String smpAgentIs(String name, String state) {
     return '$name, $state';
   }
+
+  @override
+  String get nudgeTitle => 'A word from God now and then';
+
+  @override
+  String get nudgeHelp =>
+      'At most once a day, never at night: about something waiting for you, or a good morning. It asks nothing.';
+
+  @override
+  String get nudgeEvery => 'How often';
+
+  @override
+  String get nudgeDay => 'Once a day';
+
+  @override
+  String get nudgeTwoDays => 'Every other day';
+
+  @override
+  String get nudgeWeek => 'Once a week';
 }

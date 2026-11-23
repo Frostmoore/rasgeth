@@ -283,6 +283,12 @@ void main() {
       await tap(tester, find.byKey(const Key('simple-settings')));
       expect(find.text('Chiedimi prima di spendere'), findsOneWidget);
       expect(find.text('Riccardo'), findsOneWidget);
+      // The last group, further down (3.12.1: the nudges' row made the list longer).
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('simple-full-view')),
+        300,
+        scrollable: find.byType(Scrollable).last,
+      );
       await tap(tester, find.byKey(const Key('simple-full-view')));
       expect(app.simpleUi, isFalse);
       expect(await app.prefs.get('ui'), 'full');
@@ -373,6 +379,61 @@ void main() {
       expect(find.byKey(const Key('card-agent-a2')), findsOneWidget);
       // The other cards have nobody.
       expect(find.byWidgetPredicate((w) => '${w.key}'.contains('card-agent-')), findsNWidgets(2));
+      await done(tester);
+    });
+
+    testWidgets('3.12.1: a generic nudge opens only «Oggi»: nothing is made until one writes', (
+      tester,
+    ) async {
+      await open(tester);
+      server.nudge({
+        'id': 'd1-greeting',
+        'kind': 'greeting',
+        'topicId': null,
+        'text': 'Buongiorno! A cosa lavoriamo oggi?',
+        'at': '2026-11-23T09:00:00.000Z',
+      });
+      await _settle(tester);
+      expect(find.byKey(const Key('simple-nudge')), findsOneWidget);
+      final before = server.sessions.length;
+      await tap(tester, find.byKey(const Key('simple-nudge-open')));
+      expect(find.byKey(const Key('simple-nudge')), findsNothing);
+      // The invitation is the lead; no topic, no message.
+      expect(find.text('Buongiorno! A cosa lavoriamo oggi?'), findsOneWidget);
+      expect(find.byType(TopicScreen), findsNothing);
+      expect(server.sessions.length, before);
+      expect(topics.calls.where((c) => c.startsWith('POST /api/god/messages')), isEmpty);
+      // Writing makes the topic, with the person's words only.
+      await tester.enterText(find.byKey(const Key('simple-ask')), 'Il preventivo');
+      await tap(tester, find.byKey(const Key('simple-ask-send')));
+      expect(topics.calls.where((c) => c.startsWith('POST /api/god/messages')), hasLength(1));
+      expect(app.simple.invite, isNull);
+      await done(tester);
+    });
+
+    testWidgets('3.12.1: a nudge about a topic opens it; the settings switch it off', (
+      tester,
+    ) async {
+      await open(tester, size: const Size(390, 2400));
+      server.nudge({
+        'id': 'd1-waiting',
+        'kind': 'waiting',
+        'topicId': 't_trip',
+        'text': '«Vacanza in Sardegna» aspetta te.',
+        'at': '2026-11-23T09:00:00.000Z',
+      });
+      await _settle(tester);
+      await tap(tester, find.byKey(const Key('simple-nudge-open')));
+      await _settle(tester);
+      expect(find.byType(TopicScreen), findsOneWidget);
+      Navigator.of(tester.element(find.byType(TopicScreen))).pop();
+      await _settle(tester);
+      await tap(tester, find.byKey(const Key('simple-settings')));
+      expect(find.text('Un saluto da God ogni tanto'), findsOneWidget);
+      await tap(tester, find.byKey(const Key('nudge-every-week')));
+      expect(topics.nudgeSettings, {'on': true, 'every': 'week'});
+      await tap(tester, find.byKey(const Key('nudge-switch')));
+      expect(topics.nudgeSettings, {'on': false, 'every': 'week'});
       await done(tester);
     });
 

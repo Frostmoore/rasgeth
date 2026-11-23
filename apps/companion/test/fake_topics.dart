@@ -36,6 +36,9 @@ Json topicJson(
 
 class FakeTopics {
   final calls = <String>[];
+
+  /// 3.12.1: `GET/PUT /api/god/nudges`.
+  Map<String, dynamic> nudgeSettings = {'on': true, 'every': 'day'};
   final bodies = <String, Object?>{};
   final active = <Json>[];
   final archived = <Json>[];
@@ -82,6 +85,11 @@ class FakeTopics {
       return true;
     }
 
+    // 3.12.1: God's nudges' settings.
+    if (path == '/api/god/nudges') {
+      if (m == 'PUT') nudgeSettings = Map<String, dynamic>.from(b);
+      return ok(m == 'PUT' ? {'ok': true} : nudgeSettings);
+    }
     if (m == 'GET' && path == '/api/god/topics') {
       final words = (q['q'] ?? '').toLowerCase();
       final from = q['archived'] == 'true' ? archived : active;

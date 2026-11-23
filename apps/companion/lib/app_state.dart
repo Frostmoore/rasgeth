@@ -164,6 +164,11 @@ class AppController extends ChangeNotifier {
     live.topicsChanged.addListener(() {
       if (simpleUi) simple.refreshSoon();
     });
+    // God's friendly nudge (3.12.1): under him on «Oggi».
+    live.nudge.addListener(() {
+      final n = live.nudge.value;
+      if (n != null) simple.showNudge(n);
+    });
   }
 
   // The notifications, the voice and the Share sheet (G40.10).
@@ -2237,6 +2242,20 @@ class AppController extends ChangeNotifier {
     if (tap.serverId != server?.id) {
       final s = servers.where((x) => x.id == tap.serverId).firstOrNull;
       if (s != null) await useServer(s);
+    }
+    // God's nudge (3.12.1): its topic, or only «Oggi» with the invitation; nothing is made.
+    if (tap.kind == NoticeKind.nudge) {
+      if (!simpleUi) {
+        if (tap.sessionId != null) pendingSession = tap.sessionId;
+      } else {
+        final live = this.live.nudge.value;
+        simple.openNudge(
+          topicId: tap.sessionId,
+          text: live != null && tap.noticeId == 'nudge:${live.id}' ? live.text : null,
+        );
+      }
+      notifyListeners();
+      return;
     }
     if (tap.kind == NoticeKind.request ||
         tap.kind == NoticeKind.question ||

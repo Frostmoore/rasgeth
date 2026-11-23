@@ -1,5 +1,5 @@
 // Writes the simple interface's words (3.12) into lib/l10n/app_it.arb and app_en.arb from the
-// page's own packages/web/src/i18n.ts (`smp…`, `ui…`, `wzLook…`), it and en, never by heart; the
+// page's own packages/web/src/i18n.ts (`smp…`, `nudge…`, `ui…`, `wzLook…`), it and en, never by heart; the
 // ARB keys keep the page's names. `{product}` is filled with the name, other `{x}` stay
 // placeholders. Then `flutter gen-l10n` writes the Dart.
 //
@@ -25,7 +25,7 @@ for (const [lang, text] of Object.entries(parts))
     words[lang][m[1]] = fillProduct(new Function(`return ${m[2]};`)());
 
 const wanted = Object.keys(words.en).filter(
-  (k) => /^(smp[A-Z]|wzLook|ui(Title|Help|Simple|Full)$)/.test(k) && k in words.it,
+  (k) => /^(smp[A-Z]|nudge[A-Z]|wzLook|ui(Title|Help|Simple|Full)$)/.test(k) && k in words.it,
 );
 if (wanted.length < 60) throw new Error(`only ${wanted.length} words found`);
 

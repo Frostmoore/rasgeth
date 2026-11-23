@@ -8,7 +8,8 @@ import 'dart:convert';
 import '../brand.dart';
 
 /// `automation` (G42.9): an automation's message for the person that no page or app showed.
-enum NoticeKind { request, question, task, message, automation, test }
+/// `nudge` (3.12.1): God's friendly word of the day; its `sessionId` is the topic it is about.
+enum NoticeKind { request, question, task, message, automation, test, nudge }
 
 class PushNotice {
   const PushNotice({

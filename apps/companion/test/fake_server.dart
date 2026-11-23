@@ -121,6 +121,9 @@ class FakeRedGiant {
   /// server does from `AgentRegistry`, `ProjectStore` and the core's session writes.
   void listsChanged(List<String> lists) => _toAll({'type': 'lists.changed', 'lists': lists});
 
+  /// 3.12.1: God's friendly nudge on the live connection.
+  void nudge(Map<String, dynamic> n) => _toAll({'type': 'god.nudge', 'nudge': n});
+
   /// What God or the page did elsewhere (p3.8.9): a project, an agent, a conversation made there.
   Map<String, dynamic> projectMadeElsewhere(String id, String name) {
     final made = {

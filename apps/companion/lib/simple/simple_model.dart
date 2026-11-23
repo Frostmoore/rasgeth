@@ -163,6 +163,46 @@ class SimpleModel extends ChangeNotifier {
   /// A message to God is being routed (the giant thinks).
   bool routing = false;
 
+  /// God's nudge shown under him on «Oggi» (3.12.1), until opened or closed.
+  GodNudge? nudge;
+
+  /// A generic nudge opened: its words invite the person in «Oggi», until they write.
+  String? invite;
+
+  /// A topic a nudge opened, for «Oggi» to push once.
+  String? openTopicId;
+
+  void showNudge(GodNudge n) {
+    if (nudge?.id == n.id) return;
+    nudge = n;
+    notifyListeners();
+  }
+
+  void closeNudge() {
+    nudge = null;
+    notifyListeners();
+  }
+
+  /// Opens a nudge: its topic, or only «Oggi» with the invitation. Nothing is created: a topic
+  /// comes only when the person writes, and the nudge is written into no topic.
+  void openNudge({String? topicId, String? text}) {
+    nudge = null;
+    front = StageFront.god;
+    if (topicId != null) {
+      openTopicId = topicId;
+    } else {
+      invite = text;
+    }
+    notifyListeners();
+  }
+
+  /// The person wrote: the invitation has done its job.
+  void wrote() {
+    if (invite == null) return;
+    invite = null;
+    notifyListeners();
+  }
+
   /// Who is in front on «Oggi»'s orbit (3.12.1).
   StageFront front = StageFront.god;
 

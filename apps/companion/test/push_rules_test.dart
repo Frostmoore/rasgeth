@@ -94,6 +94,13 @@ void main() {
         NoticeChannel.updates,
       ),
       ('the test', {'id': 'test:x', 'kind': 'test'}, [], NoticeChannel.updates),
+      // 3.12.1: God's friendly nudge asks nothing: no answers, the quiet list.
+      (
+        'God\'s nudge',
+        {'id': 'nudge:d1-waiting', 'kind': 'nudge', 'sessionId': 't1'},
+        [],
+        NoticeChannel.updates,
+      ),
     ];
     for (final (name, json, answers, channel) in rows) {
       test(name, () {

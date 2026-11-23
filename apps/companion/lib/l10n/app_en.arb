@@ -13375,5 +13375,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "nudgeTitle": "A word from God now and then",
+  "nudgeHelp": "At most once a day, never at night: about something waiting for you, or a good morning. It asks nothing.",
+  "nudgeEvery": "How often",
+  "nudgeDay": "Once a day",
+  "nudgeTwoDays": "Every other day",
+  "nudgeWeek": "Once a week"
 }

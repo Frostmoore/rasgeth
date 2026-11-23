@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 
 import '../settings/automations/automation_types.dart' show AutomationNotice;
 import 'conversation.dart';
+import 'topics.dart' show GodNudge;
 import 'turn_queue.dart';
 import 'types.dart';
 
@@ -333,6 +334,9 @@ class LiveModel extends ChangeNotifier {
   /// 3.12: God's topics changed (`topics.changed`, `session.routed`): «Oggi» reads them again.
   final topicsChanged = ValueNotifier<int>(0);
 
+  /// The latest nudge of God that reached the app (3.12.1).
+  final nudge = ValueNotifier<GodNudge?>(null);
+
   /// The server's own error on the live link (`error`, 3.10, G42.17b): what the page shows as its
   /// `lastError`; the app shows it once as a notice. The browser's `unavailable` is not one.
   final serverError = ValueNotifier<String?>(null);
@@ -476,6 +480,11 @@ class LiveModel extends ChangeNotifier {
         return;
       case 'topics.changed' || 'session.routed':
         topicsChanged.value++;
+        return;
+      // God's friendly nudge (3.12.1): a notification, never a request.
+      case 'god.nudge':
+        final n = GodNudge.fromJson(m['nudge']);
+        if (n != null && nudge.value?.id != n.id) nudge.value = n;
         return;
       case 'automation.notice':
         final n = AutomationNotice.fromWire(m);

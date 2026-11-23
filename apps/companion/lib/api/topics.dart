@@ -160,7 +160,51 @@ class TopicSent {
   final TopicRouted routed;
 }
 
+/// God's friendly nudge (3.12.1, `GodNudge` in the protocol's nudges.ts): a notification, never a
+/// request. [topicId] null: a greeting, it opens only «Oggi» with the invitation.
+class GodNudge {
+  const GodNudge({required this.id, required this.kind, required this.topicId, required this.text});
+
+  static GodNudge? fromJson(Object? j) {
+    if (j is! Map || j['id'] is! String || j['text'] is! String) return null;
+    return GodNudge(
+      id: j['id'] as String,
+      kind: j['kind'] is String ? j['kind'] as String : 'greeting',
+      topicId: j['topicId'] is String ? j['topicId'] as String : null,
+      text: j['text'] as String,
+    );
+  }
+
+  final String id;
+  final String kind;
+  final String? topicId;
+  final String text;
+}
+
+/// On or off and how often (`NudgeSettings`): `day`, `two_days`, `week`.
+class NudgeSettings {
+  const NudgeSettings({this.on = true, this.every = 'day'});
+
+  factory NudgeSettings.fromJson(Map<String, dynamic> j) => NudgeSettings(
+    on: j['on'] != false,
+    every: const ['day', 'two_days', 'week'].contains(j['every']) ? j['every'] as String : 'day',
+  );
+
+  final bool on;
+  final String every;
+
+  Map<String, Object> toJson() => {'on': on, 'every': every};
+}
+
 extension TopicsApi on RedGiantClient {
+  /// `GET /api/god/nudges` (3.12.1).
+  Future<NudgeSettings> nudgeSettings() async =>
+      NudgeSettings.fromJson(objectOf(await getJson('/api/god/nudges', const {})));
+
+  /// `PUT /api/god/nudges` (3.12.1).
+  Future<void> setNudgeSettings(NudgeSettings s) async =>
+      await callJson('PUT', '/api/god/nudges', s.toJson());
+
   /// `GET /api/god/topics`: the active ones; [archived] the archive, [q] words in it.
   Future<TopicList> topics({bool archived = false, String? q}) async => TopicList.fromJson(
     objectOf(

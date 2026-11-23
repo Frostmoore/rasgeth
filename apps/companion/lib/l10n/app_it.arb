@@ -5539,5 +5539,11 @@
   "smpYesterday": "Ieri",
   "smpYourAgents": "I TUOI AGENTI",
   "smpOpenChat": "Apri la chat",
-  "smpAgentIs": "{name}, {state}"
+  "smpAgentIs": "{name}, {state}",
+  "nudgeTitle": "Un saluto da God ogni tanto",
+  "nudgeHelp": "Al massimo una volta al giorno, mai di notte: su qualcosa che ti aspetta, o un buongiorno. Non chiede niente.",
+  "nudgeEvery": "Ogni quanto",
+  "nudgeDay": "Una volta al giorno",
+  "nudgeTwoDays": "Ogni due giorni",
+  "nudgeWeek": "Una volta a settimana"
 }
