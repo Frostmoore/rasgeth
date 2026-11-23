@@ -51,10 +51,8 @@ class AssistantGroup extends StatefulWidget {
 }
 
 class _AssistantGroupState extends State<AssistantGroup> {
-  List<ServiceEntry>? _services;
   List<Routine>? _routines;
   List<SkillEntry>? _skills;
-  late final Set<String> _on = {...widget.agent.connections};
   String? _said;
   bool _bad = false;
 
@@ -78,15 +76,13 @@ class _AssistantGroupState extends State<AssistantGroup> {
     }
 
     final r = await Future.wait<Object?>([
-      soft(c.assistantServices()),
       soft(c.routinesOf(widget.agent)),
       soft(c.platformSkills()),
     ]);
     if (!mounted) return;
     setState(() {
-      _services = r[0] as List<ServiceEntry>? ?? const [];
-      _routines = r[1] as List<Routine>? ?? const [];
-      _skills = r[2] as List<SkillEntry>? ?? const [];
+      _routines = r[0] as List<Routine>? ?? const [];
+      _skills = r[1] as List<SkillEntry>? ?? const [];
     });
   }
 
@@ -94,19 +90,6 @@ class _AssistantGroupState extends State<AssistantGroup> {
     _said = t;
     _bad = bad;
   });
-
-  bool get _changed {
-    final was = {...widget.agent.connections};
-    return was.length != _on.length || !was.containsAll(_on);
-  }
-
-  Future<void> _saveServices() async {
-    final l = AppLocalizations.of(context);
-    final why = await AppScope.read(context)
-        .saveAgent(widget.agent, {'connections': (_on.toList()..sort())});
-    if (!mounted) return;
-    why == null ? _say(l.g4AgSavedNewChats) : _say(l.asRefused(why), bad: true);
-  }
 
   bool _skillOn(String name) => widget.agent.skills == null || widget.agent.skills!.contains(name);
 
@@ -175,68 +158,6 @@ class _AssistantGroupState extends State<AssistantGroup> {
       children: [
         if (_said != null)
           NoticeBanner(key: const Key('as-assistant-note'), text: _said!, error: _bad),
-        SectionHead(l.g4AgServices),
-        _help(context, l.g4AgServicesHelp),
-        SettingsCard(
-          children: [
-            if (_services == null)
-              wait()
-            else if (_services!.isEmpty)
-              NoteLine(icon: RgIcons.layers, text: l.g4AgNoServices)
-            else
-              for (final s in _services!)
-                InkWell(
-                  key: Key('as-service-${s.name}'),
-                  onTap: ro
-                      ? null
-                      : () => setState(
-                          () => _on.contains(s.name) ? _on.remove(s.name) : _on.add(s.name),
-                        ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                serviceName(s.name),
-                                style: TextStyle(fontWeight: FontWeight.w700, color: c.text),
-                              ),
-                              Text(
-                                serviceState(l, s),
-                                style: TextStyle(
-                                  fontSize: 12.5,
-                                  color: s.state == 'connected'
-                                      ? c.ok
-                                      : s.state == null
-                                      ? c.dim
-                                      : c.warn,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        RgSwitch(on: _on.contains(s.name)),
-                      ],
-                    ),
-                  ),
-                ),
-            NoteLine(icon: RgIcons.info, text: l.g4AgAddServiceHint),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: FilledButton(
-              key: const Key('as-save-services'),
-              onPressed: !ro && _changed ? _saveServices : null,
-              child: Text(l.save),
-            ),
-          ),
-        ),
         SectionHead(l.g4AgRoutines),
         _help(context, l.g4AgRoutinesHelp),
         SettingsCard(

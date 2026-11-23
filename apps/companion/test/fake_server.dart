@@ -1374,6 +1374,7 @@ class FakeRedGiant {
         'mascotSeed': b['name'],
         'mascot': mascots[3].raw,
         'status': 'active',
+        if (b['connections'] != null) 'connections': b['connections'],
       };
       created.add(made);
       newAgents.add(b);

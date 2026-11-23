@@ -27,6 +27,7 @@ import { renderMarkdown } from "../markdown.js";
 import { agents, attempt, automationsVersion, getApi, openTab } from "../state.js";
 import { Editor, fromOn, fromRecipe, sentence, whenWords } from "./AutomationEditor.js";
 import { explain } from "./Brain.js";
+import { Calendars } from "./CalendarSettings.js";
 import { Mailboxes } from "./EmailSettings.js";
 import { MagicChat, MagicStart } from "./MagicAutomation.js";
 import { Acts, Facts, Head, Sub, SwitchRow, Tile, WzPage } from "./SettingsKit.js";
@@ -518,6 +519,8 @@ export function Automations() {
 
       <Sub title={t("awSourcesTitle")} lead={t("awSourcesLead")} />
       <Mailboxes />
+      <Sub title={t("calTitle")} lead={t("calPurpose")} />
+      <Calendars />
     </WzPage>
   );
 }

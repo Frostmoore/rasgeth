@@ -60,9 +60,13 @@ const toolWords = <String, Map<String, String>>{
     'tool_blender': r"Blender (3D)",
     'tool_board': r"Bacheca del progetto",
     'tool_browser': r"Browser",
+    'tool_calendar_create_event': r"Aggiungere un evento",
+    'tool_calendar_list_events': r"Leggere il calendario",
     'tool_canvas_act': r"Sfogliare il Canvas",
     'tool_canvas_edit': r"Modificare nel Canvas",
     'tool_canvas_look': r"Guardare il Canvas",
+    'tool_chat_accounts': r"Vedere le chat collegate",
+    'tool_chat_send': r"Scriverti su una chat",
     'tool_complete_task': r"Chiudere i compiti",
     'tool_conversation_history': r"Rileggere la conversazione",
     'tool_convert_file': r"Convertire in formati aperti",
@@ -146,10 +150,16 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_blender': r"Fa girare Blender senza finestra: cambia i file 3D con uno script, li salva in .blend e glTF, fa un'immagine o un video a giro di 360°.",
     'toolDo_board': r"Legge e scrive la bacheca dove si parlano gli agenti di un progetto.",
     'toolDo_browser': r"Usa il tuo browser: apre siti, clicca, scrive, fa schermate.",
+    'toolDo_calendar_create_event': r"Aggiunge un evento a un calendario CalDAV collegato all'agente; te lo chiede sempre prima.",
+    'toolDo_calendar_list_events':
+        r"Elenca gli eventi dei calendari collegati all'agente, tra due date.",
     'toolDo_canvas_act':
         r"Apre schede, va a pagina, riga o tempo, seleziona e ingrandisce; non modifica i file.",
     'toolDo_canvas_edit': r"Modifica un file aperto nello stesso editor che usi tu: modifiche evidenziate, annullabili, o proposte se lo scegli.",
     'toolDo_canvas_look': r"Vede le schede aperte dalla persona e un'immagine di ciò che mostrano.",
+    'toolDo_chat_accounts': r"Dice quali delle tue chat collegate sono collegate all'agente.",
+    'toolDo_chat_send':
+        r"Ti manda un messaggio sulle chat collegate all'agente (le tue, di nessun altro).",
     'toolDo_complete_task': r"Chiude un compito, con una verifica che dimostra che è fatto.",
     'toolDo_conversation_history': r"Rilegge i pezzi della conversazione che sono stati riassunti.",
     'toolDo_convert_file': r"Trasforma i file chiusi (Photoshop, Office…) in formati aperti, lasciando l'originale com'è.",
@@ -317,9 +327,13 @@ const toolWords = <String, Map<String, String>>{
     'tool_blender': r"Blender (3D)",
     'tool_board': r"Project board",
     'tool_browser': r"Browser",
+    'tool_calendar_create_event': r"Add a calendar event",
+    'tool_calendar_list_events': r"Read the calendar",
     'tool_canvas_act': r"Leaf through the Canvas",
     'tool_canvas_edit': r"Edit in the Canvas",
     'tool_canvas_look': r"Look at the Canvas",
+    'tool_chat_accounts': r"See the connected chats",
+    'tool_chat_send': r"Write to you on a chat",
     'tool_complete_task': r"Close tasks",
     'tool_conversation_history': r"Earlier in the conversation",
     'tool_convert_file': r"Convert into open formats",
@@ -403,10 +417,17 @@ const toolWords = <String, Map<String, String>>{
     'toolDo_blender': r"Runs Blender without a window: changes 3D files with a script, saves them as .blend and glTF, renders a picture or a 360° video.",
     'toolDo_board': r"Reads and writes the board where the agents of a project talk.",
     'toolDo_browser': r"Uses your browser: opens sites, clicks, types, takes screenshots.",
+    'toolDo_calendar_create_event':
+        r"Adds an event to a CalDAV calendar connected to the agent; it always asks you first.",
+    'toolDo_calendar_list_events':
+        r"Lists the events of the calendars connected to the agent, between two dates.",
     'toolDo_canvas_act':
         r"Opens tabs, goes to a page, line or time, selects and zooms; changes no file.",
     'toolDo_canvas_edit': r"Edits an open file in the same editor as you: changes highlighted, undoable, or proposals if you choose so.",
     'toolDo_canvas_look': r"Sees the tabs the person has open and a picture of what they show.",
+    'toolDo_chat_accounts': r"Tells which of your linked chats are connected to the agent.",
+    'toolDo_chat_send':
+        r"Sends you a message on the chats connected to the agent (yours, nobody else's).",
     'toolDo_complete_task': r"Closes a task, with a check that proves it is done.",
     'toolDo_conversation_history':
         r"Reads back the parts of the conversation that were summarised.",

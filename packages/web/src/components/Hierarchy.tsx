@@ -23,6 +23,7 @@ import {
 } from "../state.js";
 import { SysTitle } from "../systems.js";
 import { substantialChange } from "../word-diff.js";
+import { ConnectionsTab } from "./AgentConnections.js";
 import { AgentKnowledge } from "./AgentKnowledge.js";
 import { AgentMemory } from "./AgentMemory.js";
 import { AgentTools } from "./AgentTools.js";
@@ -50,7 +51,15 @@ const CHILDREN: Record<Agent["kind"], Agent["kind"][]> = {
 };
 const MODES = ["auto", "manual", "plan", "readonly"] as const;
 type View = "tree" | "cards";
-type PanelTab = "general" | "model" | "limits" | "behaviour" | "memory" | "knowledge" | "tools";
+type PanelTab =
+  | "general"
+  | "model"
+  | "limits"
+  | "behaviour"
+  | "memory"
+  | "knowledge"
+  | "connections"
+  | "tools";
 
 const canAddUnder = (a: Agent) =>
   a.status === "active" && CHILDREN[a.kind].some((k) => k !== "subagent");
@@ -395,7 +404,7 @@ export function AgentPanel({
   const tabs: PanelTab[] =
     agent.kind === "demigod"
       ? ["general", "model", "limits", "behaviour", "tools"]
-      : ["general", "model", "limits", "behaviour", "memory", "knowledge", "tools"];
+      : ["general", "model", "limits", "behaviour", "memory", "knowledge", "connections", "tools"];
   // «Remove» (p3.8.9): for a stopped agent too; never God, Demi-God or the Chat.
   const remove = removable(agent) && (
     <button type="button" class="wz-btn quiet st-danger" onClick={() => setRemoving(true)}>
@@ -521,6 +530,7 @@ export function AgentPanel({
           {tab === "behaviour" && <BehaviourTab agent={agent} />}
           {tab === "memory" && <AgentMemory agent={agent} />}
           {tab === "knowledge" && <AgentKnowledge agent={agent} />}
+          {tab === "connections" && <ConnectionsTab agent={agent} />}
           {tab === "tools" && <AgentTools agent={agent} />}
         </div>
       </Modal>

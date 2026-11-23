@@ -277,6 +277,23 @@ export class MailService {
     await this.o.client.close();
   }
 
+  /**
+   * The same service seeing only these mailboxes (3.12.3): what an agent connected to some
+   * mailboxes uses. The sending limit is shared with the others.
+   */
+  scoped(ids: readonly string[]): MailService {
+    const accounts = this.o.accounts;
+    return new MailService({
+      ...this.o,
+      limiter: this.limiter,
+      accounts: {
+        boxes: async (owner) => (await accounts.boxes(owner)).filter((b) => ids.includes(b.id)),
+        accountOf: async (owner, id) =>
+          ids.includes(id) ? accounts.accountOf(owner, id) : undefined,
+      },
+    });
+  }
+
   /** The mailboxes the person opened to the agents. */
   async open(owner: string): Promise<MailboxInfo[]> {
     return (await this.o.accounts.boxes(owner).catch(() => [])).filter((b) => b.agents === true);

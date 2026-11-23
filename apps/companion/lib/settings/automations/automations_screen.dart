@@ -21,6 +21,7 @@ import '../../ui/dialogs.dart';
 import '../../ui/icons.dart';
 import '../../ui/markdown.dart';
 import '../api/automations_api.dart';
+import '../channels/calendars.dart';
 import '../channels/mailboxes.dart';
 import '../rules_kit.dart';
 import 'automation_draft.dart';
@@ -325,6 +326,9 @@ class _AutomationsScreenState extends State<AutomationsScreen> {
         RulesSub(title: l.auAwSourcesTitle, lead: l.auAwSourcesLead, icon: RgIcons.mail),
         // G42.13: the mailboxes, added and changed here as on the page.
         MailboxesSection(onChange: _load),
+        // 3.12.3: the calendars the agents may read (and write to with the person's yes).
+        RulesSub(title: l.sxCalTitle, lead: l.sxCalPurpose, icon: RgIcons.clock),
+        const CalendarsSection(),
       ],
     );
   }

@@ -27,7 +27,9 @@ import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../l10n/tool_words.g.dart';
 import '../mascot/mascot_view.dart';
-import '../settings/agents/assistant_parts.dart' show serviceName, serviceState;
+import '../l10n/set_types.dart';
+import '../settings/agents/agent_connections.dart';
+import '../settings/agents/agent_sets.g.dart';
 import '../settings/api/agents_api.dart';
 import '../settings/api/general_api.dart';
 import '../settings/prompt_refiner.dart';
@@ -44,7 +46,7 @@ Future<void> openNewAgent(BuildContext context) =>
 
 enum NewKind { agent, orchestrator, assistant }
 
-enum _Step { kind, project, job, name, services, model, mode, instructions, review, done }
+enum _Step { kind, start, project, job, name, services, model, mode, instructions, review, done }
 
 /// The page's ready roles for a project's agent; their instructions are for the model, so in
 /// English like every prompt (AgentWizard.tsx `ROLES`).
@@ -127,8 +129,9 @@ class _NewAgentScreenState extends State<NewAgentScreen> {
   bool _named = false;
   AgentModel? _model;
   String _mode = 'auto';
-  List<ServiceEntry>? _services;
-  final _connections = <String>{};
+  // «Start from…» (3.12.3): a ready-made set instead of a job chosen step by step.
+  AgentSet? _set;
+  List<AgentConnection> _connections = [];
   final _off = <String>{};
   List<ToolEntry>? _tools;
   DraftOutcome? _outcome;
@@ -165,13 +168,15 @@ class _NewAgentScreenState extends State<NewAgentScreen> {
 
   List<_Step> get _steps => [
     _Step.kind,
+    if (_kind != null && _kind != NewKind.orchestrator) _Step.start,
     if (_kind != NewKind.assistant) _Step.project,
-    if (_kind != NewKind.orchestrator) _Step.job,
+    if (_kind != NewKind.orchestrator && _set == null) _Step.job,
     _Step.name,
-    if (_kind == NewKind.assistant) _Step.services,
+    if (_kind == NewKind.assistant || _set != null) _Step.services,
     _Step.model,
     _Step.mode,
-    _Step.instructions,
+    // A set brings its own instructions: God's draft only when there is none.
+    if (_set == null) _Step.instructions,
     _Step.review,
   ];
 
@@ -222,6 +227,7 @@ class _NewAgentScreenState extends State<NewAgentScreen> {
 
   bool _canGoOn(AppController app) => switch (_step) {
     _Step.kind => _kind != null,
+    _Step.start => true,
     _Step.project => _project != null && _projectOk(app, _project!),
     _Step.job => _kind == NewKind.agent ? (_role != 'custom' || _own.text.trim().isNotEmpty) : true,
     _Step.name =>
@@ -244,6 +250,14 @@ class _NewAgentScreenState extends State<NewAgentScreen> {
       unawaited(_create(app));
       return;
     }
+    // A set names it and gives its job, until the person types a name of their own.
+    if (_step == _Step.start && _set != null) {
+      final lang = Localizations.localeOf(context).languageCode == 'en' ? 'en' : 'it';
+      if (!_named) _name.text = _set!.name.of(lang);
+      _jobWords.text = _set!.description.of(lang);
+      _own.text = _set!.description.of(lang);
+      if (_kind == NewKind.agent) _role = 'custom';
+    }
     // The ready role or job names it, until the person types a name of their own.
     if (_step == _Step.job && !_named) {
       final l = AppLocalizations.of(context);
@@ -255,8 +269,7 @@ class _NewAgentScreenState extends State<NewAgentScreen> {
       _step = _steps[i + 1];
       _error = null;
     });
-    if (_step == _Step.services && _services == null) unawaited(_loadServices(app));
-    if (_step == _Step.mode) unawaited(_loadEstimate(app));
+    if (_step == _Step.mode && _set == null) unawaited(_loadEstimate(app));
     if (_step == _Step.instructions) {
       _outcome = null;
       if (_tools == null) unawaited(_loadTools(app));
@@ -291,15 +304,6 @@ class _NewAgentScreenState extends State<NewAgentScreen> {
       if (mounted && _project?.id == p.id) setState(() => _subs = s);
     } on ApiException {
       if (mounted) setState(() => _subs = const []);
-    }
-  }
-
-  Future<void> _loadServices(AppController app) async {
-    try {
-      final s = await app.client?.assistantServices() ?? const <ServiceEntry>[];
-      if (mounted) setState(() => _services = s);
-    } on ApiException {
-      if (mounted) setState(() => _services = const []);
     }
   }
 
@@ -366,12 +370,13 @@ class _NewAgentScreenState extends State<NewAgentScreen> {
         role: _roleSent,
         model: _model,
         mode: _mode,
-        connections: _kind == NewKind.assistant ? (_connections.toList()..sort()) : null,
+        connections: (_kind == NewKind.assistant || _set != null) ? _connections : null,
+        preset: _set?.id,
       );
       // Its instructions as God wrote them (or as the person changed them), and the tools it
       // starts without: God's proposal, or the ones switched off by hand.
       final text = _outcome?.text.trim() ?? '';
-      if (text.isNotEmpty) await c.setPrompt(_outcome!.text, agentId: a.id);
+      if (_set == null && text.isNotEmpty) await c.setPrompt(_outcome!.text, agentId: a.id);
       final proposed = _outcome?.tools;
       final off = proposed != null
           ? {
@@ -454,6 +459,7 @@ class _NewAgentScreenState extends State<NewAgentScreen> {
                     padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
                     child: switch (_step) {
                       _Step.kind => _kindStep(app, l, c),
+                      _Step.start => _startStep(l, c),
                       _Step.project => _projectStep(app, l, c),
                       _Step.job => _jobStep(l, c),
                       _Step.name => _nameStep(app, l, c),
@@ -505,7 +511,7 @@ class _NewAgentScreenState extends State<NewAgentScreen> {
                           child: Text(
                             _step == _Step.review
                                 ? (_creating ? l.newAgentCreating : l.newAgentCreate)
-                                : _step == _Step.mode
+                                : _step == _Step.mode && _set == null
                                 ? l.g4AgDraftNext(god)
                                 : l.newAgentNext,
                             overflow: TextOverflow.ellipsis,
@@ -755,37 +761,83 @@ class _NewAgentScreenState extends State<NewAgentScreen> {
     );
   }
 
-  Widget _servicesStep(AppLocalizations l, RgColors c) {
-    final list = _services;
+  /// «Start from…» (3.12.3): the ready-made sets, or an empty agent made step by step.
+  Widget _startStep(AppLocalizations l, RgColors c) {
+    final lang = Localizations.localeOf(context).languageCode == 'en' ? 'en' : 'it';
+    String effort(String e) => switch (e) {
+      'low' => l.sxSetEffort_low,
+      'medium' => l.sxSetEffort_medium,
+      'high' => l.sxSetEffort_high,
+      _ => l.sxSetEffort_max,
+    };
+    String kindWord(String k) => switch (k) {
+      'mailbox' => l.sxConnMailboxes,
+      'chat' => l.sxConnChats,
+      'calendar' => l.sxConnCalendars,
+      _ => l.sxConnServices,
+    };
     return Column(
+      key: const Key('new-agent-start'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _title(c, l.g4AgStep2Asst),
-        _lead(c, l.g4AgStep2AsstHelp),
-        if (list == null) const Center(child: CircularProgressIndicator()),
-        if (list != null && list.isEmpty)
+        _title(c, l.sxSetStartFrom),
+        _lead(c, l.sxSetStartHelp),
+        _Choice(
+          key: const Key('new-set-none'),
+          icon: RgIcons.plus,
+          title: l.sxSetNone,
+          text: l.sxSetNoneHint,
+          on: _set == null,
+          onTap: () => setState(() => _set = null),
+        ),
+        for (final s in agentSets)
+          _Choice(
+            key: Key('new-set-${s.id}'),
+            icon: RgIcons.zap,
+            title: s.name.of(lang),
+            text: s.description.of(lang),
+            on: _set?.id == s.id,
+            onTap: () => setState(() {
+              _set = s;
+              _connections = [];
+            }),
+          ),
+        if (_set != null) ...[
+          const SizedBox(height: 8),
           Text(
-            l.g4AgNoServices,
-            key: const Key('new-no-services'),
-            style: TextStyle(color: c.dim),
-          ),
-        for (final s in list ?? const <ServiceEntry>[])
-          _SwitchCard(
-            key: Key('new-service-${s.name}'),
-            title: serviceName(s.name),
-            text: serviceState(l, s),
-            on: _connections.contains(s.name),
-            onTap: () => setState(
-              () => _connections.contains(s.name)
-                  ? _connections.remove(s.name)
-                  : _connections.add(s.name),
+            l.sxSetModel(
+              effort(_set!.effort),
+              _set!.speed == 'fast' ? l.sxSetSpeed_fast : l.sxSetSpeed_default,
             ),
+            key: const Key('new-set-model'),
+            style: TextStyle(color: c.dim, fontSize: 13),
           ),
-        const SizedBox(height: 6),
-        Text(l.g4AgAddServiceHint, style: TextStyle(color: c.dim, fontSize: 12.5)),
+          Text(
+            l.sxSetAsks(_set!.asks.map((a) => a.of(lang)).join('; ')),
+            key: const Key('new-set-asks'),
+            style: TextStyle(color: c.dim, fontSize: 13),
+          ),
+          Text(
+            _set!.wants.isEmpty
+                ? l.sxSetWantsNothing
+                : l.sxSetWants(_set!.wants.map((k) => kindWord(k).toLowerCase()).join(', ')),
+            key: const Key('new-set-wants'),
+            style: TextStyle(color: c.dim, fontSize: 13),
+          ),
+        ],
       ],
     );
   }
+
+  /// What the new agent is connected to (3.12.3): any number, by kind.
+  Widget _servicesStep(AppLocalizations l, RgColors c) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      _title(c, l.sxConnTitle),
+      _lead(c, l.sxConnHelp),
+      ConnectionsEditor(value: _connections, onChanged: (v) => setState(() => _connections = v)),
+    ],
+  );
 
   String _inheritLabel(AppController app, AppLocalizations l) {
     if (_kind != NewKind.agent) return l.newAgentModelGod;
@@ -976,12 +1028,10 @@ class _NewAgentScreenState extends State<NewAgentScreen> {
         if (_project != null && _kind != NewKind.assistant) line(l.reviewProject, _project!.name),
         if (sub != null) line(l.g4AgWhere, '${sub.name} (${sub.dir}/)'),
         if (_roleSent != null) line(l.newAgentRole, _roleSent!),
-        if (_kind == NewKind.assistant)
+        if (_kind == NewKind.assistant || _set != null)
           line(
-            l.g4AgServices,
-            _connections.isEmpty
-                ? l.g4AgNoneChosen
-                : (_connections.map(serviceName).toList()..sort()).join(', '),
+            l.sxConnTitle,
+            _connections.isEmpty ? l.g4AgNoneChosen : l.sxConnCount('${_connections.length}'),
           ),
         line(
           l.agentModel,

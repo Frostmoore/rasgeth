@@ -21,12 +21,17 @@ import { teamsAppPackage } from "@redgiant/gateway";
 import { AgentLimitError, can, HierarchyError } from "@redgiant/hierarchy";
 import { hasOwnMascot, mascotSvg, subagentSignSvg } from "@redgiant/mascot";
 import {
+  AGENT_SETS,
+  AgentConnection,
+  AgentConnectionInput,
   AgentKind,
+  AgentSetId,
   ARTIFACT_SANDBOX,
   ArtifactError,
   ArtifactRef,
   Automation,
   AutomationRun,
+  agentSetOf,
   Effort,
   ImagePart,
   type KitState,
@@ -54,6 +59,7 @@ import { PathOutsideWorkspaceError } from "@redgiant/tools";
 import type { Context } from "hono";
 import { streamSSE } from "hono/streaming";
 import { acpRoutes } from "./acp-routes.js";
+import { withAgentSet } from "./agent-sets.js";
 import {
   artifactHeaders,
   artifactPage,
@@ -65,6 +71,7 @@ import { artifactRoutes } from "./artifact-routes.js";
 import { type AuthProvider, bearer, type Principal } from "./auth.js";
 import { BackupError, exportBackup, importBackup, previewBackup, removeBackup } from "./backup.js";
 import { browserRoutes } from "./browser-routes.js";
+import { CalendarError, CalendarNotFoundError } from "./calendar/service.js";
 import {
   bridge,
   PREVIEW_HEADERS,
@@ -188,7 +195,7 @@ const Agent = z
     systemPrompt: z.string().optional(),
     model: ModelSpec.optional(),
     mode: PermissionMode.optional(),
-    connections: z.array(z.string()).optional(),
+    connections: z.array(AgentConnection).optional(),
     subprojectId: z.string().optional(),
     compaction: z.object({ at: z.number().optional(), keep: z.number().optional() }).optional(),
     skills: z.array(z.string()).optional(),
@@ -212,7 +219,9 @@ const NewAgent = z
     systemPrompt: z.string().optional(),
     model: ModelSpec.optional(),
     mode: PermissionMode.optional(),
-    connections: z.array(z.string().min(1)).optional(),
+    connections: z.array(AgentConnectionInput).optional(),
+    /** Starts from one of the ready-made sets (3.12.3): its instructions, tools and the connections it wants. */
+    preset: AgentSetId.optional(),
     subprojectId: z.string().min(1).optional(),
   })
   .openapi("NewAgent");
@@ -363,7 +372,7 @@ const routes = {
               mode: PermissionMode.optional(),
               systemPrompt: z.string().optional(),
               role: z.string().min(1).optional(),
-              connections: z.array(z.string().min(1)).optional(),
+              connections: z.array(AgentConnectionInput).optional(),
               compaction: z
                 .object({
                   at: z.number().min(0.3).max(0.95).optional(),
@@ -1302,20 +1311,18 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       if (!sub || sub.projectId !== project)
         return c.json({ error: `Subproject "${body.subprojectId}" not found in the project` }, 404);
     }
-    const { parentId, ...rest } = body;
+    const { parentId, preset, ...rest } = body;
+    const set = preset ? agentSetOf(preset) : undefined;
+    const base = set ? withAgentSet(rest, set) : rest;
     const input = Object.fromEntries(
-      Object.entries({ ...rest, parentId: parentId ?? null }).filter(([, v]) => v !== undefined),
+      Object.entries({ ...base, parentId: parentId ?? null }).filter(([, v]) => v !== undefined),
     );
-    return c.json(
-      agentOut(
-        await core.registry.create(
-          human(c),
-          input as unknown as Parameters<typeof core.registry.create>[1],
-        ),
-        core.registry,
-      ),
-      201,
+    const made = await core.registry.create(
+      human(c),
+      input as unknown as Parameters<typeof core.registry.create>[1],
     );
+    if (set) await core.applyAgentSet(owner(c), made.id, set.id);
+    return c.json(agentOut(made, core.registry), 201);
   });
   app.openapi(routes.configureAgent, async (c) => {
     const change = Object.fromEntries(
@@ -3815,6 +3822,71 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     } catch (err) {
       return machineError(c, err);
     }
+  });
+  // The ready-made agent sets (3.12.3): the table, as the create-agent flow shows it.
+  app.get("/api/agent-sets", (c) => c.json({ sets: AGENT_SETS }, 200));
+  // What an agent may be connected to (3.12.3): the person's mailboxes open to the agents, the
+  // chats they linked, their calendars open to the agents and their MCP servers, by name.
+  app.get("/api/connections/options", async (c) => {
+    const o = owner(c);
+    return c.json(
+      {
+        mailboxes: (await core.email.boxes(o))
+          .filter((b) => b.agents === true)
+          .map((b) => ({ id: b.id, name: b.name, address: b.user })),
+        chats: (await core.automationLinks(o)).chats,
+        calendars: (await core.calendars.open(o)).map((x) => ({
+          id: x.id,
+          name: x.name,
+          writable: x.writable,
+        })),
+        mcp: (await core.listMcp(o).catch(() => [])).map((m) => m.name),
+      },
+      200,
+    );
+  });
+  // Calendars (3.12.3): CalDAV (read and write) and read-only iCal addresses; the secret goes to
+  // the keychain and is never sent back (an iCal address is shown only by its host).
+  const CalendarBody = z.object({
+    name: z.string().max(80).default(""),
+    kind: z.enum(["caldav", "ics"]),
+    url: z.string().min(8).max(2000),
+    user: z.string().max(320).optional(),
+    password: z.string().max(500).optional(),
+    agents: z.boolean().optional(),
+  });
+  const calendarError = (c: Context, err: unknown) => {
+    if (err instanceof CalendarNotFoundError) return c.json({ error: err.message }, 404);
+    if (err instanceof CalendarError)
+      return c.json({ error: err.message, code: "calendar_failed" }, 400);
+    throw err;
+  };
+  app.get("/api/settings/calendars", async (c) =>
+    c.json({ calendars: await core.calendars.list(owner(c)) }, 200),
+  );
+  app.post("/api/settings/calendars", async (c) => {
+    const b = CalendarBody.safeParse(await c.req.json().catch(() => ({})));
+    if (!b.success) return c.json({ error: "The kind and the address are needed" }, 400);
+    try {
+      return c.json(await core.calendars.add(owner(c), b.data), 201);
+    } catch (err) {
+      return calendarError(c, err);
+    }
+  });
+  app.put("/api/settings/calendars/:id", async (c) => {
+    const b = z
+      .object({ name: z.string().max(80).optional(), agents: z.boolean().optional() })
+      .safeParse(await c.req.json().catch(() => ({})));
+    if (!b.success) return c.json({ error: "Bad calendar" }, 400);
+    try {
+      return c.json(await core.calendars.update(owner(c), c.req.param("id"), b.data), 200);
+    } catch (err) {
+      return calendarError(c, err);
+    }
+  });
+  app.delete("/api/settings/calendars/:id", async (c) => {
+    await core.calendars.remove(owner(c), c.req.param("id"));
+    return c.json({ ok: true }, 200);
   });
   // Many mailboxes, each with its name and category (G33.3); passwords are never sent back.
   const MailboxBody = z.object({

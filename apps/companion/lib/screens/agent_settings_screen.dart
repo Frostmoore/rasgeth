@@ -31,6 +31,7 @@ import 'instructions_screen.dart';
 import 'new_agent_screen.dart' show RgSwitch;
 import 'team_screen.dart' show AgentModelRow, openAgentConversation;
 // G42.10: the whole knowledge and the shared memory, native.
+import '../settings/agents/agent_connections.dart';
 import '../settings/knowledge_kit.dart' show kbNum;
 import '../settings/knowledge_screen.dart' show openKnowledgeSettings;
 import '../settings/memory_screen.dart' show openSharedMemory, memCountWords;
@@ -60,7 +61,7 @@ Future<void> openAgentSettings(BuildContext context, Agent a) {
   );
 }
 
-enum AgentGroup { general, assistant, work, memory, limits, tools, knowledge }
+enum AgentGroup { general, assistant, work, memory, limits, connections, tools, knowledge }
 
 /// The groups [a] has (as the page's tabs: Demi-God keeps no memory nor knowledge; a personal
 /// assistant has its services, routines and skills, as the page's AssistantPage).
@@ -128,6 +129,7 @@ class _AgentSettingsScreenState extends State<AgentSettingsScreen> {
             AgentGroup.work => _Work(agent: a),
             AgentGroup.memory => _Memory(agent: a),
             AgentGroup.limits => _Limits(agent: a),
+            AgentGroup.connections => AgentConnectionsGroup(agent: a, readOnly: readOnly),
             AgentGroup.tools => _Tools(agent: a),
             AgentGroup.knowledge => _Knowledge(agent: a),
           },
@@ -292,6 +294,7 @@ class _Tabs extends StatelessWidget {
       AgentGroup.work => (RgIcons.zap, l.asGroupWork),
       AgentGroup.memory => (RgIcons.bookmark, l.asGroupMemory),
       AgentGroup.limits => (RgIcons.activity, l.asGroupLimits),
+      AgentGroup.connections => (RgIcons.layers, l.sxAgentTab_connections),
       AgentGroup.tools => (RgIcons.tool, l.asGroupTools),
       AgentGroup.knowledge => (RgIcons.search, l.asGroupKnowledge),
     };

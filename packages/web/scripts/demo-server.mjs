@@ -2005,7 +2005,7 @@ const secretary = await core.registry.create(
     parentId: god.id,
     name: "Secretary",
     role: "Keep my tasks and appointments in order and give me a brief of the day.",
-    connections: ["docs"],
+    connections: [{ kind: "mcp", ref: "docs" }],
   },
 );
 const researcher = await core.registry.create(
@@ -2017,6 +2017,87 @@ const researcher = await core.registry.create(
     role: "Search the web and bring back what you find, with the sources.",
   },
 );
+// DEMO_SETS=1 (3.12.3): mailboxes, calendars and linked chats to connect to an agent, and one
+// agent connected to several of each (the settings of the person written straight, no real server).
+if (process.env.DEMO_SETS === "1") {
+  const keep = (key, value) =>
+    core.db.query(
+      `INSERT INTO rg_settings (owner_id, key, value) VALUES ('local', $1, $2)
+       ON CONFLICT (owner_id, key) DO UPDATE SET value = EXCLUDED.value`,
+      [key, JSON.stringify(value)],
+    );
+  const at = "2026-11-20T10:00:00.000Z";
+  await keep("email_boxes", [
+    {
+      id: "box_work",
+      name: "Work",
+      category: "work",
+      host: "imap.work.example",
+      port: 993,
+      secure: true,
+      user: "anna@work.example",
+      agents: true,
+      createdAt: at,
+    },
+    {
+      id: "box_home",
+      name: "Home",
+      category: "personal",
+      host: "imap.home.example",
+      port: 993,
+      secure: true,
+      user: "anna@home.example",
+      agents: true,
+      createdAt: at,
+    },
+    {
+      id: "box_shop",
+      name: "Shop",
+      category: "work",
+      host: "imap.shop.example",
+      port: 993,
+      secure: true,
+      user: "orders@shop.example",
+      agents: true,
+      createdAt: at,
+    },
+  ]);
+  await keep("calendars", [
+    {
+      id: "cal_home",
+      name: "Home",
+      kind: "caldav",
+      url: "https://caldav.icloud.example/anna/home/",
+      user: "anna",
+      writable: true,
+      agents: true,
+      createdAt: at,
+    },
+    {
+      id: "cal_google",
+      name: "Google",
+      kind: "ics",
+      url: "calendar.google.com",
+      writable: false,
+      agents: true,
+      createdAt: at,
+    },
+  ]);
+  core.automationLinks = async () => ({
+    chats: ["telegram", "whatsapp", "discord"],
+    mailboxes: [],
+  });
+  await core.registry.configure({ type: "human", ownerId: "local" }, secretary.id, {
+    connections: [
+      { kind: "mailbox", ref: "box_work" },
+      { kind: "mailbox", ref: "box_home" },
+      { kind: "chat", ref: "telegram" },
+      { kind: "calendar", ref: "cal_home" },
+      { kind: "calendar", ref: "cal_google" },
+      { kind: "mcp", ref: "docs" },
+    ],
+  });
+}
 // Subprojects (G24.13): the site and the API, each in its folder, with an agent on the site.
 {
   const site = await core.projects.createSubproject("local", "demo", "Site", "apps/site");

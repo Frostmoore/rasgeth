@@ -13611,5 +13611,99 @@
   },
   "syDvRepairText": "This restarts the simulator's home screen and closes the apps open on it. Use it only when taps and keys no longer reach the simulator. Rasgeth never does it by itself.",
   "syDvRepairYes": "Repair",
-  "syDvTouchHint": "Several taps in a row changed nothing on the screen: touches may not be arriving."
+  "syDvTouchHint": "Several taps in a row changed nothing on the screen: touches may not be arriving.",
+  "sxCalAdd": "Add a calendar",
+  "sxCalAddText": "CalDAV or an iCal address",
+  "sxCalAgents": "Agents may use it",
+  "sxCalAgentsHelp": "Off until you say so. An agent still needs it connected in its own settings.",
+  "sxCalGoogleNote": "Writing to Google Calendar with a sign-in is not part of this: a Google calendar is read through its secret iCal address.",
+  "sxCalKind": "Kind",
+  "sxCalKind_caldav": "CalDAV",
+  "sxCalKind_ics": "iCal address",
+  "sxCalName": "Name",
+  "sxCalNameHelp": "How you and the agents call it («Home», «Work»).",
+  "sxCalNew": "New calendar",
+  "sxCalPassword": "Password",
+  "sxCalPasswordHelp": "An app password if the service has them. It goes to the keychain and is never shown again.",
+  "sxCalPurpose": "Calendars the agents may read, and write to with your yes. CalDAV (iCloud, Nextcloud, Fastmail…) reads and writes; an iCal address (for example Google's secret address) only reads.",
+  "sxCalRemove": "Remove",
+  "sxCalSave": "Add",
+  "sxCalState_caldav": "CalDAV · writable",
+  "sxCalState_ics": "iCal · read only",
+  "sxCalTesting": "Trying…",
+  "sxCalUrlCaldav": "Calendar address",
+  "sxCalUrlCaldavHelp": "The calendar's own CalDAV address, as the service shows it (for iCloud, Nextcloud or Fastmail).",
+  "sxCalUrlIcs": "iCal address",
+  "sxCalUrlIcsHelp": "For Google: Calendar settings > «Secret address in iCal format». Anyone with it can read the calendar: it is kept in the keychain.",
+  "sxCalUser": "User",
+  "sxConnCalendars": "Calendars",
+  "sxConnChatHelp": "It can write to you on this chat.",
+  "sxConnChats": "Chats",
+  "sxConnCount": "{n} connected",
+  "@sxConnCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "sxConnGone": "Not there any more",
+  "sxConnHelp": "What this agent may reach, as many as you like. It sees only what is connected to it: nothing else of yours.",
+  "sxConnMailboxes": "Mailboxes",
+  "sxConnNoCalendars": "No calendar is open to the agents yet: add one in Settings > Automations > Calendars.",
+  "sxConnNoChats": "No chat is linked yet: link one in Settings > Chats.",
+  "sxConnNoMailboxes": "No mailbox is open to the agents yet: add one and switch on «Agents may use it» in Settings > Automations.",
+  "sxConnReadOnly": "Read only",
+  "sxConnSaved": "Saved. New conversations use it at once.",
+  "sxConnServices": "Services",
+  "sxConnWritable": "Can add events (always asks you)",
+  "sxSetAsks": "Asks you first: {what}",
+  "@sxSetAsks": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "sxSetEffort_high": "high",
+  "sxSetEffort_low": "low",
+  "sxSetEffort_max": "maximum",
+  "sxSetEffort_medium": "medium",
+  "sxSetModel": "Model: {speed}, effort {effort}",
+  "@sxSetModel": {
+    "placeholders": {
+      "effort": {
+        "type": "String"
+      },
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "sxSetNone": "An empty agent",
+  "sxSetNoneHint": "Choose its job yourself, step by step.",
+  "sxSetSpeed_default": "your usual one",
+  "sxSetSpeed_fast": "fast",
+  "sxSetStartFrom": "Start from…",
+  "sxSetStartHelp": "Ready-made settings, not new features: they set up the agent's instructions, tools and what it asks you. You can change everything after.",
+  "sxSetWants": "To connect: {what}",
+  "@sxSetWants": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "sxSetWantsNothing": "Nothing to connect",
+  "sxAgentTab_connections": "Connections",
+  "sxCalTitle": "Calendars",
+  "sxConnTitle": "Connections",
+  "sxSetUsed": "Made from the set «{name}»",
+  "@sxSetUsed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -27,6 +27,9 @@ class FakeChannels {
   final chatLinks = <String, List<Json>>{};
   Json? single;
   final boxes = <Json>[];
+
+  /// 3.12.3: the calendars (never their secrets) and the chats linked.
+  final calendars = <Json>[];
   final passwords = <String, String>{};
   int _ids = 0;
 
@@ -78,7 +81,9 @@ class FakeChannels {
         path.startsWith('/api/setup/chats/') ||
         path.startsWith('/api/chats/') ||
         path == '/api/settings/email' ||
-        path.startsWith('/api/settings/mailboxes');
+        path.startsWith('/api/settings/mailboxes') ||
+        path == '/api/connections/options' ||
+        path.startsWith('/api/settings/calendars');
     if (!known) return false;
     calls.add('$m $path');
     if (path == '/api/setup/telegram' && m == 'PUT') {
@@ -181,6 +186,77 @@ class FakeChannels {
       }
       if (m == 'DELETE') {
         single = null;
+        await json(200, {'ok': true});
+        return true;
+      }
+    }
+    // 3.12.3: what an agent may be connected to, as `GET /api/connections/options` says it.
+    if (path == '/api/connections/options' && m == 'GET') {
+      await json(200, {
+        'mailboxes': [
+          for (final b in boxes)
+            if (b['agents'] == true) {'id': b['id'], 'name': b['name'], 'address': b['user']},
+        ],
+        'chats': [
+          if (telegramLinks.isNotEmpty) 'telegram',
+          for (final e in chatLinks.entries)
+            if (e.value.isNotEmpty) e.key,
+        ],
+        'calendars': [
+          for (final c in calendars)
+            if (c['agents'] == true) {'id': c['id'], 'name': c['name'], 'writable': c['writable']},
+        ],
+        'mcp': <String>[],
+      });
+      return true;
+    }
+    if (path == '/api/settings/calendars') {
+      if (m == 'GET') {
+        await json(200, {'calendars': calendars});
+        return true;
+      }
+      if (m == 'POST') {
+        final b = await _body(r);
+        bodies['POST $path'] = b;
+        if ('${b['password']}'.contains('wrong')) {
+          await json(400, {'error': 'The server refused the user or the password'});
+          return true;
+        }
+        final host = Uri.tryParse('${b['url']}')?.host ?? '';
+        final ics = b['kind'] == 'ics';
+        final c = {
+          'id': 'cal_${++_ids}',
+          'name': '${b['name']}'.isEmpty ? host : b['name'],
+          'kind': b['kind'],
+          'url': ics ? host : b['url'],
+          if (!ics) 'user': b['user'],
+          'writable': !ics,
+          if (b['agents'] == true) 'agents': true,
+          'createdAt': '2026-11-23T10:00:00.000Z',
+        };
+        calendars.add(c);
+        await json(201, c);
+        return true;
+      }
+    }
+    final calOne = RegExp(r'^/api/settings/calendars/([^/]+)$').firstMatch(path);
+    if (calOne != null) {
+      final id = calOne.group(1);
+      if (m == 'PUT') {
+        final b = await _body(r);
+        bodies['PUT $path'] = b;
+        final c = calendars.firstWhere((x) => x['id'] == id);
+        if (b['name'] is String) c['name'] = b['name'];
+        if (b['agents'] == true) {
+          c['agents'] = true;
+        } else if (b.containsKey('agents')) {
+          c.remove('agents');
+        }
+        await json(200, c);
+        return true;
+      }
+      if (m == 'DELETE') {
+        calendars.removeWhere((x) => x['id'] == id);
         await json(200, {'ok': true});
         return true;
       }

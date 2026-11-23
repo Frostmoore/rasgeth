@@ -5,6 +5,7 @@
 import { describe, expect, it } from "vitest";
 import {
   ALWAYS_HUMAN,
+  CALENDAR_WRITE,
   DEFAULT_POLICY,
   type Decision,
   evaluate,
@@ -91,6 +92,37 @@ const TABLE: Row[] = [
   ["a draft in manual mode", "manual", "mail_draft", { to: ["a@b.c"] }, "ask", []],
   ["archiving", "auto", "mail_move", { ids: [4], action: "archive" }, "allow", []],
   ["marking as read", "auto", "mail_move", { ids: [4], action: "read" }, "allow", []],
+  // Calendars and chats (3.12.3): writing an event always asks, whatever the mode and the rules.
+  ["listing events", "auto", "calendar_list_events", { from: "2026-11-25" }, "allow", []],
+  ["listing events in plan mode", "plan", "calendar_list_events", {}, "allow", []],
+  [
+    "an event, auto mode",
+    "auto",
+    "calendar_create_event",
+    { summary: "Dentist", start: "2026-11-27T15:00:00Z" },
+    "ask",
+    [CALENDAR_WRITE],
+  ],
+  [
+    "an event, a rule allows every tool",
+    "auto",
+    "calendar_create_event",
+    { summary: "Dentist", start: "2026-11-27T15:00:00Z" },
+    "ask",
+    [CALENDAR_WRITE],
+    { rules: [{ tool: "*", decision: "allow" }] },
+  ],
+  [
+    "an event, a rule denies it",
+    "auto",
+    "calendar_create_event",
+    { summary: "x", start: "2026-11-27" },
+    "deny",
+    [],
+    { rules: [{ tool: "calendar_create_event", decision: "deny" }] },
+  ],
+  ["an event in plan mode", "plan", "calendar_create_event", { summary: "x" }, "deny", []],
+  ["listing the chats", "auto", "chat_accounts", {}, "allow", []],
 ];
 
 describe("email in the policy (G38.1): the table", () => {

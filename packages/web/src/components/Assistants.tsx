@@ -2,10 +2,14 @@
 // may use, its notes and its routines. God hands them work by their job; they hand work to each
 // other. Created step by step from the "Agents" box in the left bar.
 
-import type { Automation } from "@redgiant/protocol";
-import { MCP_CATALOG } from "@redgiant/protocol";
+import {
+  AGENT_SETS,
+  type AgentConnection,
+  type AgentSetId,
+  type Automation,
+} from "@redgiant/protocol";
 import { useEffect, useState } from "preact/hooks";
-import type { Agent, McpEntry, McpStatus, ModelChoice } from "../api.js";
+import type { Agent, ModelChoice } from "../api.js";
 import { assistantState } from "../assistant-state.js";
 import { roleText, t } from "../i18n.js";
 import { IconChat, IconMonitor, IconPlus } from "../icons.js";
@@ -26,6 +30,8 @@ import {
   sessionRows,
 } from "../state.js";
 import { substantialChange } from "../word-diff.js";
+import { ConnectionsEditor } from "./AgentConnections.js";
+import { SetPicker, say } from "./AgentSets.js";
 import { Editor, recipeWhen } from "./Automations.js";
 import { explain, providerName } from "./Brain.js";
 import { CompactionSettings } from "./CompactionSettings.js";
@@ -48,64 +54,11 @@ type Job = (typeof JOBS)[number];
 
 export { type AssistantState, assistantState } from "../assistant-state.js";
 
-const serviceName = (name: string) => MCP_CATALOG.find((e) => e.id === name)?.name ?? name;
-
-/** The services added for everyone (not for one project), and whether each works. */
-function useServices(): { servers: McpEntry[]; status: McpStatus[] | undefined } {
-  const [servers, setServers] = useState<McpEntry[]>([]);
-  const [status, setStatus] = useState<McpStatus[]>();
-  useEffect(() => {
-    void getApi()
-      .mcpServers()
-      .then(
-        (l) => setServers(l.filter((m) => m.project_id === null)),
-        () => {},
-      );
-    void getApi()
-      .mcpStatus()
-      .then(setStatus, () => setStatus([]));
-  }, []);
-  return { servers, status };
-}
-
-/** Which services an assistant may use: a switch for each, the way to add more below. */
-function Connections({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
-  const { servers, status } = useServices();
-  return (
-    <div class="asst-connections">
-      {servers.length === 0 && <p class="dim">{t("asstNoServices")}</p>}
-      {servers.map((m) => {
-        const s = status?.find((x) => x.name === m.name);
-        return (
-          <Toggle
-            key={m.name}
-            label={serviceName(m.name)}
-            description={
-              !s
-                ? t("extChecking")
-                : s.state === "connected"
-                  ? t("extWorks", { n: String(s.tools) })
-                  : s.state === "login"
-                    ? t("extNeedsLogin")
-                    : t("extBroken")
-            }
-            checked={value.includes(m.name)}
-            onChange={(on) => onChange(on ? [...value, m.name] : value.filter((x) => x !== m.name))}
-          />
-        );
-      })}
-      <button
-        type="button"
-        class="link"
-        onClick={() =>
-          openTab({ id: "settings", type: "settings", title: t("settings"), section: "extensions" })
-        }
-      >
-        {t("asstAddService")}
-      </button>
-    </div>
-  );
-}
+const keyOf = (l: AgentConnection[]) =>
+  l
+    .map((c) => `${c.kind}:${c.ref}`)
+    .sort()
+    .join("|");
 
 /** A new assistant, step by step: its job, its services, its brain, how much it does alone. */
 export function AssistantWizard({ onDone }: { onDone: (a?: Agent) => void }) {
@@ -114,7 +67,9 @@ export function AssistantWizard({ onDone }: { onDone: (a?: Agent) => void }) {
   const [name, setName] = useState(t("asstJob_secretary"));
   const [named, setNamed] = useState(false);
   const [role, setRole] = useState(t("asstJobText_secretary"));
-  const [connections, setConnections] = useState<string[]>([]);
+  const [connections, setConnections] = useState<AgentConnection[]>([]);
+  // «Start from…» (3.12.3): a ready-made set fills the name and the job and is applied by the server.
+  const [preset, setPreset] = useState<AgentSetId>();
   const [models, setModels] = useState<ModelChoice[]>([]);
   const [model, setModel] = useState("");
   const [mode, setMode] = useState<"auto" | "manual">("auto");
@@ -127,6 +82,18 @@ export function AssistantWizard({ onDone }: { onDone: (a?: Agent) => void }) {
       .models()
       .then(setModels, () => {});
   }, []);
+  const pickSet = (id: AgentSetId | undefined) => {
+    setPreset(id);
+    const set = AGENT_SETS.find((x) => x.id === id);
+    if (set) {
+      setName(say(set.name));
+      setNamed(true);
+      setRole(say(set.description));
+    } else {
+      setNamed(false);
+      pick(job);
+    }
+  };
   const pick = (j: Job) => {
     setJob(j);
     setRole(j === "custom" ? "" : t(`asstJobText_${j as Exclude<Job, "custom">}`));
@@ -144,9 +111,11 @@ export function AssistantWizard({ onDone }: { onDone: (a?: Agent) => void }) {
         role: role.trim(),
         connections,
         mode,
+        ...(preset && { preset }),
         ...(provider && rest.length > 0 && { model: { provider, model: rest.join("/") } }),
       });
-      if (outcome?.text.trim()) await getApi().setAgentPrompt(a.id, outcome.text);
+      // A set brings its own instructions: God's draft only when there is none.
+      if (!preset && outcome?.text.trim()) await getApi().setAgentPrompt(a.id, outcome.text);
       const off = (outcome?.tools ?? []).filter((x) => !x.on);
       if (off.length > 0)
         await getApi().setAgentTools(
@@ -194,16 +163,21 @@ export function AssistantWizard({ onDone }: { onDone: (a?: Agent) => void }) {
     <div class="ui-step asst-wizard">
       <h2>{t("asstNewTitle")}</h2>
       <p class="ui-purpose">{t("asstNewPurpose")}</p>
-      <h3>{t("asstStep1")}</h3>
-      <Choice<Job>
-        value={[job]}
-        onChange={([j]) => j && pick(j)}
-        options={JOBS.map((j) => ({
-          id: j,
-          title: t(`asstJob_${j}`),
-          description: t(`asstJobHint_${j}`),
-        }))}
-      />
+      <SetPicker value={preset} onChange={pickSet} />
+      {!preset && (
+        <>
+          <h3>{t("asstStep1")}</h3>
+          <Choice<Job>
+            value={[job]}
+            onChange={([j]) => j && pick(j)}
+            options={JOBS.map((j) => ({
+              id: j,
+              title: t(`asstJob_${j}`),
+              description: t(`asstJobHint_${j}`),
+            }))}
+          />
+        </>
+      )}
       <div class="asst-fields">
         <Field label={t("asstName")}>
           <input
@@ -224,7 +198,7 @@ export function AssistantWizard({ onDone }: { onDone: (a?: Agent) => void }) {
       </div>
       <h3>{t("asstStep2")}</h3>
       <p class="ui-help">{t("asstStep2Help")}</p>
-      <Connections value={connections} onChange={setConnections} />
+      <ConnectionsEditor value={connections} onChange={setConnections} />
       <h3>{t("asstStep3")}</h3>
       <Choice<"auto" | "manual">
         value={[mode]}
@@ -254,11 +228,15 @@ export function AssistantWizard({ onDone }: { onDone: (a?: Agent) => void }) {
           class="primary"
           disabled={!name.trim() || !role.trim() || !god}
           onClick={() => {
+            if (preset) {
+              void create();
+              return;
+            }
             setOutcome(null);
             setStep("instructions");
           }}
         >
-          {t("draftNext", { god: god?.name ?? "God" })}
+          {preset ? t("setCreate") : t("draftNext", { god: god?.name ?? "God" })}
         </button>
         <button type="button" onClick={() => onDone()}>
           {t("cancel")}
@@ -326,7 +304,7 @@ export function AssistantPage({ agentId }: { agentId: string | null }) {
   const [id, setId] = useState(agentId);
   const a = agents.value.find((x) => x.id === id);
   const [role, setRole] = useState(roleText(a?.role) ?? "");
-  const [connections, setConnections] = useState<string[]>(a?.connections ?? []);
+  const [connections, setConnections] = useState<AgentConnection[]>(a?.connections ?? []);
   const [routines, setRoutines] = useState<Automation[]>([]);
   const [newRoutine, setNewRoutine] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -369,8 +347,7 @@ export function AssistantPage({ agentId }: { agentId: string | null }) {
     }
   };
   const changed =
-    role.trim() !== (roleText(a.role) ?? "") ||
-    JSON.stringify([...connections].sort()) !== JSON.stringify([...(a.connections ?? [])].sort());
+    role.trim() !== (roleText(a.role) ?? "") || keyOf(connections) !== keyOf(a.connections ?? []);
   return (
     <div class="asst-page">
       <header class="row">
@@ -408,7 +385,7 @@ export function AssistantPage({ agentId }: { agentId: string | null }) {
 
       <h3>{t("asstServices")}</h3>
       <p class="ui-help">{t("asstServicesHelp")}</p>
-      <Connections
+      <ConnectionsEditor
         value={connections}
         onChange={(v) => {
           setSaved(false);

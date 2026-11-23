@@ -14,6 +14,10 @@ import {
   type PersistentBudget,
 } from "@redgiant/hierarchy";
 import {
+  AGENT_SET_IDS,
+  AgentConnectionInput,
+  AgentSetId,
+  agentSetOf,
   Effort,
   type Event,
   type ImagePart,
@@ -31,6 +35,7 @@ import {
 } from "@redgiant/sandbox";
 import type { Workspace } from "@redgiant/tools";
 import { z } from "zod";
+import { setLeftToConnect, withAgentSet } from "./agent-sets.js";
 import { type RepoState, repoSentence } from "./project-git.js";
 import { type ProjectStore, slug } from "./projects.js";
 import type { Rooms } from "./rooms.js";
@@ -128,6 +133,8 @@ export interface OrchestrationHost {
     agentId: string,
     off: { tool: string; why: string }[],
   ): Promise<{ change: { change: string } | null; ignored: string[] }>;
+  /** A ready-made set's kits for an agent just made (3.12.3). */
+  applyAgentSet?(ownerId: string, agentId: string, setId: string): Promise<void>;
   /** Whether a conversation is working now. */
   isRunning?(sessionId: string): boolean;
   /** Stops a conversation's background commands (a sub-agent's work ended, p3.3.1). */
@@ -415,7 +422,8 @@ const CreateAgentInput = z.object({
   system_prompt: z.string().optional(),
   project_id: z.string().optional(),
   subproject_id: z.string().optional(),
-  connections: z.array(z.string().min(1)).optional(),
+  connections: z.array(AgentConnectionInput).optional(),
+  preset: AgentSetId.optional(),
   tools_off: z
     .array(z.object({ tool: z.string().min(1), why: z.string().min(1) }))
     .max(80)
@@ -994,8 +1002,27 @@ export function orchestrationTools(
             },
             connections: {
               type: "array",
-              items: { type: "string" },
-              description: "assistant only: the MCP servers (by name) it may use",
+              items: {
+                anyOf: [
+                  { type: "string" },
+                  {
+                    type: "object",
+                    properties: {
+                      kind: { type: "string", enum: ["mailbox", "chat", "calendar", "mcp"] },
+                      ref: { type: "string" },
+                    },
+                    required: ["kind", "ref"],
+                  },
+                ],
+              },
+              description:
+                "what it is connected to, any number: {kind, ref} with kind mailbox (a mailbox's id), chat (a platform: telegram, whatsapp...), calendar (a calendar's id) or mcp (a server's name); a plain string is an MCP server. It sees only what it is connected to (for MCP: assistants only the ones listed)",
+            },
+            preset: {
+              type: "string",
+              enum: [...AGENT_SET_IDS],
+              description:
+                "start from a ready-made set (researcher, email, messages, sheets, agenda): its instructions, tools and wanted connections are already there; system_prompt only adds to them",
             },
             tools_off: {
               type: "array",
@@ -1057,19 +1084,24 @@ export function orchestrationTools(
               isError: true,
             };
         }
+        const set = i.preset ? agentSetOf(i.preset) : undefined;
         const problem = i.model && (await host.modelProblem?.(i.model));
         if (problem) return { content: `${problem} The agent was not created.`, isError: true };
+        const given = set
+          ? withAgentSet({ systemPrompt: i.system_prompt, model: i.model }, set)
+          : { systemPrompt: i.system_prompt, model: i.model };
         const a = await host.registry.create(me, {
           kind: i.kind as AgentRecord["kind"],
           parentId: self.id,
           name: i.name,
           role: i.role,
-          ...(i.system_prompt && { systemPrompt: i.system_prompt }),
+          ...(given.systemPrompt && { systemPrompt: given.systemPrompt }),
           ...(i.project_id && { projectId: i.project_id }),
           ...(i.connections && { connections: i.connections }),
           ...(i.subproject_id && { subprojectId: i.subproject_id }),
-          ...(i.model && { model: i.model as ModelSpec }),
+          ...(given.model && { model: given.model as ModelSpec }),
         });
+        if (set) await host.applyAgentSet?.(self.ownerId, a.id, set.id);
         let tools = "";
         if (i.tools_off?.length && host.toolsAtCreation) {
           const r = await host.toolsAtCreation(self.ownerId, self.id, a.id, i.tools_off);
@@ -1096,7 +1128,13 @@ export function orchestrationTools(
         const note = namesake
           ? ` Note: ${namesake.name} (${namesake.id}) is ${namesake.status} — ${namesake.status === "removed" ? "restore_agent" : "resume_agent"} brings that one back with its history; if it was what you needed, remove_agent the new one.`
           : "";
-        return `Created ${a.kind} ${a.name} (${a.id}) in project ${a.projectId ?? "-"}.${tools}${note}`;
+        const left = set
+          ? setLeftToConnect(
+              set.id,
+              (a.connections ?? []).map((c) => c.kind),
+            )
+          : "";
+        return `Created ${a.kind} ${a.name} (${a.id}) in project ${a.projectId ?? "-"}${set ? ` from the set "${set.id}"` : ""}.${tools}${left}${note}`;
       },
     } as Tool);
 

@@ -554,6 +554,18 @@ const SENTENCES: Record<string, Record<Lang, Sentence>> = {
     it: ({ i, q }) => `Avvia l'automazione ${q(str(i.automation) ?? "?")}`,
     en: ({ i, q }) => `Runs the automation ${q(str(i.automation) ?? "?")}`,
   },
+  calendar_create_event: {
+    it: ({ i, q }) =>
+      `Aggiunge l'evento ${q(str(i.summary) ?? "?")} (${str(i.start) ?? "?"}${i.end ? ` - ${str(i.end)}` : ""}) al calendario${str(i.calendar) ? ` ${q(str(i.calendar) ?? "")}` : ""}`,
+    en: ({ i, q }) =>
+      `Adds the event ${q(str(i.summary) ?? "?")} (${str(i.start) ?? "?"}${i.end ? ` - ${str(i.end)}` : ""}) to the calendar${str(i.calendar) ? ` ${q(str(i.calendar) ?? "")}` : ""}`,
+  },
+  chat_send: {
+    it: ({ i, q }) =>
+      `Scrive a te${str(i.chat) ? ` su ${str(i.chat)}` : " sulle tue chat"}: ${q(str(i.text) ?? "?")}`,
+    en: ({ i, q }) =>
+      `Writes to you${str(i.chat) ? ` on ${str(i.chat)}` : " on your chats"}: ${q(str(i.text) ?? "?")}`,
+  },
   mail_send: { it: mailSendSentence, en: mailSendSentence },
   mail_draft: { it: mailDraftSentence, en: mailDraftSentence },
   mail_move: { it: mailMoveSentence, en: mailMoveSentence },
@@ -721,7 +733,7 @@ export function requestReasons(lang: string, r: { reasons: readonly string[] }):
  * Requests the person always answers one by one: an email leaving, another agent's model, and a
  * change to the platform itself (a yes to archiving one project is not a yes to every change).
  */
-const ONE_BY_ONE = ["outgoing-mail", "agent-model", "platform"];
+const ONE_BY_ONE = ["outgoing-mail", "agent-model", "platform", "calendar-write"];
 
 /**
  * Whether a request offers «Always allow for this job» (3.9.8): a danger (the ordinary ones have

@@ -2,10 +2,13 @@
 // words), in which project, its name, which brain, how much it may do alone. The technical form
 // stays under "Advanced" in the tree. Then the last step (G36.14): God writes its instructions from
 // the built-in ones and what was chosen here, and proposes its tools; the person reads, changes, creates.
+
+import { AGENT_SETS, type AgentSetId } from "@redgiant/protocol";
 import { useEffect, useState } from "preact/hooks";
 import type { ModelChoice } from "../api.js";
 import { t } from "../i18n.js";
 import { getApi, projectLead, projects, refresh, subprojects } from "../state.js";
+import { SetPicker, say } from "./AgentSets.js";
 import { explain, providerName } from "./Brain.js";
 import { modelName } from "./ModelMenu.js";
 import { ModelFamilySelect } from "./ModelSelect.js";
@@ -49,6 +52,8 @@ export function AgentWizard({ onDone }: { onDone: () => void }) {
   const [effort, setEffort] = useState("medium");
   const [mode, setMode] = useState<Mode>("auto");
   const [step, setStep] = useState<"form" | "instructions">("form");
+  // «Start from…» (3.12.3): a ready-made set instead of a ready role.
+  const [preset, setPreset] = useState<AgentSetId>();
   const [outcome, setOutcome] = useState<DraftOutcome | null>(null);
   const [error, setError] = useState<string>();
   useEffect(() => {
@@ -56,6 +61,17 @@ export function AgentWizard({ onDone }: { onDone: () => void }) {
       .models()
       .then(setModels, () => {});
   }, []);
+  const pickSet = (id: AgentSetId | undefined) => {
+    setPreset(id);
+    const set = AGENT_SETS.find((x) => x.id === id);
+    if (set) {
+      setName(say(set.name));
+      setNamed(true);
+    } else {
+      setNamed(false);
+      setName(role === "custom" ? "" : t(`agentRole_${role}`));
+    }
+  };
   const pick = (r: Role) => {
     setRole(r);
     if (!named) setName(r === "custom" ? "" : t(`agentRole_${r}`));
@@ -82,12 +98,17 @@ export function AgentWizard({ onDone }: { onDone: () => void }) {
         projectId: project,
         ...(sub && { subprojectId: sub }),
         name: name.trim(),
-        role: role === "custom" ? own.trim().slice(0, 120) : t(`agentRole_${role}`),
+        role: preset
+          ? say(AGENT_SETS.find((x) => x.id === preset)?.description ?? { it: "", en: "" })
+          : role === "custom"
+            ? own.trim().slice(0, 120)
+            : t(`agentRole_${role}`),
+        ...(preset && { preset }),
         ...(provider && rest.length > 0 && { model: { provider, model: rest.join("/"), effort } }),
         mode,
       });
       // Its instructions as kept (placeholders for the names), and the tools it starts without.
-      if (outcome?.text.trim()) await getApi().setAgentPrompt(a.id, outcome.text);
+      if (!preset && outcome?.text.trim()) await getApi().setAgentPrompt(a.id, outcome.text);
       const off = (outcome?.tools ?? []).filter((x) => !x.on);
       if (off.length > 0)
         await getApi().setAgentTools(
@@ -122,6 +143,7 @@ export function AgentWizard({ onDone }: { onDone: () => void }) {
     );
   return (
     <div class="ui-step agent-wizard">
+      <SetPicker value={preset} onChange={pickSet} />
       <h3>{t("agentStep1")}</h3>
       <Choice<Role>
         value={[role]}
@@ -221,11 +243,15 @@ export function AgentWizard({ onDone }: { onDone: () => void }) {
           class="primary"
           disabled={!name.trim() || (role === "custom" && !own.trim()) || !lead}
           onClick={() => {
+            if (preset) {
+              void create();
+              return;
+            }
             setOutcome(null);
             setStep("instructions");
           }}
         >
-          {t("draftNext", { god: godName() })}
+          {preset ? t("setCreate") : t("draftNext", { god: godName() })}
         </button>
         <button type="button" onClick={onDone}>
           {t("cancel")}

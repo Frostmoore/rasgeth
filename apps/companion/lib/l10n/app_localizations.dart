@@ -33755,6 +33755,342 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Several taps in a row changed nothing on the screen: touches may not be arriving.'**
   String get syDvTouchHint;
+
+  /// No description provided for @sxCalAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a calendar'**
+  String get sxCalAdd;
+
+  /// No description provided for @sxCalAddText.
+  ///
+  /// In en, this message translates to:
+  /// **'CalDAV or an iCal address'**
+  String get sxCalAddText;
+
+  /// No description provided for @sxCalAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents may use it'**
+  String get sxCalAgents;
+
+  /// No description provided for @sxCalAgentsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Off until you say so. An agent still needs it connected in its own settings.'**
+  String get sxCalAgentsHelp;
+
+  /// No description provided for @sxCalGoogleNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Writing to Google Calendar with a sign-in is not part of this: a Google calendar is read through its secret iCal address.'**
+  String get sxCalGoogleNote;
+
+  /// No description provided for @sxCalKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Kind'**
+  String get sxCalKind;
+
+  /// No description provided for @sxCalKind_caldav.
+  ///
+  /// In en, this message translates to:
+  /// **'CalDAV'**
+  String get sxCalKind_caldav;
+
+  /// No description provided for @sxCalKind_ics.
+  ///
+  /// In en, this message translates to:
+  /// **'iCal address'**
+  String get sxCalKind_ics;
+
+  /// No description provided for @sxCalName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get sxCalName;
+
+  /// No description provided for @sxCalNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'How you and the agents call it («Home», «Work»).'**
+  String get sxCalNameHelp;
+
+  /// No description provided for @sxCalNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New calendar'**
+  String get sxCalNew;
+
+  /// No description provided for @sxCalPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get sxCalPassword;
+
+  /// No description provided for @sxCalPasswordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'An app password if the service has them. It goes to the keychain and is never shown again.'**
+  String get sxCalPasswordHelp;
+
+  /// No description provided for @sxCalPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendars the agents may read, and write to with your yes. CalDAV (iCloud, Nextcloud, Fastmail…) reads and writes; an iCal address (for example Google\'s secret address) only reads.'**
+  String get sxCalPurpose;
+
+  /// No description provided for @sxCalRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get sxCalRemove;
+
+  /// No description provided for @sxCalSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get sxCalSave;
+
+  /// No description provided for @sxCalState_caldav.
+  ///
+  /// In en, this message translates to:
+  /// **'CalDAV · writable'**
+  String get sxCalState_caldav;
+
+  /// No description provided for @sxCalState_ics.
+  ///
+  /// In en, this message translates to:
+  /// **'iCal · read only'**
+  String get sxCalState_ics;
+
+  /// No description provided for @sxCalTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'Trying…'**
+  String get sxCalTesting;
+
+  /// No description provided for @sxCalUrlCaldav.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar address'**
+  String get sxCalUrlCaldav;
+
+  /// No description provided for @sxCalUrlCaldavHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The calendar\'s own CalDAV address, as the service shows it (for iCloud, Nextcloud or Fastmail).'**
+  String get sxCalUrlCaldavHelp;
+
+  /// No description provided for @sxCalUrlIcs.
+  ///
+  /// In en, this message translates to:
+  /// **'iCal address'**
+  String get sxCalUrlIcs;
+
+  /// No description provided for @sxCalUrlIcsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For Google: Calendar settings > «Secret address in iCal format». Anyone with it can read the calendar: it is kept in the keychain.'**
+  String get sxCalUrlIcsHelp;
+
+  /// No description provided for @sxCalUser.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get sxCalUser;
+
+  /// No description provided for @sxConnCalendars.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendars'**
+  String get sxConnCalendars;
+
+  /// No description provided for @sxConnChatHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It can write to you on this chat.'**
+  String get sxConnChatHelp;
+
+  /// No description provided for @sxConnChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Chats'**
+  String get sxConnChats;
+
+  /// No description provided for @sxConnCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} connected'**
+  String sxConnCount(String n);
+
+  /// No description provided for @sxConnGone.
+  ///
+  /// In en, this message translates to:
+  /// **'Not there any more'**
+  String get sxConnGone;
+
+  /// No description provided for @sxConnHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'What this agent may reach, as many as you like. It sees only what is connected to it: nothing else of yours.'**
+  String get sxConnHelp;
+
+  /// No description provided for @sxConnMailboxes.
+  ///
+  /// In en, this message translates to:
+  /// **'Mailboxes'**
+  String get sxConnMailboxes;
+
+  /// No description provided for @sxConnNoCalendars.
+  ///
+  /// In en, this message translates to:
+  /// **'No calendar is open to the agents yet: add one in Settings > Automations > Calendars.'**
+  String get sxConnNoCalendars;
+
+  /// No description provided for @sxConnNoChats.
+  ///
+  /// In en, this message translates to:
+  /// **'No chat is linked yet: link one in Settings > Chats.'**
+  String get sxConnNoChats;
+
+  /// No description provided for @sxConnNoMailboxes.
+  ///
+  /// In en, this message translates to:
+  /// **'No mailbox is open to the agents yet: add one and switch on «Agents may use it» in Settings > Automations.'**
+  String get sxConnNoMailboxes;
+
+  /// No description provided for @sxConnReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Read only'**
+  String get sxConnReadOnly;
+
+  /// No description provided for @sxConnSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved. New conversations use it at once.'**
+  String get sxConnSaved;
+
+  /// No description provided for @sxConnServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Services'**
+  String get sxConnServices;
+
+  /// No description provided for @sxConnWritable.
+  ///
+  /// In en, this message translates to:
+  /// **'Can add events (always asks you)'**
+  String get sxConnWritable;
+
+  /// No description provided for @sxSetAsks.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks you first: {what}'**
+  String sxSetAsks(String what);
+
+  /// No description provided for @sxSetEffort_high.
+  ///
+  /// In en, this message translates to:
+  /// **'high'**
+  String get sxSetEffort_high;
+
+  /// No description provided for @sxSetEffort_low.
+  ///
+  /// In en, this message translates to:
+  /// **'low'**
+  String get sxSetEffort_low;
+
+  /// No description provided for @sxSetEffort_max.
+  ///
+  /// In en, this message translates to:
+  /// **'maximum'**
+  String get sxSetEffort_max;
+
+  /// No description provided for @sxSetEffort_medium.
+  ///
+  /// In en, this message translates to:
+  /// **'medium'**
+  String get sxSetEffort_medium;
+
+  /// No description provided for @sxSetModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model: {speed}, effort {effort}'**
+  String sxSetModel(String effort, String speed);
+
+  /// No description provided for @sxSetNone.
+  ///
+  /// In en, this message translates to:
+  /// **'An empty agent'**
+  String get sxSetNone;
+
+  /// No description provided for @sxSetNoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose its job yourself, step by step.'**
+  String get sxSetNoneHint;
+
+  /// No description provided for @sxSetSpeed_default.
+  ///
+  /// In en, this message translates to:
+  /// **'your usual one'**
+  String get sxSetSpeed_default;
+
+  /// No description provided for @sxSetSpeed_fast.
+  ///
+  /// In en, this message translates to:
+  /// **'fast'**
+  String get sxSetSpeed_fast;
+
+  /// No description provided for @sxSetStartFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Start from…'**
+  String get sxSetStartFrom;
+
+  /// No description provided for @sxSetStartHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready-made settings, not new features: they set up the agent\'s instructions, tools and what it asks you. You can change everything after.'**
+  String get sxSetStartHelp;
+
+  /// No description provided for @sxSetWants.
+  ///
+  /// In en, this message translates to:
+  /// **'To connect: {what}'**
+  String sxSetWants(String what);
+
+  /// No description provided for @sxSetWantsNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to connect'**
+  String get sxSetWantsNothing;
+
+  /// No description provided for @sxAgentTab_connections.
+  ///
+  /// In en, this message translates to:
+  /// **'Connections'**
+  String get sxAgentTab_connections;
+
+  /// No description provided for @sxCalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendars'**
+  String get sxCalTitle;
+
+  /// No description provided for @sxConnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connections'**
+  String get sxConnTitle;
+
+  /// No description provided for @sxSetUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Made from the set «{name}»'**
+  String sxSetUsed(String name);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -319,7 +319,11 @@ class Agent {
       status: _str(j['status']) ?? 'active',
       connections: [
         for (final p in (j['connections'] as List?) ?? const <Object?>[])
-          if (p is String) p,
+          // Older servers send MCP names as plain strings.
+          if (p is String)
+            AgentConnection(kind: 'mcp', ref: p)
+          else if (p is Map<String, dynamic> && p['kind'] is String && p['ref'] is String)
+            AgentConnection(kind: p['kind'] as String, ref: p['ref'] as String),
       ],
       skills: j['skills'] is List
           ? [
@@ -361,8 +365,8 @@ class Agent {
   /// The server's `status`: active | stopped | removed.
   final String status;
 
-  /// A personal assistant's services (MCP servers by name, G24.11).
-  final List<String> connections;
+  /// What it is connected to (3.12.3), any number: mailboxes, chats, calendars, MCP servers.
+  final List<AgentConnection> connections;
 
   /// The skills it uses (null: every skill, new ones too; G24.14c).
   final List<String>? skills;
@@ -390,6 +394,24 @@ class Agent {
     skills: skills,
     subprojectId: subprojectId,
   );
+}
+
+/// One thing an agent is connected to (3.12.3): [kind] mailbox | chat | calendar | mcp, and [ref]
+/// (a mailbox's or calendar's id, a chat platform, an MCP server's name).
+class AgentConnection {
+  const AgentConnection({required this.kind, required this.ref});
+
+  final String kind;
+  final String ref;
+
+  Map<String, String> toJson() => {'kind': kind, 'ref': ref};
+
+  @override
+  bool operator ==(Object other) =>
+      other is AgentConnection && other.kind == kind && other.ref == ref;
+
+  @override
+  int get hashCode => Object.hash(kind, ref);
 }
 
 /// Who goes with an agent when it is removed (3.8.9): an id, a name, a kind.

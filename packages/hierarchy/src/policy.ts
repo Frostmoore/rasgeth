@@ -20,6 +20,12 @@ export const OUTSIDE_PROJECT = "outside-project";
  */
 export const OUTGOING_MAIL = "outgoing-mail";
 
+/**
+ * An event written to a person's calendar (3.12.3): an ordinary request, always asked, whatever
+ * the rules and modes say (only a rule that denies the tool wins).
+ */
+export const CALENDAR_WRITE = "calendar-write";
+
 /** Installing an app on an emulator (3.11): an ordinary request, as the person's choices say. */
 export const DEVICE_INSTALL = "device-install";
 /** Installing or launching an app on a real phone (3.11): the person's alone. */
@@ -308,6 +314,9 @@ export const READ_ONLY_TOOLS = new Set([
   "show_products",
   // Widgets for pictures, trains, flights and routes (3.12.2): only shown, nothing is paid.
   "show_results",
+  // Calendars and chats (3.12.3): reading events and listing the connected chats change nothing.
+  "calendar_list_events",
+  "chat_accounts",
   "list_agents",
   "read_agent",
   "board_list",
@@ -623,6 +632,14 @@ function evaluateRules(mode: PermissionMode, call: ToolCallInfo, s: PolicySettin
       decision: "ask",
       reasons: ["sends an email"],
       danger: [...danger, OUTGOING_MAIL],
+      critical: [],
+    };
+  // A calendar event (3.12.3) always asks the person.
+  if (call.name === "calendar_create_event" && !rules.some((r) => r.decision === "deny"))
+    return {
+      decision: "ask",
+      reasons: ["adds an event to a calendar"],
+      danger: [...danger, CALENDAR_WRITE],
       critical: [],
     };
   // Another agent's model (G38.9) is the person's choice: every change asks them.

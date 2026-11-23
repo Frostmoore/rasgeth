@@ -70,6 +70,41 @@ class Routine {
   final String? agent;
 }
 
+/// What an agent may be connected to (3.12.3): the mailboxes and calendars open to the agents,
+/// the chats linked, the MCP servers' names.
+class ConnectionOptions {
+  const ConnectionOptions({
+    this.mailboxes = const [],
+    this.chats = const [],
+    this.calendars = const [],
+  });
+
+  factory ConnectionOptions.fromJson(Map<String, dynamic> j) {
+    List<Map<String, dynamic>> list(Object? v) => [
+      for (final o in v is List ? v : const [])
+        if (o is Map<String, dynamic>) o,
+    ];
+    return ConnectionOptions(
+      mailboxes: [
+        for (final o in list(j['mailboxes']))
+          (id: '${o['id']}', name: '${o['name']}', address: '${o['address'] ?? ''}'),
+      ],
+      chats: [
+        for (final c in j['chats'] is List ? j['chats'] as List : const [])
+          if (c is String) c,
+      ],
+      calendars: [
+        for (final o in list(j['calendars']))
+          (id: '${o['id']}', name: '${o['name']}', writable: o['writable'] == true),
+      ],
+    );
+  }
+
+  final List<({String id, String name, String address})> mailboxes;
+  final List<String> chats;
+  final List<({String id, String name, bool writable})> calendars;
+}
+
 extension AgentsApi on RedGiantClient {
   /// `POST /api/agents` with every field the page's wizards send.
   Future<Agent> createAgentWith({
@@ -81,7 +116,8 @@ extension AgentsApi on RedGiantClient {
     String? role,
     AgentModel? model,
     String? mode,
-    List<String>? connections,
+    List<AgentConnection>? connections,
+    String? preset,
   }) async => Agent.fromJson(
     objectOf(
       await callJson('POST', '/api/agents', {
@@ -93,10 +129,15 @@ extension AgentsApi on RedGiantClient {
         'role': ?role,
         if (model != null) 'model': model.toJson(),
         'mode': ?mode,
-        'connections': ?connections,
+        if (connections != null) 'connections': [for (final c in connections) c.toJson()],
+        'preset': ?preset,
       }),
     ),
   );
+
+  /// `GET /api/connections/options`: what an agent may be connected to (3.12.3).
+  Future<ConnectionOptions> connectionOptions() async =>
+      ConnectionOptions.fromJson(objectOf(await getJson('/api/connections/options')));
 
   /// The services added for everyone (`GET /api/extensions/mcp`, not a project's) with their
   /// state (`GET /api/extensions/mcp/status`; a failure there leaves them «checking»).

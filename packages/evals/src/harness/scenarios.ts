@@ -431,7 +431,7 @@ print("ok")`,
         parentId: ctx.god.id,
         name: "Secretary",
         role: "Keeps the person's notes in the notes service.",
-        connections: ["notes"],
+        connections: [{ kind: "mcp", ref: "notes" }],
       });
       await ctx.say(
         ctx.god,

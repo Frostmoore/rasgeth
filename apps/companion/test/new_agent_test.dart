@@ -93,6 +93,9 @@ void main() {
     await tester.tap(find.byKey(const Key('new-kind-agent')));
     await tester.pumpAndSettle();
     await next(tester);
+    // 3.12.3: «Parti da…», here an empty agent made step by step.
+    expect(find.byKey(const Key('new-agent-start')), findsOneWidget);
+    await next(tester);
     // The project: Demo has an orchestrator.
     expect(find.text('In quale progetto?'), findsOneWidget);
     await tester.tap(find.byKey(const Key('new-project-demo')));
@@ -193,13 +196,15 @@ void main() {
     await tester.tap(find.byKey(const Key('new-kind-assistant')));
     await tester.pumpAndSettle();
     await next(tester);
-    expect(find.text('Passo 2 di 8'), findsOneWidget);
+    expect(find.text('Passo 2 di 9'), findsOneWidget);
+    await next(tester);
     await next(tester);
     await tester.enterText(find.byKey(const Key('new-agent-name')), 'Agenda');
     await tester.pumpAndSettle();
     await next(tester);
-    // No services added for everyone.
-    expect(find.byKey(const Key('new-no-services')), findsOneWidget);
+    // No services added for everyone, no mailbox, chat or calendar (3.12.3).
+    expect(find.byKey(const Key('conn-editor')), findsOneWidget);
+    expect(find.byKey(const Key('conn-mcp-notion')), findsNothing);
     await next(tester);
     expect(find.text('Lo stesso di God'), findsOneWidget);
     await next(tester);
