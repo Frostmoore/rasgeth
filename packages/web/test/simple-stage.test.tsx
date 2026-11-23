@@ -463,3 +463,99 @@ describe("the agents on a topic's card (3.12.1)", () => {
     expect(cards[1]?.querySelector(".smp-card-agents")).toBeNull();
   });
 });
+
+describe("God's friendly nudge (3.12.1)", () => {
+  it("arrives on the live connection: once, in «Oggi» and in the full view's bell", () => {
+    state.notices.value = [];
+    const m = {
+      type: "god.nudge" as const,
+      nudge: {
+        id: "d1-waiting",
+        kind: "waiting" as const,
+        topicId: "t1",
+        text: "«Sito» aspetta te.",
+        at: "2026-11-23T09:00:00.000Z",
+      },
+    };
+    state.applyMessage(m);
+    state.applyMessage(m);
+    expect(state.godNudge.value?.id).toBe("d1-waiting");
+    expect(state.notices.value).toHaveLength(1);
+    expect(state.notices.value[0]).toMatchObject({ sessionId: "t1", text: "«Sito» aspetta te." });
+  });
+
+  const nudge = (o: Partial<import("@redgiant/protocol").GodNudge> = {}) => ({
+    id: "2026-11-23-greeting",
+    kind: "greeting" as const,
+    topicId: null,
+    text: "Buongiorno! A cosa lavoriamo oggi?",
+    at: "2026-11-23T09:00:00.000Z",
+    ...o,
+  });
+
+  it("a generic one opens only «Oggi» with the invitation: nothing is made until the person writes", async () => {
+    const r = render(<SimpleApp />);
+    act(() => {
+      state.godNudge.value = nudge();
+    });
+    fireEvent.click(r.getByRole("button", { name: "Buongiorno! A cosa lavoriamo oggi?" }));
+    expect(state.godNudge.value).toBeNull();
+    expect(state.simpleScreen.value).toEqual({ kind: "today" });
+    // The invitation is the lead; no message, no topic.
+    expect(r.getByText("Buongiorno! A cosa lavoriamo oggi?")).toBeTruthy();
+    expect(fake.calls.some(([n]) => n === "godMessage")).toBe(false);
+    expect(sent.filter((m) => m.type === "session.send")).toEqual([]);
+    // Only when the person writes does a topic come (God routes the message as ever).
+    fake.impl.godMessage = () => ({
+      sessionId: "t9",
+      routed: { topicId: "t9", title: "Oggi", via: "new", reason: "new_topic" },
+    });
+    fireEvent.input(r.getByPlaceholderText("Chiedimi qualcosa…"), {
+      target: { value: "Il preventivo" },
+    });
+    fireEvent.click(r.getByRole("button", { name: "Invia" }));
+    await waitFor(() =>
+      expect(state.simpleScreen.value).toMatchObject({ kind: "topic", id: "t9" }),
+    );
+    // Its words were never sent: the message is the person's alone.
+    expect(fake.calls.find(([n]) => n === "godMessage")?.[1]).toEqual([{ text: "Il preventivo" }]);
+    expect(state.nudgeInvite.value).toBeNull();
+  });
+
+  it("one about a topic opens that topic; closing it does nothing else", () => {
+    state.topics.value = [topic("t1", { title: "Preventivo Rossi", state: "waiting" })];
+    const r = render(<SimpleApp />);
+    act(() => {
+      state.godNudge.value = nudge({
+        kind: "waiting",
+        topicId: "t1",
+        text: "«Preventivo Rossi» aspetta te.",
+      });
+    });
+    fireEvent.click(r.getByRole("button", { name: "«Preventivo Rossi» aspetta te." }));
+    expect(state.simpleScreen.value).toMatchObject({ kind: "topic", id: "t1" });
+    act(() => {
+      state.simpleScreen.value = { kind: "today" };
+      state.godNudge.value = nudge();
+    });
+    fireEvent.click(r.getByRole("button", { name: "Chiudi" }));
+    expect(state.godNudge.value).toBeNull();
+    expect(state.simpleScreen.value).toEqual({ kind: "today" });
+  });
+
+  it("is switched off or made rarer from the simple settings", async () => {
+    fake.impl.nudgeSettings = () => ({ on: true, every: "day" });
+    fake.impl.setNudgeSettings = () => ({ ok: true });
+    state.simpleScreen.value = { kind: "settings" };
+    const r = render(<SimpleApp />);
+    await waitFor(() => expect(r.getByText("Un saluto da God ogni tanto")).toBeTruthy());
+    fireEvent.click(r.getByRole("button", { name: "Una volta a settimana" }));
+    expect(fake.calls.find(([n]) => n === "setNudgeSettings")?.[1]).toEqual([
+      { on: true, every: "week" },
+    ]);
+    fireEvent.click(r.getByRole("switch", { name: "Un saluto da God ogni tanto" }));
+    expect(fake.calls.filter(([n]) => n === "setNudgeSettings").at(-1)?.[1]).toEqual([
+      { on: false, every: "week" },
+    ]);
+  });
+});

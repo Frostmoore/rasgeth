@@ -1022,6 +1022,25 @@ export function applyMessage(m: ServerMessage): void {
     case "rules.changed":
       rulesVersion.value++;
       return;
+    // God's friendly nudge (3.12.1): a notification, never a request; nothing waits for it.
+    case "god.nudge":
+      if (godNudge.value?.id !== m.nudge.id) {
+        godNudge.value = m.nudge;
+        // The full view's bell shows it too (God's name; «Open» goes to its topic, if any).
+        const god = agents.value.find((a) => a.kind === "god")?.name ?? "God";
+        notices.value = [
+          {
+            runId: `nudge:${m.nudge.id}`,
+            name: god,
+            status: "ok",
+            sessionId: m.nudge.topicId,
+            text: m.nudge.text,
+          },
+          ...notices.value,
+        ].slice(0, 50);
+        notifyHidden(m.nudge.text, `nudge:${m.nudge.id}`);
+      }
+      return;
     case "automation.notice":
       if (!notices.value.some((n) => n.runId === m.runId)) {
         notices.value = [
@@ -3350,3 +3369,43 @@ export async function openAgentConversation(agentId: string, name: string): Prom
   openChat(r.sessionId, name);
   void refreshConversations().catch(() => {});
 }
+
+// ---------- God's friendly nudges (3.12.1, `nudges.ts` in the protocol) ----------
+
+/** The latest nudge that reached this page, until the person opens or closes it. */
+export const godNudge = signal<import("@redgiant/protocol").GodNudge | null>(null);
+
+/** On or off, and how often (Settings, and the simple interface's settings). */
+export const nudgeSettings = signal<import("@redgiant/protocol").NudgeSettings | null>(null);
+
+export async function loadNudgeSettings(): Promise<void> {
+  nudgeSettings.value = await getApi().nudgeSettings();
+}
+
+export async function saveNudgeSettings(
+  s: import("@redgiant/protocol").NudgeSettings,
+): Promise<void> {
+  const before = nudgeSettings.value;
+  nudgeSettings.value = s;
+  if ((await attempt(() => getApi().setNudgeSettings(s))) === undefined)
+    nudgeSettings.value = before;
+}
+
+/**
+ * Opens a nudge: about a topic, that topic; a generic one, only «Oggi» with God in front and the
+ * invitation in the box. Nothing is created: a topic comes only when the person writes, and the
+ * nudge is written into no topic.
+ */
+export function openNudge(n: import("@redgiant/protocol").GodNudge): void {
+  godNudge.value = null;
+  if (n.topicId) {
+    openTopic(n.topicId, topicTitle(n.topicId) ?? "");
+    return;
+  }
+  stageFront.value = "god";
+  simpleScreen.value = { kind: "today" };
+  nudgeInvite.value = n.text;
+}
+
+/** A generic nudge opened: its words invite the person in «Oggi»'s box, until they write. */
+export const nudgeInvite = signal<string | null>(null);

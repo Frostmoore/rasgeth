@@ -36,6 +36,7 @@ import { explain } from "./Brain.js";
 import { askConfirm } from "./dialogs.js";
 import { AgentLanguagePicker } from "./LanguagePicker.js";
 import { ModelSelect, type Spec, useModels } from "./ModelSelect.js";
+import { NudgeControls } from "./NudgeControls.js";
 import { OsUpdatesPanel } from "./OsSystem.js";
 import { PromptRefiner } from "./PromptRefiner.js";
 import { ServicePanel } from "./Services.js";
@@ -497,6 +498,10 @@ export function General() {
               ["full", t("uiFull")],
             ]}
           />
+        </Row>
+        {/* God's friendly nudges (3.12.1): on or off, and how often. */}
+        <Row title={t("nudgeTitle")} help={t("nudgeHelp")}>
+          <NudgeControls />
         </Row>
         <Row title={t("accentTitle")} help={t("accentHelp")}>
           <AccentPicker />

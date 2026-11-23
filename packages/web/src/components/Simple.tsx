@@ -18,6 +18,7 @@ import { lang, setLang, t } from "../i18n.js";
 import {
   IconArchive,
   IconChevronLeft,
+  IconClose,
   IconMonitor,
   IconMoon,
   IconMore,
@@ -45,10 +46,15 @@ import {
   documentItems,
   getApi,
   getLive,
+  godNudge,
   greetingKey,
   lastError,
+  loadNudgeSettings,
   moveExchange,
+  nudgeInvite,
+  nudgeSettings,
   openChat,
+  openNudge,
   openTopic,
   personName,
   projects,
@@ -56,6 +62,7 @@ import {
   recentChats,
   refreshTopics,
   restoreTopic,
+  saveNudgeSettings,
   searchArchive,
   sendInChat,
   sessionRows,
@@ -82,6 +89,7 @@ import { FileCard } from "./Chat.js";
 import { askText } from "./dialogs.js";
 import { useFollow } from "./follow-hook.js";
 import { Mascot } from "./Mascot.js";
+import { NudgeControls } from "./NudgeControls.js";
 import { ProductCards } from "./ProductCards.js";
 import { QuestionCard } from "./QuestionCard.js";
 import { Seg, Switch } from "./SettingsKit.js";
@@ -223,16 +231,25 @@ function Today() {
           </button>
         </header>
         <SimpleStage />
+        {godNudge.value && !chat && <NudgeBalloon />}
         <div class="smp-hero">
           <h1>{name ? t(`${key}Name`, { name }) : t(key)}</h1>
-          <p>{t(chat ? "smpChatLead" : "smpHeroLead")}</p>
+          <p>
+            {!chat && nudgeInvite.value
+              ? nudgeInvite.value
+              : t(chat ? "smpChatLead" : "smpHeroLead")}
+          </p>
         </div>
         <AskBox
           key={chat ? "chat" : "god"}
           big
           listened
           hint={t(chat ? "smpChatHint" : "smpAskHint")}
-          onSend={(text) => (chat ? askChat(text) : askGod(text))}
+          onSend={(text) => {
+            // A generic nudge's invitation goes once the person writes (the topic comes now).
+            nudgeInvite.value = null;
+            return chat ? askChat(text) : askGod(text);
+          }}
         />
         {chat ? <RecentChats /> : null}
         {!chat && others > 0 && (
@@ -286,6 +303,31 @@ function Today() {
         )}
         <SimpleStrip />
       </div>
+    </div>
+  );
+}
+
+/**
+ * God's friendly nudge (3.12.1), as a balloon under him: a tap opens its topic, or only «Oggi»'s
+ * invitation for a generic one; nothing is created until the person writes.
+ */
+function NudgeBalloon() {
+  const n = godNudge.value;
+  if (!n) return null;
+  return (
+    <div class="smp-nudge" role="status">
+      <button type="button" class="smp-nudge-open" onClick={() => openNudge(n)}>
+        {n.text}
+      </button>
+      <button
+        type="button"
+        class="smp-icon smp-nudge-close"
+        aria-label={t("close")}
+        title={t("close")}
+        onClick={() => (godNudge.value = null)}
+      >
+        <IconClose size={16} />
+      </button>
     </div>
   );
 }
@@ -1035,6 +1077,10 @@ function SettingsScreen() {
                 label={t("smpVoice")}
                 onChange={(on) => setVoiceSettings({ enabled: on })}
               />
+            </SetRow>
+            {/* God's friendly nudges (3.12.1): on or off, and how often. */}
+            <SetRow title={t("nudgeTitle")} help={t("nudgeHelp")} stack>
+              <NudgeControls />
             </SetRow>
             <SetRow title={t("smpSpend")} help={t("smpSpendHelp")}>
               <span class="smp-row-val">{t("smpAlways")}</span>

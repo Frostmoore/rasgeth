@@ -1216,6 +1216,11 @@ export class Api {
   setupInterface = (ui: "simple" | "full") => this.call("PUT", "/api/setup/interface", { ui });
   /** What the person likes to be called (3.12, the simple interface's greeting). */
   setupPerson = (name: string | null) => this.call("PUT", "/api/setup/person", { name });
+  // ---- God's friendly nudges (3.12.1, `nudges.ts` in the protocol) ----
+  nudgeSettings = () =>
+    this.call<import("@redgiant/protocol").NudgeSettings>("GET", "/api/god/nudges");
+  setNudgeSettings = (s: import("@redgiant/protocol").NudgeSettings) =>
+    this.call<{ ok: true }>("PUT", "/api/god/nudges", s);
   // ---- God's topics (3.12, `topics.ts` in the protocol) ----
   /** «Oggi»'s topics: the active ones; `archived` the archive, `q` words in titles and summaries. */
   topics = (o: { archived?: boolean; q?: string } = {}) => {
