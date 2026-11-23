@@ -377,6 +377,10 @@ import { lastTurnAt, pausedNote, resumeNote, turnCut } from "./resume-work.js";
 import { migrateRooms, Rooms } from "./rooms.js";
 import { migrateSaved, SavedStore } from "./saved.js";
 import { scriptTool } from "./script.js";
+import { modelResponder } from "./secretary/responder.js";
+import { SecretaryService } from "./secretary/service.js";
+import { migrateSecretary } from "./secretary/store.js";
+import { secretaryNotice } from "./secretary/texts.js";
 import { settingValue } from "./setting-value.js";
 import { SharedMemory } from "./shared-memory.js";
 import { SKILL_PROMPT, SkillNudge } from "./skill-nudge.js";
@@ -508,6 +512,8 @@ export interface CoreOptions {
   mailClient?: MailClient;
   /** How calendars are fetched (CalDAV, iCal): tests give a fake, never a real server. */
   calendarFetch?: CalendarFetch;
+  /** How Meta and Telegram are reached by the secretary (3.12.4): tests give a fake. */
+  secretaryFetch?: typeof fetch;
   mailTransport?: MailTransport;
   /**
    * Product pictures (G40.16): tests and the demo only, hosts allowed although local (a test
@@ -915,6 +921,8 @@ export class RedGiantCore implements OrchestrationHost {
   readonly mail: MailService;
   /** The person's calendars (3.12.3): CalDAV and iCal addresses, secrets in the keychain. */
   readonly calendars: CalendarService;
+  /** The agent that answers other people on a business number or bot (3.12.4). */
+  readonly secretary: SecretaryService;
   /** Routines on files that change in a project's folder (G33.3). */
   readonly files: FileTriggers;
   /** Automations built in a conversation with God (G33.3). */
@@ -1637,6 +1645,24 @@ export class RedGiantCore implements OrchestrationHost {
       vault: this.vault,
       ...(o.calendarFetch && { fetch: o.calendarFetch }),
     });
+    this.secretary = new SecretaryService({
+      db: o.db,
+      vault: this.vault,
+      ...(o.secretaryFetch && { fetch: o.secretaryFetch }),
+      publicUrl: () => this.publicUrl,
+      responder: modelResponder({
+        providers: o.providers,
+        budget: this.budget,
+        registry: this.registry,
+      }),
+      instructions: (a) => {
+        const agent = a.agentId ? this.registry.get(a.agentId) : undefined;
+        return `${agent?.systemPrompt ?? ""}\n${agent?.role ?? ""}`;
+      },
+      notify: async (ownerId, n) => {
+        await this.notify?.(ownerId, secretaryNotice(n, this.language(ownerId)));
+      },
+    });
     this.files = new FileTriggers({
       automations: this.automations,
       projectPath: async (ownerId, projectId) =>
@@ -2080,6 +2106,7 @@ export class RedGiantCore implements OrchestrationHost {
     await migratePersonRequests(o.db);
     await migrateRooms(o.db);
     await migrateChat(o.db);
+    await migrateSecretary(o.db);
     await o.db.query(`
       CREATE TABLE IF NOT EXISTS rg_chat_topics (
         owner_id   text NOT NULL,

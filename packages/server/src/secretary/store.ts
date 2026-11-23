@@ -246,7 +246,13 @@ export class SecretaryStore {
 
   async patchContact(
     id: string,
-    p: { name?: string; notes?: string; paused?: boolean; stopped?: boolean; unread?: number },
+    p: {
+      name?: string | undefined;
+      notes?: string | undefined;
+      paused?: boolean | undefined;
+      stopped?: boolean | undefined;
+      unread?: number | undefined;
+    },
   ) {
     const sets: string[] = [];
     const args: unknown[] = [id];
@@ -302,15 +308,13 @@ export class SecretaryStore {
       "SELECT id, dir, by, text, at FROM rg_sec_messages WHERE contact_id = $1 ORDER BY id DESC LIMIT $2",
       [contactId, limit],
     );
-    return rows
-      .reverse()
-      .map((r) => ({
-        id: Number(r.id),
-        dir: r.dir,
-        by: r.by,
-        text: r.text,
-        at: iso(r.at) as string,
-      }));
+    return rows.reverse().map((r) => ({
+      id: Number(r.id),
+      dir: r.dir,
+      by: r.by,
+      text: r.text,
+      at: iso(r.at) as string,
+    }));
   }
 
   /** Automatic answers sent to this contact since `since` (the rate limit). */

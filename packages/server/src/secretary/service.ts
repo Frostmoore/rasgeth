@@ -162,7 +162,7 @@ export class SecretaryService {
   async check(
     channel: SecretaryChannel,
     step: string,
-    p: { token?: string; phoneNumberId?: string },
+    p: { token?: string | undefined; phoneNumberId?: string | undefined },
   ): Promise<StepResult> {
     if (step === "remote") return checkRemote(this.o.publicUrl());
     if (channel === "telegram" && step === "token")
@@ -268,7 +268,11 @@ export class SecretaryService {
   async updateAccount(
     ownerId: string,
     id: string,
-    p: { name?: string; agentId?: string | null; limitPerHour?: number },
+    p: {
+      name?: string | undefined;
+      agentId?: string | null | undefined;
+      limitPerHour?: number | undefined;
+    },
   ): Promise<SecretaryAccountView> {
     await this.own(ownerId, id);
     await this.store.updateAccount(id, {
@@ -369,7 +373,7 @@ export class SecretaryService {
   async patchContact(
     ownerId: string,
     id: string,
-    p: { name?: string; notes?: string; paused?: boolean },
+    p: { name?: string | undefined; notes?: string | undefined; paused?: boolean | undefined },
   ): Promise<void> {
     await this.ownContact(ownerId, id);
     await this.store.patchContact(id, p);
