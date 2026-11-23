@@ -148,6 +148,21 @@ const ms = (d: Date | string | null | undefined): number | undefined =>
 const iso = (d: Date | string | null | undefined): string | null =>
   d == null ? null : new Date(d).toISOString();
 
+/**
+ * A title the migration made from a first message: the title (trimmed, without a trailing
+ * ellipsis) is the beginning of that message (spaces collapsed, case ignored), however the old
+ * versions cut it, or it is exactly what `topicTitle` makes of it. A title the person chose
+ * is not a beginning of the message, so it is never touched.
+ */
+export function isMigratedTitle(title: string, firstText: string): boolean {
+  const norm = (x: string) => x.replace(/\s+/gu, " ").trim().toLowerCase();
+  const t = norm(title.replace(/(?:…|\.{3})\s*$/u, ""));
+  if (!t) return false;
+  if (title === topicTitle(firstText)) return true;
+  const text = norm(firstText).replace(/^["'«“]+/u, "");
+  return text.startsWith(t.replace(/^["'«“]+/u, ""));
+}
+
 const textOf = (e: Event): string => {
   if (e.type === "message.user" && e.payload) return e.payload.text;
   if (e.type === "message.assistant" && e.payload)
@@ -1445,12 +1460,13 @@ export class Topics {
   }
 
   /**
-   * Once per owner (setting `topics_retitled`): the topics the 3.12 migration made keep the first
-   * line of their first message as a title; the summary call gives them a real short one,
-   * archived ones included. Only topics still carrying that first line are touched.
+   * Once per owner (setting `topics_retitled_2`; the first pass, `topics_retitled`, compared the
+   * titles too strictly and skipped nearly everything): the topics the 3.12 migration made keep
+   * the beginning of their first message as a title; the summary call gives them a real short
+   * one, archived ones included. Only topics whose title is still that beginning are touched.
    */
   async retitleMigrated(ownerId: string): Promise<number> {
-    if (await this.settingDone(ownerId, "topics_retitled")) return 0;
+    if (await this.settingDone(ownerId, "topics_retitled_2")) return 0;
     const model = await this.summaryModel(ownerId);
     if (!model || !this.god(ownerId)) return 0;
     const opened = await this.core.store.list({ types: ["topic.opened"] });
@@ -1477,7 +1493,7 @@ export class Topics {
       const first = (await this.core.store.list({ sessionId: id })).find(
         (e) => e.type === "message.user",
       );
-      if (!r?.title || !first || topicTitle(textOf(first)) !== r.title) continue;
+      if (!r?.title || !first || !isMigratedTitle(r.title, textOf(first))) continue;
       const god = this.god(ownerId);
       if (
         !god ||
@@ -1486,7 +1502,7 @@ export class Topics {
         return done; // not marked: the rest waits for the next start
       if (await this.summarize(ownerId, id, { retitle: true }).catch(() => false)) done++;
     }
-    await this.markDone(ownerId, "topics_retitled", { retitled: done });
+    await this.markDone(ownerId, "topics_retitled_2", { retitled: done });
     return done;
   }
 
