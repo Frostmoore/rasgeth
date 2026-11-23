@@ -1932,6 +1932,17 @@
       "files": [],
       "phase": "3.11.0",
       "note": "The page's WebCodecs path (3.11 phase 7): the app never asks for H.264 (no `format`), it gets the JPEG frames (`device.frame`), as on a page without a decoder."
+    },
+    "god.nudge": {
+      "app": "native",
+      "files": [
+        "lib/api/live_model.dart",
+        "lib/simple/simple_model.dart",
+        "lib/simple/simple_shell.dart",
+        "lib/push/notice.dart"
+      ],
+      "phase": "3.12",
+      "note": "3.12.1: God's friendly nudge, a balloon under God on «Oggi»; as a push (kind nudge) it opens its topic or only «Oggi»."
     }
   },
   "places": {

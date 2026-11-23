@@ -24312,6 +24312,8 @@ html[data-theme="dark"] .app-simple {
   margin-top: -4px;
 }
 .smp-names button {
+  flex: none;
+  width: auto;
   background: none;
   border: 1.5px solid var(--line);
   color: var(--dim);
@@ -24325,7 +24327,7 @@ html[data-theme="dark"] .app-simple {
   color: var(--text);
   border-color: var(--accent);
 }
-.smp-names button.chat.on {
+.smp-names button.sat.on {
   border-color: var(--smp-chat);
 }
 .smp-today.with-chat .smp-send {
@@ -24449,6 +24451,11 @@ html[data-theme="dark"] .app-simple {
   20% {
     transform: translateX(0);
   }
+}
+/* No state's sign on the giants: it would land on the other mascot of the orbit (their mood
+   moves them instead). */
+.smp-giant-act .masc .mk {
+  display: none;
 }
 /* A still mascot's gestures (never the same twice in a row, `nextGesture`). */
 .smp-giant-act .masc .eyes {
@@ -24726,6 +24733,15 @@ html[data-theme="dark"] .app-simple {
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
+}
+.smp-cost {
+  color: var(--dim);
+  font-size: 13px;
+  white-space: nowrap;
+  padding: 0 6px;
+}
+.smp-working .mascot {
+  flex: none;
 }
 .smp-today .smp-hero {
   text-align: center;

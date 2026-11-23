@@ -694,7 +694,9 @@ class _LookStepState extends State<_LookStep> {
         if (v != widget.ui) await c.setupInterface(v);
         final name = _name.text.trim();
         if (name != widget.name.trim()) await app.setPersonName(name);
-        app.uiDefault = v;
+        app
+          ..uiDefault = v
+          ..uiKnown = true;
         return true;
       },
       extra: Padding(

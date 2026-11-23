@@ -3,7 +3,8 @@ import { z } from "zod";
 /**
  * God's friendly nudges (3.12.1): at most one a day (or less, as the person chooses), never at
  * night, tied to real facts (a topic waiting for the person, a task stalled, a topic left for
- * days), else a morning greeting. The sentences come from a fixed list in it and en, filled with
+ * days), else a greeting in the morning (its words say no time of day: the page's greeting
+ * says that, by the person's clock). The sentences come from a fixed list in it and en, filled with
  * real data: no model is asked. A nudge is a notification, never a request: it asks no permission
  * and waits for nothing, and it is never written into a topic's history (a generic one opens the
  * simple screen; a topic is made only when the person writes).
@@ -94,9 +95,9 @@ export const NUDGE_WORDS: Record<"it" | "en", Record<NudgeKind, readonly string[
       "«{t}» è lì da {d} giorni. Andiamo avanti o lo mettiamo in archivio?",
     ],
     greeting: [
-      "Buongiorno! A cosa lavoriamo oggi?",
+      "Ciao! A cosa lavoriamo oggi?",
       "Eccomi. Cosa facciamo di bello oggi?",
-      "Ciao! Hai qualcosa in mente per oggi?",
+      "Hai qualcosa in mente per oggi?",
     ],
   },
   en: {
@@ -114,9 +115,9 @@ export const NUDGE_WORDS: Record<"it" | "en", Record<NudgeKind, readonly string[
       "«{t}» has been there for {d} days. Carry on, or put it in the archive?",
     ],
     greeting: [
-      "Good morning! What are we working on today?",
+      "Hi! What are we working on today?",
       "Here I am. What shall we do today?",
-      "Hi! Anything in mind for today?",
+      "Anything in mind for today?",
     ],
   },
 };

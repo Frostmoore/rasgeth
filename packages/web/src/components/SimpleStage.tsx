@@ -120,7 +120,8 @@ export function GiantMascot({
 }) {
   addMascotMotion();
   const spec = given ?? (agent ? specOf(agent) : mascotSpec("God", "god"));
-  const state = GIANT_STATE[mood];
+  // Behind on the orbit it shows no sign of its state (it would land on the one in front).
+  const state = still ? "active" : GIANT_STATE[mood];
   const gesture = useIdleGesture(mood === "rest" && !still, gestures);
   const id = useMemo(() => `rgg${Math.random().toString(36).slice(2, 8)}-`, []);
   const label = t("smpMascotOf", {
@@ -238,7 +239,8 @@ export function SimpleStage() {
     return {
       transform: `translate(${p.x}px, ${p.y}px) scale(${p.scale})`,
       zIndex: p.z,
-      filter: p.z >= 199 ? undefined : `brightness(${p.light}) blur(${p.blur}px)`,
+      // Dimmer behind (opacity: a filter on the drawing leaves a grey box in Chromium).
+      opacity: p.light,
     };
   };
   const god = godAgent();
@@ -259,7 +261,7 @@ export function SimpleStage() {
           else {
             // A tap on the one behind brings it in front (the names below do it by keyboard).
             const back = (e.target as Element | null)?.closest?.(".smp-orbiter.back");
-            if (back) bring(back.classList.contains("chat") ? "chat" : "god");
+            if (back) bring(back.classList.contains("sat") ? "chat" : "god");
           }
         }}
       >
@@ -267,7 +269,7 @@ export function SimpleStage() {
         {(["god", "chat"] as const).map((who) => (
           <div
             key={who}
-            class={`smp-orbiter ${who}${front === who ? " front" : " back"}`}
+            class={`smp-orbiter ${who === "chat" ? "sat" : "god"}${front === who ? " front" : " back"}`}
             style={place(who)}
           >
             {who === "god" ? (
@@ -301,7 +303,7 @@ export function SimpleStage() {
         </button>
         <button
           type="button"
-          class={front === "chat" ? "on chat" : "chat"}
+          class={front === "chat" ? "on sat" : "sat"}
           aria-pressed={front === "chat"}
           onClick={() => bring("chat")}
         >

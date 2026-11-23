@@ -305,12 +305,12 @@ describe("Satellite, the Chat, on the same orbit (3.12.1)", () => {
     state.sessionRows.value = [row("s1", { title: "Ricetta della carbonara" })];
     const r = render(<SimpleApp />);
     expect(r.container.querySelector(".smp-orbiter.god.front")).not.toBeNull();
-    expect(r.container.querySelector(".smp-orbiter.chat.back")).not.toBeNull();
+    expect(r.container.querySelector(".smp-orbiter.sat.back")).not.toBeNull();
     expect(r.getByRole("img", { name: "Satellite: qui per te" })).toBeTruthy();
     expect(r.container.textContent).not.toMatch(/Luna/);
     fireEvent.click(r.getByRole("button", { name: "Satellite · Chat" }));
     expect(state.stageFront.value).toBe("chat");
-    expect(r.container.querySelector(".smp-orbiter.chat.front")).not.toBeNull();
+    expect(r.container.querySelector(".smp-orbiter.sat.front")).not.toBeNull();
     expect(r.getByText("Due chiacchiere? Sono qui.")).toBeTruthy();
     expect(r.getByPlaceholderText("Scrivi a Satellite...")).toBeTruthy();
     expect(r.getByText("LE ULTIME CHIACCHIERE")).toBeTruthy();
@@ -498,7 +498,7 @@ describe("God's friendly nudge (3.12.1)", () => {
     id: "2026-11-23-greeting",
     kind: "greeting" as const,
     topicId: null,
-    text: "Buongiorno! A cosa lavoriamo oggi?",
+    text: "Ciao! A cosa lavoriamo oggi?",
     at: "2026-11-23T09:00:00.000Z",
     ...o,
   });
@@ -508,11 +508,11 @@ describe("God's friendly nudge (3.12.1)", () => {
     act(() => {
       state.godNudge.value = nudge();
     });
-    fireEvent.click(r.getByRole("button", { name: "Buongiorno! A cosa lavoriamo oggi?" }));
+    fireEvent.click(r.getByRole("button", { name: "Ciao! A cosa lavoriamo oggi?" }));
     expect(state.godNudge.value).toBeNull();
     expect(state.simpleScreen.value).toEqual({ kind: "today" });
     // The invitation is the lead; no message, no topic.
-    expect(r.getByText("Buongiorno! A cosa lavoriamo oggi?")).toBeTruthy();
+    expect(r.getByText("Ciao! A cosa lavoriamo oggi?")).toBeTruthy();
     expect(fake.calls.some(([n]) => n === "godMessage")).toBe(false);
     expect(sent.filter((m) => m.type === "session.send")).toEqual([]);
     // Only when the person writes does a topic come (God routes the message as ever).
@@ -567,5 +567,124 @@ describe("God's friendly nudge (3.12.1)", () => {
     expect(fake.calls.filter(([n]) => n === "setNudgeSettings").at(-1)?.[1]).toEqual([
       { on: false, every: "week" },
     ]);
+  });
+});
+
+describe("a conversation in the simple view: no technical details (3.12.1)", () => {
+  const ev = (seq: number, type: string, payload: unknown) =>
+    ({
+      seq,
+      type,
+      payload,
+      sessionId: "s5",
+      ts: `2026-11-23T09:00:0${seq}.000Z`,
+      hash: "",
+      prevHash: "",
+    }) as unknown as import("@redgiant/protocol").Event;
+  const answer = (seqNo: number) =>
+    ev(seqNo, "message.assistant", {
+      parts: [
+        { type: "thinking", text: "Ragionamento segreto sui voli" },
+        { type: "text", text: "Il volo più comodo costa 89 euro." },
+      ],
+      metrics: {
+        inputTokens: 1200,
+        outputTokens: 80,
+        cacheReadTokens: 0,
+        cacheWriteTokens: 0,
+        contextUsed: 1280,
+        contextWindow: 200000,
+        ms: 900,
+      },
+      costUsd: 0.25,
+      model: "claude-opus-5-5",
+      provider: "anthropic",
+      stopReason: "end_turn",
+    });
+  const events = () => [
+    ev(1, "message.user", { text: "Un volo per Cagliari?" }),
+    ev(2, "tool.call", { callId: "c1", tool: "web_search", input: { q: "voli Cagliari" } }),
+    ev(3, "tool.result", { callId: "c1", ok: true, output: "risultato grezzo della ricerca" }),
+    answer(4),
+  ];
+  const team = () => {
+    state.agents.value = [
+      { id: "God", name: "God", kind: "god", parentId: null, status: "active" },
+      { id: "chat", name: "Chat", kind: "assistant", parentId: "God", status: "active" },
+    ] as unknown as typeof state.agents.value;
+    state.chatAgentId.value = "chat";
+    state.sessionRows.value = [row("s5", { title: "Voli" })];
+  };
+
+  it("shows the words and the cost at the top, never tools, results, reasoning or figures", () => {
+    team();
+    state.sessionView("s5").value = {
+      events: events(),
+      text: "",
+      thinking: "",
+      state: "idle",
+      synced: true,
+    };
+    state.simpleScreen.value = { kind: "chat", id: "s5", title: "Voli" };
+    const r = render(<SimpleApp />);
+    const text = r.container.textContent ?? "";
+    expect(text).toContain("Il volo più comodo costa 89 euro.");
+    expect(text).toContain("Un volo per Cagliari?");
+    expect(text).toContain("Speso qui: $0.25");
+    for (const hidden of [
+      "web_search",
+      "risultato grezzo",
+      "Ragionamento segreto",
+      "1.2k",
+      "claude-opus",
+    ])
+      expect(text, hidden).not.toContain(hidden);
+  });
+
+  it("while the agent works: its mascot and a word, «sta cercando…» for a search", () => {
+    team();
+    state.sessionView("s5").value = {
+      events: events().slice(0, 2),
+      text: "",
+      thinking: "",
+      state: "running",
+      synced: true,
+    };
+    state.simpleScreen.value = { kind: "chat", id: "s5", title: "Voli" };
+    const r = render(<SimpleApp />);
+    const line = r.container.querySelector(".smp-working");
+    expect(line?.textContent).toBe("sta cercando…");
+    expect(line?.querySelector(".mascot")).not.toBeNull();
+    expect(r.container.textContent).not.toContain("web_search");
+  });
+
+  it("says the word for each moment (pure)", () => {
+    const e = events();
+    expect(state.workWord(e, false, false, false)).toBeNull();
+    expect(state.workWord(e, false, false, true)).toBe("smpDoingWait");
+    expect(state.workWord(e.slice(0, 1), true, false, false)).toBe("smpDoingThink");
+    expect(state.workWord(e.slice(0, 2), true, false, false)).toBe("smpDoingSearch");
+    expect(state.workWord(e.slice(0, 2), true, true, false)).toBe("smpDoingThink");
+    const run = [e[0], ev(2, "tool.call", { callId: "c2", tool: "write_file", input: {} })];
+    expect(state.workWord(run as never, true, false, false)).toBe("smpDoingWork");
+    expect(state.conversationCost(e)).toBe(0.25);
+  });
+
+  it("the full view still shows them", async () => {
+    team();
+    state.sessionView("s5").value = {
+      events: events(),
+      text: "",
+      thinking: "",
+      state: "idle",
+      synced: true,
+    };
+    const { Chat } = await import("../src/components/Chat.js");
+    const r = render(<Chat sessionId="s5" agentId="chat" />);
+    const text = r.container.textContent ?? "";
+    expect(text).toContain("Il volo più comodo costa 89 euro.");
+    // The tool's line and the per-message figures are there.
+    expect(text).toMatch(/cerca|search/i);
+    expect(r.container.querySelector(".metrics, .metrics-bar, [class*=metric]")).not.toBeNull();
   });
 });

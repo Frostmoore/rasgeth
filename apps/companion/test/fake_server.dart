@@ -929,7 +929,11 @@ class FakeRedGiant {
   final productImages = <String, List<int>>{};
   int _savedSeq = 0;
   int _sessionSeq = 1;
-  late final mascots = loadMascots();
+  // Satellite (3.12.1) is the Chat's drawing, not one of the team's: the fake team stays as it was.
+  late final mascots = [
+    for (final m in loadMascots())
+      if (m.seed != 'rg:satellite') m,
+  ];
 
   Uri get base => Uri.parse('http://127.0.0.1:${_server.port}');
 

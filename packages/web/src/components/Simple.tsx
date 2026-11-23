@@ -14,6 +14,7 @@ import {
 } from "@redgiant/protocol";
 import type { ComponentChildren } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
+import { usd } from "../format.js";
 import { lang, setLang, t } from "../i18n.js";
 import {
   IconArchive,
@@ -43,6 +44,7 @@ import {
   buildItems,
   type ChatItem,
   chatAgentId,
+  conversationCost,
   documentItems,
   getApi,
   getLive,
@@ -80,6 +82,7 @@ import {
   topicTitle,
   waitingElsewhere,
   waitingIn,
+  workWord,
 } from "../state.js";
 import { setTheme, theme } from "../theme.js";
 import { setVoiceSettings, voiceSettings } from "../voice/settings.js";
@@ -346,7 +349,7 @@ function RecentChats() {
             <button
               type="button"
               key={r.id}
-              class="smp-card chat"
+              class="smp-card smp-chat-card"
               onClick={() => openChat(r.id, r.title ?? t("smpUntitledChat"))}
             >
               <span class="smp-card-t">{r.title ?? t("smpUntitledChat")}</span>
@@ -461,6 +464,31 @@ function CardMascots({ ids }: { ids: readonly string[] }) {
   );
 }
 
+/** The agent at work, in a conversation of the simple interface: its mascot and a word. */
+function WorkLine({
+  agentId,
+  word,
+}: {
+  agentId: string | undefined;
+  word: NonNullable<ReturnType<typeof workWord>>;
+}) {
+  const agent = agents.value.find((a) => a.id === agentId);
+  return (
+    <p class="smp-working" role="status">
+      {agent ? (
+        <Mascot agent={agent} size={32} decorative />
+      ) : (
+        <span class="smp-dots" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+        </span>
+      )}
+      {t(word)}
+    </p>
+  );
+}
+
 /** The top of a screen: back, a title, and what else it offers. */
 function TopBar({
   title,
@@ -502,10 +530,25 @@ function TopicScreen({ id, title, chat = false }: { id: string; title: string; c
   const askedHere = new Set(items.flatMap((i) => (i.kind === "question" ? [i.requestId] : [])));
   const otherQuestions = waiting.questions.filter((q) => !askedHere.has(q.requestId));
   const working = view.state === "running";
+  // Who works here (its mascot while it works): God in a topic, else the conversation's agent.
+  const agentId = chat
+    ? sessionRows.value.find((r) => r.id === id)?.agentId
+    : agents.value.find((a) => a.kind === "god")?.id;
+  const doing = workWord(
+    view.events,
+    working,
+    working &&
+      !!view.call &&
+      (view.call.writing === "thinking" || view.call.firstToken === undefined),
+    waiting.approvals.length + otherQuestions.length > 0,
+  );
+  const cost = conversationCost(view.events);
   return (
     <div class="smp-screen smp-topic">
       <div class="smp-wrap">
         <TopBar title={name}>
+          {/* What this conversation cost: everyone's to know (3.12.1). */}
+          {cost > 0 && <span class="smp-cost">{t("smpSpentHere", { usd: usd(cost) })}</span>}
           {!chat && (
             <button
               type="button"
@@ -535,16 +578,8 @@ function TopicScreen({ id, title, chat = false }: { id: string; title: string; c
               dangerouslySetInnerHTML={{ __html: renderStreamingMarkdown(view.text) }}
             />
           )}
-          {working && !view.text && (
-            <p class="smp-working">
-              <span class="smp-dots" aria-hidden="true">
-                <i />
-                <i />
-                <i />
-              </span>
-              {t("smpWorkingNow")}
-            </p>
-          )}
+          {/* While it works: only its mascot and a word, no tools, no reasoning (3.12.1). */}
+          {doing && !view.text && <WorkLine agentId={agentId} word={doing} />}
           {waiting.approvals.map((r) => (
             <Decision key={r.requestId} r={r} />
           ))}

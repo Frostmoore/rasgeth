@@ -7845,6 +7845,11 @@ const en = {
   smpTodayAt: "Today, {time}",
   smpYesterday: "Yesterday",
   smpYourAgents: "YOUR AGENTS",
+  smpDoingThink: "is thinking…",
+  smpDoingSearch: "is searching…",
+  smpDoingWork: "is working…",
+  smpDoingWait: "is waiting for you",
+  smpSpentHere: "Spent here: {usd}",
   nudgeTitle: "A word from God now and then",
   nudgeHelp:
     "At most once a day, never at night: about something waiting for you, or a good morning. It asks nothing.",
@@ -8163,6 +8168,11 @@ const it: Record<Key, string> = {
   smpTodayAt: "Oggi, {time}",
   smpYesterday: "Ieri",
   smpYourAgents: "I TUOI AGENTI",
+  smpDoingThink: "sta pensando…",
+  smpDoingSearch: "sta cercando…",
+  smpDoingWork: "sta lavorando…",
+  smpDoingWait: "ti aspetta",
+  smpSpentHere: "Speso qui: {usd}",
   nudgeTitle: "Un saluto da God ogni tanto",
   nudgeHelp:
     "Al massimo una volta al giorno, mai di notte: su qualcosa che ti aspetta, o un buongiorno. Non chiede niente.",

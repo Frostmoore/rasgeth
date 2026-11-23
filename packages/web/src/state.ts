@@ -3409,3 +3409,42 @@ export function openNudge(n: import("@redgiant/protocol").GodNudge): void {
 
 /** A generic nudge opened: its words invite the person in «Oggi»'s box, until they write. */
 export const nudgeInvite = signal<string | null>(null);
+
+// ---------- A conversation in the simple interface (3.12.1) ----------
+//
+// No technical details: no tool calls nor their results, no reasoning, no figures per message, no
+// compaction notices (`documentItems` keeps the words, the decisions and what was found). While
+// the agent works, only its mascot and a short line in plain words.
+
+/** Tools that look things up: the agent «is searching». */
+const SEARCH_TOOLS = /search|fetch|browse|read_url|web|lookup|find/i;
+
+/** What the agent is doing, in a word (pure): null when it is not working nor waiting. */
+export function workWord(
+  events: readonly Event[],
+  running: boolean,
+  thinking: boolean,
+  waiting: boolean,
+): "smpDoingWait" | "smpDoingThink" | "smpDoingSearch" | "smpDoingWork" | null {
+  if (waiting) return "smpDoingWait";
+  if (!running) return null;
+  if (thinking) return "smpDoingThink";
+  const open = new Map<string, string>();
+  for (const e of events) {
+    if (!e.payload) continue;
+    if (e.type === "tool.call") open.set(e.payload.callId, e.payload.tool);
+    else if (e.type === "tool.result") open.delete(e.payload.callId);
+  }
+  const tool = [...open.values()].at(-1);
+  if (tool === undefined) return "smpDoingThink";
+  return SEARCH_TOOLS.test(tool) ? "smpDoingSearch" : "smpDoingWork";
+}
+
+/** What this conversation cost so far, in dollars (the top of a conversation, for everyone). */
+export function conversationCost(events: readonly Event[]): number {
+  let usd = 0;
+  for (const e of events)
+    if (e.type === "message.assistant" && typeof e.payload?.costUsd === "number")
+      usd += e.payload.costUsd;
+  return usd;
+}

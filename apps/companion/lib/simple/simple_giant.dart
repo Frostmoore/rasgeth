@@ -229,8 +229,10 @@ class GiantMascotState extends State<GiantMascot> with SingleTickerProviderState
     final drawing = MascotView(
       agentId: a?.id,
       spec: a?.mascot,
-      state: giantState(widget.mood),
+      // Behind on the orbit it shows no sign of its state (it would land on the one in front).
+      state: widget.still ? MascotState.active : giantState(widget.mood),
       size: widget.size,
+      signs: false,
       label: l.smpMascotOf(widget.name ?? a?.name ?? 'God', moodWord(l, widget.mood)),
     );
     return SizedBox(

@@ -4450,6 +4450,20 @@ if (process.env.DEMO_TOPICS) {
     { ago: 4 * 24 * 60 },
   );
   await core.topics.archive("local", bills, "person");
+  // 3.12.1, DEMO_NUDGE=1: God's friendly nudge, said again every few seconds to the open pages
+  // (as the nudge service delivers it, without waiting for the morning).
+  if (process.env.DEMO_NUDGE) {
+    const nudge = {
+      id: "demo-greeting",
+      kind: "greeting",
+      topicId: null,
+      text: it ? "Ciao! A cosa lavoriamo oggi?" : "Hi! What are we working on today?",
+      at: new Date().toISOString(),
+    };
+    setInterval(() => {
+      for (const f of core.nudgeListeners) f("local", nudge);
+    }, 3000).unref();
+  }
 }
 const running = await serve(core, new TokenAuth({ [token]: "local" }), {
   port,

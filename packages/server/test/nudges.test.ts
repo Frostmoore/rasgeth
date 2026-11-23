@@ -89,7 +89,7 @@ describe("when a nudge may go (pure)", () => {
     expect(g).toEqual({
       kind: "greeting",
       topicId: null,
-      text: "Buongiorno! A cosa lavoriamo oggi?",
+      text: "Ciao! A cosa lavoriamo oggi?",
     });
     // Day by day the words change, always from the list.
     const texts = new Set([0, 1, 2].map((d) => pickNudge(facts, "it", d).text));

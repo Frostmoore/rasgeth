@@ -289,8 +289,13 @@ class AppController extends ChangeNotifier {
   /// What the person likes to be called (the simple interface's greeting); '' for no name.
   String personName = '';
 
+  /// The installation's setup was read (3.12.1): until then, and for a server that cannot be
+  /// reached, a device that never chose keeps the full view (its connection screens).
+  bool uiKnown = false;
+
   /// Whether the simple interface shows (`effectiveUi`).
-  bool get simpleUi => effectiveUi(uiChoice, uiDefault) == 'simple';
+  bool get simpleUi =>
+      (uiChoice != null || uiKnown) && effectiveUi(uiChoice, uiDefault) == 'simple';
 
   /// God's topics and the simple interface's actions.
   late final SimpleModel simple = SimpleModel(() => client);
@@ -324,6 +329,7 @@ class AppController extends ChangeNotifier {
       if (config is Map<String, dynamic>) {
         final ui = config['ui'];
         uiDefault = ui is String && (ui == 'simple' || ui == 'full') ? ui : null;
+        uiKnown = true;
         final name = config['personName'];
         personName = name is String ? name : '';
       }
@@ -2413,6 +2419,7 @@ class AppController extends ChangeNotifier {
     favourites = const {};
     teamFilter = TeamFilter.all;
     chatAgentId = null;
+    uiKnown = false;
     _models = null;
     _seenRequests = const {};
     live.clear();

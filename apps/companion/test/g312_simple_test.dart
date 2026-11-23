@@ -390,7 +390,7 @@ void main() {
         'id': 'd1-greeting',
         'kind': 'greeting',
         'topicId': null,
-        'text': 'Buongiorno! A cosa lavoriamo oggi?',
+        'text': 'Ciao! A cosa lavoriamo oggi?',
         'at': '2026-11-23T09:00:00.000Z',
       });
       await _settle(tester);
@@ -399,7 +399,7 @@ void main() {
       await tap(tester, find.byKey(const Key('simple-nudge-open')));
       expect(find.byKey(const Key('simple-nudge')), findsNothing);
       // The invitation is the lead; no topic, no message.
-      expect(find.text('Buongiorno! A cosa lavoriamo oggi?'), findsOneWidget);
+      expect(find.text('Ciao! A cosa lavoriamo oggi?'), findsOneWidget);
       expect(find.byType(TopicScreen), findsNothing);
       expect(server.sessions.length, before);
       expect(topics.calls.where((c) => c.startsWith('POST /api/god/messages')), isEmpty);

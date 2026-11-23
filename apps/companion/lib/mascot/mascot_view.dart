@@ -33,6 +33,13 @@ List<double> rhythmFor(MascotLayers layers, {String? seed, String? agentId}) {
   return rhythmOf(seed != null && seed.isNotEmpty ? seed : agentId ?? '');
 }
 
+/// The drawing without the state's sign (the library draws it last: `<g class="mk …">`).
+String withoutSign(String svg) {
+  final at = svg.indexOf('<g class="mk');
+  final end = svg.lastIndexOf('</svg>');
+  return at < 0 || end < at ? svg : svg.substring(0, at) + svg.substring(end);
+}
+
 class MascotView extends StatefulWidget {
   const MascotView({
     super.key,
@@ -45,6 +52,7 @@ class MascotView extends StatefulWidget {
     this.theme,
     this.animate,
     this.seconds,
+    this.signs = true,
   });
 
   /// Whose drawing to ask the [MascotScope]'s source for.
@@ -67,6 +75,10 @@ class MascotView extends StatefulWidget {
 
   /// A fixed moment of the motion (tests, film strips) instead of the shared clock.
   final double? seconds;
+
+  /// The state's sign in the corner (3.12.1: off on «Oggi»'s giants, where it would land on the
+  /// other mascot of the orbit; their mood moves them instead).
+  final bool signs;
 
   /// 16-20 px: body and eyes only, no sign; only the eyes blink (as the library draws it).
   bool get tiny => size <= 20;
@@ -206,7 +218,7 @@ class _MascotViewState extends State<MascotView> {
     final table = MotionTable.instance;
     // Layers even when still: flutter_svg would show a hidden group (`opacity="0"`) whose shapes
     // have their own `fill-opacity` (the sleep bubble); the layers leave hidden groups out.
-    final layers = splitMascotSvg(svg, table.elements);
+    final layers = splitMascotSvg(widget.signs ? svg : withoutSign(svg), table.elements);
     if (!_moving) return MascotLayersView(layers: layers, size: s);
     final t = widget.seconds ?? MascotClock.instance.seconds + _shift;
     final poses = table.poses(widget.state, t, _rhythmOf(layers, svg), tiny: widget.tiny);
