@@ -4,15 +4,19 @@
 //                                  forget it) and how many emulators at once, on this machine
 //   GET /api/emulators/devices     the devices one can open in the Canvas (3.11 phase 2)
 //   POST /api/emulators/devices/stop {id}   the person switches an emulator off
+//   POST /api/emulators/devices/repair {id}   the person's repair of an iOS simulator's touches
 //   POST /api/emulators/install/plan {target?, avdName?, only?}   the guided install's plan for
 //                                  this machine (3.11 phase 5): steps, sizes, licence texts, planId
 //   POST /api/emulators/install/start {planId, licenceAccepted}   the person's yes: the plan runs
 //                                  as a job (followed and cancelled through /api/jobs)
+//   POST /api/emulators/ios-bridge/plan   the iOS bridge's guided install (3.12.2): what, where, why not
+//   POST /api/emulators/ios-bridge/start {planId}   the person's yes: serve-sim is downloaded as a job
 import {
   EmuInstallPlanBody,
   EmuInstallStartBody,
   EmulatorSettingsBody,
   type EmulatorsState,
+  IosBridgeStartBody,
 } from "@redgiant/protocol";
 import type { Context, Hono } from "hono";
 import type { RedGiantCore } from "../core.js";
@@ -65,6 +69,18 @@ export function emulatorRoutes<E extends { Variables: any }>(
     }
     return c.json({ devices: await core.deviceHub.of(owner(c)).list() });
   });
+  // 3.12.2: the person's repair of an iOS simulator's touches (restarts its home screen).
+  app.post("/api/emulators/devices/repair", async (c) => {
+    const b = (await c.req.json().catch(() => ({}))) as { id?: unknown };
+    if (typeof b.id !== "string" || !b.id) return c.json({ error: "Which device?" }, 400);
+    try {
+      await core.deviceHub.of(owner(c)).repair(b.id);
+    } catch (err) {
+      if (err instanceof Error) return c.json({ error: err.message }, 400);
+      throw err;
+    }
+    return c.json({ ok: true });
+  });
   app.put("/api/emulators/settings", async (c) => {
     const parsed = EmulatorSettingsBody.safeParse(await c.req.json().catch(() => null));
     if (!parsed.success) return c.json({ error: "Invalid settings" }, 400);
@@ -87,6 +103,21 @@ export function emulatorRoutes<E extends { Variables: any }>(
     if (!parsed.success) return c.json({ error: "Which plan?" }, 400);
     try {
       return c.json({ jobId: core.emuInstall.start(owner(c), parsed.data).id });
+    } catch (err) {
+      if (err instanceof InstallError)
+        return c.json({ error: err.message, code: err.code }, err.code === "busy" ? 409 : 400);
+      throw err;
+    }
+  });
+  // 3.12.2: the iOS bridge, the same way: a plan the person sees, then their yes.
+  app.post("/api/emulators/ios-bridge/plan", async (c) =>
+    c.json(await core.iosInstall.plan(owner(c))),
+  );
+  app.post("/api/emulators/ios-bridge/start", async (c) => {
+    const parsed = IosBridgeStartBody.safeParse(await c.req.json().catch(() => null));
+    if (!parsed.success) return c.json({ error: "Which plan?" }, 400);
+    try {
+      return c.json({ jobId: core.iosInstall.start(owner(c), parsed.data).id });
     } catch (err) {
       if (err instanceof InstallError)
         return c.json({ error: err.message, code: err.code }, err.code === "busy" ? 409 : 400);

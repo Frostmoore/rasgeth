@@ -3,7 +3,7 @@
 // open a screen with what will be done (steps, folder, sizes), the full licence text to read and
 // accept, then the install as a job with its bar (bytes, speed, time left) and its result; the
 // report is read again at the end. Nothing is downloaded before the person presses Install; Xcode
-// and the iOS bridge are only explained.
+// is only explained (the iOS bridge has its own screen, ios_bridge_install.dart).
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -15,14 +15,23 @@ import '../../ui/chat/file_download.dart' show byteWords;
 import '../../ui/icons.dart';
 import '../../ui/settings_kit.dart';
 import '../api/system_api.dart';
+import 'ios_bridge_install.dart';
 import 'system_kit.dart';
 
 const _installable = {'sdk', 'emulator', 'platform-tools', 'cmdline-tools', 'system-image', 'avd'};
 
-/// Which buttons this machine gets (the page's `installOffer`).
-({bool install, bool update}) installOffer(EmulatorReport r) => r.container
-    ? (install: false, update: false)
-    : (install: r.missing.any(_installable.contains), update: r.missing.contains('emulator-old'));
+/// Which buttons this machine gets (the page's `installOffer`); `ios`: the bridge of iOS
+/// simulators on a Mac that misses it (3.12.2).
+({bool install, bool update, bool ios}) installOffer(EmulatorReport r) {
+  final ios = r.os == 'macos' && r.missing.contains('ios-bridge');
+  return r.container
+      ? (install: false, update: false, ios: ios)
+      : (
+          install: r.missing.any(_installable.contains),
+          update: r.missing.contains('emulator-old'),
+          ios: ios,
+        );
+}
 
 String _k(String prefix, String code) => '$prefix${code.replaceAll('-', '_')}';
 
@@ -44,7 +53,7 @@ class EmulatorInstall extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final offer = installOffer(r);
-    if (!offer.install && !offer.update) return const SizedBox.shrink();
+    if (!offer.install && !offer.update && !offer.ios) return const SizedBox.shrink();
     Future<void> open(String mode) async {
       await openSystemScreen(context, EmulatorInstallScreen(mode: mode, onDone: onDone));
     }
@@ -58,6 +67,13 @@ class EmulatorInstall extends StatelessWidget {
             onPressed: () => unawaited(open('install')),
             icon: const RgIcon(RgIcons.download, size: 14),
             label: Text(l.syEiInstall),
+          ),
+        if (offer.ios)
+          FilledButton.icon(
+            key: const Key('ib-install'),
+            onPressed: () => unawaited(openSystemScreen(context, IosBridgeScreen(onDone: onDone))),
+            icon: const RgIcon(RgIcons.download, size: 14),
+            label: Text(l.syIbInstall),
           ),
         if (offer.update)
           OutlinedButton.icon(

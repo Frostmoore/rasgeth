@@ -2,7 +2,7 @@
 // machine in Settings › Emulators. A window shows what will be done (steps, folder, sizes), the
 // full text of the licences to read and accept, then the install as a job with a real bar
 // (percent, speed, time left) and its result; the report is read again at the end. Nothing is
-// downloaded before the person presses Install; Xcode and the iOS bridge are only explained.
+// downloaded before the person presses Install; Xcode is only explained (the iOS bridge has its own window).
 import type {
   EmuInstallBlock,
   EmuInstallNote,
@@ -18,6 +18,7 @@ import { bytes } from "../format.js";
 import { t } from "../i18n.js";
 import { IconAlert, IconDownload, IconRefresh } from "../icons.js";
 import { attempt, getApi } from "../state.js";
+import { IosBridgeWindow } from "./IosBridgeInstall.js";
 import { Acts, SwitchRow } from "./SettingsKit.js";
 import { Advanced, Field, Modal, Progress, useJob } from "./ui.js";
 
@@ -32,11 +33,18 @@ const INSTALLABLE: EmuMissing[] = [
 ];
 
 /** Which buttons this machine gets: install what is missing, update the emulator. */
-export function installOffer(r: EmulatorReport): { install: boolean; update: boolean } {
-  if (r.container) return { install: false, update: false };
+export function installOffer(r: EmulatorReport): {
+  install: boolean;
+  update: boolean;
+  ios: boolean;
+} {
+  // The iOS bridge belongs to a Mac with Xcode, in a container or not never (it has no container).
+  const ios = r.os === "macos" && r.missing.includes("ios-bridge");
+  if (r.container) return { install: false, update: false, ios };
   return {
     install: r.missing.some((m) => INSTALLABLE.includes(m)),
     update: r.missing.includes("emulator-old"),
+    ios,
   };
 }
 
@@ -68,7 +76,6 @@ export const blockText = (p: EmuInstallPlan) => (p.blocked ? BLOCK[p.blocked](p)
 const NOTE: Record<EmuInstallNote, () => string> = {
   node: () => t("eiNote_node"),
   xcode: () => t("eiNote_xcode"),
-  "ios-bridge": () => t("eiNote_ios_bridge"),
   "kvm-group": () => t("eiNote_kvm_group"),
   bios: () => t("eiNote_bios"),
 };
@@ -367,8 +374,9 @@ function InstallJob({ job, plan }: { job: Job; plan: EmuInstallPlan | undefined 
 /** The buttons under «What is missing» of this machine, and the window they open. */
 export function EmulatorInstall({ r, onDone }: { r: EmulatorReport; onDone: () => void }) {
   const [open, setOpen] = useState<Mode>();
+  const [ios, setIos] = useState(false);
   const offer = installOffer(r);
-  if (!offer.install && !offer.update) return null;
+  if (!offer.install && !offer.update && !offer.ios) return null;
   return (
     <div class="em-acts ei-acts">
       {offer.install && (
@@ -381,6 +389,12 @@ export function EmulatorInstall({ r, onDone }: { r: EmulatorReport; onDone: () =
           <IconRefresh size={14} /> {t("eiUpdate")}
         </button>
       )}
+      {offer.ios && (
+        <button type="button" class="wz-btn small primary" onClick={() => setIos(true)}>
+          <IconDownload size={14} /> {t("ibInstall")}
+        </button>
+      )}
+      {ios && <IosBridgeWindow onClose={() => setIos(false)} onDone={onDone} />}
       {open && <InstallWindow mode={open} onClose={() => setOpen(undefined)} onDone={onDone} />}
     </div>
   );

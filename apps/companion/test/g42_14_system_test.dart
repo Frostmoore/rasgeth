@@ -317,7 +317,8 @@ void main() {
     // The nodes: a Mac with Xcode and no SDK, and one older than 3.11.
     expect(find.text('Mac mini'), findsOneWidget);
     expect(find.text('iPhone 18 (iOS 27.2)'), findsOneWidget);
-    expect(find.textContaining('Un ponte per i tocchi'), findsOneWidget);
+    expect(find.textContaining('Il ponte per immagine e tocchi'), findsOneWidget);
+    expect(find.text('Non installato'), findsOneWidget);
     expect(find.textContaining('più vecchio della 3.11'), findsOneWidget);
     // A folder without an SDK is refused in the server's words; then one is used and forgotten.
     await type(tester, 'sy-em-path', r'E:\vuota');
@@ -397,6 +398,60 @@ void main() {
     expect(find.textContaining('Fatto. Il resoconto'), findsOneWidget);
     // The report is read again at the end.
     expect(sys.calls.where((c) => c == 'GET /api/emulators').length, greaterThan(before));
+    await done(tester);
+  });
+
+  testWidgets('emulators: the iOS bridge install on a Mac, only with the yes (3.12.2)', (
+    tester,
+  ) async {
+    sys.emulatorReport = {
+      ...sys.emulatorReport,
+      'os': 'macos',
+      'arch': 'arm64',
+      'ios': {
+        'xcode': '27.2',
+        'simulators': [
+          {'name': 'iPhone 18', 'udid': 'U1', 'runtime': 'iOS 27.2', 'state': 'shutdown'},
+        ],
+        'ready': false,
+      },
+      'missing': ['ios-bridge'],
+      'ready': false,
+    };
+    await start(tester);
+    await push(tester, const EmulatorsScreen());
+    await tap(tester, 'ib-install', 16);
+    expect(sys.bodies['POST /api/emulators/ios-bridge/plan'], <String, dynamic>{});
+    expect(find.textContaining('serve-sim 0.1.49'), findsOneWidget);
+    expect(find.text('Apache-2.0'), findsOneWidget);
+    expect(find.textContaining('Togliendo quella cartella lo togli'), findsOneWidget);
+    expect(sys.bodies.containsKey('POST /api/emulators/ios-bridge/start'), isFalse);
+    await tap(tester, 'ib-start', 16);
+    expect(sys.bodies['POST /api/emulators/ios-bridge/start'], {'planId': 'IB1'});
+    expect(find.byType(LinearProgressIndicator), findsOneWidget);
+    await jobs(tester);
+    await calm(tester);
+    expect(find.textContaining('Il ponte iOS è installato'), findsOneWidget);
+    expect(find.byType(Checkbox), findsNothing);
+    await done(tester);
+  });
+
+  testWidgets('emulators: the iOS bridge says why it cannot be installed', (tester) async {
+    sys.emulatorReport = {
+      ...sys.emulatorReport,
+      'os': 'macos',
+      'arch': 'x64',
+      'ios': {'xcode': '27.2', 'simulators': <Object>[], 'ready': false},
+      'missing': ['ios-bridge'],
+      'ready': false,
+    };
+    sys.iosBridgePlan = {...sys.iosBridgePlan, 'blocked': 'intel'}..remove('planId');
+    await start(tester);
+    await push(tester, const EmulatorsScreen());
+    await tap(tester, 'ib-install', 16);
+    expect(find.byKey(const Key('ib-blocked')), findsOneWidget);
+    expect(find.textContaining('Mac Intel'), findsOneWidget);
+    expect(find.byKey(const Key('ib-start')), findsNothing);
     await done(tester);
   });
 

@@ -231,7 +231,7 @@ export function freeAvdName(wanted: string, taken: readonly string[]): string {
 
 /**
  * The ordered steps for this machine. A plan that cannot run says why (`blocked`) and what to do
- * instead (`notes`); Xcode and the iOS bridge are only ever explained, never installed.
+ * instead (`notes`); Xcode is only ever explained, never installed (the iOS bridge has its own guided step).
  */
 export function planInstall(f: PlanFacts): PlannedInstall {
   const r = f.report;
@@ -239,7 +239,6 @@ export function planInstall(f: PlanFacts): PlannedInstall {
   const notes: EmuInstallNote[] = [];
   if (os === "macos") {
     if (r.missing.includes("xcode")) notes.push("xcode");
-    else if (r.missing.includes("ios-bridge")) notes.push("ios-bridge");
   }
   const sdk = r.android.sdk;
   // An SDK made only of adb from WinGet or a package manager (found around adb on the PATH) is not

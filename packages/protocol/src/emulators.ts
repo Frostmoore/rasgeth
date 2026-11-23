@@ -75,8 +75,17 @@ export interface IosReport {
     runtime: string;
     state: "booted" | "shutdown" | "other";
   }[];
-  /** The bridge that sends touches (3.11.1), found on the PATH. */
-  bridge?: "serve-sim" | "idb";
+  /**
+   * The bridge for video and touches (3.12.2): serve-sim, downloaded into Rasgeth's own folder
+   * with the person's yes (never found on the PATH, never shipped).
+   */
+  bridge?: "serve-sim";
+  /** Its version, when installed. */
+  bridgeVersion?: string;
+  /** The folder it lives in (removing the folder removes it). */
+  bridgeDir?: string;
+  /** Simulators can be opened here now: Xcode, Apple silicon and the bridge. */
+  ready: boolean;
 }
 
 /**
@@ -93,7 +102,8 @@ export type EmuMissing =
   | "accel" // no hardware acceleration: emulators would be too slow
   | "emulator-old" // the emulator is older than RECOMMENDED_EMULATOR (an update is proposed)
   | "xcode" // macOS without Xcode (iOS simulators)
-  | "ios-bridge"; // macOS with Xcode but no bridge for touches
+  | "ios-arch" // an Intel Mac: the iOS bridge needs Apple silicon
+  | "ios-bridge"; // macOS with Xcode but no bridge for video and touches (guided install)
 
 export interface EmulatorReport {
   os: EmuOs;
@@ -222,7 +232,7 @@ export type DeviceState = "off" | "starting" | "on" | "unauthorized" | "offline"
 
 /** A device one can open: an AVD (on or off), a running emulator, a phone over USB or Wi-Fi. */
 export interface EmuDeviceView {
-  /** `avd:<name>` for an AVD that is off, else adb's serial. */
+  /** `avd:<name>` for an AVD that is off, `ios:<udid>` for an iOS simulator, else adb's serial. */
   id: string;
   name: string;
   kind: "emulator" | "phone";
@@ -235,12 +245,19 @@ export interface EmuDeviceView {
   ours?: boolean;
   /** Who drives it now. */
   control: "agents" | "person";
+  /** Absent: Android. */
+  platform?: "android" | "ios";
+  /** For an iOS simulator: its runtime (`iOS 27.2`). */
+  runtime?: string;
   /** On a node (3.11 phase 4): the node's name; its id ends with `@<fingerprint>`. */
   machine?: string;
 }
 
 /** An emulator is an id `avd:<name>` or a serial `emulator-<port>`; anything else is a real phone. */
-export const isEmulatorId = (id: string): boolean => /^(avd:|emulator-\d+(@|$))/.test(id);
+export const isEmulatorId = (id: string): boolean => /^(avd:|ios:|emulator-\d+(@|$))/.test(id);
+
+/** An iOS simulator's id on the page: `ios:<udid>` (`@<node>` after it on a node). */
+export const isIosId = (id: string): boolean => id.startsWith("ios:");
 
 // ---- Phase 5: the guided install of the Android SDK pieces, only with the person's yes ----
 
@@ -280,7 +297,7 @@ export type EmuInstallBlock =
   | "nothing"; // nothing is missing
 
 /** What the page explains without installing anything. */
-export type EmuInstallNote = "node" | "xcode" | "ios-bridge" | "kvm-group" | "bios";
+export type EmuInstallNote = "node" | "xcode" | "kvm-group" | "bios";
 
 export interface EmuInstallPlan {
   /** Present only when the plan can start: `start` needs it (and is the person's yes). */
@@ -320,3 +337,31 @@ export const EmuInstallStartBody = z.object({
   /** The person read and accepted the plan's licences (required when it has any). */
   licenceAccepted: z.boolean().optional(),
 });
+
+// ---- 3.12.2: the iOS bridge, installed by a guided step with the person's yes ----
+
+/** The serve-sim version Rasgeth installs (pinned: a newer one is tried before it is moved). */
+export const IOS_BRIDGE_VERSION = "0.1.49";
+
+export type IosBridgeBlock =
+  | "not-mac" // simulators exist only on a Mac: use a Mac node
+  | "intel" // serve-sim needs Apple silicon
+  | "no-xcode" // no Xcode (never installed by Rasgeth)
+  | "no-npm" // no npm next to the Node Rasgeth runs with
+  | "offline" // the registry could not be read
+  | "nothing"; // already installed
+
+export interface IosBridgePlan {
+  /** Present only when the install can start: `start` needs it (and is the person's yes). */
+  planId?: string;
+  /** The folder it goes into (and nothing outside it). */
+  folder: string;
+  version: string;
+  /** The package's size, when the registry said it. */
+  bytes: number;
+  licence: string;
+  blocked?: IosBridgeBlock;
+}
+
+export const IosBridgeStartBody = z.object({ planId: z.string().min(1).max(100) });
+export type IosBridgeStartBody = z.infer<typeof IosBridgeStartBody>;

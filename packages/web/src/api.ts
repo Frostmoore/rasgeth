@@ -21,6 +21,7 @@ import {
   type ImportApply,
   type ImportPreview,
   type ImportRecord,
+  type IosBridgePlan,
   type Job,
   type KnowledgeAgentCollection,
   type KnowledgeCollection,
@@ -1799,6 +1800,13 @@ export class Api {
     this.call<EmuInstallPlan>("POST", "/api/emulators/install/plan", b);
   startEmulatorInstall = (b: { planId: string; licenceAccepted: boolean }) =>
     this.call<{ jobId: string }>("POST", "/api/emulators/install/start", b);
+  /** 3.12.2: the iOS bridge's plan (what, where, why not) and the person's yes. */
+  iosBridgePlan = () => this.call<IosBridgePlan>("POST", "/api/emulators/ios-bridge/plan", {});
+  startIosBridgeInstall = (b: { planId: string }) =>
+    this.call<{ jobId: string }>("POST", "/api/emulators/ios-bridge/start", b);
+  /** 3.12.2: the person's repair of an iOS simulator's touches (after a confirmation). */
+  repairDeviceTouches = (id: string) =>
+    this.call<{ ok: true }>("POST", "/api/emulators/devices/repair", { id });
   nodeCode = () => this.call<PairCode>("POST", "/api/nodes/code");
   cancelNodeCode = () => this.call("DELETE", "/api/nodes/code");
   pairNode = (b: { address: string; code: string; name?: string }) =>

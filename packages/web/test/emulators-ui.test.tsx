@@ -88,6 +88,7 @@ beforeEach(() => {
           ios: {
             xcode: "27.2",
             simulators: [{ name: "iPhone 18", udid: "U", runtime: "iOS 27.2", state: "shutdown" }],
+            ready: false,
           },
           missing: ["sdk", "ios-bridge"],
           ready: false,
@@ -112,7 +113,8 @@ describe("Settings › Emulators", () => {
     expect(text).toContain("The emulator is old");
     expect(text).toContain("mac-mini");
     expect(text).toContain("iPhone 18 (iOS 27.2)");
-    expect(text).toContain("A bridge for touches on iOS simulators");
+    expect(text).toContain("The bridge for the picture and touches of iOS simulators");
+    expect(text).toContain("Not installed");
     expect(text).toContain("older than 3.11");
     expect(v.container.querySelector('input[type="checkbox"], input[type="radio"]')).toBeNull();
   });
@@ -184,6 +186,7 @@ describe("Settings › Emulators", () => {
       "accel",
       "emulator-old",
       "xcode",
+      "ios-arch",
       "ios-bridge",
     ];
     for (const l of ["it", "en"] as const) {

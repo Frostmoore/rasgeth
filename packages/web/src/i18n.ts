@@ -6714,6 +6714,42 @@ const en = {
     "adb is not running, so running emulators and phones are not known: {product} does not start it just to look.",
   emNoneAttached: "No emulator running and no phone attached.",
   emSimulators: "iOS simulators",
+  dvRepair: "Repair touches",
+  dvRepairQ: "Repair the touches of {name}?",
+  dvRepairText:
+    "This restarts the simulator's home screen and closes the apps open on it. Use it only when taps and keys no longer reach the simulator. {product} never does it by itself.",
+  dvRepairYes: "Repair",
+  dvTouchHint: "Several taps in a row changed nothing on the screen: touches may not be arriving.",
+  emIosBridge: "Bridge for picture and touches",
+  emIosBridgeNone: "Not installed",
+  emIosBridgeAt: "serve-sim {version}, in {folder}",
+  emIosReady: "Ready: the simulators open in the Canvas like the Android emulators.",
+  emIosNeedsMac:
+    "iOS simulators exist only on a Mac with Xcode: pair a Mac as a node (Settings › Nodes).",
+  emRunningSim: "iOS simulator",
+  ibInstall: "Install the iOS bridge",
+  ibTitle: "iOS bridge",
+  ibLead:
+    "{product} shows an iOS simulator's screen and sends your touches through serve-sim (Apache-2.0, by Evan Bacon). It is not part of {product}: with your yes it is downloaded from the npm registry into one folder of {product}'s on this Mac, checked against the registry's checksum, and nothing else on the Mac changes. Removing that folder removes it.",
+  ibFolder: "Folder",
+  ibVersion: "Version",
+  ibLicence: "Licence",
+  ibSize: "Size once unpacked",
+  ibStart: "Download and install",
+  ibStepDownload: "Downloading serve-sim",
+  ibStepInstall: "Installing it in the folder",
+  ibDone: "The iOS bridge is installed.",
+  ibKeyboard:
+    "With Xcode 27 the keyboard of a simulator needs Device Hub in front and the Accessibility permission for the app that runs {product}. {product} never repairs the keyboard by itself.",
+  ibBlock_not_mac: "iOS simulators exist only on a Mac: pair a Mac as a node.",
+  ibBlock_intel:
+    "The bridge needs a Mac with Apple silicon: this is an Intel Mac. Use another Mac as a node.",
+  ibBlock_no_xcode: "Xcode is missing: {product} does not install it (App Store). Then look again.",
+  ibBlock_no_npm:
+    "There is no npm next to the Node {product} runs with, so the bridge cannot be installed here.",
+  ibBlock_offline:
+    "The npm registry could not be read. Check the internet connection and try again.",
+  ibBlock_nothing: "The bridge is already installed.",
   emMissing: "What is missing",
   emMiss_sdk: "An Android SDK (Android Studio installs it; or choose its folder below).",
   emMiss_emulator: "The Android Emulator package of the SDK.",
@@ -6725,7 +6761,10 @@ const en = {
   emMiss_accel: "Hardware acceleration: without it emulators are too slow.",
   emMiss_emulator_old: "The emulator is old: {product} can propose the update, which you approve.",
   emMiss_xcode: "Xcode, for iOS simulators (from the App Store).",
-  emMiss_ios_bridge: "A bridge for touches on iOS simulators (comes with 3.12.2).",
+  emMiss_ios_arch:
+    "iOS simulators need a Mac with Apple silicon; this is an Intel Mac. Use another Mac as a node.",
+  emMiss_ios_bridge:
+    "The bridge for the picture and touches of iOS simulators (serve-sim): one guided step downloads it, with your yes.",
   emLooked: "Where {product} looked",
   emFolder: "Folder of the Android SDK",
   emFolderLead:
@@ -6798,10 +6837,7 @@ const en = {
     "Google's list of packages (with the licences) could not be read. Check the internet connection and try again.",
   eiBlock_nothing: "Nothing is missing here.",
   eiNote_node: "Settings › Nodes: pair a computer that can run emulators.",
-  eiNote_xcode:
-    "iOS simulators need Xcode, from the App Store: {product} does not install it. iOS comes with {product} 3.12.2.",
-  eiNote_ios_bridge:
-    "iOS: the bridge for touches comes with {product} 3.12.2; there is nothing to install now.",
+  eiNote_xcode: "iOS simulators need Xcode, from the App Store: {product} does not install it.",
   eiNote_kvm_group:
     "Linux: /dev/kvm is there but this user may not use it. An administrator can add the user to the kvm group, then log in again.",
   eiNote_bios:
@@ -15091,6 +15127,42 @@ const it: Record<Key, string> = {
     "adb non è in funzione, quindi emulatori accesi e telefoni non si conoscono: {product} non lo avvia solo per guardare.",
   emNoneAttached: "Nessun emulatore acceso e nessun telefono collegato.",
   emSimulators: "Simulatori iOS",
+  dvRepair: "Ripara i tocchi",
+  dvRepairQ: "Riparare i tocchi di {name}?",
+  dvRepairText:
+    "Questo riavvia la schermata iniziale del simulatore e chiude le app aperte. Usalo solo quando i tocchi e i tasti non arrivano più al simulatore. {product} non lo fa mai da solo.",
+  dvRepairYes: "Ripara",
+  dvTouchHint: "Più tocchi di fila non hanno cambiato lo schermo: forse i tocchi non arrivano.",
+  emIosBridge: "Ponte per immagine e tocchi",
+  emIosBridgeNone: "Non installato",
+  emIosBridgeAt: "serve-sim {version}, in {folder}",
+  emIosReady: "Pronto: i simulatori si aprono nel Canvas come gli emulatori Android.",
+  emIosNeedsMac:
+    "I simulatori iOS esistono solo su un Mac con Xcode: collega un Mac come nodo (Impostazioni › Nodi).",
+  emRunningSim: "Simulatore iOS",
+  ibInstall: "Installa il ponte iOS",
+  ibTitle: "Ponte iOS",
+  ibLead:
+    "{product} mostra lo schermo di un simulatore iOS e manda i tuoi tocchi tramite serve-sim (Apache-2.0, di Evan Bacon). Non fa parte di {product}: con il tuo sì viene scaricato dal registro npm in una cartella di {product} su questo Mac, controllato con la somma di controllo del registro, e nient'altro sul Mac cambia. Togliendo quella cartella lo togli.",
+  ibFolder: "Cartella",
+  ibVersion: "Versione",
+  ibLicence: "Licenza",
+  ibSize: "Dimensione una volta aperto",
+  ibStart: "Scarica e installa",
+  ibStepDownload: "Scarico serve-sim",
+  ibStepInstall: "Lo installo nella cartella",
+  ibDone: "Il ponte iOS è installato.",
+  ibKeyboard:
+    "Con Xcode 27 la tastiera di un simulatore vuole Device Hub davanti e il permesso Accessibilità per l'app che esegue {product}. {product} non ripara mai la tastiera da solo.",
+  ibBlock_not_mac: "I simulatori iOS esistono solo su un Mac: collega un Mac come nodo.",
+  ibBlock_intel:
+    "Il ponte vuole un Mac con Apple silicon: questo è un Mac Intel. Usa un altro Mac come nodo.",
+  ibBlock_no_xcode: "Manca Xcode: {product} non lo installa (App Store). Poi guarda di nuovo.",
+  ibBlock_no_npm:
+    "Non c'è npm accanto al Node con cui gira {product}, quindi il ponte qui non si può installare.",
+  ibBlock_offline:
+    "Il registro npm non si è potuto leggere. Controlla la connessione a internet e riprova.",
+  ibBlock_nothing: "Il ponte è già installato.",
   emMissing: "Cosa manca",
   emMiss_sdk:
     "Un SDK Android (lo installa Android Studio; oppure scegli qui sotto la sua cartella).",
@@ -15104,7 +15176,10 @@ const it: Record<Key, string> = {
   emMiss_emulator_old:
     "L'emulatore è vecchio: {product} può proporti l'aggiornamento, che approvi tu.",
   emMiss_xcode: "Xcode, per i simulatori iOS (dall'App Store).",
-  emMiss_ios_bridge: "Un ponte per i tocchi sui simulatori iOS (arriva con la 3.12.2).",
+  emMiss_ios_arch:
+    "I simulatori iOS vogliono un Mac con Apple silicon; questo è un Mac Intel. Usa un altro Mac come nodo.",
+  emMiss_ios_bridge:
+    "Il ponte per immagine e tocchi dei simulatori iOS (serve-sim): un passo guidato lo scarica, con il tuo sì.",
   emLooked: "Dove ha guardato {product}",
   emFolder: "Cartella dell'SDK Android",
   emFolderLead:
@@ -15179,10 +15254,7 @@ const it: Record<Key, string> = {
     "Non sono riuscito a leggere l'elenco dei pacchetti di Google (con le licenze). Controlla la connessione e riprova.",
   eiBlock_nothing: "Qui non manca niente.",
   eiNote_node: "Impostazioni › Nodi: collega un computer che può far girare gli emulatori.",
-  eiNote_xcode:
-    "I simulatori iOS vogliono Xcode, dall'App Store: {product} non lo installa. iOS arriva con {product} 3.12.2.",
-  eiNote_ios_bridge:
-    "iOS: il ponte per i tocchi arriva con {product} 3.12.2; adesso non c'è niente da installare.",
+  eiNote_xcode: "I simulatori iOS vogliono Xcode, dall'App Store: {product} non lo installa.",
   eiNote_kvm_group:
     "Linux: /dev/kvm c'è ma questo utente non può usarlo. Un amministratore può aggiungere l'utente al gruppo kvm, poi si rientra.",
   eiNote_bios:

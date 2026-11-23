@@ -4,11 +4,14 @@
 // person after «Take control» (their gestures are never logged). An AVD opened while off is started
 // without a window, within the person's limit of emulators at once; the ones Rasgeth started are
 // switched off after a while unused, never the person's own. Agents act one at a time.
+import { createHash } from "node:crypto";
 import {
   DEFAULT_MAX_EMULATORS,
   type DeviceInput,
   type DeviceState,
   type EmuDeviceView,
+  type IosReport,
+  isIosId,
 } from "@redgiant/protocol";
 import type { DeviceFrame, DeviceHost, DeviceScreen, HostDevice, VideoPacket } from "./host.js";
 
@@ -16,7 +19,14 @@ export type DeviceEvent =
   | { type: "frame"; frame: DeviceFrame }
   /** 3.11 phase 7: the H.264 itself (only to who asked for it). */
   | { type: "video"; packet: VideoPacket }
-  | { type: "state"; state: DeviceState; control: "agents" | "person"; error?: string };
+  | {
+      type: "state";
+      state: DeviceState;
+      control: "agents" | "person";
+      error?: string;
+      /** 3.12.2: several taps in a row left the screen unchanged: the person may repair touches. */
+      hint?: "touches";
+    };
 type Listener = (e: DeviceEvent) => void;
 
 export class DeviceError extends Error {}
@@ -46,16 +56,31 @@ export interface DeviceAccess {
   /** The device is on (an AVD started when off). */
   ensure(id: string, signal?: AbortSignal): Promise<void>;
   stop(id: string): Promise<void>;
+  /** Several taps in a row changed nothing on the screen (iOS: touches may not arrive). */
+  touchProblem(id: string): boolean;
+  /** iOS only, the person's action: restarts the simulator's home screen to get touches back. */
+  repair(id: string): Promise<void>;
   exclusive<T>(id: string, f: () => Promise<T>): Promise<T>;
+}
+
+/** What iOS simulators add to a `DeviceHost` (3.12.2): all of them, booted or not. */
+export interface IosDeviceHost extends DeviceHost {
+  simulators(): Promise<IosReport["simulators"]>;
+  /** `serve-sim repair-input` and a fresh bridge (the person asked, after a warning). */
+  repair(udid: string): Promise<void>;
 }
 
 export interface DevicesOptions {
   host: DeviceHost;
+  /** iOS simulators (a Mac with Xcode and the bridge); their ids are `ios:<udid>`. */
+  ios?: IosDeviceHost;
   /** The AVDs of this machine (from Settings › Emulators' report). */
   avds: () => Promise<string[]>;
   maxRunning?: () => number;
   /** An emulator Rasgeth started is switched off after this long unused (default 15 minutes). */
   idleMs?: number;
+  /** How long after a tap the screen is compared with before it (default 900 ms). */
+  touchCheckMs?: number;
   /** A screen nobody looks at closes after this long (default one minute). */
   screenIdleMs?: number;
   now?: () => number;
@@ -101,6 +126,8 @@ export class Devices implements DeviceAccess {
   private readonly queues = new Map<string, Promise<unknown>>();
   /** Frames seen per device: what an agent's cached tree is checked against. */
   private readonly seqs = new Map<string, number>();
+  /** Taps in a row that left the screen as it was, by device (iOS). */
+  private readonly stuck = new Map<string, number>();
   private readonly timer: NodeJS.Timeout;
 
   constructor(private readonly o: DevicesOptions) {
@@ -110,6 +137,19 @@ export class Devices implements DeviceAccess {
 
   private now() {
     return (this.o.now ?? Date.now)();
+  }
+
+  /** The host of a device: iOS simulators (`ios:<udid>`) or Android's. */
+  private hostOf(id: string): DeviceHost {
+    if (isIosId(id)) {
+      if (!this.o.ios) throw new DeviceError("iOS simulators are not available on this machine");
+      return this.o.ios;
+    }
+    return this.o.host;
+  }
+
+  private async iosSims(): Promise<IosReport["simulators"]> {
+    return (await this.o.ios?.simulators().catch(() => undefined)) ?? [];
   }
 
   /** How many frames the device's screen sent (undefined: no screen open). */
@@ -144,6 +184,25 @@ export class Devices implements DeviceAccess {
         control: this.controlOf(id),
       });
     }
+    for (const sim of await this.iosSims()) {
+      const id = `ios:${sim.udid}`;
+      out.push({
+        id,
+        name: sim.name,
+        kind: "emulator",
+        platform: "ios",
+        runtime: sim.runtime,
+        state:
+          sim.state === "booted"
+            ? "on"
+            : this.starting.has(id) || sim.state === "other"
+              ? "starting"
+              : "off",
+        serial: sim.udid,
+        ...(this.ours.has(sim.udid) && { ours: true }),
+        control: this.controlOf(id),
+      });
+    }
     for (const name of avds)
       if (!out.some((d) => d.avd === name))
         out.push({
@@ -162,11 +221,18 @@ export class Devices implements DeviceAccess {
   }
 
   private stateEvent(id: string, state: DeviceState, error?: string): DeviceEvent {
-    return { type: "state", state, control: this.controlOf(id), ...(error && { error }) };
+    return {
+      type: "state",
+      state,
+      control: this.controlOf(id),
+      ...(error && { error }),
+      ...(this.touchProblem(id) && { hint: "touches" as const }),
+    };
   }
 
   /** The device's serial, starting its AVD when it is off (within the limit). */
   async ensureOn(id: string, signal?: AbortSignal): Promise<string> {
+    if (isIosId(id)) return this.ensureIos(id, signal);
     const attached = await this.o.host.devices();
     const ids = deviceIds(attached);
     const found = attached.find((d) => ids.get(d.serial) === id || d.serial === id);
@@ -183,7 +249,8 @@ export class Devices implements DeviceAccess {
     const avd = id.slice(4);
     if (!(await this.o.avds()).includes(avd))
       throw new DeviceError(`There is no AVD named ${avd} here`);
-    const running = attached.filter((d) => d.kind === "emulator").length;
+    const running =
+      attached.filter((d) => d.kind === "emulator").length + (await this.runningSims());
     const max = this.o.maxRunning?.() ?? DEFAULT_MAX_EMULATORS;
     if (running >= max)
       throw new DeviceError(
@@ -201,6 +268,39 @@ export class Devices implements DeviceAccess {
     }
   }
 
+  private async runningSims(): Promise<number> {
+    return (await this.iosSims()).filter((s) => s.state === "booted").length;
+  }
+
+  /** An iOS simulator's udid, booting it when it is off (within the same limit as emulators). */
+  private async ensureIos(id: string, signal?: AbortSignal): Promise<string> {
+    const udid = id.slice(4);
+    const ios = this.hostOf(id);
+    const sims = await this.iosSims();
+    const sim = sims.find((s) => s.udid === udid);
+    if (!sim) throw new DeviceError("No such simulator: open device_list for the ids");
+    if (sim.state === "booted") return udid;
+    const running =
+      (await this.o.host.devices().catch(() => [] as HostDevice[])).filter(
+        (d) => d.kind === "emulator",
+      ).length + sims.filter((s) => s.state === "booted").length;
+    const max = this.o.maxRunning?.() ?? DEFAULT_MAX_EMULATORS;
+    if (running >= max)
+      throw new DeviceError(
+        `At most ${max} emulators run at once on this machine (Settings › Emulators): switch one off first`,
+      );
+    this.starting.add(id);
+    this.emit(id, this.stateEvent(id, "starting"));
+    try {
+      await ios.boot(udid, signal);
+      this.ours.add(udid);
+      this.lastUse.set(udid, this.now());
+      return udid;
+    } finally {
+      this.starting.delete(id);
+    }
+  }
+
   /** The shared screen, opened when needed. */
   private screenOf(id: string, signal?: AbortSignal): Promise<Live> {
     let p = this.live.get(id);
@@ -212,7 +312,7 @@ export class Devices implements DeviceAccess {
           first = r;
         });
         const entry: Live = { serial, screen: undefined as unknown as DeviceScreen, firstFrame };
-        entry.screen = await this.o.host.screen(
+        entry.screen = await this.hostOf(id).screen(
           serial,
           (frame) => {
             entry.frame = frame;
@@ -287,8 +387,51 @@ export class Devices implements DeviceAccess {
         "The person has control of this device right now: try again later, or ask them",
       );
     const live = await this.screenOf(id);
+    const before = live.frame?.data;
     await live.screen.input(e);
     this.touch(id);
+    if (isIosId(id) && (e.kind === "tap" || e.kind === "long" || e.kind === "swipe"))
+      this.checkTouch(id, live, before);
+  }
+
+  private frameHash(data: string | undefined): string {
+    return data === undefined ? "" : createHash("md5").update(data).digest("hex");
+  }
+
+  /** After a touch: the screen is compared with the one before; three unchanged in a row is a hint. */
+  private checkTouch(id: string, live: Live, before: string | undefined) {
+    const was = this.frameHash(before);
+    const t = setTimeout(() => {
+      const same = was !== "" && this.frameHash(live.frame?.data) === was;
+      const had = this.touchProblem(id);
+      this.stuck.set(id, same ? (this.stuck.get(id) ?? 0) + 1 : 0);
+      if (had !== this.touchProblem(id)) this.emit(id, this.stateEvent(id, "on"));
+    }, this.o.touchCheckMs ?? 900);
+    t.unref();
+  }
+
+  touchProblem(id: string): boolean {
+    return (this.stuck.get(id) ?? 0) >= 3;
+  }
+
+  /** The person's repair of an iOS simulator's touches; the screen is opened again afterwards. */
+  async repair(id: string): Promise<void> {
+    if (!isIosId(id) || !this.o.ios) throw new DeviceError("Only an iOS simulator is repaired");
+    const udid = id.slice(4);
+    await this.closeScreen(id);
+    this.emit(id, this.stateEvent(id, "starting"));
+    try {
+      await this.o.ios.repair(udid);
+    } finally {
+      this.stuck.delete(id);
+    }
+    if (this.listeners.get(id)?.size)
+      void this.screenOf(id).then(
+        () => this.emit(id, this.stateEvent(id, "on")),
+        (e: unknown) =>
+          this.emit(id, this.stateEvent(id, "offline", e instanceof Error ? e.message : String(e))),
+      );
+    else this.emit(id, this.stateEvent(id, "on"));
   }
 
   /** The screen now (JPEG), waiting a moment for the first frame. */
@@ -314,15 +457,23 @@ export class Devices implements DeviceAccess {
   }
 
   async shell(id: string, args: readonly string[], signal?: AbortSignal): Promise<string> {
-    return this.o.host.shell(await this.serial(id, signal), args);
+    return this.hostOf(id).shell(await this.serial(id, signal), args);
   }
 
   async install(id: string, apk: string, signal?: AbortSignal): Promise<string> {
-    return this.o.host.install(await this.serial(id, signal), apk);
+    return this.hostOf(id).install(await this.serial(id, signal), apk);
   }
 
   /** Switches an emulator off (the person's button, or Rasgeth's own after a while unused). */
   async stop(id: string): Promise<void> {
+    if (isIosId(id)) {
+      const udid = id.slice(4);
+      await this.closeScreen(id);
+      await this.hostOf(id).stop(udid);
+      this.ours.delete(udid);
+      this.emit(id, this.stateEvent(id, "off"));
+      return;
+    }
     const attached = await this.o.host.devices();
     const ids = deviceIds(attached);
     const d = attached.find((x) => ids.get(x.serial) === id || x.serial === id);
@@ -360,6 +511,13 @@ export class Devices implements DeviceAccess {
         t - (this.lastUse.get(id) ?? 0) > (this.o.screenIdleMs ?? 60_000)
       )
         await this.closeScreen(id);
+    for (const sim of await this.iosSims()) {
+      if (sim.state !== "booted" || !this.ours.has(sim.udid)) continue;
+      const id = `ios:${sim.udid}`;
+      const used = Math.max(this.lastUse.get(id) ?? 0, this.lastUse.get(sim.udid) ?? 0);
+      if (!this.listeners.get(id)?.size && t - used > (this.o.idleMs ?? 15 * 60_000))
+        await this.stop(id).catch(() => {});
+    }
     const attached = await this.o.host.devices().catch(() => [] as HostDevice[]);
     const ids = deviceIds(attached);
     for (const d of attached) {

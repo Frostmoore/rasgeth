@@ -226,6 +226,9 @@ class DeviceView {
   /// Why it cannot be shown, in the server's words.
   String? error;
 
+  /// `touches`: several taps changed nothing, so «Repair touches» is offered (3.12.2).
+  String? hint;
+
   bool get mine => control == 'person';
   bool get wide => frame != null && width > height;
 }
@@ -256,6 +259,7 @@ class DeviceViews extends ChangeNotifier {
         d.state = m['state'] as String? ?? d.state;
         d.control = m['control'] == 'person' ? 'person' : 'agents';
         d.error = m['error'] as String?;
+        d.hint = m['hint'] as String?;
       default:
         return;
     }

@@ -35,7 +35,13 @@ export class EmulatorSettingsError extends Error {}
 export interface EmulatorMachineOptions {
   settings: EmulatorSettingsStore;
   /** Tests: the facts instead of reading the machine. */
-  gather?: (o: { custom: string | null; maxRunning: number }) => Promise<EmulatorFacts>;
+  gather?: (o: {
+    custom: string | null;
+    maxRunning: number;
+    iosBridgeDir?: string;
+  }) => Promise<EmulatorFacts>;
+  /** Where the iOS bridge is installed (3.12.2): a folder of Rasgeth's own. */
+  iosBridgeDir?: string;
   /** Tests: whether a folder is an SDK. */
   isSdk?: (path: string) => Promise<boolean>;
   os?: EmuOs;
@@ -46,6 +52,11 @@ export class EmulatorMachine {
   private last: { at: number; value: Promise<EmulatorReport> } | undefined;
 
   constructor(private readonly o: EmulatorMachineOptions) {}
+
+  /** The folder of the iOS bridge (undefined in tests without one). */
+  get iosBridgeDir(): string | undefined {
+    return this.o.iosBridgeDir;
+  }
 
   settings(): EmulatorSettings {
     return this.o.settings.get();
@@ -58,6 +69,7 @@ export class EmulatorMachine {
     const value = (this.o.gather ?? gatherEmulatorFacts)({
       custom: s.sdkPath,
       maxRunning: s.maxRunning ?? DEFAULT_MAX_EMULATORS,
+      ...(this.o.iosBridgeDir && { iosBridgeDir: this.o.iosBridgeDir }),
     }).then(detectEmulators);
     // A failed look is not kept: the next one tries again.
     value.catch(() => {

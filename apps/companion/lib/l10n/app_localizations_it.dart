@@ -18905,7 +18905,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get syEmMiss_ios_bridge =>
-      'Un ponte per i tocchi sui simulatori iOS (arriva con la 3.12.2).';
+      'Il ponte per immagine e tocchi dei simulatori iOS (serve-sim): un passo guidato lo scarica, con il tuo sì.';
 
   @override
   String get syEmMiss_platform_tools =>
@@ -19217,7 +19217,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get syEiNote_xcode =>
-      'I simulatori iOS vogliono Xcode, dall\'App Store: Rasgeth non lo installa. iOS arriva con Rasgeth 3.12.2.';
+      'I simulatori iOS vogliono Xcode, dall\'App Store: Rasgeth non lo installa.';
 
   @override
   String get syEiReading => 'Leggo l\'elenco dei pacchetti di Google…';
@@ -19500,4 +19500,110 @@ class AppLocalizationsIt extends AppLocalizations {
   String cvFoundRating(String n) {
     return 'Voto $n su 5';
   }
+
+  @override
+  String get syEmIosBridge => 'Ponte per immagine e tocchi';
+
+  @override
+  String syEmIosBridgeAt(String folder, String version) {
+    return 'serve-sim $version, in $folder';
+  }
+
+  @override
+  String get syEmIosBridgeNone => 'Non installato';
+
+  @override
+  String get syEmIosNeedsMac =>
+      'I simulatori iOS esistono solo su un Mac con Xcode: collega un Mac come nodo (Impostazioni › Nodi).';
+
+  @override
+  String get syEmIosReady =>
+      'Pronto: i simulatori si aprono nel Canvas come gli emulatori Android.';
+
+  @override
+  String get syEmMiss_ios_arch =>
+      'I simulatori iOS vogliono un Mac con Apple silicon; questo è un Mac Intel. Usa un altro Mac come nodo.';
+
+  @override
+  String get syEmRunningSim => 'Simulatore iOS';
+
+  @override
+  String get syIbBlock_intel =>
+      'Il ponte vuole un Mac con Apple silicon: questo è un Mac Intel. Usa un altro Mac come nodo.';
+
+  @override
+  String get syIbBlock_no_npm =>
+      'Non c\'è npm accanto al Node con cui gira Rasgeth, quindi il ponte qui non si può installare.';
+
+  @override
+  String get syIbBlock_no_xcode =>
+      'Manca Xcode: Rasgeth non lo installa (App Store). Poi guarda di nuovo.';
+
+  @override
+  String get syIbBlock_not_mac =>
+      'I simulatori iOS esistono solo su un Mac: collega un Mac come nodo.';
+
+  @override
+  String get syIbBlock_nothing => 'Il ponte è già installato.';
+
+  @override
+  String get syIbBlock_offline =>
+      'Il registro npm non si è potuto leggere. Controlla la connessione a internet e riprova.';
+
+  @override
+  String get syIbDone => 'Il ponte iOS è installato.';
+
+  @override
+  String get syIbFolder => 'Cartella';
+
+  @override
+  String get syIbInstall => 'Installa il ponte iOS';
+
+  @override
+  String get syIbKeyboard =>
+      'Con Xcode 27 la tastiera di un simulatore vuole Device Hub davanti e il permesso Accessibilità per l\'app che esegue Rasgeth. Rasgeth non ripara mai la tastiera da solo.';
+
+  @override
+  String get syIbLead =>
+      'Rasgeth mostra lo schermo di un simulatore iOS e manda i tuoi tocchi tramite serve-sim (Apache-2.0, di Evan Bacon). Non fa parte di Rasgeth: con il tuo sì viene scaricato dal registro npm in una cartella di Rasgeth su questo Mac, controllato con la somma di controllo del registro, e nient\'altro sul Mac cambia. Togliendo quella cartella lo togli.';
+
+  @override
+  String get syIbLicence => 'Licenza';
+
+  @override
+  String get syIbSize => 'Dimensione una volta aperto';
+
+  @override
+  String get syIbStart => 'Scarica e installa';
+
+  @override
+  String get syIbStepDownload => 'Scarico serve-sim';
+
+  @override
+  String get syIbStepInstall => 'Lo installo nella cartella';
+
+  @override
+  String get syIbTitle => 'Ponte iOS';
+
+  @override
+  String get syIbVersion => 'Versione';
+
+  @override
+  String get syDvRepair => 'Ripara i tocchi';
+
+  @override
+  String syDvRepairQ(String name) {
+    return 'Riparare i tocchi di $name?';
+  }
+
+  @override
+  String get syDvRepairText =>
+      'Questo riavvia la schermata iniziale del simulatore e chiude le app aperte. Usalo solo quando i tocchi e i tasti non arrivano più al simulatore. Rasgeth non lo fa mai da solo.';
+
+  @override
+  String get syDvRepairYes => 'Ripara';
+
+  @override
+  String get syDvTouchHint =>
+      'Più tocchi di fila non hanno cambiato lo schermo: forse i tocchi non arrivano.';
 }

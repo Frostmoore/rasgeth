@@ -18850,7 +18850,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'The emulator is old: Rasgeth can propose the update, which you approve.';
 
   @override
-  String get syEmMiss_ios_bridge => 'A bridge for touches on iOS simulators (comes with 3.12.2).';
+  String get syEmMiss_ios_bridge =>
+      'The bridge for the picture and touches of iOS simulators (serve-sim): one guided step downloads it, with your yes.';
 
   @override
   String get syEmMiss_platform_tools => 'platform-tools (adb), to talk to emulators and phones.';
@@ -19159,7 +19160,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syEiNote_xcode =>
-      'iOS simulators need Xcode, from the App Store: Rasgeth does not install it. iOS comes with Rasgeth 3.12.2.';
+      'iOS simulators need Xcode, from the App Store: Rasgeth does not install it.';
 
   @override
   String get syEiReading => 'Reading Google\'s list of packages…';
@@ -19442,4 +19443,108 @@ class AppLocalizationsEn extends AppLocalizations {
   String cvFoundRating(String n) {
     return 'Rated $n out of 5';
   }
+
+  @override
+  String get syEmIosBridge => 'Bridge for picture and touches';
+
+  @override
+  String syEmIosBridgeAt(String folder, String version) {
+    return 'serve-sim $version, in $folder';
+  }
+
+  @override
+  String get syEmIosBridgeNone => 'Not installed';
+
+  @override
+  String get syEmIosNeedsMac =>
+      'iOS simulators exist only on a Mac with Xcode: pair a Mac as a node (Settings › Nodes).';
+
+  @override
+  String get syEmIosReady => 'Ready: the simulators open in the Canvas like the Android emulators.';
+
+  @override
+  String get syEmMiss_ios_arch =>
+      'iOS simulators need a Mac with Apple silicon; this is an Intel Mac. Use another Mac as a node.';
+
+  @override
+  String get syEmRunningSim => 'iOS simulator';
+
+  @override
+  String get syIbBlock_intel =>
+      'The bridge needs a Mac with Apple silicon: this is an Intel Mac. Use another Mac as a node.';
+
+  @override
+  String get syIbBlock_no_npm =>
+      'There is no npm next to the Node Rasgeth runs with, so the bridge cannot be installed here.';
+
+  @override
+  String get syIbBlock_no_xcode =>
+      'Xcode is missing: Rasgeth does not install it (App Store). Then look again.';
+
+  @override
+  String get syIbBlock_not_mac => 'iOS simulators exist only on a Mac: pair a Mac as a node.';
+
+  @override
+  String get syIbBlock_nothing => 'The bridge is already installed.';
+
+  @override
+  String get syIbBlock_offline =>
+      'The npm registry could not be read. Check the internet connection and try again.';
+
+  @override
+  String get syIbDone => 'The iOS bridge is installed.';
+
+  @override
+  String get syIbFolder => 'Folder';
+
+  @override
+  String get syIbInstall => 'Install the iOS bridge';
+
+  @override
+  String get syIbKeyboard =>
+      'With Xcode 27 the keyboard of a simulator needs Device Hub in front and the Accessibility permission for the app that runs Rasgeth. Rasgeth never repairs the keyboard by itself.';
+
+  @override
+  String get syIbLead =>
+      'Rasgeth shows an iOS simulator\'s screen and sends your touches through serve-sim (Apache-2.0, by Evan Bacon). It is not part of Rasgeth: with your yes it is downloaded from the npm registry into one folder of Rasgeth\'s on this Mac, checked against the registry\'s checksum, and nothing else on the Mac changes. Removing that folder removes it.';
+
+  @override
+  String get syIbLicence => 'Licence';
+
+  @override
+  String get syIbSize => 'Size once unpacked';
+
+  @override
+  String get syIbStart => 'Download and install';
+
+  @override
+  String get syIbStepDownload => 'Downloading serve-sim';
+
+  @override
+  String get syIbStepInstall => 'Installing it in the folder';
+
+  @override
+  String get syIbTitle => 'iOS bridge';
+
+  @override
+  String get syIbVersion => 'Version';
+
+  @override
+  String get syDvRepair => 'Repair touches';
+
+  @override
+  String syDvRepairQ(String name) {
+    return 'Repair the touches of $name?';
+  }
+
+  @override
+  String get syDvRepairText =>
+      'This restarts the simulator\'s home screen and closes the apps open on it. Use it only when taps and keys no longer reach the simulator. Rasgeth never does it by itself.';
+
+  @override
+  String get syDvRepairYes => 'Repair';
+
+  @override
+  String get syDvTouchHint =>
+      'Several taps in a row changed nothing on the screen: touches may not be arriving.';
 }

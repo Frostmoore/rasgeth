@@ -760,6 +760,8 @@ export interface DeviceScreenState {
   state: "off" | "starting" | "on" | "unauthorized" | "offline";
   control: "agents" | "person";
   error?: string | undefined;
+  /** Several taps changed nothing: offer «Repair touches» (3.12.2). */
+  hint?: "touches" | undefined;
 }
 export const deviceScreens = signal<Record<string, DeviceScreenState>>({});
 /** Where each open device's H.264 goes (3.11 phase 7): its view's decoder, by device id. */
@@ -802,7 +804,7 @@ export function applyMessage(m: ServerMessage): void {
       deviceScreen(m.id, { frame: { data: m.data, width: m.width, height: m.height } });
       return;
     case "device.state":
-      deviceScreen(m.id, { state: m.state, control: m.control, error: m.error });
+      deviceScreen(m.id, { state: m.state, control: m.control, error: m.error, hint: m.hint });
       return;
     case "device.video":
       deviceVideoSinks.get(m.id)?.(m);

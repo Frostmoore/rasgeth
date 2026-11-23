@@ -32,6 +32,9 @@ export interface HostDevice {
   /** For an emulator: its AVD. */
   avd?: string;
   link?: "usb" | "wifi";
+  /** 3.12.2: an iOS simulator (`serial` is its udid, `model` its name). */
+  platform?: "ios";
+  runtime?: string;
 }
 
 /** A device's screen while someone looks at it or works on it. */

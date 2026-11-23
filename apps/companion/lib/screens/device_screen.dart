@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import '../api/live_model.dart';
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';
+import '../settings/system/repair_touches.dart';
 import '../settings/system/system_kit.dart' show sw;
 import '../theme/colors.dart';
 import '../ui/icons.dart';
@@ -79,7 +80,7 @@ Future<void> openDeviceScreen(BuildContext context, String id, String title) =>
 class DeviceScreen extends StatefulWidget {
   const DeviceScreen({super.key, required this.id, required this.title});
 
-  /// `avd:<name>` or adb's serial.
+  /// `avd:<name>`, `ios:<udid>` or adb's serial.
   final String id;
   final String title;
 
@@ -205,6 +206,27 @@ class _DeviceScreenState extends State<DeviceScreen> {
                   ),
                 ),
               ),
+              if (widget.id.startsWith('ios:'))
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                  child: Wrap(
+                    spacing: 10,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      if (d.hint == 'touches')
+                        Text(
+                          l.syDvTouchHint,
+                          key: const Key('dv-touch-hint'),
+                          style: TextStyle(color: c.err, fontSize: 12.5),
+                        ),
+                      OutlinedButton(
+                        key: const Key('dv-repair'),
+                        onPressed: () => unawaited(repairTouches(context, widget.id, widget.title)),
+                        child: Text(l.syDvRepair),
+                      ),
+                    ],
+                  ),
+                ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
@@ -350,7 +372,8 @@ class _DeviceScreenState extends State<DeviceScreen> {
     );
   }
 
-  /// The phone's own buttons and turning it, drawn under the frame.
+  /// The phone's own buttons and turning it, drawn under the frame. An iPhone has no back and no
+  /// recents button (3.12.2): only home and turning.
   Widget _keys(AppLocalizations l, RgColors c, bool mine) {
     Widget key(String k, RgIcons icon, String tip, Map<String, Object?> event, double size) =>
         IconButton(
@@ -364,15 +387,19 @@ class _DeviceScreenState extends State<DeviceScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          key('back', RgIcons.chevronLeft, l.syDsBack, {'kind': 'button', 'button': 'back'}, 18),
-          const SizedBox(width: 12),
+          if (!widget.id.startsWith('ios:')) ...[
+            key('back', RgIcons.chevronLeft, l.syDsBack, {'kind': 'button', 'button': 'back'}, 18),
+            const SizedBox(width: 12),
+          ],
           key('home', RgIcons.home, l.syDsHome, {'kind': 'button', 'button': 'home'}, 18),
           const SizedBox(width: 12),
-          key('recents', RgIcons.square, l.syDsRecents, {
-            'kind': 'button',
-            'button': 'recents',
-          }, 15),
-          const SizedBox(width: 12),
+          if (!widget.id.startsWith('ios:')) ...[
+            key('recents', RgIcons.square, l.syDsRecents, {
+              'kind': 'button',
+              'button': 'recents',
+            }, 15),
+            const SizedBox(width: 12),
+          ],
           key('rotate', RgIcons.rotate, l.syDsRotate, {'kind': 'rotate'}, 18),
         ],
       ),

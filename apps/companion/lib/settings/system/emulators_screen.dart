@@ -17,6 +17,7 @@ import '../../ui/icons.dart';
 import '../../ui/settings_kit.dart';
 import '../api/system_api.dart';
 import 'emulator_install.dart';
+import 'repair_touches.dart';
 import 'system_kit.dart';
 
 Future<void> openEmulatorsSettings(BuildContext context) =>
@@ -283,9 +284,13 @@ class _DeviceRow extends StatelessWidget {
     final c = RgColors.of(context);
     final help = [
       ?d.machine,
-      d.kind == 'phone' ? (d.link == 'wifi' ? l.syEmPhoneWifi : l.syEmPhoneUsb) : l.syEmRunningEmu,
+      d.kind == 'phone'
+          ? (d.link == 'wifi' ? l.syEmPhoneWifi : l.syEmPhoneUsb)
+          : d.platform == 'ios'
+          ? l.syEmRunningSim
+          : l.syEmRunningEmu,
       sw(l, 'dsState_${d.state}'),
-      ?d.serial,
+      if (d.platform == 'ios') ?d.runtime else ?d.serial,
     ].where((x) => x.isNotEmpty).join(' · ');
     return Padding(
       key: Key('sy-em-dev-${d.id}'),
@@ -322,6 +327,15 @@ class _DeviceRow extends StatelessWidget {
                   ],
                 ),
                 Text(help, style: TextStyle(color: c.dim, fontSize: 12.5)),
+                if (d.platform == 'ios' && d.state == 'on')
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: OutlinedButton(
+                      key: Key('sy-em-repair-${d.id}'),
+                      onPressed: () => unawaited(repairTouches(context, d.id, d.name)),
+                      child: Text(l.syDvRepair),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -410,6 +424,16 @@ class EmulatorReportView extends StatelessWidget {
             : sw(l, _k('emAccel_', '${accel['reason'] ?? 'unknown'}')),
       ),
       if (r.ios != null) (l.syEmXcode, '${r.ios!['xcode'] ?? l.syEmNone}'),
+      if (r.ios != null)
+        (
+          l.syEmIosBridge,
+          r.ios!['bridge'] != null
+              ? sw(l, 'emIosBridgeAt', {
+                  'version': '${r.ios!['bridgeVersion'] ?? ''}',
+                  'folder': '${r.ios!['bridgeDir'] ?? ''}',
+                })
+              : l.syEmIosBridgeNone,
+        ),
     ];
     final sims = [
       for (final x in r.ios?['simulators'] as List? ?? const [])
@@ -447,7 +471,9 @@ class EmulatorReportView extends StatelessWidget {
           const SizedBox(height: 8),
           Text(l.syEmSimulators, style: head),
           SysText(sims.take(12).join(' · '), dim: true),
+          if (r.ios?['ready'] == true) SysText(l.syEmIosReady, dim: true),
         ],
+        if (r.ios == null && !r.container) SysText(l.syEmIosNeedsMac, dim: true),
         if (r.missing.isNotEmpty) ...[
           const SizedBox(height: 8),
           Text(l.syEmMissing, style: head),

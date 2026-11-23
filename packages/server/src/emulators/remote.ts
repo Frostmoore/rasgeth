@@ -4,8 +4,10 @@
 // someone here looks; gestures, the agents' commands and an APK (in pieces) go back the same way.
 // Who drives a node's device from here (the agents or the person) is kept here; the node's own
 // person keeps the upper hand there.
+import { execFile } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
+import { basename, dirname } from "node:path";
 import type { DeviceInput, EmuDeviceView } from "@redgiant/protocol";
 import { DEVICE_PIECE } from "../nodes/device.js";
 import type { Nodes } from "../nodes/service.js";
@@ -23,6 +25,21 @@ interface Live {
   frame?: DeviceFrame;
   seq: number;
   state?: Extract<DeviceEvent, { type: "state" }>;
+}
+
+/** A folder as a tar archive (`tar` without a shell, the folder's own name first). */
+export function tarFolder(dir: string): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    execFile(
+      "tar",
+      ["-cf", "-", "-C", dirname(dir), basename(dir)],
+      { encoding: "buffer", maxBuffer: 512 * 1024 * 1024, timeout: 120_000 },
+      (e, out, err) =>
+        e
+          ? reject(new DeviceError(`tar: ${String(err || e.message).slice(0, 300)}`))
+          : resolve(out),
+    );
+  });
 }
 
 /** One node's devices, through its `device` operation. */
@@ -135,12 +152,20 @@ export class RemoteDevices implements DeviceAccess {
   }
 
   async install(id: string, apk: string, signal?: AbortSignal): Promise<string> {
-    const bytes = await readFile(apk);
+    // An iOS app is a folder: it goes as a tar, which the node unpacks and installs.
+    const folder = (await stat(apk).catch(() => null))?.isDirectory() ?? false;
+    const bytes = folder ? await tarFolder(apk) : await readFile(apk);
     const upload = randomUUID();
     for (let offset = 0; offset === 0 || offset < bytes.length; offset += DEVICE_PIECE) {
       const piece = bytes.subarray(offset, offset + DEVICE_PIECE);
       await this.ask(
-        { action: "put", upload, offset, data: piece.toString("base64") },
+        {
+          action: "put",
+          upload,
+          offset,
+          data: piece.toString("base64"),
+          ...(folder && { kind: "app" }),
+        },
         { timeoutMs: 120_000, ...(signal && { signal }) },
       );
       if (bytes.length === 0) break;
@@ -160,6 +185,14 @@ export class RemoteDevices implements DeviceAccess {
 
   async stop(id: string): Promise<void> {
     await this.ask({ action: "stop", id }, { timeoutMs: 60_000 });
+  }
+
+  touchProblem(id: string): boolean {
+    return this.live.get(id)?.state?.hint === "touches";
+  }
+
+  async repair(id: string): Promise<void> {
+    await this.ask({ action: "repair", id }, { timeoutMs: 180_000 });
   }
 
   exclusive<T>(id: string, f: () => Promise<T>): Promise<T> {
@@ -289,6 +322,14 @@ export class DeviceHub {
       stop: async (id) => {
         const r = await route(id);
         return r.d.stop(r.id);
+      },
+      touchProblem: (id) => {
+        const r = routeSync(id);
+        return r.d.touchProblem(r.id);
+      },
+      repair: async (id) => {
+        const r = await route(id);
+        return r.d.repair(r.id);
       },
       exclusive: (id, f) => local.exclusive(id, f),
     };
