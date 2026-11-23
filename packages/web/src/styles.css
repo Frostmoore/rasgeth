@@ -26190,3 +26190,22 @@ fieldset.smp-decide {
 .smp-doc .canvas-line {
   margin: 6px 0 12px;
 }
+
+/* Connections of an agent and the ready-made sets (3.12.3) */
+.conn-editor .conn-kind {
+  margin: 16px 0 4px;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dim, var(--muted, inherit));
+}
+.set-picker {
+  margin-bottom: 8px;
+}
+.set-details {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+.set-details li {
+  margin: 2px 0;
+}

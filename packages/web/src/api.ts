@@ -1,4 +1,6 @@
 import {
+  type AgentConnection,
+  type AgentSet,
   type ArtifactGrant,
   type Automation,
   type AutomationRun,
@@ -7,6 +9,7 @@ import {
   type BackupSchedule,
   type BackupSettings,
   type BlockDisk,
+  type CalendarInfo,
   type ClientMessage,
   type CloudEmbeddingModel,
   type DeviceView,
@@ -440,6 +443,14 @@ export interface PromptView {
   defaultText: string;
 }
 
+/** What an agent may be connected to (3.12.3), by kind. */
+export interface ConnectionOptions {
+  mailboxes: { id: string; name: string; address: string }[];
+  chats: string[];
+  calendars: { id: string; name: string; writable: boolean }[];
+  mcp: string[];
+}
+
 export interface Agent {
   id: string;
   kind: "god" | "demigod" | "orchestrator" | "agent" | "subagent" | "inspector" | "assistant";
@@ -450,8 +461,8 @@ export interface Agent {
   systemPrompt?: string;
   model?: { provider: string; model: string; effort?: string };
   mode?: string;
-  /** For assistants: the services they may use. */
-  connections?: string[];
+  /** What it is connected to (3.12.3), any number: mailboxes, chats, calendars, MCP servers. */
+  connections?: AgentConnection[];
   /** The subproject it works in (G24.13). */
   subprojectId?: string;
   /** The skills it uses; all when absent (G24.14c). */
@@ -1756,6 +1767,24 @@ export class Api {
     password: string;
   }) => this.call("PUT", "/api/settings/email", a);
   removeEmailSettings = () => this.call("DELETE", "/api/settings/email");
+  /** The ready-made agent sets (3.12.3), as the server has them. */
+  agentSets = () => this.call<{ sets: AgentSet[] }>("GET", "/api/agent-sets");
+  /** What an agent may be connected to (3.12.3). */
+  connectionOptions = () => this.call<ConnectionOptions>("GET", "/api/connections/options");
+  /** Calendars (3.12.3); secrets never come back. */
+  calendars = () => this.call<{ calendars: CalendarInfo[] }>("GET", "/api/settings/calendars");
+  addCalendar = (b: {
+    name: string;
+    kind: "caldav" | "ics";
+    url: string;
+    user?: string;
+    password?: string;
+    agents?: boolean;
+  }) => this.call<CalendarInfo>("POST", "/api/settings/calendars", b);
+  updateCalendar = (id: string, b: { name?: string; agents?: boolean }) =>
+    this.call<CalendarInfo>("PUT", `/api/settings/calendars/${encodeURIComponent(id)}`, b);
+  removeCalendar = (id: string) =>
+    this.call("DELETE", `/api/settings/calendars/${encodeURIComponent(id)}`);
   /** Many mailboxes, by category (G33.3); passwords never come back. */
   mailboxes = () =>
     this.call<{ boxes: MailboxInfo[]; categories: string[] }>("GET", "/api/settings/mailboxes");
