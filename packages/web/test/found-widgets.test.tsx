@@ -208,7 +208,7 @@ describe("search widgets (3.12.2)", () => {
 
   it("gives every widget of a conversation the same fixed largest width", () => {
     const css = readFileSync(join(import.meta.dirname, "..", "src", "styles.css"), "utf8");
-    expect(css).toMatch(/:root\s*\{\s*--chat-widget-max:\s*640px;/);
+    expect(css).toMatch(/--chat-widget-max:\s*640px;/);
     const rule = (sel: string) =>
       css.match(new RegExp(`\\n${sel.replace(/[.]/g, "\\.")}\\s*\\{[^}]*\\}`))?.[0] ?? "";
     for (const sel of [".widget-card", ".found", ".products"])

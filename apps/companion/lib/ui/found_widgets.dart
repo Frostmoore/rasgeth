@@ -15,6 +15,7 @@ import '../api/products.dart' show priceText;
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
+import 'dialogs.dart' show showRgWindow;
 import 'icons.dart';
 
 /// The fixed largest width of a widget in a conversation on large screens (the page's
@@ -187,7 +188,7 @@ class _Gallery extends StatelessWidget {
 
   void _all(BuildContext context, [int? at]) {
     unawaited(
-      showDialog<void>(
+      showRgWindow<void>(
         context: context,
         builder: (_) => _GalleryDialog(w: w, open: open, at: at),
       ),

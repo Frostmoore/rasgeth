@@ -1,11 +1,9 @@
 /* RedGiant — laid out like Officina: light and dark themes (or the system's), red accent. */
-/* Every widget in a conversation (search results, interactive widgets, generated pictures) has the
-   same fixed largest width on large screens (not a share of the window); narrower, it takes the
-   whole line. */
 :root {
+  /* Every widget in a conversation (search results, interactive widgets, generated pictures) has the
+     same fixed largest width on large screens (not a share of the window); narrower, it takes the
+     whole line. */
   --chat-widget-max: 640px;
-}
-:root {
   --bg: #f6f7f9;
   --panel: #ffffff;
   --panel-2: #eef0f4;

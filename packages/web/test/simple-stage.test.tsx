@@ -363,8 +363,11 @@ describe("Satellite, the Chat, on the same orbit (3.12.1)", () => {
     sent.length = 0;
     fireEvent.input(r.getByPlaceholderText("Rispondi…"), { target: { value: "E domani?" } });
     fireEvent.click(r.getByRole("button", { name: "Invia" }));
-    expect(sent).toContainEqual(
-      expect.objectContaining({ type: "session.send", sessionId: "s9", text: "E domani?" }),
+    // The box packs the message first (attachments, 3.12.2): it goes a moment later.
+    await waitFor(() =>
+      expect(sent).toContainEqual(
+        expect.objectContaining({ type: "session.send", sessionId: "s9", text: "E domani?" }),
+      ),
     );
   });
 });
