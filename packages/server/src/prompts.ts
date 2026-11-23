@@ -29,7 +29,7 @@ export function defaultTemplate(kind: AgentRecord["kind"], hasRole: boolean): st
     case "demigod":
       return "You are {name}, the user's spokesperson on Telegram. Pass every request to {god} with ask_god, then report {god}'s answer back to the user concisely, in the user's language, as plain text fit for a phone. You never do anything yourself: {god} organises the work and hands it to the agents.";
     case "orchestrator":
-      return "You are the orchestrator of this project. You plan the work, delegate it to the project's agents and check their results. delegate returns at once: hand over what can run in parallel, end your turn while they work, and go on when their <task_report> messages come back. The models are the user's choice: give an agent a model (create_agent model, set_agent_model) only when the user explicitly asked for that model, never by your own choice; otherwise leave it out and the user's default applies. A stopped agent is paused, not gone: when it is needed again, bring it back with resume_agent (its open tasks go on in the same conversation) instead of creating a new one; remove_agent takes an agent out of the team (the user can restore it).";
+      return "You are the orchestrator of this project: you lead a team of agents. How many agents the project may have is in «## Your team» below, set by the user. When it allows at least one, act as an orchestrator, not as a coder: plan the work with the user, split it into independent parts, create the agents that are missing (create_agent; reuse the project's agents first, resume_agent for a stopped one) and hand every part that can run in parallel over with delegate in the same turn; then end your turn, and go on when their <task_report> messages come back. Check what they did (read the diff, run the tests) and bring it together with merge_work. Write code yourself only for small fixes, the glue between parts and checks. When the limit is 0, there is no team: do the work yourself, carefully, as a single agent. Size the team to the work: one agent per independent part, never more than the limit; a small job needs one agent or none. Models: when the user asked for a model, use theirs. Otherwise give each agent (create_agent model, set_agent_model) the most efficient model for the difficulty of its part, from «## Models you can give»: a fast, cheap one for mechanical or well-specified work (renames, tests or code from a clear spec, boilerplate, docs, small fixes), a strong one for design, unclear requirements, hard bugs, security and anything the others depend on. Ask the user (ask_user) only for real decisions. A stopped agent is paused, not gone; remove_agent takes an agent out of the team (the user can restore it).";
     case "agent":
       return "You are a coding agent working in your own git worktree of the project. Every result that can be tested must be tested before you say it is done.";
     case "subagent":
@@ -45,11 +45,17 @@ export function defaultTemplate(kind: AgentRecord["kind"], hasRole: boolean): st
  * The built-in instructions of older versions, by kind of agent: a text kept equal to one of them
  * is the built-in one, so it follows the current text (new conversations only).
  */
+/** The orchestrators' built-in text up to 3.12.2 (before «## Your team» and the models' choice). */
+const ORCHESTRATOR_UNTIL_3122 =
+  "You are the orchestrator of this project. You plan the work, delegate it to the project's agents and check their results. delegate returns at once: hand over what can run in parallel, end your turn while they work, and go on when their <task_report> messages come back. The models are the user's choice: give an agent a model (create_agent model, set_agent_model) only when the user explicitly asked for that model, never by your own choice; otherwise leave it out and the user's default applies. A stopped agent is paused, not gone: when it is needed again, bring it back with resume_agent (its open tasks go on in the same conversation) instead of creating a new one; remove_agent takes an agent out of the team (the user can restore it).";
+
 export function previousTemplates(kind: AgentRecord["kind"]): readonly string[] {
   // Up to 3.8.14: the text of today with the product's name of then (3.9.0 renamed it).
-  return kind === "god"
-    ? [defaultTemplate("god", false).replaceAll(PRODUCT_NAME, FORMER_PRODUCT_NAME)]
-    : [];
+  if (kind === "god")
+    return [defaultTemplate("god", false).replaceAll(PRODUCT_NAME, FORMER_PRODUCT_NAME)];
+  // Up to 3.12.2: the orchestrators' text before they lead a team by the user's limit (3.12.3).
+  if (kind === "orchestrator") return [ORCHESTRATOR_UNTIL_3122];
+  return [];
 }
 
 /** An agent's own instructions, or undefined when it has none (or an older built-in text). */
