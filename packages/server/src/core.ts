@@ -7380,10 +7380,17 @@ export class RedGiantCore implements OrchestrationHost {
 
   /** The list's own data: a title, pinned, archived (the session's log is never changed). */
   /** The plans' limits of the flat subscriptions in use (G21); a provider that fails shows none. */
-  async limits(): Promise<{ provider: string; windows: SubscriptionWindow[] }[]> {
-    const out: { provider: string; windows: SubscriptionWindow[] }[] = [];
-    for (const p of this.o.providers.list())
-      if (hasLimits(p)) out.push({ provider: p.id, windows: await p.limits().catch(() => []) });
+  async limits(): Promise<
+    { provider: string; windows: SubscriptionWindow[]; readAt?: string }[]
+  > {
+    const out: { provider: string; windows: SubscriptionWindow[]; readAt?: string }[] = [];
+    for (const p of this.o.providers.list()) {
+      if (!hasLimits(p)) continue;
+      const windows = await p.limits().catch(() => []);
+      // When the plan was last read (3.12.3), for providers that know it.
+      const readAt = (p as { readAt?: () => string | undefined }).readAt?.();
+      out.push({ provider: p.id, windows, ...(readAt && { readAt }) });
+    }
     return out;
   }
 

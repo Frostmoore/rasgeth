@@ -705,9 +705,13 @@ export function claudeWindows(r: unknown): SubscriptionWindow[] {
   return out;
 }
 
-/** A reading older than this is read again when someone looks (3.9.8). */
-const STALE_MS = 10 * 60_000;
-/** After a reading that gave nothing, the next try waits this long. */
+/**
+ * A reading older than this is read again when someone looks (3.9.8; every 2 minutes since
+ * 3.12.3, so the header follows the plan: the usage request makes no model call). The pages and
+ * the app look this often while open; one reading is shared by all of them.
+ */
+export const STALE_MS = 2 * 60_000;
+/** After a reading that gave nothing, the next try waits this long (also between failures). */
 const RETRY_MS = 2 * 60_000;
 /** How long the first look waits for a reading on its own. */
 const FIRST_WAIT_MS = 2500;
@@ -812,6 +816,11 @@ export class ClaudeSubscriptionProvider implements Provider {
 
   private windows: SubscriptionWindow[] = [];
 
+  /** When the windows were last read (ISO), for the header's tooltip; undefined: never. */
+  readAt(): string | undefined {
+    return this.at > 0 ? new Date(this.at).toISOString() : undefined;
+  }
+
   /**
    * The plan's limits: what the turns report (their rate-limit events and the usage reading), and,
    * with `readPlan`, a reading on its own when none is known or the last is older than
@@ -826,7 +835,7 @@ export class ClaudeSubscriptionProvider implements Provider {
       this.o.readPlan &&
       !this.reading &&
       now - this.at > STALE_MS &&
-      now - this.tried > (this.windows.length ? STALE_MS : RETRY_MS)
+      now - this.tried > RETRY_MS
     ) {
       this.tried = now;
       this.reading = this.engine
