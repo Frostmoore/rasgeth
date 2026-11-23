@@ -26152,3 +26152,43 @@ fieldset.smp-decide {
   position: absolute;
   inset: 0;
 }
+
+/* The Canvas over the simple interface's screens (3.12.2). */
+.smp-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+.smp-canvas-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.smp-canvas-bar h2 {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 16px;
+}
+.smp-canvas-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+/* In a simple conversation a widget and its line keep the same width and room as in the full one. */
+.smp-doc .widget-card,
+.smp-doc .found,
+.smp-doc .products {
+  margin: 10px 0 14px;
+}
+.smp-doc .canvas-line {
+  margin: 6px 0 12px;
+}

@@ -21,6 +21,7 @@ import { lang, setLang, t } from "../i18n.js";
 import {
   IconArchive,
   IconArrowDown,
+  IconCanvas,
   IconChevronLeft,
   IconClose,
   IconFile,
@@ -40,6 +41,7 @@ import {
 import { renderAnswer, renderStreamingMarkdown } from "../markdown.js";
 import { agentMascotState } from "../mascot-state.js";
 import {
+  activeSide,
   agents,
   archivedCount,
   archivedTopics,
@@ -48,6 +50,7 @@ import {
   askGod,
   attempt,
   buildItems,
+  type CanvasTarget,
   type ChatItem,
   chatAgentId,
   conversationCost,
@@ -63,6 +66,7 @@ import {
   moveExchange,
   nudgeInvite,
   nudgeSettings,
+  openCanvas,
   openChat,
   openNudge,
   openTopic,
@@ -78,6 +82,7 @@ import {
   sessionRows,
   sessionView,
   setUiMode,
+  sideViews,
   signOut,
   simpleAssistants,
   simpleLastSent,
@@ -96,12 +101,14 @@ import {
 import { setTheme, theme } from "../theme.js";
 import { setVoiceSettings, voiceSettings } from "../voice/settings.js";
 import { AccentPicker } from "./AccentPicker.js";
+import { WidgetCard } from "./ArtifactFrame.js";
 import { useArmed } from "./armed.js";
 import { FileCard } from "./Chat.js";
 import { type Attachment, packMessage, takeFiles } from "./Composer.js";
 import { askText } from "./dialogs.js";
 import { FoundCard } from "./FoundWidgets.js";
 import { useFollow } from "./follow-hook.js";
+import { lazy } from "./lazy.js";
 import { Mascot } from "./Mascot.js";
 import { NudgeControls } from "./NudgeControls.js";
 import { ProductCards } from "./ProductCards.js";
@@ -111,8 +118,47 @@ import { SimpleStage } from "./SimpleStage.js";
 import { SimpleStrip } from "./SimpleStrip.js";
 import { Telegram } from "./Telegram.js";
 import { Modal } from "./ui.js";
+import { FileIcon } from "./viewers/FileIcon.js";
 
 /** The simple interface, all of it. */
+const Canvas = lazy<{ title: string; target: CanvasTarget }>(() =>
+  import("./Canvas.js").then((m) => m.Canvas),
+);
+
+/**
+ * The Canvas in the simple interface (3.12.2): there is no side area here, so what the agent or
+ * a press on a widget or an «Opened X in the canvas» line opens shows over the whole screen, with a
+ * way back to the conversation.
+ */
+function CanvasSheet() {
+  const [shown, setShown] = useState<string | null>(null);
+  // Something opened in the canvas (anywhere): its view is the one to show.
+  useEffect(() => {
+    const id = activeSide.value;
+    if (id && sideViews.value.some((v) => v.id === id && v.type === "canvas")) setShown(id);
+  }, [activeSide.value]);
+  const view = sideViews.value.find((v) => v.id === shown && v.type === "canvas");
+  if (!view || view.type !== "canvas") return null;
+  return (
+    <div class="smp-canvas" role="dialog" aria-label={view.title}>
+      <header class="smp-canvas-bar">
+        <button
+          type="button"
+          class="smp-icon smp-back"
+          aria-label={t("smpBack")}
+          onClick={() => setShown(null)}
+        >
+          <IconChevronLeft size={22} />
+        </button>
+        <h2>{view.title}</h2>
+      </header>
+      <div class="smp-canvas-body">
+        <Canvas title={view.title} target={view.target} />
+      </div>
+    </div>
+  );
+}
+
 export function SimpleApp() {
   useEffect(() => {
     void refreshTopics().catch(() => {});
@@ -120,6 +166,7 @@ export function SimpleApp() {
   const s = simpleScreen.value;
   return (
     <div class="smp">
+      <CanvasSheet />
       {lastError.value && (
         <div class="smp-error" role="alert">
           <span>{lastError.value}</span>
@@ -864,6 +911,39 @@ function DocItem({
       return <ProductCards title={item.title} products={item.products} />;
     case "found":
       return <FoundCard widget={item.widget} sessionId={topicId} />;
+    // An interactive widget and the «Opened X in the canvas» line, as the full interface shows them
+    // (3.12.2: they vanished here); the Canvas opens over the screen (CanvasSheet).
+    case "widget":
+      return (
+        <WidgetCard
+          sessionId={item.sessionId}
+          seq={item.seq}
+          index={item.index}
+          title={item.title}
+        />
+      );
+    case "canvas": {
+      const [before, after] = t("canvasOpened", { name: "\u0000" }).split("\u0000");
+      return (
+        <button
+          type="button"
+          class="canvas-line"
+          title={t("canvasShown")}
+          onClick={() => openCanvas(item.title, item.target)}
+        >
+          {item.target.kind === "file" ? (
+            <FileIcon name={item.target.path} size={15} />
+          ) : (
+            <IconCanvas size={15} />
+          )}
+          <span>
+            {before}
+            <strong>{item.title}</strong>
+            {after}
+          </span>
+        </button>
+      );
+    }
     case "file":
       return <FileCard item={item} />;
     default:

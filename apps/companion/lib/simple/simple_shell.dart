@@ -31,6 +31,10 @@ import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/markdown.dart';
 import '../ui/model_sheet.dart' show ChoiceRow;
+import '../canvas/canvas_shell.dart' show showInCanvas;
+import '../screens/canvas_screen.dart' show openCanvas;
+import '../ui/artifact_frame_view.dart' show WidgetCard;
+import '../ui/chat/chat_parts.dart' show CanvasLine;
 import '../ui/found_widgets.dart';
 import '../ui/product_cards.dart';
 import '../ui/rg_menu.dart';
@@ -1598,6 +1602,40 @@ class _DocItem extends StatelessWidget {
         return ProductCarousel(products: products, title: title);
       case FoundItem(:final widget):
         return FoundCard(widget: widget, onChoose: conversationSender(context, topicId));
+      // An interactive widget and the «opened in the canvas» line, as the full interface shows
+      // them (3.12.2: they vanished here); the Canvas opens on a screen of its own.
+      case WidgetItem():
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: WidgetCard(
+            key: Key('widget-${item.key}'),
+            item: item as WidgetItem,
+            openCanvas: (scope, path, title) =>
+                openCanvas(context, scope: scope, path: path, title: title, sessionId: topicId),
+          ),
+        );
+      case CanvasItem(:final title, :final scope, :final path, :final isFile):
+        final open = (isFile && scope != null && path != null) || (item as CanvasItem).isPort;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: ChatWidgetBox(
+            child: CanvasLine(
+              key: Key('canvas-${item.key}'),
+              title: title.isEmpty ? (path ?? '') : title,
+              icon: isFile ? RgIcons.file : RgIcons.canvas,
+              onTap: open
+                  ? () => unawaited(
+                      showInCanvas(
+                        context,
+                        title: title,
+                        target: (item as CanvasItem).target,
+                        sessionId: topicId,
+                      ),
+                    )
+                  : null,
+            ),
+          ),
+        );
       case FileItem(:final name):
         return Padding(
           padding: const EdgeInsets.only(bottom: 10),

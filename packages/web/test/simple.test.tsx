@@ -417,6 +417,52 @@ describe("a topic", () => {
     expect(r.getByPlaceholderText("Rispondi…")).toBeTruthy();
   });
 
+  it("shows an interactive widget and the «opened in the canvas» line, as the full interface (3.12.2)", async () => {
+    const metrics = {
+      inputTokens: 1,
+      outputTokens: 1,
+      cacheReadTokens: 0,
+      cacheWriteTokens: 0,
+      contextUsed: 1,
+      contextWindow: 100,
+      ms: 1,
+    };
+    state.sessionView("t_trip").value = {
+      ...state.sessionView("t_trip").value,
+      events: [
+        ...tripEvents(),
+        ev(7, "message.assistant", {
+          parts: [
+            {
+              type: "text",
+              text: "Ecco il simulatore.\n\n```widget Costo mensile\n<p>ciao</p>\n```\n",
+            },
+          ],
+          metrics,
+          costUsd: 0,
+          model: "m",
+          stopReason: "end_turn",
+        }),
+        ev(8, "canvas.show", {
+          title: "piano.md",
+          target: { kind: "file", scope: "platform", path: "piano.md" },
+        }),
+      ],
+    };
+    state.openTopic("t_trip", "Vacanza in Sardegna");
+    const r = render(<SimpleApp />);
+    expect(r.container.querySelector(".smp-doc .widget-card")).not.toBeNull();
+    expect(r.container.querySelector(".widget-name")?.textContent).toContain("Costo mensile");
+    const line = r.container.querySelector(".smp-doc .canvas-line") as HTMLElement;
+    expect(line.textContent).toContain("piano.md");
+    // A press opens the Canvas over the screen, with a way back.
+    fireEvent.click(line);
+    await waitFor(() => expect(r.container.querySelector(".smp-canvas")).not.toBeNull());
+    expect(r.container.querySelector(".smp-canvas h2")?.textContent).toBe("piano.md");
+    fireEvent.click(r.container.querySelector(".smp-canvas .smp-back") as Element);
+    expect(r.container.querySelector(".smp-canvas")).toBeNull();
+  });
+
   it("has the «back to the bottom» button once the person scrolled up, and following again after it", async () => {
     state.openTopic("t_trip", "Vacanza in Sardegna");
     const r = render(<SimpleApp />);

@@ -24,6 +24,8 @@ import 'package:rgcompanion/simple/simple_giant.dart';
 import 'package:rgcompanion/simple/simple_model.dart';
 import 'package:rgcompanion/simple/simple_shell.dart';
 import 'package:rgcompanion/simple/simple_strip.dart';
+import 'package:rgcompanion/ui/artifact_frame_view.dart' show WidgetCard;
+import 'package:rgcompanion/ui/chat/chat_parts.dart' show CanvasLine;
 import 'package:rgcompanion/ui/icons.dart';
 
 import 'fake_server.dart';
@@ -274,6 +276,34 @@ void main() {
       }
       await _settle(tester, 2);
       expect(find.byKey(const Key('to-bottom')), findsNothing);
+      await done(tester);
+    });
+
+    testWidgets('3.12.2: a conversation shows its widget and the «opened in the canvas» line', (
+      tester,
+    ) async {
+      server.store('t_trip', 'message.assistant', {
+        'parts': [
+          {
+            'type': 'text',
+            'text': 'Ecco il simulatore.\n\n```widget Costo mensile\n<p>ciao</p>\n```\n',
+          },
+        ],
+        'stopReason': 'end_turn',
+        'model': 'm',
+        'costUsd': 0,
+      });
+      server.store('t_trip', 'canvas.show', {
+        'title': 'piano.md',
+        'target': {'kind': 'file', 'scope': 'platform', 'path': 'piano.md'},
+      });
+      await open(tester);
+      await tap(tester, find.byKey(const Key('topic-t_trip')));
+      expect(find.byType(TopicScreen), findsOneWidget);
+      await _settle(tester, 3);
+      expect(find.textContaining('Costo mensile', skipOffstage: false), findsWidgets);
+      expect(find.byType(WidgetCard, skipOffstage: false), findsOneWidget);
+      expect(find.byType(CanvasLine, skipOffstage: false), findsOneWidget);
       await done(tester);
     });
 

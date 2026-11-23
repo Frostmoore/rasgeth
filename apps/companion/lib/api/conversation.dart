@@ -1342,6 +1342,7 @@ List<ChatItem> documentItems(List<ChatItem> items) {
         ProductsItem() ||
         FoundItem() ||
         FileItem() ||
+        CanvasItem() ||
         WidgetItem() => !gone(seqOf(i)),
         _ => false,
       })

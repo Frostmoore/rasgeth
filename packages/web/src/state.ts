@@ -3004,6 +3004,7 @@ const DOCUMENT_KINDS = new Set<ChatItem["kind"]>([
   "found",
   "file",
   "widget",
+  "canvas",
   "routed",
   "moved",
 ]);
