@@ -1,1 +1,244 @@
-[{"type":"Application","AXValue":null,"frame":{"width":402,"x":0,"height":874,"y":0},"AXLabel":"Impostazioni","AXUniqueId":null,"children":[{"AXLabel":"Impostazioni","children":[],"AXValue":null,"frame":{"y":119.66666666666667,"height":40.666666666666671,"x":15.999999999999986,"width":203.33333333333331},"enabled":true,"type":"Heading","AXUniqueId":null,"role_description":"heading"},{"type":"Group","frame":{"height":874,"y":0,"width":402,"x":0},"AXUniqueId":"com.apple.settings.sidebar.collectionView","role_description":"Gruppo","AXValue":null,"children":[{"AXLabel":"Apple Account, Effettua il login per accedere ai dati di iCloud, ad App Store, ai servizi Apple e altro ancora.","AXValue":null,"type":"Button","enabled":true,"frame":{"x":16,"width":370,"height":108.33333333333331,"y":168},"AXUniqueId":"com.apple.settings.primaryAppleAccount","role_description":"button","children":[]},{"role_description":"button","children":[],"frame":{"height":52,"x":16,"width":370,"y":311.33333333333337},"enabled":true,"AXValue":null,"AXLabel":"Ottimizzo Siri e ricerca","type":"Button","AXUniqueId":"com.apple.settings.spotlightIndexingProgress"},{"frame":{"height":52,"width":370,"y":398.33333333333337,"x":16},"children":[],"type":"Button","AXUniqueId":"com.apple.settings.general","role_description":"button","enabled":true,"AXLabel":"Generali","AXValue":null},{"AXLabel":"Accessibilità","role_description":"button","frame":{"x":16,"height":52,"y":450.33333333333331,"width":370},"type":"Button","AXValue":null,"enabled":true,"children":[],"AXUniqueId":"com.apple.settings.accessibility"},{"frame":{"width":370,"x":16,"y":502.33333333333331,"height":51.999999999999943},"AXValue":null,"children":[],"role_description":"button","enabled":true,"type":"Button","AXLabel":"Aspetto","AXUniqueId":"com.apple.settings.appearance"},{"role_description":"button","AXLabel":"Cerca","enabled":true,"AXUniqueId":"com.apple.settings.search","type":"Button","children":[],"frame":{"y":554.33333333333326,"height":52,"x":16,"width":370},"AXValue":null},{"AXUniqueId":"com.apple.settings.camera","children":[],"type":"Button","AXLabel":"Fotocamera","AXValue":null,"role_description":"button","frame":{"x":16,"width":370,"y":606.33333333333326,"height":52},"enabled":true},{"frame":{"width":370,"x":16,"height":52,"y":658.33333333333326},"type":"Button","AXUniqueId":"com.apple.settings.homeScreen","role_description":"button","enabled":true,"AXLabel":"Schermata Home e libreria app","children":[],"AXValue":null},{"frame":{"y":710.33333333333337,"width":370,"x":16,"height":52},"AXValue":null,"role_description":"button","enabled":true,"AXLabel":"Siri","type":"Button","AXUniqueId":"com.apple.settings.siri","children":[]},{"AXLabel":"StandBy","frame":{"y":762.33333333333337,"height":52,"x":16,"width":370},"AXUniqueId":"com.apple.settings.standBy","AXValue":null,"type":"Button","enabled":true,"children":[],"role_description":"button"},{"children":[],"AXLabel":"Tasto Azione","AXUniqueId":"com.apple.settings.actionButton","role_description":"button","enabled":true,"AXValue":null,"frame":{"width":370,"x":16,"y":814.33333333333337,"height":52},"type":"Button"}],"AXLabel":null,"enabled":true},{"AXUniqueId":null,"frame":{"y":808,"width":346,"height":28,"x":28},"AXValue":"Cerca","type":"TextField","AXLabel":null,"enabled":true,"role_description":"search text field","children":[]},{"AXLabel":"Avvia dettatura","AXValue":null,"role_description":"button","frame":{"width":17.333333333333314,"x":341.66666666666669,"height":22,"y":811},"type":"Button","AXUniqueId":"Dictate","enabled":true,"children":[]},{"AXLabel":"12:34","enabled":true,"AXValue":null,"type":"StaticText","children":[],"role_description":"text","frame":{"y":21.666666666666686,"x":58,"height":21.666666666666671,"width":47.666666666666657},"AXUniqueId":null},{"children":[],"AXValue":null,"type":"GenericElement","role_description":"","AXUniqueId":null,"frame":{"x":153.66666666666666,"height":36.666666666666657,"y":13.999999999999996,"width":94.666666666666657},"enabled":true,"AXLabel":"Dynamic Island, vuota"},{"AXUniqueId":null,"AXLabel":"Cellulare","type":"GenericElement","children":[],"AXValue":"Nessun segnale","enabled":true,"frame":{"y":25,"height":13.666666666666664,"width":20.666666666666686,"x":277},"role_description":""},{"AXLabel":null,"AXUniqueId":"3 di 3 barre rete Wi-Fi","type":"GenericElement","role_description":"","AXValue":"SSID, 3 di 3 barre rete Wi-Fi","frame":{"x":306.66666666666669,"height":12.666666666666664,"width":17.333333333333314,"y":26},"children":[],"enabled":true},{"AXValue":"Non in carica","enabled":true,"children":[],"role_description":"","type":"GenericElement","AXLabel":"Carica batteria: 100%","frame":{"width":29.333333333333314,"x":333,"height":13.666666666666664,"y":25.333333333333314},"AXUniqueId":null}],"enabled":true,"role_description":"application"}]
+[
+  {
+    "type": "Application",
+    "AXValue": null,
+    "frame": { "width": 402, "x": 0, "height": 874, "y": 0 },
+    "AXLabel": "Impostazioni",
+    "AXUniqueId": null,
+    "children": [
+      {
+        "AXLabel": "Impostazioni",
+        "children": [],
+        "AXValue": null,
+        "frame": {
+          "y": 119.66666666666667,
+          "height": 40.666666666666671,
+          "x": 15.999999999999986,
+          "width": 203.33333333333331
+        },
+        "enabled": true,
+        "type": "Heading",
+        "AXUniqueId": null,
+        "role_description": "heading"
+      },
+      {
+        "type": "Group",
+        "frame": { "height": 874, "y": 0, "width": 402, "x": 0 },
+        "AXUniqueId": "com.apple.settings.sidebar.collectionView",
+        "role_description": "Gruppo",
+        "AXValue": null,
+        "children": [
+          {
+            "AXLabel": "Apple Account, Effettua il login per accedere ai dati di iCloud, ad App Store, ai servizi Apple e altro ancora.",
+            "AXValue": null,
+            "type": "Button",
+            "enabled": true,
+            "frame": { "x": 16, "width": 370, "height": 108.33333333333331, "y": 168 },
+            "AXUniqueId": "com.apple.settings.primaryAppleAccount",
+            "role_description": "button",
+            "children": []
+          },
+          {
+            "role_description": "button",
+            "children": [],
+            "frame": { "height": 52, "x": 16, "width": 370, "y": 311.33333333333337 },
+            "enabled": true,
+            "AXValue": null,
+            "AXLabel": "Ottimizzo Siri e ricerca",
+            "type": "Button",
+            "AXUniqueId": "com.apple.settings.spotlightIndexingProgress"
+          },
+          {
+            "frame": { "height": 52, "width": 370, "y": 398.33333333333337, "x": 16 },
+            "children": [],
+            "type": "Button",
+            "AXUniqueId": "com.apple.settings.general",
+            "role_description": "button",
+            "enabled": true,
+            "AXLabel": "Generali",
+            "AXValue": null
+          },
+          {
+            "AXLabel": "Accessibilità",
+            "role_description": "button",
+            "frame": { "x": 16, "height": 52, "y": 450.33333333333331, "width": 370 },
+            "type": "Button",
+            "AXValue": null,
+            "enabled": true,
+            "children": [],
+            "AXUniqueId": "com.apple.settings.accessibility"
+          },
+          {
+            "frame": {
+              "width": 370,
+              "x": 16,
+              "y": 502.33333333333331,
+              "height": 51.999999999999943
+            },
+            "AXValue": null,
+            "children": [],
+            "role_description": "button",
+            "enabled": true,
+            "type": "Button",
+            "AXLabel": "Aspetto",
+            "AXUniqueId": "com.apple.settings.appearance"
+          },
+          {
+            "role_description": "button",
+            "AXLabel": "Cerca",
+            "enabled": true,
+            "AXUniqueId": "com.apple.settings.search",
+            "type": "Button",
+            "children": [],
+            "frame": { "y": 554.33333333333326, "height": 52, "x": 16, "width": 370 },
+            "AXValue": null
+          },
+          {
+            "AXUniqueId": "com.apple.settings.camera",
+            "children": [],
+            "type": "Button",
+            "AXLabel": "Fotocamera",
+            "AXValue": null,
+            "role_description": "button",
+            "frame": { "x": 16, "width": 370, "y": 606.33333333333326, "height": 52 },
+            "enabled": true
+          },
+          {
+            "frame": { "width": 370, "x": 16, "height": 52, "y": 658.33333333333326 },
+            "type": "Button",
+            "AXUniqueId": "com.apple.settings.homeScreen",
+            "role_description": "button",
+            "enabled": true,
+            "AXLabel": "Schermata Home e libreria app",
+            "children": [],
+            "AXValue": null
+          },
+          {
+            "frame": { "y": 710.33333333333337, "width": 370, "x": 16, "height": 52 },
+            "AXValue": null,
+            "role_description": "button",
+            "enabled": true,
+            "AXLabel": "Siri",
+            "type": "Button",
+            "AXUniqueId": "com.apple.settings.siri",
+            "children": []
+          },
+          {
+            "AXLabel": "StandBy",
+            "frame": { "y": 762.33333333333337, "height": 52, "x": 16, "width": 370 },
+            "AXUniqueId": "com.apple.settings.standBy",
+            "AXValue": null,
+            "type": "Button",
+            "enabled": true,
+            "children": [],
+            "role_description": "button"
+          },
+          {
+            "children": [],
+            "AXLabel": "Tasto Azione",
+            "AXUniqueId": "com.apple.settings.actionButton",
+            "role_description": "button",
+            "enabled": true,
+            "AXValue": null,
+            "frame": { "width": 370, "x": 16, "y": 814.33333333333337, "height": 52 },
+            "type": "Button"
+          }
+        ],
+        "AXLabel": null,
+        "enabled": true
+      },
+      {
+        "AXUniqueId": null,
+        "frame": { "y": 808, "width": 346, "height": 28, "x": 28 },
+        "AXValue": "Cerca",
+        "type": "TextField",
+        "AXLabel": null,
+        "enabled": true,
+        "role_description": "search text field",
+        "children": []
+      },
+      {
+        "AXLabel": "Avvia dettatura",
+        "AXValue": null,
+        "role_description": "button",
+        "frame": { "width": 17.333333333333314, "x": 341.66666666666669, "height": 22, "y": 811 },
+        "type": "Button",
+        "AXUniqueId": "Dictate",
+        "enabled": true,
+        "children": []
+      },
+      {
+        "AXLabel": "12:34",
+        "enabled": true,
+        "AXValue": null,
+        "type": "StaticText",
+        "children": [],
+        "role_description": "text",
+        "frame": {
+          "y": 21.666666666666686,
+          "x": 58,
+          "height": 21.666666666666671,
+          "width": 47.666666666666657
+        },
+        "AXUniqueId": null
+      },
+      {
+        "children": [],
+        "AXValue": null,
+        "type": "GenericElement",
+        "role_description": "",
+        "AXUniqueId": null,
+        "frame": {
+          "x": 153.66666666666666,
+          "height": 36.666666666666657,
+          "y": 13.999999999999996,
+          "width": 94.666666666666657
+        },
+        "enabled": true,
+        "AXLabel": "Dynamic Island, vuota"
+      },
+      {
+        "AXUniqueId": null,
+        "AXLabel": "Cellulare",
+        "type": "GenericElement",
+        "children": [],
+        "AXValue": "Nessun segnale",
+        "enabled": true,
+        "frame": { "y": 25, "height": 13.666666666666664, "width": 20.666666666666686, "x": 277 },
+        "role_description": ""
+      },
+      {
+        "AXLabel": null,
+        "AXUniqueId": "3 di 3 barre rete Wi-Fi",
+        "type": "GenericElement",
+        "role_description": "",
+        "AXValue": "SSID, 3 di 3 barre rete Wi-Fi",
+        "frame": {
+          "x": 306.66666666666669,
+          "height": 12.666666666666664,
+          "width": 17.333333333333314,
+          "y": 26
+        },
+        "children": [],
+        "enabled": true
+      },
+      {
+        "AXValue": "Non in carica",
+        "enabled": true,
+        "children": [],
+        "role_description": "",
+        "type": "GenericElement",
+        "AXLabel": "Carica batteria: 100%",
+        "frame": {
+          "width": 29.333333333333314,
+          "x": 333,
+          "height": 13.666666666666664,
+          "y": 25.333333333333314
+        },
+        "AXUniqueId": null
+      }
+    ],
+    "enabled": true,
+    "role_description": "application"
+  }
+]
