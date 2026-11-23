@@ -19,6 +19,7 @@ import 'citations.dart';
 import 'code_block.dart';
 import 'dialogs.dart';
 import 'icons.dart';
+import 'math_text.dart';
 import 'stream_cursor.dart';
 
 /// GitHub's Markdown without the inline HTML syntax: `<b>` stays the text «<b>».
@@ -123,16 +124,23 @@ class SafeMarkdown extends StatelessWidget {
       height: reading ? 1.25 : base.height,
     );
     final marked = data.contains(markOpen);
+    // Formulas out of the text before Markdown reads it (3.12.4, the page's `extractMath`).
+    final math = extractMath(data);
     return MarkdownBody(
       // Sources as links once the answer is whole (the page's `renderAnswer`).
       data: cursor
-          ? withStreamCursor(data)
-          : linkCitations(data, kbTitle: (t) => kbCiteTitle(AppLocalizations.of(context), t)),
+          ? withStreamCursor(math.text)
+          : linkCitations(math.text, kbTitle: (t) => kbCiteTitle(AppLocalizations.of(context), t)),
       // The cursor is a widget inside the text: an answer being written is not selectable yet.
       selectable: selectable && !cursor,
       extensionSet: safeExtensions,
-      inlineSyntaxes: [if (marked) _MarkSyntax(), if (cursor) StreamCursorSyntax()],
+      inlineSyntaxes: [
+        if (math.pieces.isNotEmpty) MathSyntax(math.pieces),
+        if (marked) _MarkSyntax(),
+        if (cursor) StreamCursorSyntax(),
+      ],
       builders: {
+        if (math.pieces.isNotEmpty) 'rgmath': MathBuilder(),
         if (marked) 'rgmark': _MarkBuilder(c.accentDim),
         if (reading)
           for (final (tag, bar) in const [('h1', 4.0), ('h2', 4.0), ('h3', 3.0)])
@@ -282,6 +290,10 @@ class HeadingBarBuilder extends MarkdownElementBuilder {
           ),
           'del' => TextSpan(
             children: _spans(n.children, style.copyWith(decoration: TextDecoration.lineThrough)),
+          ),
+          'rgmath' => WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: MathView(n.textContent, display: n.attributes['display'] == '1', style: style),
           ),
           'rgmark' => TextSpan(
             text: n.textContent,

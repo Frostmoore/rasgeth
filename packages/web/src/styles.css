@@ -26232,3 +26232,13 @@ fieldset.smp-decide {
 .set-details li {
   margin: 2px 0;
 }
+
+/* Formulas (3.12.4, KaTeX): a display one scrolls sideways instead of widening the answer. */
+.md .katex-display {
+  margin: 0.6em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.md .katex {
+  font-size: 1.08em;
+}

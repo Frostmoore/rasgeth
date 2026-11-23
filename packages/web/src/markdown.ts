@@ -15,6 +15,8 @@ import sql from "highlight.js/lib/languages/sql";
 import typescript from "highlight.js/lib/languages/typescript";
 import xml from "highlight.js/lib/languages/xml";
 import yaml from "highlight.js/lib/languages/yaml";
+import katex from "katex";
+import "katex/dist/katex.min.css";
 import { marked } from "marked";
 import { t } from "./i18n.js";
 
@@ -77,9 +79,155 @@ if (typeof document !== "undefined")
     });
   });
 
-/** Model output is untrusted: rendered Markdown is always sanitised. */
+// Copying a formula gives its LaTeX source (KaTeX's own copy handler reads the MathML annotation).
+if (typeof document !== "undefined") void import("katex/contrib/copy-tex");
+
+/** Placeholder marks for a formula while Markdown is parsed (Unicode private use, never written). */
+const MATH_OPEN = "\uE001";
+const MATH_CLOSE = "\uE002";
+
+interface MathPiece {
+  tex: string;
+  display: boolean;
+}
+
+/** An inline `$…$` is a formula only when it looks like one: «$5 e $10» stays text. */
+function inlineDollar(md: string, at: number): { tex: string; end: number } | null {
+  const first = md[at + 1];
+  if (first === undefined || /[\s$]/.test(first)) return null;
+  for (let j = at + 1; j < md.length; j++) {
+    const ch = md[j];
+    // Never across a line or a code span: «$10 e `$x$`» is a price and code.
+    if (ch === "\n" || ch === "`") return null;
+    if (ch === "\\") {
+      j++;
+      continue;
+    }
+    if (ch !== "$") continue;
+    // The first `$` after the opening one decides: no space before it, no digit after it.
+    if (/\s/.test(md[j - 1] ?? " ") || /\d/.test(md[j + 1] ?? "")) return null;
+    return { tex: md.slice(at + 1, j), end: j + 1 };
+  }
+  return null;
+}
+
+/**
+ * Formulas out of the text before Markdown reads it (it would eat the backslashes of `\[ … \]`):
+ * `$$…$$` and `\[…\]` are display math, `$…$` and `\(…\)` inline. Never inside code (fenced
+ * blocks and spans); `\$` is a plain dollar.
+ */
+export function extractMath(md: string): { text: string; pieces: MathPiece[] } {
+  const pieces: MathPiece[] = [];
+  let out = "";
+  const put = (tex: string, display: boolean) => {
+    pieces.push({ tex: tex.trim(), display });
+    out += `${MATH_OPEN}${pieces.length - 1}${MATH_CLOSE}`;
+  };
+  let i = 0;
+  let lineStart = true;
+  while (i < md.length) {
+    const ch = md[i] as string;
+    if (lineStart) {
+      const fence = /^( {0,3})(`{3,}|~{3,})[^\n]*(?:\n|$)/.exec(md.slice(i, i + 400));
+      if (fence) {
+        const mark = fence[2] as string;
+        const close = new RegExp(
+          `\\n {0,3}${mark[0] === "~" ? "~" : "`"}{${mark.length},}[ \\t]*(?=\\n|$)`,
+          "g",
+        );
+        close.lastIndex = i + fence[0].length - 1;
+        const m = close.exec(md);
+        const end = m ? m.index + m[0].length : md.length;
+        out += md.slice(i, end);
+        i = end;
+        lineStart = false;
+        continue;
+      }
+    }
+    lineStart = ch === "\n";
+    if (ch === "`") {
+      let n = 1;
+      while (md[i + n] === "`") n++;
+      const run = "`".repeat(n);
+      let k = md.indexOf(run, i + n);
+      while (k >= 0 && md[k + n] === "`") k = md.indexOf(run, k + n + 1);
+      const end = k >= 0 ? k + n : i + n;
+      out += md.slice(i, end);
+      i = end;
+      continue;
+    }
+    if (ch === "\\") {
+      const next = md[i + 1];
+      if (next === "[" || next === "(") {
+        const close = md.indexOf(next === "[" ? "\\]" : "\\)", i + 2);
+        const tex = close > 0 ? md.slice(i + 2, close) : "";
+        if (close > 0 && tex.trim() && !(next === "(" && tex.includes("\n\n"))) {
+          put(tex, next === "[");
+          i = close + 2;
+          continue;
+        }
+      }
+      out += md.slice(i, i + 2);
+      i += 2;
+      continue;
+    }
+    if (ch === "$") {
+      if (md[i + 1] === "$") {
+        const close = md.indexOf("$$", i + 2);
+        const tex = close > 0 ? md.slice(i + 2, close) : "";
+        if (close > 0 && tex.trim()) {
+          put(tex, true);
+          i = close + 2;
+          continue;
+        }
+        out += "$$";
+        i += 2;
+        continue;
+      }
+      const found = inlineDollar(md, i);
+      if (found) {
+        put(found.tex, false);
+        i = found.end;
+        continue;
+      }
+    }
+    out += ch;
+    i++;
+  }
+  return { text: out, pieces };
+}
+
+/** One formula as KaTeX draws it (HTML and MathML); a LaTeX error leaves the source as text. */
+function renderMath(piece: MathPiece): string {
+  try {
+    return katex.renderToString(piece.tex, {
+      displayMode: piece.display,
+      throwOnError: false,
+      trust: false,
+      strict: "ignore",
+      output: "htmlAndMathml",
+    });
+  } catch {
+    const open = piece.display ? "$$" : "$";
+    return escapeHtml(`${open}${piece.tex}${open}`);
+  }
+}
+
+/**
+ * Model output is untrusted: rendered Markdown is always sanitised. Formulas are drawn apart
+ * and put in after the sanitising (KaTeX with `trust: false` escapes its input), so nothing a
+ * model writes in a formula reaches the page as markup; a mark inside a tag is just dropped.
+ */
 export function renderMarkdown(md: string): string {
-  return DOMPurify.sanitize(marked.parse(md, { async: false }));
+  const { text, pieces } = extractMath(md);
+  const html = DOMPurify.sanitize(marked.parse(text, { async: false }));
+  if (pieces.length === 0) return html;
+  const mark = new RegExp(`(<[^>]*>)|${MATH_OPEN}(\\d+)${MATH_CLOSE}`, "g");
+  return html.replace(mark, (all, tag: string | undefined, n: string | undefined) => {
+    if (tag) return tag.split(MATH_OPEN).join("").split(MATH_CLOSE).join("");
+    const piece = pieces[Number(n)];
+    return piece ? renderMath(piece) : "";
+  });
 }
 
 /**
@@ -143,7 +291,7 @@ export function linkCitations(html: string): string {
   const texts: Text[] = [];
   for (let n = walker.nextNode(); n; n = walker.nextNode()) {
     const text = n as Text;
-    if (text.parentElement?.closest("a, code, pre, ol.sources")) continue;
+    if (text.parentElement?.closest("a, code, pre, ol.sources, .katex")) continue;
     if (/\[\d+\]/.test(text.data)) texts.push(text);
   }
   for (const text of texts) {

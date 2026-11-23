@@ -967,6 +967,7 @@
         "lib/api/conversation.dart",
         "lib/screens/conversation_screen.dart",
         "lib/ui/markdown.dart",
+        "lib/ui/math_text.dart",
         "lib/ui/code_block.dart",
         "lib/ui/citations.dart",
         "lib/ui/metrics_line.dart"

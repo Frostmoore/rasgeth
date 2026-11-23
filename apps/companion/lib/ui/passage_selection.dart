@@ -12,6 +12,7 @@ import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import 'icons.dart';
 import 'markdown.dart';
+import 'math_text.dart';
 
 /// A passage picked in a message: its text and where it is in the message as shown.
 class PickedPassage {
@@ -121,6 +122,7 @@ class AnswerSelectionDelegate extends StaticSelectionContainerDelegate {
     Rect? prev;
     _Piece? kind;
     var any = false;
+    var afterMath = false;
     for (final s in selectables) {
       final content = s.getSelectedContent();
       if (content == null || content.plainText.isEmpty) continue;
@@ -128,6 +130,9 @@ class AnswerSelectionDelegate extends StaticSelectionContainerDelegate {
       final at = s.getTransformTo(null).getTranslation();
       final rect = Rect.fromLTWH(at.x, at.y, s.size.width, s.size.height);
       var text = content.plainText;
+      // A formula (3.12.4) copies as its LaTeX source; an inline one stays in its line.
+      final inlineMath = text.startsWith(mathCopyInline);
+      if (inlineMath || text.startsWith(mathCopyDisplay)) text = text.substring(1);
       final bullet = _isBulletMark(text, s.size);
       if (bullet) text = text == '•' ? '- ' : '$text ';
       if (prev != null) {
@@ -137,6 +142,8 @@ class AnswerSelectionDelegate extends StaticSelectionContainerDelegate {
           out.write(kind == _Piece.itemText ? '\n' : '\n\n');
         } else if (rect.top >= prev.bottom - 1) {
           out.write('\n\n');
+        } else if (inlineMath || afterMath) {
+          // Words and formula of one line: the spaces are in the text.
         } else if (rect.left >= prev.right - 1) {
           out.write('\t');
         }
@@ -148,6 +155,7 @@ class AnswerSelectionDelegate extends StaticSelectionContainerDelegate {
                 ? _Piece.itemText
                 : _Piece.text);
       out.write(text);
+      afterMath = inlineMath;
       prev = rect;
     }
     return any ? SelectedContent(plainText: out.toString()) : null;
