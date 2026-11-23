@@ -273,7 +273,7 @@ const _vendorNames = {
   'openrouter': 'OpenRouter',
 };
 
-/// A group's heading, as the protocol's `groupTitle`: «Anthropic · Abbonamento Claude».
+/// A group's heading, as the protocol's `groupTitle`: «Abbonamento Claude».
 String groupTitle(ModelGroup g, String lang) {
   final it = lang == 'it';
   final vendor = _vendorNames[g.vendor] ?? g.vendor;
@@ -282,17 +282,17 @@ String groupTitle(ModelGroup g, String lang) {
       final plan = g.provider == 'claude-subscription'
           ? 'Claude'
           : (g.provider == 'chatgpt-subscription' ? 'ChatGPT' : '');
-      if (it) return '$vendor · Abbonamento${plan.isEmpty ? '' : ' $plan'}';
-      return '$vendor · ${plan.isEmpty ? 'Subscription' : '$plan subscription'}';
+      if (it) return 'Abbonamento ${plan.isEmpty ? vendor : plan}';
+      return '${plan.isEmpty ? vendor : plan} subscription';
     case ModelRouteKind.key:
-      return '$vendor · ${it ? 'Chiave API' : 'API key'}';
+      return it ? 'Chiave API $vendor' : '$vendor API key';
     case ModelRouteKind.node:
       final own = g.vendor == 'local' || g.vendor == 'server';
       return '${it ? 'Tramite' : 'Via'} ${g.node} · ${own ? (it ? 'Locale' : 'Local') : vendor}';
     case ModelRouteKind.local:
       return g.provider == 'local'
-          ? (it ? 'Su questo computer' : 'On this computer')
-          : (it ? 'Il tuo server' : 'Your own server');
+          ? (it ? 'Motore locale' : 'Local engine')
+          : (it ? 'Server tuo' : 'Your own server');
     case ModelRouteKind.other:
       return vendor;
   }

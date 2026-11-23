@@ -78,6 +78,19 @@ class _AgentModelSheetState extends State<AgentModelSheet> {
       : null;
   late String _effort = widget.current?.effort ?? 'medium';
   String _query = '';
+  // The model in use: the list opens at its row, not at the top.
+  final _nowKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final at = _nowKey.currentContext;
+      if (at != null && mounted) {
+        Scrollable.ensureVisible(at, alignment: .4, duration: Duration.zero);
+      }
+    });
+  }
 
   ModelChoice? get _choice => widget.models.where((m) => m.key == _chosen).firstOrNull;
 
@@ -88,7 +101,7 @@ class _AgentModelSheetState extends State<AgentModelSheet> {
     final lang = Localizations.localeOf(context).languageCode;
     final choice = _choice;
     final cur = widget.current;
-    final searchable = widget.models.length > 8;
+    final searchable = widget.models.isNotEmpty;
     final shown = [
       for (final g in _groups)
         (
@@ -177,16 +190,19 @@ class _AgentModelSheetState extends State<AgentModelSheet> {
                       ),
                     ),
                     for (final m in models)
-                      _Row(
-                        key: Key('model-${m.key}'),
-                        title: m.name ?? modelName(m.model),
-                        subtitle: switch (m.status) {
-                          'new' => l.moModelNew,
-                          'unconfirmed' => l.moModelUnconfirmed,
-                          _ => null,
-                        },
-                        on: _chosen == m.key,
-                        onTap: () => setState(() => _chosen = m.key),
+                      KeyedSubtree(
+                        key: m.key == widget.current?.key ? _nowKey : ValueKey('row-${m.key}'),
+                        child: _Row(
+                          key: Key('model-${m.key}'),
+                          title: m.name ?? modelName(m.model),
+                          subtitle: switch (m.status) {
+                            'new' => l.moModelNew,
+                            'unconfirmed' => l.moModelUnconfirmed,
+                            _ => null,
+                          },
+                          on: _chosen == m.key,
+                          onTap: () => setState(() => _chosen = m.key),
+                        ),
                       ),
                   ],
                 ],

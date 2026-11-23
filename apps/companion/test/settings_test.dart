@@ -277,8 +277,8 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('model-anthropic/claude-sonnet-5')), findsOneWidget);
       expect(find.byKey(const Key('model-claude-subscription/claude-sonnet-5')), findsOneWidget);
-      expect(find.text('ANTHROPIC · ABBONAMENTO CLAUDE'), findsOneWidget);
-      expect(find.text('ANTHROPIC · CHIAVE API'), findsOneWidget);
+      expect(find.text('ABBONAMENTO CLAUDE'), findsOneWidget);
+      expect(find.text('CHIAVE API ANTHROPIC'), findsOneWidget);
       expect(
         find.text('A consumo con la tua chiave API: conta per il tetto di spesa.'),
         findsOneWidget,

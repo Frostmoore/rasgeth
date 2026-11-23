@@ -112,6 +112,10 @@ document.getElementById("go").onclick = () => redgiant.sendMessage("Dentro " + v
 </script>`;
 
 let turn = 0;
+// The usage the scripted model reports grows a little with each call, but is capped: it once grew
+// with the demo's whole count of calls (hundreds), looked like a full window (90%, 200k tokens)
+// and made every tour summarise itself in the middle of its work, then start again.
+const usageTurn = () => Math.min(turn, 40);
 /**
  * G38.3 (DEMO_MAGIC): God's packages for the magic integrations and extensions. Notion waits for
  * its key (its tests fail without it); the CSV totals pass; the VAT check is installed.
@@ -731,7 +735,9 @@ const brain = (req) => {
   // finishes it in two more steps.
   const userText = (m) =>
     m.role === "user" ? (m.parts.find((p) => p.type === "text")?.text ?? "") : "";
-  if (req.messages.some((m) => userText(m).includes("Rinomina le colonne di ogni report"))) {
+  // Only that conversation: another one may quote the request in a notice (a «meanwhile» line)
+  // and would loop on the greps until the step limit, burning hundreds of model calls.
+  if (userText(req.messages[0]).startsWith("Rinomina le colonne di ogni report")) {
     if (said.includes("limit of steps"))
       return {
         text: "Ho rinominato in snake_case le colonne di **3 report su 8** (vendite, resi, magazzino). Restano acquisti, clienti, fornitori, cassa e personale. Al prossimo giro comincio da acquisti e poi rilancio i test dei report.",
@@ -1308,8 +1314,8 @@ const brain = (req) => {
         },
       ],
       usage: {
-        inputTokens: 4200 + turn * 300,
-        cachedReadTokens: 3900 + turn * 250,
+        inputTokens: 4200 + usageTurn() * 300,
+        cachedReadTokens: 3900 + usageTurn() * 250,
         outputTokens: 180,
       },
     };
@@ -1317,8 +1323,8 @@ const brain = (req) => {
   return {
     text: 'Here is the state of **Demo**:\n\n- `README.md` describes the goal\n- `src/app.py` is the entry point\n\n```python\nprint("Hello Rasgeth")\n```\n\nNext step: add tests, then I will verify them with `pytest`.',
     usage: {
-      inputTokens: 4700 + turn * 300,
-      cachedReadTokens: 4400 + turn * 250,
+      inputTokens: 4700 + usageTurn() * 300,
+      cachedReadTokens: 4400 + usageTurn() * 250,
       outputTokens: 420,
     },
   };
@@ -2121,10 +2127,7 @@ if (process.env.DEMO_SETS === "1") {
     },
   );
   const wsid = await core.startSession("local", webmaster.id);
-  // DEMO_TOPICS (3.12): not this tour; on this branch it loops (a summary after each round
-  // drops the tools' results, the demo model asks for them again).
-  if (!process.env.DEMO_TOPICS)
-    await (await core.send("local", wsid, "Give me a quick tour of the site.")).done;
+  await (await core.send("local", wsid, "Give me a quick tour of the site.")).done;
 }
 // The agents' browser (G24.14b), real, when asked: DEMO_BROWSER=1 (Docker, this container's network).
 if (process.env.DEMO_BROWSER === "1") {
