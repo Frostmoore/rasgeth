@@ -43,6 +43,7 @@ const MISSING: Record<EmuMissing, () => string> = {
   accel: () => t("emMiss_accel"),
   "emulator-old": () => t("emMiss_emulator_old"),
   xcode: () => t("emMiss_xcode"),
+  "ios-arch": () => t("emMiss_ios_arch"),
   "ios-bridge": () => t("emMiss_ios_bridge"),
 };
 const ACCEL_WHY: Record<NonNullable<EmuAccel["reason"]>, () => string> = {
@@ -126,7 +127,15 @@ export function MachineReport({ r }: { r: EmulatorReport }) {
     ]);
   }
   rows.push([t("emAccel"), accelText(r)]);
-  if (r.ios) rows.push([t("emXcode"), r.ios.xcode ?? t("emNone")]);
+  if (r.ios) {
+    rows.push([t("emXcode"), r.ios.xcode ?? t("emNone")]);
+    rows.push([
+      t("emIosBridge"),
+      r.ios.bridge
+        ? t("emIosBridgeAt", { version: r.ios.bridgeVersion ?? "", folder: r.ios.bridgeDir ?? "" })
+        : t("emIosBridgeNone"),
+    ]);
+  }
   return (
     <div class="em-report">
       <p class={`em-status${r.ready ? " ok" : ""}`}>{statusLine(r)}</p>
@@ -174,8 +183,10 @@ export function MachineReport({ r }: { r: EmulatorReport }) {
               .map((s) => `${s.name} (${s.runtime})`)
               .join(" · ")}
           </p>
+          {r.ios.ready && <p class="st-note">{t("emIosReady")}</p>}
         </>
       )}
+      {!r.ios && !r.container && <p class="st-note">{t("emIosNeedsMac")}</p>}
       {r.missing.length > 0 && (
         <>
           <h3 class="em-h">{t("emMissing")}</h3>
@@ -253,9 +264,11 @@ export function DeviceList() {
                 ? d.link === "wifi"
                   ? t("emPhoneWifi")
                   : t("emPhoneUsb")
-                : t("emRunningEmu"),
+                : d.platform === "ios"
+                  ? t("emRunningSim")
+                  : t("emRunningEmu"),
               t(`dsState_${d.state}` as const),
-              d.serial,
+              d.platform === "ios" ? d.runtime : d.serial,
             ]
               .filter(Boolean)
               .join(" · ")}

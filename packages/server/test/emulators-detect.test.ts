@@ -452,7 +452,7 @@ describe("what is missing", () => {
       f: facts({ os: "macos", arch: "arm64", accel: { ok: true, kind: "hvf" } }),
       missing: ["sdk", "xcode"],
       ready: false,
-      check: (r) => expect(r.ios).toEqual({ simulators: [] }),
+      check: (r) => expect(r.ios).toEqual({ simulators: [], ready: false }),
     },
     {
       name: "macOS with an SDK and Xcode but no bridge for iOS touches",

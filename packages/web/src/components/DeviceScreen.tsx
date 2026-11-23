@@ -2,7 +2,7 @@
 // browser (Screen.tsx): watch what the agents do; «Take control» and the screen is the person's
 // (a tap, a press held, a swipe with the mouse or the finger, the keyboard), never logged and never
 // seen by a model; then give it back. The phone's own buttons and turning it are drawn under it.
-import type { DeviceInput } from "@redgiant/protocol";
+import { type DeviceInput, isIosId } from "@redgiant/protocol";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { H264Canvas, hasVideoDecoder } from "../device-video.js";
 import { t } from "../i18n.js";
@@ -90,6 +90,8 @@ export function DeviceScreen({ device, title }: { device: string; title: string 
     };
   };
   const wide = s.frame ? s.frame.width > s.frame.height : false;
+  // An iPhone has no back and no recents button: only home (and turning).
+  const ios = isIosId(device);
   const button = (b: "back" | "home" | "recents") => send({ kind: "button", button: b });
   return (
     <div class="screen device-screen">
@@ -160,16 +162,18 @@ export function DeviceScreen({ device, title }: { device: string; title: string 
           )}
         </div>
         <div class="device-keys">
-          <button
-            type="button"
-            class="icon-button"
-            disabled={!mine}
-            title={t("dsBack")}
-            aria-label={t("dsBack")}
-            onClick={() => button("back")}
-          >
-            <IconChevronLeft size={16} />
-          </button>
+          {!ios && (
+            <button
+              type="button"
+              class="icon-button"
+              disabled={!mine}
+              title={t("dsBack")}
+              aria-label={t("dsBack")}
+              onClick={() => button("back")}
+            >
+              <IconChevronLeft size={16} />
+            </button>
+          )}
           <button
             type="button"
             class="icon-button"
@@ -180,16 +184,18 @@ export function DeviceScreen({ device, title }: { device: string; title: string 
           >
             <IconHome size={16} />
           </button>
-          <button
-            type="button"
-            class="icon-button"
-            disabled={!mine}
-            title={t("dsRecents")}
-            aria-label={t("dsRecents")}
-            onClick={() => button("recents")}
-          >
-            <IconSquare size={14} />
-          </button>
+          {!ios && (
+            <button
+              type="button"
+              class="icon-button"
+              disabled={!mine}
+              title={t("dsRecents")}
+              aria-label={t("dsRecents")}
+              onClick={() => button("recents")}
+            >
+              <IconSquare size={14} />
+            </button>
+          )}
           <button
             type="button"
             class="icon-button"

@@ -106,16 +106,22 @@ afterEach(cleanup);
 
 describe("the guided install", () => {
   it("offers install and update only where it can do something", () => {
-    expect(installOffer(report())).toEqual({ install: true, update: false });
+    expect(installOffer(report())).toEqual({ install: true, update: false, ios: false });
     expect(installOffer(report({ missing: ["emulator-old"] }))).toEqual({
       install: false,
       update: true,
+      ios: false,
     });
     expect(installOffer(report({ container: true, missing: ["sdk", "accel"] }))).toEqual({
       install: false,
       update: false,
+      ios: false,
     });
-    expect(installOffer(report({ missing: ["xcode"] }))).toEqual({ install: false, update: false });
+    expect(installOffer(report({ missing: ["xcode"] }))).toEqual({
+      install: false,
+      update: false,
+      ios: false,
+    });
   });
 
   it("the window: steps, folder, sizes, licence; Install waits for the yes; then the bar", async () => {

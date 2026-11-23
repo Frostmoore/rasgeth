@@ -150,11 +150,11 @@ const rows: Row[] = [
     licences: ["android-sdk-license", "android-sdk-arm-dbt-license"],
   },
   {
-    name: "macOS with Xcode but no bridge: only explained",
+    name: "macOS with Xcode but no bridge: the bridge has its own install, no note here",
     r: report({ os: "macos", arch: "x64", missing: ["sdk", "ios-bridge"] }),
     f: { home: "/Users/ada", env: {} },
     steps: ["cmdline-tools", "licences", "platform-tools", "emulator", "system-image", "avd"],
-    notes: ["ios-bridge"],
+    notes: [],
   },
   {
     name: "Linux x64 with KVM, no SDK: ~/Android/Sdk",
