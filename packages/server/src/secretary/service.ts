@@ -141,6 +141,7 @@ export class SecretaryService {
       webhookUrl: base ? `${base}${WEBHOOK[a.channel](a.id)}` : null,
       verifyToken: a.channel === "whatsapp" ? (this.secret(a, "verify") ?? null) : null,
       webhookOk: a.webhookOk,
+      complete: this.secret(a, "token") !== undefined,
       limitPerHour: a.limitHour,
       createdAt: a.createdAt,
     };

@@ -50,6 +50,8 @@ export interface SecretaryAccountView {
   verifyToken: string | null;
   /** The platform confirmed the webhook (WhatsApp: Meta's handshake; Telegram: setWebhook). */
   webhookOk: boolean;
+  /** The guide was finished: keys kept, the account answers. */
+  complete: boolean;
   /** Per-contact limit of automatic answers an hour. */
   limitPerHour: number;
   createdAt: string;
@@ -131,3 +133,15 @@ export const START_WORDS = ["start", "riprendi", "riprendere", "reprendre", "emp
 
 /** The WhatsApp customer-service window: free text only within 24 hours of the contact's message. */
 export const WHATSAPP_WINDOW_MS = 24 * 60 * 60 * 1000;
+
+/** What a guide step's check answers (`ok`, or why not as a short code the page words itself). */
+export interface SecretaryCheck {
+  ok: boolean;
+  code: string;
+  detail?: string;
+  /** WhatsApp: the number and the business name the token reached. */
+  number?: string;
+  verifiedName?: string;
+  /** Telegram: the bot's @name. */
+  username?: string;
+}

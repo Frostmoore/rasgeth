@@ -255,6 +255,15 @@
       ],
       "note": "Native (G42.13): Discord, Slack, Signal, WhatsApp, Matrix, Microsoft Teams and iMessage as squares lit when on, each window with what it needs and the numbered steps, the code to send, the accounts with Unlink, Teams' app saved to the device, Turn off and Change; the mailboxes in Settings › Automations as on the page: the single one of before, then many by category, added, changed (the password stays unless a new one is written) and removed, tried by the server."
     },
+    "secretary": {
+      "app": "native",
+      "files": [
+        "lib/settings/channels/secretary_screen.dart"
+      ],
+      "phase": "3.12.4",
+      "rows": [],
+      "note": "Native (3.12.4): the secretary that answers other people: the requests with a ready reply (send, edit, refuse), the business accounts (WhatsApp Business and Telegram bot) with the guides step by step and each step checked by the server, every contact's conversation (take over, pause the agent, notes), the account's agent and hourly limit; keys never come back."
+    },
     "budgets": {
       "app": "native",
       "files": [

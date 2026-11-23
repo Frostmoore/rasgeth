@@ -23,6 +23,7 @@ import {
   IconFolder,
   IconKey,
   IconLayers,
+  IconMail,
   IconMic,
   IconNodes,
   IconPhone,
@@ -65,6 +66,7 @@ import { ProjectsPage } from "./ProjectArchive.js";
 import { RemoteSettings } from "./RemoteSettings.js";
 import { RequestsPage } from "./RequestsPage.js";
 import { Rules } from "./Rules.js";
+import { Secretary } from "./Secretary.js";
 import { Setup } from "./Setup.js";
 import { SharedMemoryPage } from "./SharedMemory.js";
 import { Subscriptions } from "./Subscriptions.js";
@@ -125,6 +127,7 @@ export const GROUPS: { title: () => string; sections: Section[] }[] = [
     sections: [
       { id: "telegram", label: () => t("telegram"), icon: <IconTelegram size={20} /> },
       { id: "chats", label: () => t("chats"), icon: <IconChat size={20} /> },
+      { id: "secretary", label: () => t("scSection"), icon: <IconMail size={20} /> },
       { id: "devices", label: () => t("dvSection"), icon: <IconPhone size={20} /> },
     ],
   },
@@ -239,6 +242,7 @@ export function Settings({ section = "general" }: { section?: SettingsSection | 
         {section === "keychain" && <Keychain />}
         {section === "telegram" && <Telegram />}
         {section === "chats" && <ChatPlatforms />}
+        {section === "secretary" && <Secretary />}
         {section === "devices" && <Devices />}
         {section === "subscriptions" && <Subscriptions />}
         {section === "code" && <CodeSettings />}

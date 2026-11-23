@@ -19818,4 +19818,359 @@ class AppLocalizationsIt extends AppLocalizations {
   String cvLimitMarginTip(String margin) {
     return 'Margine $margin punti rispetto a un ritmo costante nella settimana';
   }
+
+  @override
+  String get scSection => 'Messaggi';
+
+  @override
+  String get scQ => 'Chi ti scrive e chi risponde';
+
+  @override
+  String get scLead =>
+      'Il segretario può rispondere ad altre persone (clienti, contatti) su un numero WhatsApp Business o su un bot Telegram, solo su quello che gli hai detto. Tutto il resto, e ogni appuntamento, impegno o prezzo nuovo, arriva prima a te, con una risposta pronta.';
+
+  @override
+  String scPendingTitle(String n) {
+    return '$n in attesa di te';
+  }
+
+  @override
+  String get scPendingLead =>
+      'Invia la risposta pronta così com\'è, cambiala o rifiutala. Niente parte prima del tuo sì.';
+
+  @override
+  String get scAccountsTitle => 'Numeri e bot dell\'attività';
+
+  @override
+  String get scAccountsLead => 'Dove scrivono gli altri. Le chiavi restano nel portachiavi.';
+
+  @override
+  String get scAddWa => 'Collega WhatsApp Business';
+
+  @override
+  String get scAddWaText => 'Una guida passo passo con l\'API ufficiale di Meta';
+
+  @override
+  String get scAddTg => 'Collega un bot Telegram';
+
+  @override
+  String get scAddTgText => 'Un bot che fai con @BotFather; gli altri scrivono a lui';
+
+  @override
+  String get scConnected => 'Collegato';
+
+  @override
+  String get scNotFinished => 'Non finito';
+
+  @override
+  String get scContactsTitle => 'Conversazioni';
+
+  @override
+  String get scContactsLead =>
+      'Ogni persona che ha scritto ha la sua conversazione. Aprila per leggerla, prendere in mano o mettere in pausa l\'agente per quella persona.';
+
+  @override
+  String get scNoContacts => 'Nessuno ha ancora scritto.';
+
+  @override
+  String get scPaused => 'In pausa';
+
+  @override
+  String get scAsks => 'Chiede a te';
+
+  @override
+  String get scReason_unknown => 'l\'agente non sa rispondere da solo';
+
+  @override
+  String get scReason_commitment => 'serve il tuo sì: un impegno';
+
+  @override
+  String get scReason_price => 'serve il tuo sì: un prezzo nuovo';
+
+  @override
+  String get scReason_file => 'ha mandato un file';
+
+  @override
+  String get scReason_limit => 'troppi messaggi in un\'ora';
+
+  @override
+  String get scReason_other => 'serve una tua risposta';
+
+  @override
+  String get scReady => 'Risposta pronta';
+
+  @override
+  String get scSend => 'Invia';
+
+  @override
+  String get scSendEdited => 'Invia la mia versione';
+
+  @override
+  String get scRefuse => 'Rifiuta';
+
+  @override
+  String get scByAgent => 'Agente';
+
+  @override
+  String get scByYou => 'Tu';
+
+  @override
+  String get scThread => 'La conversazione';
+
+  @override
+  String get scWrite => 'Scrivi tu a questa persona';
+
+  @override
+  String get scNotes => 'Note';
+
+  @override
+  String get scNotesHelp => 'Le vedi solo tu e l\'agente: chi è questa persona, cosa le piace.';
+
+  @override
+  String get scPause => 'Metti in pausa l\'agente per questa persona';
+
+  @override
+  String get scPauseHelp => 'L\'agente non le risponde più; leggi e rispondi tu.';
+
+  @override
+  String get scStopped => 'ha chiesto di fermarsi';
+
+  @override
+  String get scWindowOpen => 'puoi scrivere liberamente';
+
+  @override
+  String get scWindowShut => 'sono passate 24 ore: WhatsApp ammette solo un modello approvato';
+
+  @override
+  String get scWindowClosed =>
+      'Sono passate più di 24 ore da quando ha scritto: WhatsApp ammette solo un messaggio con modello approvato. Impostane uno nell\'account.';
+
+  @override
+  String get scDelete => 'Elimina questa conversazione';
+
+  @override
+  String get scDeleteQ => 'Eliminare questa conversazione e la sua storia?';
+
+  @override
+  String get scRemove => 'Rimuovi';
+
+  @override
+  String get scRemoveQ =>
+      'Rimuovere questo account? Le chiavi escono dal portachiavi e nessuno potrà più scrivergli.';
+
+  @override
+  String get scLimit => 'Risposte all\'ora, per ogni persona';
+
+  @override
+  String get scLimitHelp => 'Oltre questo numero l\'agente si ferma e ti chiede.';
+
+  @override
+  String get scAgent => 'Chi risponde';
+
+  @override
+  String get scAgentHelp =>
+      'L\'agente che risponde, con le istruzioni che gli hai dato (orari, prezzi, indirizzo…). Il set «Segretario sui messaggi» è fatto per questo.';
+
+  @override
+  String get scAgentNone => 'Scegli un agente';
+
+  @override
+  String get scNext => 'Avanti';
+
+  @override
+  String get scDone => 'Fatto';
+
+  @override
+  String get scTest => 'Prova';
+
+  @override
+  String get scTesting => 'Provo…';
+
+  @override
+  String get scConnect => 'Collega';
+
+  @override
+  String get scCopy => 'Copia';
+
+  @override
+  String get scCopied => 'Copiato';
+
+  @override
+  String get scCheckAgain => 'Controlla di nuovo';
+
+  @override
+  String get scOpenRemote => 'Apri Accesso da fuori';
+
+  @override
+  String get scKeyHelp => 'Va nel portachiavi e non torna mai in questa pagina.';
+
+  @override
+  String get scWa_remote => 'Raggiungere Rasgeth da fuori';
+
+  @override
+  String get scWa_app => 'Fai un\'app su Meta';
+
+  @override
+  String get scWa_number => 'L\'ID del numero';
+
+  @override
+  String get scWa_token => 'Un token permanente';
+
+  @override
+  String get scWa_secret => 'Il segreto dell\'app';
+
+  @override
+  String get scWa_webhook => 'Di\' a Meta dove scrivere';
+
+  @override
+  String get scWa_subscribe => 'Iscriviti ai messaggi';
+
+  @override
+  String get scWa_finish => 'Scegli chi risponde';
+
+  @override
+  String get scWaTitle => 'Collega WhatsApp Business';
+
+  @override
+  String get scWaLead =>
+      'WhatsApp passa dall\'API Cloud ufficiale di Meta. Servono una decina di minuti e un account sviluppatore Meta gratuito; ogni passo è controllato prima del successivo.';
+
+  @override
+  String get scRemoteText =>
+      'Meta deve raggiungere Rasgeth da internet, quindi prima va attivato l\'accesso da fuori.';
+
+  @override
+  String scRemoteOk(String url) {
+    return 'Raggiungibile da fuori su $url.';
+  }
+
+  @override
+  String get scWaAppText =>
+      'In Meta for Developers crea un\'app di tipo Business e aggiungi il prodotto WhatsApp. Meta ti dà un numero di prova; il numero della tua attività lo puoi aggiungere dopo.';
+
+  @override
+  String get scWaAppLink => 'Apri Meta for Developers';
+
+  @override
+  String get scWaNumberText =>
+      'Nell\'app apri WhatsApp, poi API Setup. Copia il «Phone number ID» (solo cifre, non il numero di telefono).';
+
+  @override
+  String get scWaNumberLabel => 'Phone number ID';
+
+  @override
+  String get scWaTokenText =>
+      'Il token di quella pagina dura un giorno. Ne serve uno duraturo: nelle impostazioni di Meta Business crea un utente di sistema, assegnagli la tua app e genera un token con i permessi whatsapp_business_messaging e whatsapp_business_management, senza scadenza.';
+
+  @override
+  String get scWaTokenLabel => 'Token';
+
+  @override
+  String scTokenOk(String name, String number) {
+    return 'Il token funziona. Numero: $number $name';
+  }
+
+  @override
+  String get scWaSecretText =>
+      'Nell\'app apri Impostazioni app, poi Di base, e mostra il «Segreto app» (32 lettere e cifre). Firma ogni messaggio che Meta manda, così nessun altro può scrivere a Rasgeth a suo nome.';
+
+  @override
+  String get scWaSecretLabel => 'Segreto dell\'app';
+
+  @override
+  String get scWaWebhookText =>
+      'Nell\'app apri WhatsApp, poi Configurazione, poi Modifica il webhook. Incolla questi due valori. Meta li controlla subito e questa pagina lo mostra.';
+
+  @override
+  String get scCallback => 'URL di callback';
+
+  @override
+  String get scVerify => 'Token di verifica';
+
+  @override
+  String get scWebhookOk => 'Meta ha confermato l\'indirizzo.';
+
+  @override
+  String get scWebhookWait => 'Aspetto che Meta controlli l\'indirizzo…';
+
+  @override
+  String get scWaSubscribeText =>
+      'Sempre in Configurazione, nei campi del webhook, iscriviti a «messages».';
+
+  @override
+  String get scWaTemplateText =>
+      'Facoltativo. Dopo 24 ore dal messaggio di una persona WhatsApp lascia scrivere solo con un modello di messaggio approvato (con una variabile di testo). Se ne hai fatto uno su Meta, scrivi qui il nome.';
+
+  @override
+  String get scTemplateName => 'Nome del modello';
+
+  @override
+  String get scTemplateLang => 'Codice lingua del modello (it, en…)';
+
+  @override
+  String get scTg_botfather => 'Fai il bot';
+
+  @override
+  String get scTg_token => 'Il token del bot';
+
+  @override
+  String get scTg_finish => 'Scegli chi risponde';
+
+  @override
+  String get scTgTitle => 'Collega un bot Telegram';
+
+  @override
+  String get scTgLead => 'Gli altri scrivono a un bot che fai tu. Non è il tuo account Telegram.';
+
+  @override
+  String get scTgBotfatherText =>
+      'In Telegram parla con @BotFather: manda /newbot, scegli un nome e uno username che finisca con «bot». BotFather risponde con un token.';
+
+  @override
+  String get scTgBotfatherLink => 'Apri @BotFather';
+
+  @override
+  String get scTgTokenLabel => 'Il token che ti ha dato BotFather';
+
+  @override
+  String scBotOk(String name) {
+    return 'Il bot è @$name.';
+  }
+
+  @override
+  String get scErr_no_remote =>
+      'L\'accesso da fuori non è attivo. Attivalo in Impostazioni, Accesso da fuori, poi torna qui.';
+
+  @override
+  String get scErr_not_https =>
+      'L\'indirizzo da fuori non è HTTPS, e Meta e Telegram vogliono HTTPS.';
+
+  @override
+  String get scErr_bad_token => 'Il token è sbagliato o scaduto. Creane uno nuovo e riprova.';
+
+  @override
+  String get scErr_bad_number =>
+      'Questo ID numero non esiste per quel token. Copialo di nuovo da API Setup.';
+
+  @override
+  String get scErr_bad_secret => 'Il segreto dell\'app è di 32 lettere e cifre.';
+
+  @override
+  String get scErr_no_access =>
+      'Il token non ha accesso a questo numero. Dai all\'utente di sistema l\'app e i due permessi WhatsApp.';
+
+  @override
+  String get scErr_unreachable =>
+      'La piattaforma non si raggiunge da qui. Controlla la connessione a internet.';
+
+  @override
+  String get scErr_webhook_failed =>
+      'La piattaforma non ha accettato l\'indirizzo. Controlla l\'accesso da fuori e riprova.';
+
+  @override
+  String get scErr_failed => 'Non ha funzionato.';
+
+  @override
+  String get scHub =>
+      'Numeri e bot dell\'attività: collegali, leggi le conversazioni, rispondi a ciò che l\'agente ti passa.';
 }
