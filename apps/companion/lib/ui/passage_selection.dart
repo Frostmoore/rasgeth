@@ -5,6 +5,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show SelectedContent;
 import 'package:flutter/services.dart';
 
 import '../l10n/app_localizations.dart';
@@ -36,11 +37,13 @@ class SelectableAnswer extends StatefulWidget {
 
 class _SelectableAnswerState extends State<SelectableAnswer> {
   final _where = SelectionListenerNotifier();
+  final _text = AnswerSelectionDelegate();
   String _selected = '';
 
   @override
   void dispose() {
     _where.dispose();
+    _text.dispose();
     super.dispose();
   }
 
@@ -89,9 +92,65 @@ class _SelectableAnswerState extends State<SelectableAnswer> {
       },
       child: SelectionListener(
         selectionNotifier: _where,
-        child: SafeMarkdown(widget.data, selectable: false, reading: true),
+        // One container for the whole answer: its delegate writes the copied text (lines, «- »).
+        child: SelectionContainer(
+          delegate: _text,
+          child: SafeMarkdown(widget.data, selectable: false, reading: true),
+        ),
       ),
     );
+  }
+}
+
+/// What a piece of the answer's text is, for the copied text.
+enum _Piece { bullet, itemText, text }
+
+/// Whether a drawn list mark («•», «1.»): the only short text that stands alone left of an item.
+bool _isBulletMark(String text, Size size) =>
+    size.width < 64 && (text == '•' || RegExp(r'^\d+\.$').hasMatch(text));
+
+/// The text of a selected passage of an answer as plain text a person would write: every
+/// paragraph, heading and list item on its own line, «- » (or «1. ») before an item, a blank line
+/// between blocks, a code block with its lines. Flutter joins the selected texts of the blocks
+/// with nothing, so «Title», a bullet and a paragraph came out as one line with «•» in it.
+/// Positions (`contentLength`, ranges) are the default ones: only the copied text changes.
+class AnswerSelectionDelegate extends StaticSelectionContainerDelegate {
+  @override
+  SelectedContent? getSelectedContent() {
+    final out = StringBuffer();
+    Rect? prev;
+    _Piece? kind;
+    var any = false;
+    for (final s in selectables) {
+      final content = s.getSelectedContent();
+      if (content == null || content.plainText.isEmpty) continue;
+      any = true;
+      final at = s.getTransformTo(null).getTranslation();
+      final rect = Rect.fromLTWH(at.x, at.y, s.size.width, s.size.height);
+      var text = content.plainText;
+      final bullet = _isBulletMark(text, s.size);
+      if (bullet) text = text == '•' ? '- ' : '$text ';
+      if (prev != null) {
+        if (kind == _Piece.bullet) {
+          // The text of the item follows its mark.
+        } else if (bullet) {
+          out.write(kind == _Piece.itemText ? '\n' : '\n\n');
+        } else if (rect.top >= prev.bottom - 1) {
+          out.write('\n\n');
+        } else if (rect.left >= prev.right - 1) {
+          out.write('\t');
+        }
+      }
+      kind = bullet
+          ? _Piece.bullet
+          : (kind == _Piece.bullet ||
+                    (kind == _Piece.itemText && prev != null && rect.top < prev.bottom - 1)
+                ? _Piece.itemText
+                : _Piece.text);
+      out.write(text);
+      prev = rect;
+    }
+    return any ? SelectedContent(plainText: out.toString()) : null;
   }
 }
 
