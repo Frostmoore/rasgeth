@@ -153,6 +153,12 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   one("mail_draft", "mail", "mail"),
   one("mail_send", "mail", "mail"),
   one("mail_move", "mail", "mail"),
+  // Calendars (3.12.3): the ones connected to the agent; writing always asks the person.
+  one("calendar_list_events", "mail", "mail"),
+  one("calendar_create_event", "mail", "mail"),
+  // The person's linked chats (3.12.3): which ones are connected to the agent, and a message to them.
+  one("chat_accounts", "mail", "mail"),
+  one("chat_send", "mail", "mail"),
   // Questions and plans: plan mode ends only through propose_plan.
   one("ask_user", "talk", true),
   // A switched-off tool comes back only through the person (G36.15): the way to ask must stay.

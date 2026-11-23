@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AgentConnectionInput } from "./connections.js";
 
 /** Position of an agent in the hierarchy (see plan §5.2). */
 export const AgentKind = z.enum([
@@ -66,8 +67,11 @@ export const AgentSpec = z.object({
   skills: z.array(z.string().min(1)).optional(),
   /** The subproject it works in (G24.13), inside its project. */
   subprojectId: z.string().min(1).optional(),
-  /** For assistants (G24.11): the MCP servers it may use, by name. None unless given. */
-  connections: z.array(z.string().min(1)).optional(),
+  /**
+   * What it is connected to (3.12.3), any number: mailboxes, chats, calendars and MCP servers.
+   * Old agents' MCP names read as `mcp` references.
+   */
+  connections: z.array(AgentConnectionInput).optional(),
   /** Other projects it is assigned to (2026-11-03): it sits under their orchestrators too. */
   projects: z.array(z.string().min(1)).optional(),
   /**
