@@ -497,6 +497,7 @@ mixin _ConversationFiles on State<ConversationScreen> {
                                 onKey: (d) => _setFilesWidth(
                                   (width + d * 24).clamp(_minWidth, most).toDouble(),
                                 ),
+                                onReset: () => _setFilesWidth(320),
                               ),
                             ),
                           ),

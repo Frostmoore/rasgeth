@@ -29,6 +29,7 @@ import '../screens/canvas_screen.dart';
 import '../screens/files/files_explorer.dart' show ExplorerFileDrag;
 import '../screens/first_start_screen.dart' show openExternal;
 import '../theme/colors.dart';
+import '../desktop/side_panel.dart' show PanelResizer;
 import '../ui/artifact_frame_view.dart' show FrameSupport, frameSupportOf;
 import '../ui/chat/file_download.dart' show saveServerLink;
 import '../ui/file_icons.dart';
@@ -44,8 +45,8 @@ double canvasBesideFrom(TargetPlatform p) =>
     p == TargetPlatform.android || p == TargetPlatform.iOS ? 1100 : 760;
 
 /// The panel's width in [maxWidth]: the divider's, else 46%; the conversation keeps 360.
-double canvasPanelWidth(CanvasPanelModel m, double maxWidth) {
-  final w = m.width ?? maxWidth * .46;
+double canvasPanelWidth(CanvasPanelModel m, double maxWidth, {double? saved}) {
+  final w = m.width ?? saved ?? maxWidth * .46;
   return w.clamp(320.0, math.max(320.0, maxWidth - 360));
 }
 
@@ -179,27 +180,35 @@ class CanvasPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = RgColors.of(context);
     final m = model;
-    final width = canvasPanelWidth(m, maxWidth);
+    final app = AppScope.of(context);
+    final width = canvasPanelWidth(m, maxWidth, saved: app.canvasWidth);
+    final most = math.max(320.0, maxWidth - 360);
     final over = m.max || m.full;
     return SizedBox(
       key: const Key('canvas-panel'),
       width: over ? maxWidth : width,
       child: Row(
         children: [
-          // The divider: dragged, the panel grows or shrinks (the page's `Divider`); a double tap
-          // gives back the normal width.
+          // The divider (the page's `Divider`): dragged or moved with the arrows, the panel grows
+          // or shrinks between 320 and what leaves the conversation 360; a double tap (or Enter)
+          // gives back the normal width. The width is kept on this device when the drag ends.
           if (!over)
-            MouseRegion(
-              cursor: SystemMouseCursors.resizeColumn,
-              child: GestureDetector(
-                key: const Key('canvas-divider'),
-                behavior: HitTestBehavior.opaque,
-                onHorizontalDragUpdate: (d) => m.resize(width - d.delta.dx),
-                onDoubleTap: m.resetWidth,
-                child: SizedBox(
-                  width: 7,
-                  child: Center(child: Container(width: 1, color: c.line)),
-                ),
+            DecoratedBox(
+              key: const Key('canvas-divider'),
+              decoration: BoxDecoration(
+                border: Border(left: BorderSide(color: c.line)),
+              ),
+              child: PanelResizer(
+                onDrag: (dx) => m.resize((width - dx).clamp(320.0, most).toDouble()),
+                onKey: (d) {
+                  m.resize((width + d * 24).clamp(320.0, most).toDouble());
+                  app.setCanvasWidth(m.width);
+                },
+                onEnd: () => app.setCanvasWidth(m.width),
+                onReset: () {
+                  m.resetWidth();
+                  app.setCanvasWidth(null);
+                },
               ),
             ),
           Expanded(
