@@ -19547,4 +19547,22 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get syDvTouchHint =>
       'Several taps in a row changed nothing on the screen: touches may not be arriving.';
+
+  @override
+  String cvLimitResets(String when) {
+    return 'Resets $when';
+  }
+
+  @override
+  String cvLimitReadAt(String when) {
+    return 'Plan read $when';
+  }
+
+  @override
+  String get cvLimitNotRead => 'Plan not read yet';
+
+  @override
+  String cvLimitMarginTip(String margin) {
+    return 'Margin $margin points against an even pace over the week';
+  }
 }

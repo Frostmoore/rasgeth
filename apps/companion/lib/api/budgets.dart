@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 
 import 'client.dart';
 import 'metrics.dart';
+import 'plan_margin.dart';
 
 /// One row of `GET /api/budgets`.
 class Budget {
@@ -64,12 +65,13 @@ class PlanWindow {
 }
 
 class PlanLimits {
-  const PlanLimits({required this.provider, required this.windows});
+  const PlanLimits({required this.provider, required this.windows, this.readAt});
 
   static PlanLimits? fromJson(Object? o) {
     if (o is! Map<String, dynamic> || o['provider'] is! String) return null;
     return PlanLimits(
       provider: o['provider'] as String,
+      readAt: o['readAt'] as String?,
       windows: [
         for (final w in (o['windows'] as List? ?? const []).whereType<Map<String, dynamic>>())
           if (w['id'] is String)
@@ -85,6 +87,9 @@ class PlanLimits {
 
   final String provider;
   final List<PlanWindow> windows;
+
+  /// When the plan was last read (ISO), for the tooltip; null: unknown.
+  final String? readAt;
 }
 
 /// How full a bar is: the page's `level` (red from 90%, yellow from 70%).
@@ -107,6 +112,8 @@ class LimitBar {
     required this.text,
     required this.title,
     this.bar = true,
+    this.margin,
+    this.marginTone,
   });
 
   final String key;
@@ -118,7 +125,13 @@ class LimitBar {
   /// false: only the name and the figure (the spending without limits).
   final bool bar;
 
-  BarLevel get level => barLevel(pct);
+  /// The 7-day window's margin against an even pace (3.12.3); null: none.
+  final int? margin;
+
+  /// The colour the margin gives the bar, in place of the percentage's.
+  final BarLevel? marginTone;
+
+  BarLevel get level => marginTone ?? barLevel(pct);
 }
 
 /// The words of the bars, in the person's language.
@@ -128,16 +141,31 @@ class LimitWords {
     required this.spent,
     required this.context,
     required this.weekShort,
+    this.resets = 'Resets {when}',
+    this.readAt = 'Plan read {when}',
+    this.notRead = 'Plan not read yet',
+    this.marginTip = 'Margin {margin} points against an even pace over the week',
   });
 
   final String total;
   final String spent;
   final String context;
   final String weekShort;
+
+  /// Tooltip lines (3.12.3): `{when}` and `{margin}` are filled in.
+  final String resets;
+  final String readAt;
+  final String notRead;
+  final String marginTip;
 }
 
 /// The page's own server id (`OWN_SERVER_ID` in `@redgiant/protocol`).
 const ownServerId = 'server';
+
+String _two(int n) => n.toString().padLeft(2, '0');
+
+String _plainWhen(DateTime d) =>
+    '${d.year}-${_two(d.month)}-${_two(d.day)} ${_two(d.hour)}:${_two(d.minute)}';
 
 String _pctText(double? pct) => pct == null ? '–' : '${jsRound(pct)}%';
 
@@ -151,27 +179,56 @@ List<LimitBar> headerBars({
   required LimitWords words,
   MessageMetrics? lastMetrics,
   String? Function(String agentId)? agentName,
+  DateTime? now,
+  String Function(DateTime)? whenText,
 }) {
   final plan = plans.where((p) => p.provider == provider).firstOrNull;
   if (plan != null) {
-    // Before any reading the 5h bar waits with a dash; a plan without that window (3.9.8,
-    // Claude's) shows only the windows it has.
+    // The 5h window is always there (a dash while the plan gives no figure for it, 3.12.3), then
+    // the 7-day one, then the rest as the provider sent them (a stable sort, as the page's).
     final windows = [
-      if (plan.windows.isEmpty) const PlanWindow(id: '5h', label: '5h'),
+      if (!plan.windows.any((w) => w.id == '5h')) const PlanWindow(id: '5h', label: '5h'),
       ...plan.windows,
     ];
-    // The 5h window first, the rest as the provider sent them (a stable sort, as the page's).
-    final sorted = [...windows.where((w) => w.id == '5h'), ...windows.where((w) => w.id != '5h')];
+    int rank(String id) => id == '5h' ? 0 : (id == '7d' ? 1 : 2);
+    final sorted = [
+      for (final r in [0, 1, 2]) ...windows.where((w) => rank(w.id) == r),
+    ];
+    final fmt = whenText ?? _plainWhen;
+    final clock = now ?? DateTime.now();
+    final readAt = plan.readAt == null ? null : DateTime.tryParse(plan.readAt!);
+    final read = readAt == null
+        ? words.notRead
+        : words.readAt.replaceAll('{when}', fmt(readAt.toLocal()));
     return [
       for (final w in sorted)
         () {
-          final name = w.id == '7d' ? words.weekShort : w.label;
+          final week = w.id == '7d';
+          final name = week ? words.weekShort : w.label;
+          final margin = week
+              ? weeklyMargin(usedPct: w.usedPct, resetsAt: w.resetsAt, now: clock)
+              : null;
+          final resetsAt = w.resetsAt == null ? null : DateTime.tryParse(w.resetsAt!);
+          final lines = [
+            '$name: ${_pctText(w.usedPct)}${margin == null ? '' : ' · ${marginText(margin)}'}',
+            if (margin != null) words.marginTip.replaceAll('{margin}', marginText(margin)),
+            if (resetsAt != null) words.resets.replaceAll('{when}', fmt(resetsAt.toLocal())),
+            read,
+          ];
           return LimitBar(
             key: 'plan:${w.id}',
             name: name,
             pct: w.usedPct,
             text: _pctText(w.usedPct),
-            title: '$name: ${_pctText(w.usedPct)}',
+            title: lines.join('\n'),
+            margin: margin,
+            marginTone: margin == null
+                ? null
+                : switch (marginLevel(margin)) {
+                    MarginLevel.ok => BarLevel.normal,
+                    MarginLevel.warn => BarLevel.medium,
+                    MarginLevel.err => BarLevel.high,
+                  },
           );
         }(),
     ];
@@ -235,10 +292,20 @@ class SpendModel extends ChangeNotifier {
   List<PlanLimits> plans = const [];
   bool loaded = false;
   Timer? _soon;
+  Timer? _poll;
+  RedGiantClient? _client;
   bool _reading = false;
+
+  /// How often the open app asks for the plan's windows again (3.12.3); the server shares one
+  /// reading among all the pages and apps.
+  static const pollEvery = Duration(minutes: 2);
 
   Future<void> refresh(RedGiantClient? c) async {
     if (c == null || _reading) return;
+    _client = c;
+    _poll ??= Timer.periodic(pollEvery, (_) {
+      if (plans.isNotEmpty) unawaited(refresh(_client));
+    });
     _reading = true;
     try {
       final b = await c.budgets().catchError((_) => budgets);
@@ -260,6 +327,9 @@ class SpendModel extends ChangeNotifier {
 
   void clear() {
     _soon?.cancel();
+    _poll?.cancel();
+    _poll = null;
+    _client = null;
     budgets = const [];
     plans = const [];
     loaded = false;
@@ -269,6 +339,7 @@ class SpendModel extends ChangeNotifier {
   @override
   void dispose() {
     _soon?.cancel();
+    _poll?.cancel();
     super.dispose();
   }
 }

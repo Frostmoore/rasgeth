@@ -19606,4 +19606,22 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get syDvTouchHint =>
       'Più tocchi di fila non hanno cambiato lo schermo: forse i tocchi non arrivano.';
+
+  @override
+  String cvLimitResets(String when) {
+    return 'Si azzera $when';
+  }
+
+  @override
+  String cvLimitReadAt(String when) {
+    return 'Piano letto $when';
+  }
+
+  @override
+  String get cvLimitNotRead => 'Piano non ancora letto';
+
+  @override
+  String cvLimitMarginTip(String margin) {
+    return 'Margine $margin punti rispetto a un ritmo costante nella settimana';
+  }
 }

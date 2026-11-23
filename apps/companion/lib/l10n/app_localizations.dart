@@ -33755,6 +33755,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Several taps in a row changed nothing on the screen: touches may not be arriving.'**
   String get syDvTouchHint;
+
+  /// The page's `limitResets` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Resets {when}'**
+  String cvLimitResets(String when);
+
+  /// The page's `limitReadAt` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Plan read {when}'**
+  String cvLimitReadAt(String when);
+
+  /// The page's `limitNotRead` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Plan not read yet'**
+  String get cvLimitNotRead;
+
+  /// The page's `limitMarginTip` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Margin {margin} points against an even pace over the week'**
+  String cvLimitMarginTip(String margin);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

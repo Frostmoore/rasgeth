@@ -13611,5 +13611,36 @@
   },
   "syDvRepairText": "This restarts the simulator's home screen and closes the apps open on it. Use it only when taps and keys no longer reach the simulator. Rasgeth never does it by itself.",
   "syDvRepairYes": "Repair",
-  "syDvTouchHint": "Several taps in a row changed nothing on the screen: touches may not be arriving."
+  "syDvTouchHint": "Several taps in a row changed nothing on the screen: touches may not be arriving.",
+  "cvLimitResets": "Resets {when}",
+  "@cvLimitResets": {
+    "description": "The page's `limitResets` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "cvLimitReadAt": "Plan read {when}",
+  "@cvLimitReadAt": {
+    "description": "The page's `limitReadAt` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "cvLimitNotRead": "Plan not read yet",
+  "@cvLimitNotRead": {
+    "description": "The page's `limitNotRead` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvLimitMarginTip": "Margin {margin} points against an even pace over the week",
+  "@cvLimitMarginTip": {
+    "description": "The page's `limitMarginTip` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "margin": {
+        "type": "String"
+      }
+    }
+  }
 }

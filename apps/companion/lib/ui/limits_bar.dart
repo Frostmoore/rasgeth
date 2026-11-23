@@ -2,11 +2,13 @@
 // «Total [bar] 63%», a project's or an agent's budget, a plan's windows, a local model's context.
 // Same colours and thresholds as `styles.css` (`.limit`): green, yellow from 70%, red from 90%.
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 import '../api/budgets.dart';
 import '../api/conversation.dart';
 import '../api/live_model.dart';
 import '../api/metrics.dart';
+import '../api/plan_margin.dart';
 import '../api/types.dart';
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';
@@ -67,7 +69,15 @@ class HeaderLimits extends StatelessWidget {
             spent: l.limitsSpent,
             context: l.limitsContext,
             weekShort: l.limitsWeekShort,
+            resets: l.cvLimitResets('{when}'),
+            readAt: l.cvLimitReadAt('{when}'),
+            notRead: l.cvLimitNotRead,
+            marginTip: l.cvLimitMarginTip('{margin}'),
           ),
+          whenText: DateFormat(
+            'EEE d MMM HH:mm',
+            Localizations.localeOf(context).toString(),
+          ).format,
           lastMetrics: lastMetricsOf(view),
           agentName: (id) => app.agents.where((x) => x.id == id).firstOrNull?.name,
         );
@@ -127,6 +137,7 @@ class LimitBarView extends StatelessWidget {
       5 +
       (bar.bar ? 46 + 5 : 0) +
       _text(bar.text, scaler, bold: bar.level == BarLevel.high) +
+      (bar.margin == null ? 0 : 5 + _text(marginText(bar.margin!), scaler, bold: true)) +
       1;
 
   @override
@@ -185,6 +196,19 @@ class LimitBarView extends StatelessWidget {
               fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),
+          if (bar.margin != null) ...[
+            const SizedBox(width: 5),
+            Text(
+              marginText(bar.margin!),
+              key: Key('limit-margin-${bar.key}'),
+              style: TextStyle(
+                fontSize: _limitFont,
+                fontWeight: FontWeight.w600,
+                color: fill,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+          ],
         ],
       ),
     );
