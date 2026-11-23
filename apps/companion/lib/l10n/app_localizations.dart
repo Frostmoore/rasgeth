@@ -33368,6 +33368,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Once a week'**
   String get nudgeWeek;
+
+  /// No description provided for @smpDoingThink.
+  ///
+  /// In en, this message translates to:
+  /// **'is thinking…'**
+  String get smpDoingThink;
+
+  /// No description provided for @smpDoingSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'is searching…'**
+  String get smpDoingSearch;
+
+  /// No description provided for @smpDoingWork.
+  ///
+  /// In en, this message translates to:
+  /// **'is working…'**
+  String get smpDoingWork;
+
+  /// No description provided for @smpDoingWait.
+  ///
+  /// In en, this message translates to:
+  /// **'is waiting for you'**
+  String get smpDoingWait;
+
+  /// No description provided for @smpSpentHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent here: {usd}'**
+  String smpSpentHere(String usd);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

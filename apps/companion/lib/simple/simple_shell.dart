@@ -8,6 +8,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../api/conversation.dart';
+import '../api/metrics.dart' show usd;
+import '../api/types.dart' show Agent;
 import '../api/live_model.dart';
 import '../api/topics.dart';
 import '../app_state.dart';
@@ -963,10 +965,13 @@ class TopicCard extends StatelessWidget {
 
 /// The top of a screen: back, a title, what else it offers.
 class _Top extends StatelessWidget {
-  const _Top({required this.title, this.trailing});
+  const _Top({required this.title, this.trailing, this.cost});
 
   final String title;
   final Widget? trailing;
+
+  /// «Speso qui: $0.25» (3.12.1).
+  final String? cost;
 
   @override
   Widget build(BuildContext context) {
@@ -990,6 +995,15 @@ class _Top extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: c.text),
             ),
           ),
+          if (cost != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Text(
+                cost!,
+                key: const Key('simple-cost'),
+                style: TextStyle(color: c.dim, fontSize: 13),
+              ),
+            ),
           ?trailing,
         ],
       ),
@@ -1102,10 +1116,27 @@ class _TopicScreenState extends State<TopicScreen> {
                       q,
                 ];
                 final open = {for (final q in _app.live.questions) q.requestId};
+                // Who works here: God in a topic, else the conversation's agent.
+                final worker = widget.chat
+                    ? _app.agents.where((a) => a.id == row?.agentId).firstOrNull
+                    : _app.god;
+                final call = _view.call;
+                final doing = workWord(
+                  _view.events,
+                  running: _view.running,
+                  thinking:
+                      _view.running &&
+                      call != null &&
+                      (call.writing == 'thinking' || call.firstToken == null),
+                  waiting: approvals.isNotEmpty || questions.isNotEmpty,
+                );
+                final cost = conversationCost(_view.events);
                 return Column(
                   children: [
                     _Top(
                       title: title,
+                      // What this conversation cost: everyone's to know (3.12.1).
+                      cost: cost > 0 ? l.smpSpentHere(usd(cost)) : null,
                       trailing: widget.chat
                           ? null
                           : Builder(
@@ -1138,7 +1169,14 @@ class _TopicScreenState extends State<TopicScreen> {
                             ),
                           if (_view.liveText.isNotEmpty)
                             SafeMarkdown(_view.liveText, reading: true, cursor: true),
-                          if (_view.running && _view.liveText.isEmpty) _Working(l.smpWorkingNow),
+                          // While it works: only its mascot and a word (3.12.1).
+                          if (doing != null && _view.liveText.isEmpty)
+                            _Working(switch (doing) {
+                              'wait' => l.smpDoingWait,
+                              'search' => l.smpDoingSearch,
+                              'work' => l.smpDoingWork,
+                              _ => l.smpDoingThink,
+                            }, agent: worker),
                           for (final r in approvals)
                             Decision(key: Key('decide-${r.requestId}'), request: r),
                           for (final q in questions) _QuestionBox(q: q),
@@ -1170,9 +1208,12 @@ class _TopicScreenState extends State<TopicScreen> {
 }
 
 class _Working extends StatelessWidget {
-  const _Working(this.text);
+  const _Working(this.text, {this.agent});
 
   final String text;
+
+  /// The agent at work: its mascot, small, with its live state (3.12.1).
+  final Agent? agent;
 
   @override
   Widget build(BuildContext context) {
@@ -1180,17 +1221,26 @@ class _Working extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
+        key: const Key('simple-working'),
         children: [
-          for (var i = 0; i < 3; i++)
-            Container(
-              margin: const EdgeInsets.only(right: 4),
-              width: 7,
-              height: 7,
-              decoration: BoxDecoration(
-                color: c.accent.withValues(alpha: 0.4 + i * 0.25),
-                shape: BoxShape.circle,
+          if (agent case final a?)
+            MascotView(
+              agentId: a.id,
+              spec: a.mascot,
+              state: AppScope.of(context).live.mascotStateOf(a.id),
+              size: 32,
+            )
+          else
+            for (var i = 0; i < 3; i++)
+              Container(
+                margin: const EdgeInsets.only(right: 4),
+                width: 7,
+                height: 7,
+                decoration: BoxDecoration(
+                  color: c.accent.withValues(alpha: 0.4 + i * 0.25),
+                  shape: BoxShape.circle,
+                ),
               ),
-            ),
           const SizedBox(width: 6),
           Text(text, style: TextStyle(color: c.dim, fontSize: 15.5)),
         ],

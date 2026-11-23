@@ -3,6 +3,7 @@
 // greeting, the big box and the topics' cards with their state in words; a topic read as a
 // document with «in: Titolo · Sposta» and its decisions in a box; «Sposta» to another topic; the
 // archive with its search; a few settings and the switch to the full view, kept on this device.
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -16,6 +17,7 @@ import 'package:rgcompanion/app.dart';
 import 'package:rgcompanion/app_state.dart';
 import 'package:rgcompanion/api/topics.dart';
 import 'package:rgcompanion/l10n/app_localizations.dart';
+import 'package:rgcompanion/mascot/mascot_view.dart' show withoutSign;
 import 'package:rgcompanion/simple/simple_giant.dart';
 import 'package:rgcompanion/simple/simple_model.dart';
 import 'package:rgcompanion/simple/simple_shell.dart';
@@ -437,6 +439,53 @@ void main() {
       await done(tester);
     });
 
+    testWidgets('3.12.1: a conversation shows the words and the cost, never tools or reasoning', (
+      tester,
+    ) async {
+      final sid = server.sessionMadeElsewhere('chat', title: 'Voli');
+      server
+        ..store(sid, 'message.user', {'text': 'Un volo per Cagliari?'})
+        ..store(sid, 'tool.call', {
+          'callId': 'c1',
+          'tool': 'web_search',
+          'input': {'q': 'voli Cagliari'},
+        })
+        ..store(sid, 'tool.result', {'callId': 'c1', 'ok': true, 'output': 'risultato grezzo'})
+        ..store(sid, 'message.assistant', {
+          'parts': [
+            {'type': 'thinking', 'text': 'Ragionamento segreto sui voli'},
+            {'type': 'text', 'text': 'Il volo più comodo costa 89 euro.'},
+          ],
+          'metrics': {
+            'inputTokens': 1200,
+            'outputTokens': 80,
+            'cacheReadTokens': 0,
+            'cacheWriteTokens': 0,
+            'contextUsed': 1280,
+            'contextWindow': 200000,
+            'ms': 900,
+          },
+          'costUsd': 0.25,
+          'model': 'claude-opus-5-5',
+          'provider': 'anthropic',
+          'stopReason': 'end_turn',
+        });
+      await open(tester);
+      unawaited(openChat(tester.element(find.byType(SimpleShell)), sid, 'Voli'));
+      await _settle(tester, 12);
+      expect(find.textContaining('Il volo più comodo costa 89 euro.'), findsOneWidget);
+      expect(find.text(r'Speso qui: $0.25'), findsOneWidget);
+      for (final hidden in [
+        'web_search',
+        'risultato grezzo',
+        'Ragionamento segreto',
+        'claude-opus',
+      ]) {
+        expect(find.textContaining(hidden), findsNothing, reason: hidden);
+      }
+      await done(tester);
+    });
+
     testWidgets('3.12.1: a swipe turns the orbit either way', (tester) async {
       await open(tester);
       await tester.fling(find.byKey(const Key('simple-stage')), const Offset(-300, 0), 1200);
@@ -608,6 +657,44 @@ void main() {
     expect(stripAgents(list, 'chat').map((x) => x.id), ['demi', 'ada']);
     expect(nearestIndex([10, 50, 90], 62), 1);
     expect(nearestIndex([], 5), -1);
+  });
+
+  test('3.12.1: the word while it works, and the cost', () {
+    RgEvent e(String type, Map<String, dynamic> p) =>
+        RgEvent(seq: 1, ts: '', type: type, payload: p);
+    final search = [
+      e('tool.call', {'callId': 'c1', 'tool': 'web_search'}),
+    ];
+    expect(workWord(search, running: false), isNull);
+    expect(workWord(search, running: false, waiting: true), 'wait');
+    expect(workWord(const [], running: true), 'think');
+    expect(workWord(search, running: true), 'search');
+    expect(workWord(search, running: true, thinking: true), 'think');
+    expect(
+      workWord([
+        e('tool.call', {'callId': 'c2', 'tool': 'write_file'}),
+      ], running: true),
+      'work',
+    );
+    expect(
+      workWord([
+        ...search,
+        e('tool.result', {'callId': 'c1'}),
+      ], running: true),
+      'think',
+    );
+    expect(
+      conversationCost([
+        e('message.assistant', {'costUsd': 0.25}),
+      ]),
+      0.25,
+    );
+  });
+
+  test('3.12.1: the giants draw no state sign', () {
+    const svg = '<svg><g class="core"></g><g class="mk wait"><circle/></g></svg>';
+    expect(withoutSign(svg), '<svg><g class="core"></g></svg>');
+    expect(withoutSign('<svg><g/></svg>'), '<svg><g/></svg>');
   });
 
   test('3.12.1: a 404 is an old server, the rest is not', () {

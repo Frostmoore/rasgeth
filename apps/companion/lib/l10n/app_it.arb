@@ -5545,5 +5545,10 @@
   "nudgeEvery": "Ogni quanto",
   "nudgeDay": "Una volta al giorno",
   "nudgeTwoDays": "Ogni due giorni",
-  "nudgeWeek": "Una volta a settimana"
+  "nudgeWeek": "Una volta a settimana",
+  "smpDoingThink": "sta pensando…",
+  "smpDoingSearch": "sta cercando…",
+  "smpDoingWork": "sta lavorando…",
+  "smpDoingWait": "ti aspetta",
+  "smpSpentHere": "Speso qui: {usd}"
 }

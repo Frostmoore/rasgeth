@@ -7,7 +7,7 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 
 import '../api/client.dart';
-import '../api/conversation.dart' show SessionRow;
+import '../api/conversation.dart' show RgEvent, SessionRow;
 import '../api/topics.dart';
 import '../api/types.dart' show MascotState;
 
@@ -114,6 +114,45 @@ List<SessionRow> recentChats(List<SessionRow> rows, String? chatId, [int n = 5])
   final list = rows.where((r) => r.agentId == chatId && !r.archived).toList()
     ..sort((a, b) => (b.lastAt ?? b.createdAt).compareTo(a.lastAt ?? a.createdAt));
   return list.take(n).toList();
+}
+
+// ---------- A conversation in the simple interface (3.12.1, the page's `workWord`) ----------
+
+/// Tools that look things up: the agent «is searching».
+final _searchTools = RegExp('search|fetch|browse|read_url|web|lookup|find', caseSensitive: false);
+
+/// What the agent is doing, in a word: `wait`, `think`, `search`, `work`; null when idle.
+String? workWord(
+  List<RgEvent> events, {
+  required bool running,
+  bool thinking = false,
+  bool waiting = false,
+}) {
+  if (waiting) return 'wait';
+  if (!running) return null;
+  if (thinking) return 'think';
+  final open = <String, String>{};
+  for (final e in events) {
+    final p = e.payload;
+    if (p == null) continue;
+    if (e.type == 'tool.call' && p['callId'] is String) {
+      open[p['callId'] as String] = '${p['tool'] ?? ''}';
+    } else if (e.type == 'tool.result') {
+      open.remove(p['callId']);
+    }
+  }
+  if (open.isEmpty) return 'think';
+  return _searchTools.hasMatch(open.values.last) ? 'search' : 'work';
+}
+
+/// What a conversation cost so far, in dollars (shown at the top, for everyone).
+double conversationCost(List<RgEvent> events) {
+  var usd = 0.0;
+  for (final e in events) {
+    final c = e.payload?['costUsd'];
+    if (e.type == 'message.assistant' && c is num) usd += c.toDouble();
+  }
+  return usd;
 }
 
 /// A ready-made assistant for everyday life (3.12, «Assistenti pronti»: still to be defined with

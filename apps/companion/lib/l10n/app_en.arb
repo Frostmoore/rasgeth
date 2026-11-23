@@ -13381,5 +13381,17 @@
   "nudgeEvery": "How often",
   "nudgeDay": "Once a day",
   "nudgeTwoDays": "Every other day",
-  "nudgeWeek": "Once a week"
+  "nudgeWeek": "Once a week",
+  "smpDoingThink": "is thinking…",
+  "smpDoingSearch": "is searching…",
+  "smpDoingWork": "is working…",
+  "smpDoingWait": "is waiting for you",
+  "smpSpentHere": "Spent here: {usd}",
+  "@smpSpentHere": {
+    "placeholders": {
+      "usd": {
+        "type": "String"
+      }
+    }
+  }
 }

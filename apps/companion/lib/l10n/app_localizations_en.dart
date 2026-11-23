@@ -19318,4 +19318,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nudgeWeek => 'Once a week';
+
+  @override
+  String get smpDoingThink => 'is thinking…';
+
+  @override
+  String get smpDoingSearch => 'is searching…';
+
+  @override
+  String get smpDoingWork => 'is working…';
+
+  @override
+  String get smpDoingWait => 'is waiting for you';
+
+  @override
+  String smpSpentHere(String usd) {
+    return 'Spent here: $usd';
+  }
 }
