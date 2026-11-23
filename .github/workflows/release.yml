@@ -444,6 +444,8 @@ jobs:
     if: ${{ !inputs.only && !inputs.dry_run && needs.ci-build.outputs.reuse != 'true' }}
     needs: ci-build
     permissions:
+      # companion.yml's plan reads earlier runs (incremental CI): a called workflow gets no more than this.
+      actions: read
       contents: read
     uses: ./.github/workflows/companion.yml
     with:

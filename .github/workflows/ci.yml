@@ -303,6 +303,8 @@ jobs:
     needs: [plan, reuse-packages]
     if: ${{ !cancelled() && needs.plan.outputs.run == 'true' && needs.plan.outputs.release == 'true' && needs.reuse-packages.outputs.ok != 'true' }}
     permissions:
+      # companion.yml's plan reads earlier runs (incremental CI): a called workflow gets no more than this.
+      actions: read
       contents: read
     uses: ./.github/workflows/companion.yml
     with:
