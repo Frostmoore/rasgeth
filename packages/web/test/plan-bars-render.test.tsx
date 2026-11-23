@@ -4,9 +4,9 @@
 // from the margin, not from the percentage; the tooltip says the reset times and the reading time.
 import { cleanup, render } from "@testing-library/preact";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { dictionaries, lang } from "../src/i18n.js";
 import type { PlanLimits } from "../src/api.js";
 import { PlanBars } from "../src/components/PlanBars.js";
+import { dictionaries, lang } from "../src/i18n.js";
 
 const DAY = 86_400_000;
 const now = Date.parse("2026-11-23T12:00:00Z");
@@ -14,7 +14,12 @@ const plan = (used: number, daysLeft: number): PlanLimits => ({
   provider: "claude-subscription",
   readAt: "2026-11-23T11:58:00Z",
   windows: [
-    { id: "7d", label: "7g", usedPct: used, resetsAt: new Date(now + daysLeft * DAY).toISOString() },
+    {
+      id: "7d",
+      label: "7g",
+      usedPct: used,
+      resetsAt: new Date(now + daysLeft * DAY).toISOString(),
+    },
     { id: "model:Fable", label: "Fable", usedPct: 0 },
   ],
 });
@@ -58,9 +63,7 @@ describe("PlanBars", () => {
     expect(tip).toContain("Plan read ");
     expect(tip).toContain("17 points");
     cleanup();
-    const { container: c2 } = render(
-      <PlanBars plan={{ provider: "p", windows: [] }} now={now} />,
-    );
+    const { container: c2 } = render(<PlanBars plan={{ provider: "p", windows: [] }} now={now} />);
     expect(c2.querySelector(".limit")?.getAttribute("title")).toContain("not read yet");
   });
 

@@ -3,8 +3,8 @@
 // bar) and the per-model windows. The tooltip says each window's reset time and when the plan was
 // last read, in the person's timezone.
 import { marginLevel, marginText, weeklyMargin } from "@redgiant/protocol";
-import { lang, t } from "../i18n.js";
 import type { PlanLimits } from "../api.js";
+import { lang, t } from "../i18n.js";
 import { planBars } from "../state.js";
 
 const level = (pct: number) => (pct >= 90 ? "high" : pct >= 70 ? "medium" : "");
