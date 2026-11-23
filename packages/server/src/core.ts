@@ -107,6 +107,7 @@ import {
   ownWords,
   type PortraitView,
   PRODUCT_NAME,
+  PROJECT_AGENTS_DEFAULT,
   ProjectMaxAgents,
   type Recipe,
   type RefineEstimate,
@@ -2407,6 +2408,65 @@ export class RedGiantCore implements OrchestrationHost {
   }
 
   /** What a subproject's agent must know about where it works. */
+  /**
+   * An orchestrator's «## Your team» (3.12.3, the person: «se ha spazio per agenti deve delegare e
+   * comportarsi da orchestratore; se il limite è zero deve fare lui»): how many agents may work at
+   * once (the project's limit and the person's «agents at work together», the smaller), the
+   * project's agents, and «## Models you can give» with their prices, so it can pick the most
+   * efficient one for each part. Read once, when the conversation starts.
+   */
+  private async teamNote(agent: AgentRecord): Promise<string> {
+    if (!agent.projectId) return "";
+    const project = await this.projects.get(agent.ownerId, agent.projectId);
+    const own = project?.maxAgents ?? PROJECT_AGENTS_DEFAULT;
+    const atWork = this.commandSettings.get(agent.ownerId).maxAtWork ?? null;
+    const limit = atWork === null ? own : Math.min(own, atWork);
+    const team = this.registry
+      .list({ ownerId: agent.ownerId, projectId: agent.projectId })
+      .filter((a) => a.id !== agent.id && a.kind !== "inspector");
+    const who = team.length
+      ? team
+          .map(
+            (a) =>
+              `- ${a.name} (${a.kind}, ${a.status}${a.model ? `, ${a.model.provider}/${a.model.model}` : ""})`,
+          )
+          .join("\n")
+      : "- none yet: create them with create_agent";
+    const lines = [
+      "## Your team",
+      own === 0 || atWork === 0
+        ? "The user's limit allows no agents besides you here: there is no team, do the work yourself."
+        : `This project may have up to ${own} agents besides you (the user's limit)${atWork === null ? "" : `; across all projects at most ${atWork} work at the same time, the others wait in line by themselves`}. Use them: delegate the parallel parts, up to ${limit} at once.`,
+      "The project's agents now:",
+      who,
+    ];
+    if (own === 0 || limit === 0) return lines.join("\n");
+    const models = (await this.models()).slice(0, 200);
+    const priced = models
+      .map((m) => {
+        const p = this.o.providers.has(m.provider)
+          ? this.o.providers.get(m.provider).modelInfo(m.model).pricing
+          : undefined;
+        return { ...m, p };
+      })
+      .sort((a, b) => (a.p?.output ?? 1e9) - (b.p?.output ?? 1e9))
+      .slice(0, 16);
+    if (priced.length === 0) return lines.join("\n");
+    const list = priced
+      .map(
+        (m) =>
+          `- ${m.provider}/${m.model}${m.name ? ` (${m.name})` : ""}: ${
+            m.provider.endsWith("-subscription")
+              ? "the user's subscription (no cost per token, its limits count)"
+              : m.p
+                ? `$${m.p.input}/$${m.p.output} per million tokens in/out`
+                : "price unknown"
+          }`,
+      )
+      .join("\n");
+    return `${lines.join("\n")}\n\n## Models you can give\nThe user's models, cheapest first (the user's default applies when you give none):\n${list}`;
+  }
+
   private async subprojectNote(agent: AgentRecord): Promise<string> {
     // The orchestrator leads every subproject of its project.
     if (agent.kind === "orchestrator" && agent.projectId) {
@@ -2831,6 +2891,8 @@ export class RedGiantCore implements OrchestrationHost {
           .prompt(ownerId, agent.kind, (await this.chatAgentIdOf(agent.ownerId)) === agent.id)
           .catch(() => ""),
         await this.subprojectNote(agent),
+        // An orchestrator's team (3.12.3): its limit, its agents and the models it can give.
+        agent.kind === "orchestrator" ? await this.teamNote(agent).catch(() => "") : "",
         // A magic automation's conversation knows its task from the start (G33.3).
         magicSession ? MAGIC_PROMPT : "",
         magicRuleSession ? MAGIC_RULE_PROMPT : "",

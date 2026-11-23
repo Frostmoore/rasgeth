@@ -220,3 +220,32 @@ describe("a project's agent limit (2026-11-18)", () => {
     expect(god).toBeTruthy();
   });
 });
+
+describe("the orchestrator's team in its instructions (3.12.3)", () => {
+  const system = async (srv: Server, agentId: string) => {
+    const seen: string[] = [];
+    const sid = (await srv.api<{ sessionId: string }>("POST", "/api/sessions", { agentId })).body
+      .sessionId;
+    await (await srv.core.send("me", sid, "hello")).done;
+    const started = (await srv.core.store.list({ sessionId: sid, types: ["session.started"] }))[0];
+    seen.push((started?.payload as { system?: string } | undefined)?.system ?? "");
+    return seen[0] ?? "";
+  };
+
+  it("with room for agents it leads a team", async () => {
+    const { srv, orch } = await start();
+    const text = await system(srv, orch);
+    expect(text).toMatch(/^You are the orchestrator of this project: you lead a team of agents\./);
+    expect(text).toContain("## Your team");
+    expect(text).toContain("This project may have up to 3 agents besides you");
+    expect(text).toContain("- none yet: create them with create_agent");
+  });
+
+  it("with a limit of 0 it is told to do the work itself, and no models list", async () => {
+    const { srv, orch } = await start();
+    await limit(srv, 0);
+    const text = await system(srv, orch);
+    expect(text).toContain("there is no team, do the work yourself");
+    expect(text).not.toMatch(/\n## Models you can give\n/);
+  });
+});
