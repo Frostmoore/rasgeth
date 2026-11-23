@@ -121,60 +121,76 @@ const NO_ELEMENTS =
 export const TOUCH_HINT =
   " Touches seem not to arrive: the screen did not change after several taps. Ask the person to use «Repair touches» on this device (it restarts the simulator's home screen and closes its open apps).";
 
-/** One element of serve-sim's accessibility snapshot. */
+/** One element of serve-sim's accessibility snapshot (its `/ax`, as served by 0.1.49). */
 interface AxElement {
-  label?: string;
-  value?: string;
-  role?: string;
   type?: string;
+  role_description?: string;
+  AXLabel?: string | null;
+  AXValue?: string | null;
+  AXUniqueId?: string | null;
   enabled?: boolean;
   frame?: { x: number; y: number; width: number; height: number };
+  children?: AxElement[];
 }
 
 const AX_ACTIONABLE =
   /button|cell|link|switch|toggle|textfield|searchfield|securetextfield|tab|slider|segmented|picker|stepper|menuitem|checkbox|image/i;
 
 /**
- * serve-sim's `/ax` snapshot (`{screen:{width,height}, elements:[{label,value,role,type,enabled,
- * frame}]}`) as the same numbered elements uiautomator's tree gives: centres as fractions of the
- * screen, empty and off-screen things left out. Pure.
+ * serve-sim's `/ax` snapshot as the same numbered elements uiautomator's tree gives. The snapshot is
+ * a list of trees (`[{type:"Application", frame, AXLabel, children:[…]}]`, frames in points): the
+ * screen is the application's frame; every element with a label, a value or an action, depth first,
+ * becomes one, with its centre as fractions of the screen. Empty, off-screen and status-bar things
+ * are left out. Pure.
  */
 export function parseAxTree(json: string): UiNode[] {
-  let snap: { screen?: { width?: number; height?: number }; elements?: AxElement[] };
+  let roots: AxElement[];
   try {
-    snap = JSON.parse(json);
+    const v = JSON.parse(json) as unknown;
+    roots = Array.isArray(v)
+      ? (v as AxElement[])
+      : v && typeof v === "object"
+        ? [v as AxElement]
+        : [];
   } catch {
     return [];
   }
-  const W = snap.screen?.width ?? 0;
-  const H = snap.screen?.height ?? 0;
+  const app = roots.find((r) => /application/i.test(r.type ?? "")) ?? roots[0];
+  const W = app?.frame?.width ?? 0;
+  const H = app?.frame?.height ?? 0;
   if (!(W > 0 && H > 0)) return [];
   const out: UiNode[] = [];
-  for (const e of snap.elements ?? []) {
+  const visit = (e: AxElement) => {
     const f = e.frame;
-    if (!f || !(f.width > 0 && f.height > 0)) continue;
-    const label = (e.label ?? "").trim();
-    const value = (e.value ?? "").trim();
-    const kind = `${e.type ?? ""} ${e.role ?? ""}`;
+    const label = (e.AXLabel ?? "").trim();
+    const value = (e.AXValue ?? "").trim();
+    const kind = `${e.type ?? ""} ${e.role_description ?? ""}`;
+    const isApp = /application/i.test(e.type ?? "");
     const interactive = e.enabled !== false && AX_ACTIONABLE.test(kind);
-    if (!label && !value && !interactive) continue;
-    const x = (f.x + f.width / 2) / W;
-    const y = (f.y + f.height / 2) / H;
-    if (x < 0 || x > 1 || y < 0 || y > 1) continue;
-    const secure = /secure/i.test(kind);
-    out.push({
-      ref: out.length + 1,
-      text: secure ? "" : label,
-      desc: secure ? "" : value && value !== label ? value : "",
-      id: "",
-      cls: (e.type || e.role || "Element").replace(/^AX/, ""),
-      clickable: interactive,
-      focused: false,
-      password: secure,
-      x: Math.round(x * 1000) / 1000,
-      y: Math.round(y * 1000) / 1000,
-    });
-  }
+    if (!isApp && f && f.width > 0 && f.height > 0 && (label || value || interactive)) {
+      const x = (f.x + f.width / 2) / W;
+      const y = (f.y + f.height / 2) / H;
+      // The status bar (time, signal, battery) is not part of the app.
+      const statusBar = f.y + f.height <= H * 0.07 && !interactive;
+      if (x >= 0 && x <= 1 && y >= 0 && y <= 1 && !statusBar) {
+        const secure = /secure/i.test(kind);
+        out.push({
+          ref: out.length + 1,
+          text: secure ? "" : label,
+          desc: secure ? "" : value && value !== label ? value : "",
+          id: e.AXUniqueId ?? "",
+          cls: (e.type || e.role_description || "Element").replace(/^AX/, ""),
+          clickable: interactive,
+          focused: false,
+          password: secure,
+          x: Math.round(x * 1000) / 1000,
+          y: Math.round(y * 1000) / 1000,
+        });
+      }
+    }
+    for (const c of e.children ?? []) visit(c);
+  };
+  for (const r of roots) visit(r);
   return out;
 }
 const ACTIVITY = /^[\w.$]+$/;

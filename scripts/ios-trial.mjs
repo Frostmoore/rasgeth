@@ -35,6 +35,7 @@ const { IosHost } = await load("emulators/ios.js");
 const { IosBridgeInstaller } = await load("emulators/install-ios.js");
 const { gatherEmulatorFacts, iosBridgeScript } = await load("emulators/gather.js");
 const { detectEmulators } = await load("emulators/detect.js");
+const { parseAxTree } = await load("emulators/tools.js");
 const { Jobs } = await load("jobs.js");
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -110,35 +111,28 @@ try {
   console.log(`frames so far: ${frames}`);
 
   step("accessibility: the first elements of Settings");
-  const readAx = async () => JSON.parse(await host.shell(pick.udid, ["ax"]));
+  const readAx = async () => parseAxTree(await host.shell(pick.udid, ["ax"]));
   console.log(await host.shell(pick.udid, ["launch", "com.apple.Preferences"]));
   await sleep(2500);
   const ax = await readAx();
-  console.log("screen", ax.screen, "elements", ax.elements?.length);
-  for (const e of (ax.elements ?? []).slice(0, 15))
-    console.log(`  ${e.type ?? e.role} ${JSON.stringify(e.label)} ${JSON.stringify(e.frame)}`);
-  if (!ax.elements?.length) throw new Error("The accessibility snapshot has no elements");
+  console.log("elements", ax.length);
+  for (const e of ax.slice(0, 15))
+    console.log(`  [${e.ref}] ${e.cls} ${JSON.stringify(e.text)} at ${e.x},${e.y}`);
+  if (!ax.length) throw new Error("The accessibility snapshot has no elements");
 
   step("text in any language: pasteboard and Cmd+V into Safari's address bar");
   const wanted = "Perché sì, è così 😀";
   await host.shell(pick.udid, ["launch", "com.apple.mobilesafari"]);
   await sleep(3000);
   const snap = await readAx();
-  const field = (snap.elements ?? []).find((e) =>
-    /TextField|SearchField|Address|URL/i.test(`${e.type} ${e.role} ${e.label}`),
-  );
+  const field = snap.find((e) => /TextField|SearchField|Address|URL/i.test(`${e.cls} ${e.text}`));
   if (!field) console.log("  no address bar found: tap a text field by hand within 8 s");
-  else
-    await screen.input({
-      kind: "tap",
-      x: (field.frame.x + field.frame.width / 2) / snap.screen.width,
-      y: (field.frame.y + field.frame.height / 2) / snap.screen.height,
-    });
+  else await screen.input({ kind: "tap", x: field.x, y: field.y });
   await sleep(field ? 1500 : 8000);
   await screen.input({ kind: "text", text: wanted });
   await sleep(1500);
-  const after = (await readAx()).elements ?? [];
-  const seen = after.some((e) => `${e.value ?? ""} ${e.label ?? ""}`.includes("Perché sì"));
+  const after = await readAx();
+  const seen = after.some((e) => `${e.desc} ${e.text}`.includes("Perché sì"));
   console.log(
     seen
       ? "  the text shows in the field: OK (note whether iOS asked to allow the paste)"

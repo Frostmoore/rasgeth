@@ -325,52 +325,57 @@ function rig(o: { bridge?: boolean } = {}) {
   };
 }
 
-/** What serve-sim's /ax answers: a screen of 400 x 800 points and a few elements. */
-const AX = JSON.stringify({
-  screen: { width: 400, height: 800 },
-  elements: [
-    {
-      id: "1",
-      path: "0",
-      label: "Search",
-      value: "",
-      role: "AXTextField",
-      type: "SearchField",
-      enabled: true,
-      frame: { x: 20, y: 80, width: 360, height: 40 },
-    },
-    {
-      id: "2",
-      path: "1",
-      label: "Wi-Fi",
-      value: "Home",
-      role: "AXButton",
-      type: "Cell",
-      enabled: true,
-      frame: { x: 0, y: 200, width: 400, height: 60 },
-    },
-    {
-      id: "3",
-      path: "2",
-      label: "",
-      value: "",
-      role: "AXGroup",
-      type: "Other",
-      enabled: true,
-      frame: { x: 0, y: 0, width: 400, height: 800 },
-    },
-    {
-      id: "4",
-      path: "3",
-      label: "Password",
-      value: "",
-      role: "AXTextField",
-      type: "SecureTextField",
-      enabled: true,
-      frame: { x: 20, y: 300, width: 360, height: 40 },
-    },
-  ],
-});
+/** What serve-sim's /ax answers (0.1.49's shape): one application of 400 x 800 points and a tree. */
+const AX = JSON.stringify([
+  {
+    type: "Application",
+    AXLabel: "Settings",
+    AXValue: null,
+    AXUniqueId: null,
+    frame: { x: 0, y: 0, width: 400, height: 800 },
+    children: [
+      {
+        type: "SearchField",
+        role_description: "search field",
+        AXLabel: "Search",
+        AXValue: null,
+        AXUniqueId: null,
+        enabled: true,
+        frame: { x: 20, y: 80, width: 360, height: 40 },
+        children: [],
+      },
+      {
+        type: "Group",
+        AXLabel: null,
+        AXValue: null,
+        AXUniqueId: null,
+        frame: { x: 0, y: 180, width: 400, height: 100 },
+        children: [
+          {
+            type: "Button",
+            role_description: "button",
+            AXLabel: "Wi-Fi",
+            AXValue: "Home",
+            AXUniqueId: "com.apple.settings.wifi",
+            enabled: true,
+            frame: { x: 0, y: 200, width: 400, height: 60 },
+            children: [],
+          },
+        ],
+      },
+      {
+        type: "SecureTextField",
+        role_description: "secure text field",
+        AXLabel: "Password",
+        AXValue: null,
+        AXUniqueId: null,
+        enabled: true,
+        frame: { x: 20, y: 300, width: 360, height: 40 },
+        children: [],
+      },
+    ],
+  },
+]);
 
 const tick = (ms = 5) => new Promise((r) => setTimeout(r, ms));
 
@@ -722,7 +727,7 @@ describe("the device tools on a simulator", () => {
       images: unknown[];
     };
     expect(look.content).toContain('[1] SearchField "Search"');
-    expect(look.content).toContain('[2] Cell "Wi-Fi" (Home)');
+    expect(look.content).toContain('[2] Button "Wi-Fi" (Home)');
     expect(look.content).toContain("(password field)");
     expect(look.images).toHaveLength(1);
   });
@@ -986,5 +991,38 @@ describe("installing the iOS bridge", () => {
     expect(createHash("sha512").update(tgz).digest("base64")).toBe(
       meta.dist.integrity.slice("sha512-".length),
     );
+  });
+});
+
+describe("serve-sim's accessibility snapshot (0.1.49, recorded on a Mac)", () => {
+  it("reads Settings' tree as numbered elements, without the status bar", async () => {
+    const { parseAxTree } = await import("../src/emulators/tools.js");
+    const { readFile } = await import("node:fs/promises");
+    const json = await readFile(
+      new URL("./fixtures/ios-ax-settings.json", import.meta.url),
+      "utf8",
+    );
+    const nodes = parseAxTree(json);
+    expect(nodes.map((n) => n.text)).toEqual(
+      expect.arrayContaining(["Impostazioni", "Generali", "Accessibilità", "Aspetto"]),
+    );
+    const general = nodes.find((n) => n.text === "Generali");
+    expect(general).toMatchObject({
+      cls: "Button",
+      clickable: true,
+      id: "com.apple.settings.general",
+    });
+    // Its centre as fractions of the 402 x 874 points screen.
+    expect(general?.x).toBeCloseTo(0.5, 2);
+    expect(general?.y).toBeCloseTo((398.33 + 26) / 874, 2);
+    // Time and battery of the status bar are not elements of the app.
+    expect(nodes.some((n) => /batteria|^12:34$/.test(n.text))).toBe(false);
+    expect(nodes.map((n) => n.ref)).toEqual(nodes.map((_, i) => i + 1));
+  });
+
+  it("an old or broken answer gives no elements", async () => {
+    const { parseAxTree } = await import("../src/emulators/tools.js");
+    expect(parseAxTree("not json")).toEqual([]);
+    expect(parseAxTree("[]")).toEqual([]);
   });
 });
