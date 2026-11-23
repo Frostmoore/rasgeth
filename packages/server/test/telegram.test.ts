@@ -23,6 +23,8 @@ const lastText = (req: CompletionRequest) => {
   const p = m?.parts.find((x) => x.type === "text");
   return p?.type === "text" ? p.text : "";
 };
+/** The topic's title the gateway puts on top of the first answer (3.12.3). */
+const unhead = (t: unknown) => String(t ?? "").replace(/^<b>[^\n]*<\/b>\n/, "");
 const toolResult = (req: CompletionRequest) => {
   const last = req.messages.at(-1);
   const p = last?.role === "user" ? last.parts.find((x) => x.type === "tool_result") : undefined;
@@ -109,7 +111,7 @@ describe("Demi-God on Telegram", () => {
     for (let i = 0; i < 400 && !firstStarted; i++) await new Promise((r) => setTimeout(r, 10));
     await s?.gateway?.handleUpdate(tg?.text(USER, "second") as never);
     await s?.gateway?.idle();
-    const texts = tg?.sent(USER).map((m) => String(m.text)) ?? [];
+    const texts = tg?.sent(USER).map((m) => unhead(m.text)) ?? [];
     expect(texts).toContain(
       "Got it. I am still answering your previous message: I will read this one right after.",
     );
@@ -212,7 +214,7 @@ describe("Demi-God on Telegram", () => {
     await pair();
     await s?.gateway?.handleUpdate(tg?.text(USER, "How is project X?") as never);
     await s?.gateway?.idle();
-    expect(tg?.sent(USER).at(-1)?.text).toBe(
+    expect(unhead(tg?.sent(USER).at(-1)?.text)).toBe(
       "Demi-God: God says the project is fine (you asked: How is project X?)",
     );
     expect(demigodTools[0]).toEqual(["ask_god"]);
@@ -247,7 +249,7 @@ describe("Demi-God on Telegram", () => {
     expect(s?.provider.requests.length).toBe(before);
     await s?.gateway?.handleUpdate(tg?.button(USER, keyboard[0]?.callback_data ?? "") as never);
     await s?.gateway?.idle();
-    expect(tg?.sent(USER).at(-1)?.text).toBe(`Demi-God heard: my link ${token}`);
+    expect(unhead(tg?.sent(USER).at(-1)?.text)).toBe(`Demi-God heard: my link ${token}`);
     expect(tg?.calls.filter((c) => c.method === "editMessageText").at(-1)?.body.text).toMatch(
       /Sent as written\.$/,
     );
@@ -625,7 +627,7 @@ describe("Demi-God on Telegram", () => {
     )?.inline_keyboard[0]?.[0]?.callback_data;
     await s?.gateway?.handleUpdate(tg?.button(USER, allow ?? "") as never);
     await s?.gateway?.idle();
-    expect(tg?.sent(USER).at(-1)?.text).toBe("Demi-God: written");
+    expect(unhead(tg?.sent(USER).at(-1)?.text)).toBe("Demi-God: written");
   });
 
   it("sends notifications to every linked chat, split under Telegram's limit", async () => {
@@ -762,7 +764,7 @@ describe("toTelegramHtml", () => {
     expect(last()).toBe("Non c'era niente in corso.");
     const oldGod = godSession?.id;
     await s?.gateway?.handleUpdate(tg?.text(USER, "/new") as never);
-    expect(last()).toMatch(/^Nuova conversazione/);
+    expect(last()).toMatch(/^Nuovo argomento/);
     before = tg?.sent(USER).length ?? 0;
     await s?.gateway?.handleUpdate(tg?.text(USER, "ciao") as never);
     await settle(before + 1);

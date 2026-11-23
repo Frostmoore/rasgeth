@@ -63,6 +63,8 @@ export interface Incoming {
   button?: string;
   audio?: { data: Uint8Array; mime: string };
   files?: { name: string; data: Buffer; mime: string }[];
+  /** The id of the message this one replies to, on the platforms that say it (3.12.3). */
+  replyTo?: string;
   /** Something arrived that cannot be read here (an encrypted Matrix message, G36.9). */
   unreadable?: "encrypted";
 }
@@ -106,8 +108,27 @@ export interface GatewayHost {
        * written, and the choice is in the log (`message.user.secretOk`).
        */
       secretOk?: boolean;
+      /** The chat message this one replies to: it goes to that message's topic (3.12.3). */
+      replyTo?: { chat: string; messageId: string };
+      /** Told once the words are routed to one of God's topics. */
+      onRouted?: (r: { topicId: string; title: string; isNew: boolean }) => void;
     },
   ): Promise<string>;
+  /** What a chat message was said in (God's topics, 3.12.3): a reply to it goes there. */
+  rememberChatMessage?(
+    ownerId: string,
+    chat: string,
+    messageId: string,
+    topicId: string,
+  ): Promise<void>;
+  /** The active topics, for /sposta and /argomenti. */
+  chatTopics?(ownerId: string): Promise<{ id: string; title: string }[]>;
+  /** /sposta: the chat's last exchange in `from` goes to another topic (or a new one). */
+  moveFromChat?(
+    ownerId: string,
+    from: string,
+    to: string | "new",
+  ): Promise<{ topicId: string; title: string; answer: string }>;
   /**
    * A password manager's export into the person's keychain (3.9.8, «Put them in the keychain»):
    * only counts come back; a closed keychain imports nothing and throws `vault_closed`.
@@ -224,6 +245,7 @@ type Prompt =
   | { kind: "perm"; requestId: string; work?: boolean }
   | { kind: "question"; requestId: string; index: number }
   | { kind: "secret"; requestId: string }
+  | { kind: "move"; requestId: string }
   | { kind: "skill"; requestId: string };
 
 /** How long a message that looks like a secret waits for the person's choice. */
@@ -239,7 +261,15 @@ const SECRET_WORDS: Record<SecretSpan["kind"], TextKey> = {
   export: "secretExport",
 };
 
-type RelayExtra = { images?: ImagePart[]; files?: { name: string; data: Buffer }[] };
+type RelayExtra = {
+  images?: ImagePart[];
+  files?: { name: string; data: Buffer }[];
+  /** The id of the message the person replied to (God's topics, 3.12.3). */
+  replyTo?: string;
+};
+
+/** After this much silence an answer says its topic again (3.12.3). */
+export const TOPIC_HEADER_MS = 30 * 60_000;
 
 /**
  * A message held because it looks like a secret (2026-11-19): only in memory, never written
@@ -282,6 +312,8 @@ export interface BridgeOptions {
   transport: Transport;
   /** Pairing codes expire after this long (default 10 minutes). */
   pairingTtlMs?: number;
+  /** The clock (tests pass a fake one). */
+  now?: () => number;
 }
 
 export class ChatBridge {
@@ -292,6 +324,10 @@ export class ChatBridge {
   private readonly prompts = new Map<string, Prompt>();
   private readonly held = new Map<string, HeldSecret>();
   private readonly inFlight = new Set<Promise<void>>();
+  /** The topic of each chat's last answer and when: the header is said when it changes. */
+  private readonly lastTopic = new Map<string, { id: string; at: number }>();
+  /** «Move» menus waiting for a choice: the topics behind the numbers. */
+  private readonly moves = new Map<string, { ownerId: string; from: string; to: string[] }>();
   private stopped = false;
 
   constructor(private readonly o: BridgeOptions) {}
@@ -460,9 +496,13 @@ export class ChatBridge {
       await this.onButton(owner, m.button);
       return;
     }
-    const cmd = text.match(/^\/(new|status|stop)\b/i)?.[1]?.toLowerCase();
+    const cmd = text.match(/^\/(new|nuovo|status|stop|argomenti|sposta)\b/i)?.[1]?.toLowerCase();
     if (cmd) {
-      await this.onCommand(owner, m.chatId, cmd as "new" | "status" | "stop");
+      await this.onCommand(
+        owner,
+        m.chatId,
+        cmd === "nuovo" ? "new" : (cmd as "new" | "status" | "stop" | "argomenti" | "sposta"),
+      );
       return;
     }
     if (text && (await this.answerPrompt(owner, m.chatId, text))) return;
@@ -487,6 +527,7 @@ export class ChatBridge {
         this.relay(owner, m.chatId, text || "(see the attachment)", {
           ...(images.length && { images }),
           ...(files.length && { files }),
+          ...(m.replyTo && { replyTo: m.replyTo }),
         }),
       );
       return;
@@ -508,7 +549,7 @@ export class ChatBridge {
         );
         return;
       }
-      this.background(this.relay(owner, m.chatId, text));
+      this.background(this.relay(owner, m.chatId, text, m.replyTo ? { replyTo: m.replyTo } : {}));
     }
   }
 
@@ -546,9 +587,27 @@ export class ChatBridge {
     }
   }
 
-  private async onCommand(owner: string, chatId: string, cmd: "new" | "status" | "stop") {
+  private async onCommand(
+    owner: string,
+    chatId: string,
+    cmd: "new" | "status" | "stop" | "argomenti" | "sposta",
+  ) {
     const h = this.o.host;
-    if (cmd === "new") {
+    if (cmd === "argomenti") {
+      const list = (await h.chatTopics?.(owner)) ?? [];
+      await this.reply(
+        chatId,
+        list.length
+          ? [this.say(owner, "topicsHeader"), ...list.map((t, i) => `${i + 1}. ${t.title}`)].join(
+              "\n",
+            )
+          : this.say(owner, "noTopics"),
+      );
+    } else if (cmd === "sposta") {
+      const from = this.lastTopic.get(this.chatKey(chatId))?.id;
+      if (from) await this.offerMove(owner, chatId, from);
+      else await this.reply(chatId, this.say(owner, "nothingToMove"));
+    } else if (cmd === "new") {
       h.newConversation?.(owner);
       await this.reply(chatId, this.say(owner, "newConversation"));
     } else if (cmd === "stop") {
@@ -600,16 +659,105 @@ export class ChatBridge {
       : undefined;
     void this.t.typing?.(chatId).catch(() => {});
     try {
+      const { replyTo, ...rest } = extra ?? {};
+      let topic: { topicId: string; title: string } | undefined;
       const answer = await this.o.host.askDemigod(owner, chatId, text, {
-        ...extra,
+        ...rest,
         ...(chosen === "anyway" && { secretOk: true }),
+        ...(replyTo && { replyTo: { chat: this.chatKey(chatId), messageId: replyTo } }),
+        onRouted: (r) => {
+          topic = r;
+        },
         onQueued: () => void this.reply(chatId, this.say(owner, "queued")),
       });
-      for (const part of splitText(answer, this.t.maxLength)) await this.t.send(chatId, part);
+      await this.deliver(owner, chatId, answer, topic);
     } catch (err) {
       await this.reply(chatId, this.failure(owner, err));
     } finally {
       if (typing) clearInterval(typing);
+    }
+  }
+
+  private chatKey(chatId: string): string {
+    return `${this.platform}:${chatId}`;
+  }
+
+  private now(): number {
+    return this.o.now?.() ?? Date.now();
+  }
+
+  /** The title as bold, the way each platform writes it (Signal and iMessage have none). */
+  private bold(title: string): string {
+    switch (this.platform) {
+      case "slack":
+      case "whatsapp":
+        return `*${title}*`;
+      case "signal":
+      case "imessage":
+        return title;
+      default:
+        return `**${title}**`;
+    }
+  }
+
+  /**
+   * An answer to the chat (3.12.3): the topic's title as the first line (put here, not by the
+   * model) when it changes from the previous answer or after 30 minutes of silence. Every message
+   * is remembered with its topic, so a reply to it goes back there.
+   */
+  private async deliver(
+    owner: string,
+    chatId: string,
+    answer: string,
+    topic: { topicId: string; title: string } | undefined,
+  ) {
+    let header = false;
+    if (topic) {
+      const key = this.chatKey(chatId);
+      const last = this.lastTopic.get(key);
+      header = !last || last.id !== topic.topicId || this.now() - last.at > TOPIC_HEADER_MS;
+      this.lastTopic.set(key, { id: topic.topicId, at: this.now() });
+    }
+    const body = header && topic ? `${this.bold(topic.title)}\n${answer}` : answer;
+    for (const part of splitText(body, this.t.maxLength)) {
+      const id = await this.t.send(chatId, part);
+      if (topic && id)
+        await this.o.host
+          .rememberChatMessage?.(owner, this.chatKey(chatId), id, topic.topicId)
+          .catch(() => {});
+    }
+  }
+
+  /** /sposta: the other active topics and «New topic», by buttons or by number. */
+  private async offerMove(owner: string, chatId: string, from: string) {
+    const topics = ((await this.o.host.chatTopics?.(owner)) ?? []).filter((t) => t.id !== from);
+    const id = randomBytes(5).toString("hex");
+    this.moves.set(id, { ownerId: owner, from, to: [...topics.map((t) => t.id), "new"] });
+    await this.ask(
+      chatId,
+      owner,
+      this.say(owner, "movePick"),
+      [
+        ...topics.map((t, i) => ({ id: `mv:${id}:${i}`, label: t.title })),
+        { id: `mv:${id}:${topics.length}`, label: this.say(owner, "newTopicButton") },
+      ],
+      { kind: "move", requestId: id },
+    );
+  }
+
+  private async settleMove(owner: string, chatId: string, id: string, index: number) {
+    const menu = this.moves.get(id);
+    const to = menu?.to[index];
+    if (!menu || menu.ownerId !== owner || to === undefined) return;
+    this.moves.delete(id);
+    this.clearPrompt(chatId, id);
+    try {
+      const r = await this.o.host.moveFromChat?.(owner, menu.from, to);
+      if (!r) return;
+      await this.reply(chatId, this.say(owner, "moved", { title: r.title }));
+      if (r.answer) await this.deliver(owner, chatId, r.answer, r);
+    } catch (err) {
+      await this.reply(chatId, this.failure(owner, err));
     }
   }
 
@@ -1054,6 +1202,12 @@ export class ChatBridge {
       await this.settleSecret(owner, p.requestId, choice);
       return true;
     }
+    if (p.kind === "move") {
+      if (numbers?.length !== 1) return false;
+      if (!this.moves.get(p.requestId)?.to[numbers[0] as number]) return false;
+      this.background(this.settleMove(owner, chatId, p.requestId, numbers[0] as number));
+      return true;
+    }
     if (p.kind === "skill") {
       if (numbers?.length !== 1 || (numbers[0] !== 0 && numbers[0] !== 1)) return false;
       await this.o.host.skillUpdates?.decide(
@@ -1110,6 +1264,14 @@ export class ChatBridge {
         skill[2] as "approve" | "reject",
         this.platform,
       );
+      return;
+    }
+    const mv = id.match(/^mv:([0-9a-f]+):(\d+)$/);
+    if (mv) {
+      const chat = [...this.prompts].find(
+        ([, p]) => p.kind === "move" && p.requestId === mv[1],
+      )?.[0];
+      if (chat) this.background(this.settleMove(owner, chat, mv[1] as string, Number(mv[2])));
       return;
     }
     const sec = id.match(/^sec:([0-9a-f]+):(send|clean|drop|vault|sure)$/);

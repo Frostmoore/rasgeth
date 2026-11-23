@@ -43,8 +43,27 @@ export interface TelegramHost {
        * written, and the choice is in the log (`message.user.secretOk`).
        */
       secretOk?: boolean;
+      /** The chat message this one replies to: it goes to that message's topic (3.12.3). */
+      replyTo?: { chat: string; messageId: string };
+      /** Told once the words are routed to one of God's topics. */
+      onRouted?: (r: { topicId: string; title: string; isNew: boolean }) => void;
     },
   ): Promise<string>;
+  /** What a chat message was said in (God's topics, 3.12.3): a reply to it goes there. */
+  rememberChatMessage?(
+    ownerId: string,
+    chat: string,
+    messageId: string,
+    topicId: string,
+  ): Promise<void>;
+  /** The active topics, for «Move» and /argomenti. */
+  chatTopics?(ownerId: string): Promise<{ id: string; title: string }[]>;
+  /** «Move»: the chat's last exchange in `from` goes to another topic (or a new one). */
+  moveFromChat?(
+    ownerId: string,
+    from: string,
+    to: string | "new",
+  ): Promise<{ topicId: string; title: string; answer: string }>;
   /**
    * A password manager's export into the person's keychain (3.9.8, «Put them in the keychain»):
    * only counts come back; a closed keychain imports nothing and throws `vault_closed`.
@@ -158,7 +177,12 @@ type RelayExtra = {
   images?: ImagePart[];
   files?: { name: string; data: Buffer }[];
   quotes?: MessageQuote[];
+  /** The id of the message the person replied to (God's topics, 3.12.3). */
+  replyTo?: number;
 };
+
+/** After this much silence an answer says its topic again (3.12.3). */
+export const TOPIC_HEADER_MS = 30 * 60_000;
 
 /** A question being answered on Telegram: one message per question. */
 interface Asking {
@@ -267,6 +291,8 @@ export interface GatewayOptions {
   apiRoot?: string;
   /** Pairing codes expire after this long (default 10 minutes). */
   pairingTtlMs?: number;
+  /** The clock (tests pass a fake one). */
+  now?: () => number;
 }
 
 /**
@@ -283,12 +309,21 @@ export class TelegramGateway {
   private readonly inFlight = new Set<Promise<void>>();
   private readonly asking = new Map<string, Asking>();
   private readonly held = new Map<string, HeldSecret>();
+  /** The topic of each chat's last answer and when: the header is said when it changes. */
+  private readonly lastTopic = new Map<number, { id: string; at: number }>();
+  /** «Move» menus on screen: the topics behind their buttons. */
+  private readonly moves = new Map<
+    string,
+    { ownerId: string; from: string; to: (string | "new")[]; at: number }
+  >();
 
   constructor(private readonly o: GatewayOptions) {
     this.bot = new Bot(o.token, o.apiRoot ? { client: { apiRoot: o.apiRoot } } : {});
     this.bot.api.config.use(autoRetry({ maxRetryAttempts: 3, maxDelaySeconds: 30 }));
     this.bot.command("start", (ctx) => this.onStart(ctx));
-    this.bot.command("new", (ctx) => this.onCommand(ctx, "new"));
+    this.bot.command(["new", "nuovo"], (ctx) => this.onCommand(ctx, "new"));
+    this.bot.command("argomenti", (ctx) => this.onCommand(ctx, "topics"));
+    this.bot.command("sposta", (ctx) => this.onCommand(ctx, "move"));
     this.bot.command("status", (ctx) => this.onCommand(ctx, "status"));
     this.bot.command("stop", (ctx) => this.onCommand(ctx, "stop"));
     this.bot.on("message:text", (ctx) => this.onText(ctx));
@@ -437,7 +472,12 @@ export class TelegramGateway {
       return;
     }
     const quotes = telegramQuotes(ctx.message);
-    this.background(this.relay(owner, ctx.chat.id, text, quotes ? { quotes } : undefined));
+    this.background(
+      this.relay(owner, ctx.chat.id, text, {
+        ...(quotes && { quotes }),
+        ...(replyTo !== undefined && { replyTo }),
+      }),
+    );
   }
 
   /**
@@ -539,11 +579,24 @@ export class TelegramGateway {
     );
   }
 
-  private async onCommand(ctx: Context, cmd: "new" | "status" | "stop") {
+  private async onCommand(ctx: Context, cmd: "new" | "status" | "stop" | "topics" | "move") {
     const owner = await this.linked(ctx);
     if (!owner) return;
     const h = this.o.host;
-    if (cmd === "new") {
+    if (cmd === "topics") {
+      const list = (await h.chatTopics?.(owner)) ?? [];
+      await ctx.reply(
+        list.length
+          ? [this.say(owner, "topicsHeader"), ...list.map((t, i) => `${i + 1}. ${t.title}`)].join(
+              "\n",
+            )
+          : this.say(owner, "noTopics"),
+      );
+    } else if (cmd === "move") {
+      const from = this.lastTopic.get(ctx.chat?.id ?? 0)?.id;
+      if (from) await this.offerMove(owner, ctx.chat?.id ?? 0, from);
+      else await ctx.reply(this.say(owner, "nothingToMove"));
+    } else if (cmd === "new") {
       h.newConversation?.(owner);
       await ctx.reply(this.say(owner, "newConversation"));
     } else if (cmd === "stop") {
@@ -599,17 +652,120 @@ export class TelegramGateway {
     );
     void api.sendChatAction(chatId, "typing").catch(() => {});
     try {
+      const { replyTo, ...rest } = extra ?? {};
+      let topic: { topicId: string; title: string } | undefined;
       const answer = await this.o.host.askDemigod(owner, chatId, text, {
-        ...extra,
+        ...rest,
         ...(chosen === "anyway" && { secretOk: true }),
+        ...(replyTo !== undefined && {
+          replyTo: { chat: this.chatKey(chatId), messageId: String(replyTo) },
+        }),
+        onRouted: (r) => {
+          topic = r;
+        },
         onQueued: () => void api.sendMessage(chatId, this.say(owner, "queued")).catch(() => {}),
       });
-      for (const part of splitMessage(answer)) await this.sendFormatted(chatId, part);
+      await this.deliver(owner, chatId, answer, topic);
     } catch (err) {
       await api.sendMessage(chatId, this.failure(owner, err)).catch(() => {});
     } finally {
       clearInterval(typing);
     }
+  }
+
+  private chatKey(chatId: number): string {
+    return `telegram:${chatId}`;
+  }
+
+  private now(): number {
+    return this.o.now?.() ?? Date.now();
+  }
+
+  /**
+   * An answer to the chat (3.12.3). The gateway, not the model, puts the topic's title in bold as
+   * the first line when the topic changes from the previous answer or after 30 minutes of
+   * silence; that answer carries the «Move» button. Every message sent is remembered with its
+   * topic, so a reply to it goes back there.
+   */
+  private async deliver(
+    owner: string,
+    chatId: number,
+    answer: string,
+    topic: { topicId: string; title: string } | undefined,
+  ) {
+    let header = false;
+    if (topic) {
+      const last = this.lastTopic.get(chatId);
+      header = !last || last.id !== topic.topicId || this.now() - last.at > TOPIC_HEADER_MS;
+      this.lastTopic.set(chatId, { id: topic.topicId, at: this.now() });
+    }
+    const parts = splitMessage(header && topic ? `**${topic.title}**\n${answer}` : answer);
+    for (const [i, part] of parts.entries()) {
+      const markup =
+        header && topic && this.o.host.chatTopics && i === parts.length - 1
+          ? new InlineKeyboard().text(this.say(owner, "moveButton"), `mv:${topic.topicId}`)
+          : undefined;
+      const id = await this.sendFormatted(chatId, part, markup);
+      if (topic && id !== undefined)
+        await this.o.host
+          .rememberChatMessage?.(owner, this.chatKey(chatId), String(id), topic.topicId)
+          .catch(() => {});
+    }
+  }
+
+  /** «Move»: the active topics (but this one) as buttons, then «New topic». */
+  private async offerMove(owner: string, chatId: number, from: string) {
+    const topics = ((await this.o.host.chatTopics?.(owner)) ?? []).filter((t) => t.id !== from);
+    const now = this.now();
+    for (const [k, m] of this.moves) if (now - m.at > 60 * 60_000) this.moves.delete(k);
+    const token = randomBytes(5).toString("hex");
+    this.moves.set(token, {
+      ownerId: owner,
+      from,
+      to: [...topics.map((t) => t.id), "new"],
+      at: now,
+    });
+    const kb = new InlineKeyboard();
+    for (const [i, t] of topics.entries()) kb.text(t.title.slice(0, 60), `mt:${token}:${i}`).row();
+    kb.text(this.say(owner, "newTopicButton"), `mt:${token}:${topics.length}`);
+    await this.bot.api
+      .sendMessage(chatId, this.say(owner, "movePick"), { reply_markup: kb })
+      .catch(() => {});
+  }
+
+  private async onMoveButton(ctx: Context, owner: string, data: string) {
+    const chatId = ctx.chat?.id ?? ctx.callbackQuery?.message?.chat.id;
+    const open = data.match(/^mv:([\w-]+)$/);
+    if (open && chatId !== undefined) {
+      await ctx.answerCallbackQuery();
+      await this.offerMove(owner, chatId, open[1] as string);
+      return;
+    }
+    const pick = data.match(/^mt:([0-9a-f]+):(\d+)$/);
+    const menu = pick ? this.moves.get(pick[1] as string) : undefined;
+    const to = menu?.to[Number(pick?.[2])];
+    if (!pick || !menu || menu.ownerId !== owner || to === undefined || chatId === undefined) {
+      await ctx.answerCallbackQuery({ text: this.say(owner, "closedAlready") });
+      return;
+    }
+    this.moves.delete(pick[1] as string);
+    await ctx.answerCallbackQuery();
+    const messageId = ctx.callbackQuery?.message?.message_id;
+    this.background(
+      (async () => {
+        try {
+          const r = await this.o.host.moveFromChat?.(owner, menu.from, to);
+          if (!r) return;
+          const text = this.say(owner, "moved", { title: r.title });
+          if (messageId !== undefined)
+            await this.bot.api.editMessageText(chatId, messageId, text).catch(() => {});
+          else await this.bot.api.sendMessage(chatId, text).catch(() => {});
+          if (r.answer) await this.deliver(owner, chatId, r.answer, r);
+        } catch (err) {
+          await this.bot.api.sendMessage(chatId, this.failure(owner, err)).catch(() => {});
+        }
+      })(),
+    );
   }
 
   /**
@@ -829,14 +985,22 @@ export class TelegramGateway {
   }
 
   /** As HTML when Telegram accepts it, as plain text otherwise (it rejects broken markup). */
-  private async sendFormatted(chatId: number, text: string) {
+  private async sendFormatted(
+    chatId: number,
+    text: string,
+    markup?: InlineKeyboard,
+  ): Promise<number | undefined> {
     try {
-      await this.bot.api.sendMessage(chatId, toTelegramHtml(text), {
-        parse_mode: "HTML",
-        link_preview_options: { is_disabled: true },
-      });
+      return (
+        await this.bot.api.sendMessage(chatId, toTelegramHtml(text), {
+          parse_mode: "HTML",
+          link_preview_options: { is_disabled: true },
+          ...(markup && { reply_markup: markup }),
+        })
+      ).message_id;
     } catch {
-      await this.bot.api.sendMessage(chatId, text);
+      return (await this.bot.api.sendMessage(chatId, text, markup ? { reply_markup: markup } : {}))
+        .message_id;
     }
   }
 
@@ -1105,6 +1269,8 @@ export class TelegramGateway {
     const owner = await this.ownerOf(ctx.from?.id);
     if (owner && data.startsWith("q:")) return this.onQuestionButton(ctx, owner, data);
     if (owner && data.startsWith("sec:")) return this.onSecretButton(ctx, owner, data);
+    if (owner && (data.startsWith("mv:") || data.startsWith("mt:")))
+      return this.onMoveButton(ctx, owner, data);
     const skill = data.match(/^xs:([\w-]+):(approve|reject)$/);
     if (owner && skill) {
       const ok = await this.o.host.skillUpdates?.decide(
@@ -1147,6 +1313,8 @@ export class TelegramGateway {
   async setCommands(ownerId?: string): Promise<void> {
     await this.bot.api.setMyCommands([
       { command: "new", description: this.say(ownerId, "cmdNew") },
+      { command: "argomenti", description: this.say(ownerId, "cmdTopics") },
+      { command: "sposta", description: this.say(ownerId, "cmdMove") },
       { command: "status", description: this.say(ownerId, "cmdStatus") },
       { command: "stop", description: this.say(ownerId, "cmdStop") },
     ]);
