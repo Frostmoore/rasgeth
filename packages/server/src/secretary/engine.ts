@@ -55,7 +55,26 @@ export type PersonNotice =
     }
   | { kind: "failed"; channel: SecretaryChannel; contact: string; why: string };
 
+/** What the person is asked: a ready reply to send (the request machinery delivers it everywhere). */
+export interface ReplyRequest {
+  ownerId: string;
+  pendingId: string;
+  agentId: string | null;
+  channel: SecretaryChannel;
+  contact: string;
+  reason: PendingReason;
+  summary: string;
+  draft: string;
+}
+/** The answer: `yes` sends the draft, `no` from the person refuses it, nothing else changes it. */
+export type ReplyAnswer = { yes: true } | { yes: false; byPerson: boolean };
+
 export interface EngineOptions {
+  /**
+   * Asks the person through the ordinary request delivery (the page, every linked chat, the
+   * phone; the first answer closes the other copies). Absent: only a notice is sent.
+   */
+  ask?(r: ReplyRequest, signal: AbortSignal): Promise<ReplyAnswer>;
   store: SecretaryStore;
   responder: Responder;
   channel(account: AccountRow): Promise<ChannelApi | undefined>;
@@ -118,6 +137,8 @@ export function guardAnswer(text: string, instructions: string): PendingReason |
 export class SecretaryEngine {
   private readonly now: () => Date;
   private readonly chains = new Map<string, Promise<unknown>>();
+  private readonly asking = new Map<string, AbortController>();
+  private readonly asks = new Set<Promise<void>>();
 
   constructor(private readonly o: EngineOptions) {
     this.now = o.now ?? (() => new Date());
@@ -263,17 +284,54 @@ export class SecretaryEngine {
     contact: ContactRow,
     d: Extract<Decision, { action: "escalate" }>,
   ): Promise<void> {
-    await this.o.store.addPending(contact.id, d);
+    const id = await this.o.store.addPending(contact.id, d);
+    const who = contact.name || contact.handle;
+    // A ready reply goes through the ordinary requests (page, chats, phone, first answer wins).
+    if (this.o.ask && d.draft.trim()) {
+      const ctl = new AbortController();
+      this.asking.set(id, ctl);
+      const run = this.o
+        .ask(
+          {
+            ownerId: account.ownerId,
+            pendingId: id,
+            agentId: account.agentId,
+            channel: account.channel,
+            contact: who,
+            reason: d.reason,
+            summary: d.summary,
+            draft: d.draft,
+          },
+          ctl.signal,
+        )
+        .then(async (a) => {
+          if (ctl.signal.aborted) return;
+          if (a.yes) await this.approve(id).catch(() => {});
+          else if (a.byPerson) await this.refuse(id).catch(() => {});
+        })
+        .catch(() => {})
+        .finally(() => {
+          this.asking.delete(id);
+          this.asks.delete(run);
+        });
+      this.asks.add(run);
+      return;
+    }
     await this.o
       .notify(account.ownerId, {
         kind: "pending",
         channel: account.channel,
-        contact: contact.name || contact.handle,
+        contact: who,
         reason: d.reason,
         summary: d.summary,
         draft: d.draft,
       })
       .catch(() => {});
+  }
+
+  /** Every request to the person is settled (tests wait for it). */
+  async idle(): Promise<void> {
+    while (this.asks.size) await Promise.all([...this.asks]);
   }
 
   /**
@@ -315,11 +373,13 @@ export class SecretaryEngine {
     if (!text) throw new SendError("There is nothing to send", "failed");
     await this.deliver(p.contactId, text, "person");
     await this.o.store.decidePending(pendingId, "sent");
+    this.asking.get(pendingId)?.abort();
   }
 
   async refuse(pendingId: string): Promise<void> {
     const p = await this.o.store.pendingRow(pendingId);
     if (!p || p.status !== "open") throw new SendError("No such open request", "not_found");
     await this.o.store.decidePending(pendingId, "refused");
+    this.asking.get(pendingId)?.abort();
   }
 }

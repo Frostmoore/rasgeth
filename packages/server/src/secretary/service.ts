@@ -15,6 +15,7 @@ import type {
 import type { SystemKeyMeta, Vault } from "../vault.js";
 import {
   type ChannelApi,
+  type EngineOptions,
   type Incoming,
   type PersonNotice,
   type Responder,
@@ -42,6 +43,8 @@ export interface SecretaryOptions {
   instructions: (account: AccountRow) => string;
   /** How the person is told (their chats and the page); the text is made by the caller. */
   notify: (ownerId: string, n: PersonNotice) => Promise<void>;
+  /** The ordinary request delivery for a ready reply (page, chats, phone); see the engine. */
+  ask?: EngineOptions["ask"];
   /** RedGiant's address from outside home, or undefined with no way in. */
   publicUrl: () => string | undefined;
   fetch?: wa.Fetch;
@@ -70,6 +73,7 @@ export class SecretaryService {
       responder: o.responder,
       instructions: o.instructions,
       notify: o.notify,
+      ...(o.ask && { ask: o.ask }),
       now: this.now,
       channel: (a) => this.channelFor(a),
     });

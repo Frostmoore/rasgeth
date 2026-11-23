@@ -1659,6 +1659,47 @@ export class RedGiantCore implements OrchestrationHost {
         const agent = a.agentId ? this.registry.get(a.agentId) : undefined;
         return `${agent?.systemPrompt ?? ""}\n${agent?.role ?? ""}`;
       },
+      ask: async (r, signal) => {
+        const agent =
+          (r.agentId ? this.registry.get(r.agentId) : undefined) ??
+          this.registry
+            .list({ ownerId: r.ownerId, activeOnly: true })
+            .find((a) => a.kind === "god");
+        if (!agent) return { yes: false, byPerson: false };
+        const id = `secretary_${r.pendingId}`;
+        // Commitments, appointments and new prices always ask, "don't ask me anything" included.
+        const answer = await this.person.approve(
+          {
+            requestId: id,
+            requester: agent,
+            call: {
+              callId: id,
+              name: "secretary_reply",
+              input: {
+                contact: r.contact,
+                channel: r.channel,
+                summary: r.summary,
+                reply: r.draft,
+              },
+            },
+            reasons: [r.summary],
+            danger: [],
+          },
+          signal,
+          {
+            kind: "approval",
+            critical: r.reason === "commitment" || r.reason === "price",
+            what: `Reply to ${r.contact} (${r.channel}): ${r.draft}`,
+            defaultTimeoutMs: 24 * 60 * 60_000,
+          },
+        );
+        if (allows(answer)) return { yes: true };
+        // Only the person's own no refuses; a timeout or the classifier's no leaves it open.
+        return {
+          yes: false,
+          byPerson: answer === "deny" || (typeof answer === "object" && "deny" in answer),
+        };
+      },
       notify: async (ownerId, n) => {
         await this.notify?.(ownerId, secretaryNotice(n, this.language(ownerId)));
       },
