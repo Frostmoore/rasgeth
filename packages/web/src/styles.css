@@ -24572,8 +24572,11 @@ html[data-theme="dark"] .app-simple {
   bottom: 0;
   z-index: 20;
   margin: 18px 0 0;
-  /* Room for the balloon above the enlarged one; the phone's safe area below. */
-  padding: 104px 12px calc(18px + env(safe-area-inset-bottom, 0px));
+  /* Exactly one mascot and its title (3.12.3): nothing reserved for the balloon, which opens
+     above and overlaps the content behind; the phone's safe area below. */
+  --sm: 84px;
+  --smp-title: 28px;
+  padding: var(--smp-title) 12px calc(10px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--line);
   background:
     linear-gradient(to bottom, transparent, color-mix(in srgb, var(--text) 5%, transparent)),
@@ -24581,7 +24584,7 @@ html[data-theme="dark"] .app-simple {
 }
 .smp-strip-t {
   position: absolute;
-  top: 12px;
+  top: 8px;
   left: 20px;
   padding: 0;
 }
@@ -24597,8 +24600,8 @@ html[data-theme="dark"] .app-simple {
 .smp-sm {
   all: unset;
   position: relative;
-  width: 84px;
-  height: 84px;
+  width: var(--sm);
+  height: var(--sm);
   margin-left: -38px;
   cursor: pointer;
   transition:
@@ -24651,7 +24654,8 @@ html[data-theme="dark"] .app-simple {
 .smp-balloon {
   position: absolute;
   left: 50%;
-  top: 6px;
+  /* Above the enlarged mascot (scale 1.75 and a small lift), over the content behind. */
+  bottom: calc(100% - var(--smp-title) + var(--sm) * 0.75 + 16px);
   transform: translateX(-50%);
   background: var(--panel);
   border: 1.5px solid var(--accent);
@@ -24700,9 +24704,10 @@ html[data-theme="dark"] .app-simple {
   }
 }
 @media (max-width: 640px) {
+  .smp-strip-wrap {
+    --sm: 64px;
+  }
   .smp-sm {
-    width: 64px;
-    height: 64px;
     margin-left: -29px;
   }
   .smp-strip {

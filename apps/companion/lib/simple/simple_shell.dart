@@ -614,9 +614,15 @@ class _TodayScreenState extends State<TodayScreen> {
                 });
               }
               // The scroll, and the agents' strip floating under it (3.12.2): always in sight.
-              return Column(
+              // The content pads itself with the strip's real height only; the balloon opens over it.
+              final band = SimpleStrip.shows(app) ? stripBandHeight(context) : 0.0;
+              return Stack(
                 children: [
-                  Expanded(
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: band,
                     child: SingleChildScrollView(
                       child: _Column(
                         width: 980,
@@ -770,7 +776,7 @@ class _TodayScreenState extends State<TodayScreen> {
                     ),
                   ),
                   // 3.12.1: every agent's mascot in a strip at the bottom.
-                  const SimpleStrip(),
+                  const Positioned(left: 0, right: 0, bottom: 0, child: SimpleStrip()),
                 ],
               );
             },

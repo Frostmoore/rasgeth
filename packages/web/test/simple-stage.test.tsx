@@ -463,6 +463,45 @@ describe("the agents' strip at the bottom (3.12.1, «Striscia fitta»)", () => {
     expect(css).toMatch(/\.smp-today \.smp-wrap > \.smp-strip-wrap \{\s*margin-top: auto;/);
   });
 
+  it("changes the pick on the same elements, which have the transitions to animate (3.12.3)", () => {
+    state.agents.value = team();
+    state.chatAgentId.value = "chat";
+    const r = render(<SimpleApp />);
+    const before = [...r.container.querySelectorAll(".smp-sm")] as HTMLElement[];
+    const balloon0 = r.container.querySelector(".smp-balloon");
+    fireEvent.focus(before[0] as HTMLElement);
+    const balloon1 = r.container.querySelector(".smp-balloon") as HTMLElement;
+    fireEvent.focus(before[1] as HTMLElement);
+    fireEvent.focus(before[2] as HTMLElement);
+    const after = [...r.container.querySelectorAll(".smp-sm")] as HTMLElement[];
+    // The very same nodes (no re-mount): a class change on a node is what a transition animates.
+    expect(after).toHaveLength(3);
+    after.forEach((el, i) => expect(el).toBe(before[i]));
+    expect(r.container.querySelector(".smp-balloon")).toBe(balloon1);
+    expect(balloon0 === null || balloon0 === balloon1).toBe(true);
+    expect(after[2]?.classList.contains("on")).toBe(true);
+    expect(after[0]?.classList.contains("on")).toBe(false);
+    const css = readFileSync(join(import.meta.dirname, "..", "src", "styles.css"), "utf8");
+    const sm = css.match(/\n\.smp-sm \{[^}]*\}/)?.[0] ?? "";
+    expect(sm).toMatch(/transition:[^;]*transform 0\.22s/);
+    expect(sm).toContain("margin 0.22s");
+    expect(css).toMatch(/\.smp-sm\.on \{[^}]*transform: scale\(1\.75\)/);
+    // The reduced-motion rule switches the transitions off.
+    expect(css).toMatch(/prefers-reduced-motion: reduce\) \{\s*\.smp-sm,[^}]*transition: none/);
+  });
+
+  it("is as tall as one mascot and its title, the balloon opening above (3.12.3)", () => {
+    const css = readFileSync(join(import.meta.dirname, "..", "src", "styles.css"), "utf8");
+    const wrap = css.match(/\n\.smp-strip-wrap \{[^}]*\}/)?.[0] ?? "";
+    // No room reserved for the balloon: the padding above is just the title's.
+    expect(wrap).toContain("padding: var(--smp-title) 12px");
+    expect(wrap).not.toMatch(/padding:\s*1\d\dpx/);
+    const balloon = css.match(/\n\.smp-balloon \{[^}]*\}/)?.[0] ?? "";
+    expect(balloon).toMatch(/bottom: calc\(100% /);
+    expect(balloon).not.toMatch(/\btop:/);
+    expect(balloon).toContain("position: absolute");
+  });
+
   it("starts a conversation with an agent that has none", async () => {
     state.agents.value = team();
     state.chatAgentId.value = "chat";
