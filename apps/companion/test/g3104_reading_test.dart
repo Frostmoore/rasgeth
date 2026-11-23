@@ -321,7 +321,17 @@ void main() {
         tester.getCenter(find.byKey(const Key('conversation-items'))),
       );
       server.streamPiece('s1', lines(4, 8));
+      // Every piece in while the finger is down (a slow machine needs more rounds): what this test
+      // reads is the finger held, then lifted, not pieces that come later.
+      for (
+        var i = 0;
+        i < 60 && find.textContaining('Riga 11 ', findRichText: true).evaluate().isEmpty;
+        i++
+      ) {
+        await settle(tester, 1);
+      }
       await settle(tester);
+      expect(find.textContaining('Riga 11 ', findRichText: true), findsOneWidget);
       expect(tester.getTopLeft(words()).dy, seen);
       await g.up();
       await settle(tester);
