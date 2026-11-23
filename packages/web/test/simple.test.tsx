@@ -432,6 +432,61 @@ describe("a topic", () => {
     await waitFor(() => expect(r.container.querySelector(".to-bottom")).toBeNull());
   });
 
+  it("has an attach button: chips to remove, the files packed as the full composer does (3.12.2)", async () => {
+    state.openTopic("t_trip", "Vacanza in Sardegna");
+    const r = render(<SimpleApp />);
+    const input = r.container.querySelector(".smp-attach input") as HTMLInputElement;
+    expect(r.container.querySelector(".smp-attach")?.getAttribute("title")).toBe(
+      "Allega file e foto",
+    );
+    const note = new File(["ciao dal file"], "nota.txt", { type: "text/plain" });
+    const other = new File(["x"], "bozza.txt", { type: "text/plain" });
+    fireEvent.change(input, { target: { files: [note, other] } });
+    await waitFor(() => expect(r.container.querySelectorAll(".smp-chip")).toHaveLength(2));
+    // A chip is removed before sending.
+    fireEvent.click(r.container.querySelectorAll(".smp-chip-x")[1] as Element);
+    expect(r.container.querySelectorAll(".smp-chip")).toHaveLength(1);
+    // Files only (no words) can be sent; the text file travels inside the message.
+    fireEvent.click(r.getByLabelText("Invia"));
+    await waitFor(() => expect(called("godMessage")).toHaveLength(1));
+    const body = called("godMessage")[0]?.[0] as { text: string; topicId: string };
+    expect(body.topicId).toBe("t_trip");
+    expect(body.text).toContain('<attachment name="nota.txt">');
+    expect(body.text).toContain("ciao dal file");
+    expect(body.text).not.toContain("bozza.txt");
+    await waitFor(() => expect(r.container.querySelectorAll(".smp-chip")).toHaveLength(0));
+  });
+
+  it("takes the composer's limits: a file over 25 MB is refused with the same words", async () => {
+    state.openTopic("t_trip", "Vacanza in Sardegna");
+    const r = render(<SimpleApp />);
+    const huge = new File(["x"], "enorme.bin");
+    Object.defineProperty(huge, "size", { value: 26 * 1024 * 1024 });
+    fireEvent.change(r.container.querySelector(".smp-attach input") as Element, {
+      target: { files: [huge] },
+    });
+    await waitFor(() => expect(r.container.querySelector(".smp-ask-problem")).not.toBeNull());
+    expect(r.container.querySelector(".smp-ask-problem")?.textContent).toContain("enorme.bin");
+    expect(r.container.querySelectorAll(".smp-chip")).toHaveLength(0);
+  });
+
+  it("shows Stop while the conversation works, and it interrupts that turn (3.12.2)", async () => {
+    state.openTopic("t_trip", "Vacanza in Sardegna");
+    const r = render(<SimpleApp />);
+    expect(r.container.querySelector(".smp-stop")).toBeNull();
+    state.sessionView("t_trip").value = { ...state.sessionView("t_trip").value, state: "running" };
+    const stop = await waitFor(() => {
+      const b = r.container.querySelector(".smp-stop");
+      expect(b).not.toBeNull();
+      return b as HTMLElement;
+    });
+    expect(stop.getAttribute("aria-label")).toBe("Ferma");
+    fireEvent.click(stop);
+    expect(sent.filter((m) => m.type === "session.interrupt")).toEqual([
+      { type: "session.interrupt", sessionId: "t_trip" },
+    ]);
+  });
+
   it("writes inside the topic: no routing elsewhere", async () => {
     state.openTopic("t_trip", "Vacanza in Sardegna");
     const r = render(<SimpleApp />);

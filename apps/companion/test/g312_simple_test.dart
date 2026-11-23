@@ -7,6 +7,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rgcompanion/api/conversation.dart';
@@ -22,6 +24,7 @@ import 'package:rgcompanion/simple/simple_giant.dart';
 import 'package:rgcompanion/simple/simple_model.dart';
 import 'package:rgcompanion/simple/simple_shell.dart';
 import 'package:rgcompanion/simple/simple_strip.dart';
+import 'package:rgcompanion/ui/icons.dart';
 
 import 'fake_server.dart';
 import 'fake_topics.dart';
@@ -271,6 +274,52 @@ void main() {
       }
       await _settle(tester, 2);
       expect(find.byKey(const Key('to-bottom')), findsNothing);
+      await done(tester);
+    });
+
+    testWidgets('3.12.2: the box has «Allega» with chips to remove, and «Ferma» while it works', (
+      tester,
+    ) async {
+      pickFilesForSimple = () async => [
+        ('nota.txt', Uint8List.fromList(utf8.encode('ciao dal file'))),
+        ('bozza.txt', Uint8List.fromList(utf8.encode('x'))),
+      ];
+      addTearDown(() => pickFilesForSimple = () async => []);
+      await open(tester);
+      await tap(tester, find.byKey(const Key('topic-t_trip')));
+      expect(find.byType(TopicScreen), findsOneWidget);
+      expect(find.byKey(const Key('simple-stop')), findsNothing);
+      await tester.tap(find.byKey(const Key('simple-attach')).last);
+      await _settle(tester, 3);
+      expect(find.byKey(const Key('simple-attached-0')), findsOneWidget);
+      expect(find.byKey(const Key('simple-attached-1')), findsOneWidget);
+      // A chip goes away before sending.
+      await tester.tap(
+        find.descendant(
+          of: find.byKey(const Key('simple-attached-1')),
+          matching: find.byWidgetPredicate((w) => w is RgIcon && w.icon == RgIcons.x),
+        ),
+      );
+      await _settle(tester, 2);
+      expect(find.byKey(const Key('simple-attached-1')), findsNothing);
+      // Files only are enough; the text file goes inside the message.
+      await tester.tap(find.byKey(const Key('simple-reply-send')).last);
+      await _settle(tester, 3);
+      final body = topics.bodies['POST /api/god/messages'] as Map;
+      expect(body['topicId'], 't_trip');
+      expect(body['text'], contains('<attachment name="nota.txt">'));
+      expect(body['text'], isNot(contains('bozza.txt')));
+      expect(find.byKey(const Key('simple-attached-0')), findsNothing);
+      // The turn is running: «Ferma» interrupts it.
+      server.hold('t_trip');
+      await _settle(tester, 3);
+      expect(find.byKey(const Key('simple-stop')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('simple-stop')).last);
+      await _settle(tester, 2);
+      expect(
+        server.received.where((m) => m['type'] == 'session.interrupt').single['sessionId'],
+        't_trip',
+      );
       await done(tester);
     });
 

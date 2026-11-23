@@ -255,6 +255,10 @@ class SimpleModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// The conversation the big box sent to last (God's topic, or the Chat's new conversation):
+  /// «Stop» on «Oggi» stops its turn (3.12.2).
+  String? lastSent;
+
   /// A message to the Chat is on its way (Satellite thinks).
   bool chatSending = false;
 
@@ -263,7 +267,9 @@ class SimpleModel extends ChangeNotifier {
   Future<String?> askChat(
     String text, {
     required Future<String?> Function() chatAgent,
-    required Future<bool> Function(String sessionId, String text) send,
+    required Future<bool> Function(String sessionId, String text, List<Map<String, Object?>> images)
+    send,
+    List<Map<String, Object?>> images = const [],
   }) async {
     final words = text.trim();
     if (words.isEmpty) return null;
@@ -274,7 +280,9 @@ class SimpleModel extends ChangeNotifier {
       if (id == null) return null;
       final sid = await _try((c) => c.newSession(id));
       if (sid == null) return null;
-      return await send(sid, words) ? sid : null;
+      if (!await send(sid, words, images)) return null;
+      lastSent = sid;
+      return sid;
     } finally {
       chatSending = false;
       notifyListeners();
@@ -365,15 +373,20 @@ class SimpleModel extends ChangeNotifier {
   }
 
   /// A message to God: routed (null [topicId]) or written inside a topic. Where it went, or null.
-  Future<TopicSent?> ask(String text, {String? topicId}) async {
+  Future<TopicSent?> ask(
+    String text, {
+    String? topicId,
+    List<Map<String, Object?>> images = const [],
+  }) async {
     final words = text.trim();
     if (words.isEmpty) return null;
     routing = true;
     if (topicId == null) routingText = words;
     notifyListeners();
-    final r = await _try((c) => c.godMessage(words, topicId: topicId));
+    final r = await _try((c) => c.godMessage(words, topicId: topicId, images: images));
     routing = false;
     routingText = null;
+    if (r != null) lastSent = r.sessionId;
     notifyListeners();
     if (r != null) refreshSoon();
     return r;

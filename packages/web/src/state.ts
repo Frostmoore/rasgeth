@@ -3071,18 +3071,22 @@ export function openTopic(id: string, title: string): void {
  */
 export async function askGod(
   text: string,
-  o: { topicId?: string; newTopic?: boolean; title?: string } = {},
+  o: { topicId?: string; newTopic?: boolean; title?: string; images?: ImagePart[] } = {},
 ): Promise<{ sessionId: string; routed: TopicRouted } | undefined> {
   const words = text.trim();
   if (!words) return undefined;
   godRouting.value = true;
   // From «Oggi» the message shows at once while God chooses its topic (3.12.1: no wait in silence).
   if (o.topicId === undefined) godRoutingText.value = words;
-  const r = await attempt(() => getApi().godMessage({ text: words, ...o })).finally(() => {
+  const { images, ...rest } = o;
+  const r = await attempt(() =>
+    getApi().godMessage({ text: words, ...rest, ...(images?.length ? { images } : {}) }),
+  ).finally(() => {
     godRouting.value = false;
     godRoutingText.value = null;
   });
   if (!r) return undefined;
+  simpleLastSent.value = r.sessionId;
   lastRouted.value = { ...lastRouted.value, [r.sessionId]: r.routed };
   if (o.topicId === undefined) openTopic(r.sessionId, r.routed.title);
   refreshTopicsSoon();
@@ -3298,7 +3302,10 @@ export function openChat(id: string, title: string): void {
  * From «Oggi» with Satellite in front: a new conversation with the Chat, its first message sent,
  * and it opens. Undefined when it failed (the error is in the banner).
  */
-export async function askChat(text: string): Promise<{ sessionId: string } | undefined> {
+export async function askChat(
+  text: string,
+  images: ImagePart[] = [],
+): Promise<{ sessionId: string } | undefined> {
   const words = text.trim();
   if (!words) return undefined;
   chatSending.value = true;
@@ -3309,6 +3316,7 @@ export async function askChat(text: string): Promise<{ sessionId: string } | und
       type: "session.send",
       sessionId,
       text: words,
+      ...(images.length ? { images } : {}),
       clientId: `p${Date.now()}${Math.random().toString(36).slice(2, 6)}`,
     });
     return { sessionId };
@@ -3316,19 +3324,34 @@ export async function askChat(text: string): Promise<{ sessionId: string } | und
     chatSending.value = false;
   });
   if (!r) return undefined;
+  simpleLastSent.value = r.sessionId;
   openChat(r.sessionId, words.length > 48 ? `${words.slice(0, 47)}…` : words);
   void refreshConversations().catch(() => {});
   return r;
 }
 
+/**
+ * The conversation the simple interface's big box sent to last (God's topic, or the Chat's new
+ * conversation): «Stop» on «Oggi» stops its turn (3.12.2).
+ */
+export const simpleLastSent = signal<string | null>(null);
+
+/** «Stop»: the same as the full interface's, interrupts the running turn of a conversation. */
+export function interruptSession(sessionId: string): void {
+  // With the connection lost, «Stop» waits for it (p3.5.4): said, not silent.
+  if (status.value !== "online") lastError.value = t("stopWhenBack");
+  getLive().send({ type: "session.interrupt", sessionId });
+}
+
 /** A message inside an open conversation with the Chat. */
-export function sendInChat(sessionId: string, text: string): boolean {
+export function sendInChat(sessionId: string, text: string, images: ImagePart[] = []): boolean {
   const words = text.trim();
   if (!words) return false;
   getLive().send({
     type: "session.send",
     sessionId,
     text: words,
+    ...(images.length ? { images } : {}),
     clientId: `p${Date.now()}${Math.random().toString(36).slice(2, 6)}`,
   });
   return true;

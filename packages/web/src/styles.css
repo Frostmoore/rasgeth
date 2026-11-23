@@ -24791,13 +24791,87 @@ html[data-theme="dark"] .app-simple {
   background: var(--smp-card);
   border-radius: 20px;
   box-shadow: var(--smp-shadow-big);
-  padding: 8px 8px 8px 16px;
+  padding: 8px 8px 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.smp-ask-row {
   display: flex;
   align-items: flex-end;
-  gap: 10px;
+  gap: 8px;
+}
+/* The attach button (3.12.2): a quiet round button before the box, as the send one after it. */
+.smp-attach {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: var(--dim);
+  cursor: pointer;
+}
+.smp-attach:hover {
+  background: var(--panel-2);
+  color: var(--text);
+}
+.smp-attach:focus-within {
+  outline: 2px solid var(--accent);
+}
+/* The attachments waiting to go, each with its remove button. */
+.smp-ask-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 2px 4px 0;
+}
+.smp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 3px 4px 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel-2);
+  font-size: 13px;
+}
+.smp-chip img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.smp-chip-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.smp-chip-x {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--dim);
+  cursor: pointer;
+}
+.smp-chip-x:hover {
+  background: var(--line);
+  color: var(--text);
+}
+.smp-ask-problem {
+  align-self: center;
+  color: var(--err);
+  font-size: 12.5px;
 }
 .smp-ask.big {
-  padding: 12px 12px 12px 18px;
+  padding: 12px 12px 12px 14px;
 }
 .smp-ask textarea {
   flex: 1;
@@ -24822,6 +24896,12 @@ html[data-theme="dark"] .app-simple {
   box-shadow:
     var(--smp-shadow-big),
     0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+/* Stop: beside the send one while the conversation works. */
+.smp-send.smp-stop {
+  background: var(--panel-2);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
 }
 .smp-send {
   flex: none;

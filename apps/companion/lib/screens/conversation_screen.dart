@@ -655,29 +655,15 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
       setState(() => _note = l.cvTooMany('$kMaxAttached'));
       return;
     }
-    Attached? a;
-    if (imageTypeOf(name) != null || _looksLikeImage(bytes)) {
-      final shrunk = await shrinkForModel(name, bytes);
-      a = shrunk == null
-          ? classify(name, bytes, mimeType: 'application/octet-stream')
-          : AttachedImage(shrunk.name, shrunk.mediaType, shrunk.bytes);
-    } else {
-      a = classify(name, bytes);
-    }
+    final a = await prepareAttachment(name, bytes);
     if (!mounted) return;
     if (a == null) {
       setState(() => _note = l.attachmentTooBig(name));
       return;
     }
     if (_attached.length >= kMaxAttached) return;
-    setState(() => _attached.add(a!));
+    setState(() => _attached.add(a));
   }
-
-  static bool _looksLikeImage(Uint8List b) =>
-      b.length > 3 &&
-      ((b[0] == 0x89 && b[1] == 0x50) ||
-          (b[0] == 0xFF && b[1] == 0xD8) ||
-          (b[0] == 0x42 && b[1] == 0x4D));
 
   /// A long text pasted (or dropped) into the box becomes a card beside the message, as the page
   /// does (`pastedAttachment`): the box keeps what was there.

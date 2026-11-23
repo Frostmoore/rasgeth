@@ -95,7 +95,7 @@ async function asImage(f: File): Promise<Attachment> {
   };
 }
 
-async function classify(f: File): Promise<Attachment> {
+export async function classify(f: File): Promise<Attachment> {
   if (f.type.startsWith("image/") && f.type !== "image/svg+xml") {
     try {
       return await asImage(f);
@@ -151,6 +151,25 @@ export function pastedAttachment(text: string, now = new Date()): Attachment | u
 /** A name that is safe as a file name inside the workspace. */
 const safeName = (name: string) =>
   name.replace(/[^\p{L}\p{N}._\- ()]+/gu, "_").replace(/^\.+/, "") || "file";
+
+/**
+ * The files the person picked or dropped, checked against the composer's limits (every one at most
+ * 25 MB, ten in all): what to add, and the problem to say. Pure but for reading the files; the
+ * simple interface's boxes use it too, so both take the same files.
+ */
+export async function takeFiles(
+  now: Attachment[],
+  list: File[],
+): Promise<{ files: Attachment[]; picked: Attachment[]; problem: string | null }> {
+  const big = list.filter((f) => f.size > MAX_BYTES);
+  let problem = big.length ? t("tooBig", { names: big.map((f) => f.name).join(", ") }) : null;
+  const picked = await Promise.all(list.filter((f) => f.size <= MAX_BYTES).map(classify));
+  const next = [...now, ...picked];
+  if (next.length > MAX_FILES) problem = t("tooMany", { n: String(MAX_FILES) });
+  return { files: next.slice(0, MAX_FILES), picked, problem };
+}
+const takeJoin = (now: Attachment[], picked: Attachment[]) =>
+  [...now, ...picked].slice(0, MAX_FILES);
 
 /**
  * Turns the composer's content into a message: text files inline, images as parts, other
@@ -309,15 +328,9 @@ export function Composer({
   const [problem, setProblem] = useState<string | null>(null);
 
   const add = async (list: FileList | File[]) => {
-    const all = [...list];
-    const big = all.filter((f) => f.size > MAX_BYTES);
-    setProblem(big.length ? t("tooBig", { names: big.map((f) => f.name).join(", ") }) : null);
-    const picked = await Promise.all(all.filter((f) => f.size <= MAX_BYTES).map(classify));
-    setFiles((now) => {
-      const next = [...now, ...picked];
-      if (next.length > MAX_FILES) setProblem(t("tooMany", { n: String(MAX_FILES) }));
-      return next.slice(0, MAX_FILES);
-    });
+    const r = await takeFiles(files, [...list]);
+    setProblem(r.problem);
+    setFiles((now) => takeJoin(now, r.picked));
   };
 
   // A secret in the message (G33.4): held back before it leaves the page, with the way to the

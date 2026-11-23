@@ -3,6 +3,8 @@
 // box for God, the topics in progress with their state), a topic read as a clean document with its
 // decisions in an evident box, and a few settings in groups with «Full view» at the bottom. The
 // archive is found with its search. No agents, tools, figures or permissions jargon in sight.
+
+import type { ImagePart } from "@redgiant/protocol";
 import {
   criticalSentences,
   isCriticalRequest,
@@ -21,14 +23,17 @@ import {
   IconArrowDown,
   IconChevronLeft,
   IconClose,
+  IconFile,
   IconMonitor,
   IconMoon,
   IconMore,
+  IconPaperclip,
   IconPin,
   IconPlus,
   IconSearch,
   IconSend,
   IconSettings,
+  IconStop,
   IconSun,
   Logo,
 } from "../icons.js";
@@ -52,6 +57,7 @@ import {
   godNudge,
   godRoutingText,
   greetingKey,
+  interruptSession,
   lastError,
   loadNudgeSettings,
   moveExchange,
@@ -74,6 +80,7 @@ import {
   setUiMode,
   signOut,
   simpleAssistants,
+  simpleLastSent,
   simpleScreen,
   simpleTyping,
   stageFront,
@@ -91,6 +98,7 @@ import { setVoiceSettings, voiceSettings } from "../voice/settings.js";
 import { AccentPicker } from "./AccentPicker.js";
 import { useArmed } from "./armed.js";
 import { FileCard } from "./Chat.js";
+import { type Attachment, packMessage, takeFiles } from "./Composer.js";
 import { askText } from "./dialogs.js";
 import { FoundCard } from "./FoundWidgets.js";
 import { useFollow } from "./follow-hook.js";
@@ -132,20 +140,33 @@ export function SimpleApp() {
 
 const goToday = () => (simpleScreen.value = { kind: "today" });
 
-/** The big box: one place to write to God («Chiedimi qualcosa…», «Rispondi…»). */
+/**
+ * The simple interface's box: one place to write («Chiedimi qualcosa…», «Rispondi…»). 3.12.2: an
+ * attach button (the full composer's files and limits, chips to remove before sending) and, while
+ * the conversation it writes to is working, a stop button (the same interruption).
+ */
 function AskBox({
   hint,
   onSend,
   big = false,
   listened = false,
+  scope = "platform",
+  sessionId,
 }: {
   hint: string;
-  onSend: (text: string) => Promise<unknown>;
+  /** The words (with the attachments written into them) and the pictures for the model. */
+  onSend: (text: string, images: ImagePart[]) => Promise<unknown>;
   big?: boolean;
   /** The giant mascot listens while the person types here (3.12.1). */
   listened?: boolean;
+  /** Where files other than pictures and texts are saved (as the full composer: the agent's workspace). */
+  scope?: string;
+  /** The conversation it writes to, for «Stop»; none yet: the one last sent from here. */
+  sessionId?: string | undefined;
 }) {
   const [text, setText] = useState("");
+  const [files, setFiles] = useState<Attachment[]>([]);
+  const [problem, setProblem] = useState<string | null>(null);
   const typing = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(
     () => () => {
@@ -164,16 +185,36 @@ function AskBox({
   };
   const [busy, setBusy] = useState(false);
   const area = useRef<HTMLTextAreaElement>(null);
+  const target = sessionId ?? simpleLastSent.value;
+  const running = target ? sessionView(target).value.state === "running" : false;
   const send = async () => {
     const words = text.trim();
-    if (!words || busy) return;
+    if ((!words && files.length === 0) || busy) return;
     setBusy(true);
+    const kept = files;
     // The box empties at once; what was written comes back only if it could not go.
     setText("");
-    const r = await onSend(words);
+    setFiles([]);
+    let r: unknown;
+    try {
+      const msg = await packMessage(words, kept, (path, data) =>
+        getApi().write(scope, path, data, "base64"),
+      );
+      r = await onSend(msg.text.trim() || t("seeAttachments"), msg.images);
+    } catch (e) {
+      setProblem((e as Error).message);
+    }
     setBusy(false);
-    if (r === undefined) setText(words);
+    if (r === undefined) {
+      setText(words);
+      setFiles(kept);
+    }
     area.current?.focus();
+  };
+  const add = async (list: FileList | File[]) => {
+    const r = await takeFiles(files, [...list]);
+    setProblem(r.problem);
+    setFiles((now) => [...now, ...r.picked].slice(0, 10));
   };
   // The box grows with what is written, up to a few lines.
   useEffect(() => {
@@ -184,30 +225,77 @@ function AskBox({
   }, [text]);
   return (
     <div class={`smp-ask${big ? " big" : ""}`}>
-      <textarea
-        ref={area}
-        rows={1}
-        value={text}
-        placeholder={hint}
-        aria-label={hint}
-        onInput={(e) => typed((e.target as HTMLTextAreaElement).value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
-            e.preventDefault();
-            void send();
-          }
-        }}
-      />
-      <button
-        type="button"
-        class="smp-send"
-        aria-label={t("smpSend")}
-        title={t("smpSend")}
-        disabled={busy || !text.trim()}
-        onClick={() => void send()}
-      >
-        <IconSend size={18} />
-      </button>
+      {(files.length > 0 || problem) && (
+        <div class="smp-ask-chips">
+          {files.map((f) => (
+            <span key={f.name} class="smp-chip" data-attachment={f.kind}>
+              {f.kind === "image" ? <img src={f.url} alt="" /> : <IconFile size={13} />}
+              <span class="smp-chip-name">{f.name}</span>
+              <button
+                type="button"
+                class="smp-chip-x"
+                aria-label={t("remove")}
+                title={t("remove")}
+                onClick={() => setFiles(files.filter((x) => x !== f))}
+              >
+                <IconClose size={11} />
+              </button>
+            </span>
+          ))}
+          {problem && <span class="smp-ask-problem">{problem}</span>}
+        </div>
+      )}
+      <div class="smp-ask-row">
+        <label class="smp-attach" title={t("attach")}>
+          <IconPaperclip size={19} />
+          <input
+            type="file"
+            multiple
+            hidden
+            aria-label={t("attach")}
+            onChange={(e) => {
+              const input = e.target as HTMLInputElement;
+              if (input.files) void add(input.files);
+              input.value = "";
+            }}
+          />
+        </label>
+        <textarea
+          ref={area}
+          rows={1}
+          value={text}
+          placeholder={hint}
+          aria-label={hint}
+          onInput={(e) => typed((e.target as HTMLTextAreaElement).value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+              e.preventDefault();
+              void send();
+            }
+          }}
+        />
+        {running && target && (
+          <button
+            type="button"
+            class="smp-send smp-stop"
+            aria-label={t("interrupt")}
+            title={t("interrupt")}
+            onClick={() => interruptSession(target)}
+          >
+            <IconStop size={16} />
+          </button>
+        )}
+        <button
+          type="button"
+          class="smp-send"
+          aria-label={t("smpSend")}
+          title={t("smpSend")}
+          disabled={busy || (!text.trim() && files.length === 0)}
+          onClick={() => void send()}
+        >
+          <IconSend size={18} />
+        </button>
+      </div>
     </div>
   );
 }
@@ -253,10 +341,10 @@ function Today() {
           big
           listened
           hint={t(chat ? "smpChatHint" : "smpAskHint")}
-          onSend={(text) => {
+          onSend={(text, images) => {
             // A generic nudge's invitation goes once the person writes (the topic comes now).
             nudgeInvite.value = null;
-            return chat ? askChat(text) : askGod(text);
+            return chat ? askChat(text, images) : askGod(text, { images });
           }}
         />
         {!chat && godRoutingText.value && (
@@ -614,10 +702,11 @@ function TopicScreen({ id, title, chat = false }: { id: string; title: string; c
         </div>
         <AskBox
           hint={t("smpReplyHint")}
-          onSend={async (text) => {
+          sessionId={id}
+          onSend={async (text, images) => {
             const r = chat
-              ? sendInChat(id, text) || undefined
-              : await askGod(text, { topicId: id });
+              ? sendInChat(id, text, images) || undefined
+              : await askGod(text, { topicId: id, images });
             follow.toBottom();
             return r;
           }}

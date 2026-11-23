@@ -221,6 +221,7 @@ extension TopicsApi on RedGiantClient {
     String? topicId,
     bool newTopic = false,
     String? title,
+    List<Map<String, Object?>>? images,
   }) async => TopicSent.fromJson(
     objectOf(
       await callJson('POST', '/api/god/messages', {
@@ -228,6 +229,7 @@ extension TopicsApi on RedGiantClient {
         'topicId': ?topicId,
         if (newTopic) 'newTopic': true,
         'title': ?title,
+        if (images != null && images.isNotEmpty) 'images': images,
       }),
     ),
   );

@@ -55,3 +55,22 @@ ShrunkImage? _shrink(({String name, Uint8List bytes, String? mediaType}) a) {
   final jpeg = img.encodeJpg(canvas, quality: kImageJpegQuality);
   return (bytes: jpeg, mediaType: 'image/jpeg', name: name);
 }
+
+/// A file for a message, with the page's rules (the composer's, the simple boxes' and «Share»'s):
+/// a photo is redrawn with its long side at 2000 px as JPEG when it is bigger; one that cannot be
+/// read goes as a file; null when it is over the limits (25 MB, 5 MB for a photo).
+Future<Attached?> prepareAttachment(String name, Uint8List bytes) async {
+  if (imageTypeOf(name) != null || _looksLikeImage(bytes)) {
+    final shrunk = await shrinkForModel(name, bytes);
+    return shrunk == null
+        ? classify(name, bytes, mimeType: 'application/octet-stream')
+        : AttachedImage(shrunk.name, shrunk.mediaType, shrunk.bytes);
+  }
+  return classify(name, bytes);
+}
+
+bool _looksLikeImage(Uint8List b) =>
+    b.length > 3 &&
+    ((b[0] == 0x89 && b[1] == 0x50) ||
+        (b[0] == 0xFF && b[1] == 0xD8) ||
+        (b[0] == 0x42 && b[1] == 0x4D));

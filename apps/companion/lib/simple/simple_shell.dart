@@ -4,10 +4,14 @@
 // evident box, a few settings in groups with «Vista completa» at the bottom, the archive with its
 // search. Telephone and computer: one column, wider cards on a wide window.
 import 'dart:async';
+import 'dart:typed_data';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import '../api/attachments.dart';
 import '../api/conversation.dart';
+import '../api/image_shrink.dart' show prepareAttachment;
 import '../api/metrics.dart' show usd;
 import '../api/types.dart' show Agent;
 import '../api/live_model.dart';
@@ -99,7 +103,9 @@ class _Column extends StatelessWidget {
   );
 }
 
-/// The big box: one place to write to God.
+/// The box of the simple interface: one place to write. 3.12.2: an attach button (the full
+/// composer's files and limits, chips to remove before sending) and, while the conversation it
+/// writes to is working, a stop button (the same interruption).
 class AskBox extends StatefulWidget {
   const AskBox({
     super.key,
@@ -108,24 +114,39 @@ class AskBox extends StatefulWidget {
     this.big = false,
     this.onTyping,
     this.send,
+    this.sessionId,
   });
 
   /// The send button's colour (Satellite's lilac for the Chat); default the accent.
   final Color? send;
 
   final String hint;
-  final Future<bool> Function(String text) onSend;
+
+  /// The words (with the attachments written into them) and the pictures for the model.
+  final Future<bool> Function(String text, List<Map<String, Object?>> images) onSend;
   final bool big;
 
   /// What is written, as it changes (3.12.1: the giant mascot listens).
   final void Function(String text)? onTyping;
 
+  /// The conversation it writes to, for «Stop»; none: the one the big box sent to last.
+  final String? sessionId;
+
   @override
   State<AskBox> createState() => _AskBoxState();
 }
 
+/// Picks the files: the system's picker (on a phone it offers the camera and the gallery, as the
+/// composer's); tests give their own.
+Future<List<(String, Uint8List)>> Function() pickFilesForSimple = () async {
+  final files = await FilePicker.pickFiles();
+  return [for (final f in files) (f.name, await f.readAsBytes())];
+};
+
 class _AskBoxState extends State<AskBox> {
   final _text = TextEditingController();
+  final _attached = <Attached>[];
+  String? _note;
   bool _busy = false;
 
   @override
@@ -136,80 +157,208 @@ class _AskBoxState extends State<AskBox> {
 
   Future<void> _send() async {
     final words = _text.text.trim();
-    if (words.isEmpty || _busy) return;
+    if ((words.isEmpty && _attached.isEmpty) || _busy) return;
+    final l = AppLocalizations.of(context);
+    final c = AppScope.read(context).client;
     // The box empties at once; what was written comes back only if it could not go (3.12.1).
     setState(() => _busy = true);
     _text.clear();
     widget.onTyping?.call('');
-    final ok = await widget.onSend(words);
+    final kept = List.of(_attached);
+    setState(_attached.clear);
+    var ok = false;
+    try {
+      final packed = await packMessage(
+        words.isEmpty ? l.attachmentOnly : words,
+        kept,
+        upload: c == null ? null : (path, bytes) => c.writeFile('platform', path, bytes),
+        notSent: l.attachmentNotSent,
+      );
+      ok = await widget.onSend(packed.text, packed.images);
+    } on Object {
+      ok = false;
+    }
     if (!mounted) return;
     setState(() => _busy = false);
-    if (!ok) _text.text = words;
+    if (!ok) {
+      _text.text = words;
+      setState(() => _attached.addAll(kept));
+    }
+  }
+
+  Future<void> _attach() async {
+    final files = await pickFilesForSimple();
+    for (final (name, bytes) in files) {
+      await _add(name, bytes);
+    }
+  }
+
+  /// The composer's own rules: a photo is redrawn when big, at most ten files, 25 MB each.
+  Future<void> _add(String name, Uint8List bytes) async {
+    final l = AppLocalizations.of(context);
+    if (_attached.length >= kMaxAttached) {
+      setState(() => _note = l.cvTooMany('$kMaxAttached'));
+      return;
+    }
+    final a = await prepareAttachment(name, bytes);
+    if (!mounted) return;
+    if (a == null) {
+      setState(() => _note = l.attachmentTooBig(name));
+      return;
+    }
+    setState(() {
+      _note = null;
+      _attached.add(a);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final c = RgColors.of(context);
     final l = AppLocalizations.of(context);
-    return Container(
-      margin: EdgeInsets.fromLTRB(16, 6, 16, widget.big ? 14 : 12),
-      padding: EdgeInsets.fromLTRB(
-        18,
-        widget.big ? 10 : 6,
-        widget.big ? 10 : 6,
-        widget.big ? 10 : 6,
-      ),
-      decoration: BoxDecoration(
-        color: c.panel,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: _shadow(context, big: true),
-        border: _ring(context),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Expanded(
-            child: TextField(
-              key: Key(widget.big ? 'simple-ask' : 'simple-reply'),
-              controller: _text,
-              minLines: widget.big ? 2 : 1,
-              maxLines: 6,
-              textInputAction: TextInputAction.send,
-              onSubmitted: (_) => unawaited(_send()),
-              onChanged: widget.onTyping,
-              style: TextStyle(fontSize: 16.5, color: c.text, height: 1.4),
-              decoration: InputDecoration(
-                hintText: widget.hint,
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                filled: false,
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 10),
-              ),
-            ),
+    final app = AppScope.of(context);
+    final target = widget.sessionId ?? app.simple.lastSent;
+    final view = target == null ? null : app.live.views[target];
+    return ListenableBuilder(
+      listenable: Listenable.merge([app.live, ?view]),
+      builder: (context, _) {
+        final running = view?.running ?? false;
+        return Container(
+          margin: EdgeInsets.fromLTRB(16, 6, 16, widget.big ? 14 : 12),
+          padding: EdgeInsets.fromLTRB(
+            10,
+            widget.big ? 10 : 6,
+            widget.big ? 10 : 6,
+            widget.big ? 10 : 6,
           ),
-          const SizedBox(width: 10),
-          Semantics(
-            button: true,
-            label: l.smpSend,
-            child: Material(
-              color: widget.send ?? c.accent,
-              borderRadius: BorderRadius.circular(12),
-              child: InkWell(
-                key: Key(widget.big ? 'simple-ask-send' : 'simple-reply-send'),
-                borderRadius: BorderRadius.circular(12),
-                onTap: _busy ? null : () => unawaited(_send()),
-                child: const SizedBox(
-                  width: 42,
-                  height: 42,
-                  child: Center(child: RgIcon(RgIcons.send, size: 18, color: Colors.white)),
+          decoration: BoxDecoration(
+            color: c.panel,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: _shadow(context, big: true),
+            border: _ring(context),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (_attached.isNotEmpty || _note != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 0, 4),
+                  child: Wrap(
+                    key: const Key('simple-attachments'),
+                    spacing: 6,
+                    runSpacing: 4,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      for (final (i, a) in _attached.indexed)
+                        InputChip(
+                          key: Key('simple-attached-$i'),
+                          visualDensity: VisualDensity.compact,
+                          avatar: a is AttachedImage
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: Image.memory(
+                                    a.bytes,
+                                    width: 22,
+                                    height: 22,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, _, _) =>
+                                        RgIcon(RgIcons.image, size: 16, color: c.dim),
+                                  ),
+                                )
+                              : RgIcon(RgIcons.file, size: 16, color: c.dim),
+                          label: Text(a.name, overflow: TextOverflow.ellipsis),
+                          deleteButtonTooltipMessage: l.attachmentRemove,
+                          deleteIcon: RgIcon(RgIcons.x, size: 14, color: c.dim),
+                          onDeleted: () => setState(() => _attached.removeAt(i)),
+                        ),
+                      if (_note != null)
+                        Text(_note!, style: TextStyle(color: c.err, fontSize: 12.5)),
+                    ],
+                  ),
                 ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  IconButton(
+                    key: const Key('simple-attach'),
+                    tooltip: l.attach,
+                    onPressed: () => unawaited(_attach()),
+                    icon: RgIcon(RgIcons.paperclip, size: 20, color: c.dim),
+                  ),
+                  Expanded(
+                    child: TextField(
+                      key: Key(widget.big ? 'simple-ask' : 'simple-reply'),
+                      controller: _text,
+                      minLines: widget.big ? 2 : 1,
+                      maxLines: 6,
+                      textInputAction: TextInputAction.send,
+                      onSubmitted: (_) => unawaited(_send()),
+                      onChanged: widget.onTyping,
+                      style: TextStyle(fontSize: 16.5, color: c.text, height: 1.4),
+                      decoration: InputDecoration(
+                        hintText: widget.hint,
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        filled: false,
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  if (running && target != null) ...[
+                    Semantics(
+                      button: true,
+                      label: l.stop,
+                      child: Material(
+                        color: c.panel2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(color: c.accent, width: 1.5),
+                        ),
+                        child: InkWell(
+                          key: const Key('simple-stop'),
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {
+                            if (!app.interrupt(target)) {
+                              setState(() => _note = l.cvStopWhenBack);
+                            }
+                          },
+                          child: SizedBox(
+                            width: 42,
+                            height: 42,
+                            child: Center(child: RgIcon(RgIcons.stop, size: 16, color: c.text)),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                  ],
+                  Semantics(
+                    button: true,
+                    label: l.smpSend,
+                    child: Material(
+                      color: widget.send ?? c.accent,
+                      borderRadius: BorderRadius.circular(12),
+                      child: InkWell(
+                        key: Key(widget.big ? 'simple-ask-send' : 'simple-reply-send'),
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: _busy ? null : () => unawaited(_send()),
+                        child: const SizedBox(
+                          width: 42,
+                          height: 42,
+                          child: Center(child: RgIcon(RgIcons.send, size: 18, color: Colors.white)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -529,12 +678,14 @@ class _TodayScreenState extends State<TodayScreen> {
                               hint: chat ? l.smpChatHint : l.smpAskHint,
                               send: chat ? satelliteLilac : null,
                               onTyping: s.typed,
-                              onSend: (text) async {
+                              onSend: (text, images) async {
                                 if (chat) {
                                   final sid = await s.askChat(
                                     text,
                                     chatAgent: app.ensureChatAgent,
-                                    send: app.send,
+                                    send: (sid, text, images) =>
+                                        app.send(sid, text, images: images),
+                                    images: images,
                                   );
                                   if (sid == null || !context.mounted) return false;
                                   unawaited(openChat(context, sid, _shortTitle(text)));
@@ -542,7 +693,7 @@ class _TodayScreenState extends State<TodayScreen> {
                                 }
                                 // A generic nudge's invitation goes once the person writes.
                                 s.wrote();
-                                final r = await s.ask(text);
+                                final r = await s.ask(text, images: images);
                                 if (r == null || !context.mounted) return false;
                                 unawaited(openTopic(context, r.sessionId, r.routed.title));
                                 return true;
@@ -1252,13 +1403,14 @@ class _TopicScreenState extends State<TopicScreen> {
                     ),
                     AskBox(
                       hint: l.smpReplyHint,
-                      onSend: (text) async {
+                      sessionId: widget.id,
+                      onSend: (text, images) async {
                         if (widget.chat) {
-                          final ok = await _app.send(widget.id, text);
+                          final ok = await _app.send(widget.id, text, images: images);
                           _toEnd();
                           return ok;
                         }
-                        final r = await _app.simple.ask(text, topicId: widget.id);
+                        final r = await _app.simple.ask(text, topicId: widget.id, images: images);
                         _toEnd();
                         return r != null;
                       },
