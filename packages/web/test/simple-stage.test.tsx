@@ -185,7 +185,9 @@ describe("«Oggi»'s stage", () => {
     const r = render(<SimpleApp />);
     fireEvent.input(r.getByPlaceholderText("Chiedimi qualcosa…"), { target: { value: "Ciao" } });
     expect(mood(r)).toBe("listen");
-    await act(() => vi.advanceTimersByTime(2600));
+    await act(() => {
+      vi.advanceTimersByTime(2600);
+    });
     expect(mood(r)).toBe("rest");
   });
 
@@ -220,7 +222,9 @@ describe("«Oggi»'s stage", () => {
     const r = render(<SimpleStage />);
     await act(() => state.refreshTopics());
     expect(mood(r)).toBe("happy");
-    await act(() => vi.advanceTimersByTime(4100));
+    await act(() => {
+      vi.advanceTimersByTime(4100);
+    });
     expect(mood(r)).toBe("rest");
   });
 
@@ -231,11 +235,15 @@ describe("«Oggi»'s stage", () => {
     const r = render(<SimpleStage />);
     const seen: string[] = [];
     for (let i = 0; i < 6; i++) {
-      await act(() => vi.advanceTimersByTime(7996));
+      await act(() => {
+        vi.advanceTimersByTime(7996);
+      });
       const g = r.container.querySelector(".smp-giant")?.getAttribute("data-gesture");
       expect(g).toBeTruthy();
       if (g) seen.push(g);
-      await act(() => vi.advanceTimersByTime(900));
+      await act(() => {
+        vi.advanceTimersByTime(900);
+      });
       expect(r.container.querySelector(".smp-giant")?.getAttribute("data-gesture")).toBeNull();
     }
     vi.restoreAllMocks();
@@ -248,7 +256,9 @@ describe("«Oggi»'s stage", () => {
     reduce = true;
     vi.useFakeTimers();
     const r = render(<SimpleStage />);
-    await act(() => vi.advanceTimersByTime(60_000));
+    await act(() => {
+      vi.advanceTimersByTime(60_000);
+    });
     expect(r.container.querySelector(".smp-giant")?.getAttribute("data-gesture")).toBeNull();
   });
 });

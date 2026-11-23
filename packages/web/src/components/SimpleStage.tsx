@@ -85,7 +85,7 @@ export function useIdleGesture(still: boolean, from: readonly IdleGesture[]): Id
 }
 
 /** Each mood in words, for screen readers. */
-export const MOOD_WORDS: Record<GiantMood, string> = {
+export const MOOD_WORDS = {
   rest: "smpMoodRest",
   listen: "smpMoodListen",
   think: "smpMoodThink",
@@ -93,7 +93,7 @@ export const MOOD_WORDS: Record<GiantMood, string> = {
   wait: "smpMoodWait",
   happy: "smpMoodHappy",
   worried: "smpMoodWorried",
-};
+} as const satisfies Record<GiantMood, string>;
 
 /** God's gestures: its eyes are one group, so no wink. */
 const GOD_GESTURES: readonly IdleGesture[] = ["look-l", "look-r", "hop", "wiggle", "nod"];
