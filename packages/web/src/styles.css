@@ -470,6 +470,18 @@ pre {
 .limit-num {
   font-variant-numeric: tabular-nums;
 }
+/* The 7-day margin (3.12.3): ahead of an even pace or behind it, in the bar's own colours. */
+.limit-margin {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--ok);
+}
+.limit-margin.warn {
+  color: var(--warn);
+}
+.limit-margin.err {
+  color: var(--err);
+}
 .body {
   flex: 1;
   display: flex;

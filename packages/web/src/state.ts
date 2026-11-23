@@ -1191,16 +1191,32 @@ export async function refreshLimits(): Promise<void> {
 }
 
 /**
- * A plan's bars in the header: its windows with 5h first, the rest as the provider sent them.
- * Before any reading the 5h bar waits with a dash (null); a plan without that window (3.9.8,
- * Claude's) shows only the windows it has.
+ * A plan's bars in the header: 5h first (always there: a dash while the plan gives no figure for
+ * it, 3.12.3), then the 7-day window, then the rest as the provider sent them (per-model ones).
  */
 export function planBars(
   windows: import("./api.js").PlanLimits["windows"],
 ): { id: string; label: string; usedPct: number | null; resetsAt?: string | undefined }[] {
-  const all: { id: string; label: string; usedPct: number | null; resetsAt?: string }[] =
-    windows.length ? [...windows] : [{ id: "5h", label: "5h", usedPct: null }];
-  return all.sort((a, b) => (a.id === "5h" ? -1 : b.id === "5h" ? 1 : 0));
+  const all: { id: string; label: string; usedPct: number | null; resetsAt?: string }[] = [
+    ...windows,
+  ];
+  if (!all.some((w) => w.id === "5h")) all.push({ id: "5h", label: "5h", usedPct: null });
+  const rank = (id: string) => (id === "5h" ? 0 : id === "7d" ? 1 : 2);
+  return all.sort((a, b) => rank(a.id) - rank(b.id));
+}
+
+/** How often the open page asks for the plan's windows again (the server shares one reading). */
+export const LIMITS_POLL_MS = 2 * 60_000;
+let limitsTimer: ReturnType<typeof setInterval> | undefined;
+/** While the page is open and the conversation uses a plan, read the windows every two minutes. */
+export function startLimitsPolling(): void {
+  if (limitsTimer) return;
+  limitsTimer = setInterval(() => {
+    if (typeof document !== "undefined" && document.hidden) return;
+    const provider = activeChat()?.model?.provider;
+    if (provider && limits.value.some((l) => l.provider === provider))
+      void refreshLimits().catch(() => {});
+  }, LIMITS_POLL_MS);
 }
 
 /** The model an agent inherits from its ancestors (RD13). */
@@ -1223,6 +1239,7 @@ export function activeChat() {
 }
 
 export async function refresh(): Promise<void> {
+  startLimitsPolling();
   const a = getApi();
   let all: Project[];
   [all, agents.value, approvals.value, budgets.value, platformInfo.value] = await Promise.all([
