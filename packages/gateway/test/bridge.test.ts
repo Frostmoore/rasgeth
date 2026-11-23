@@ -340,7 +340,7 @@ describe("chat bridge (G29.5)", () => {
     await t.on?.({ userId: "u1", chatId: "c1", text: "/status" });
     expect(fresh).toBe(1);
     expect(t.texts().slice(1)).toEqual([
-      "New conversation: God and I start fresh.",
+      "New topic: your next message opens a new one.",
       "Nothing was running.",
       "Working now: God.\nWaiting for you: 1 approvals, 0 questions.\nSpent: $1.50.",
     ]);

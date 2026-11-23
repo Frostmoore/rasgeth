@@ -125,6 +125,7 @@ import {
   sessionNative,
   type ToolChoice,
   type ToolsView,
+  type TopicRouted,
   type TurnQueueView,
   textLanguage,
   toolsAside,
@@ -1977,6 +1978,10 @@ export class RedGiantCore implements OrchestrationHost {
     origin: "chat" | "assistant",
     from?: string,
   ): Promise<string> {
+    // Demi-God's relay: the chat already routed the person's own words (askDemigod), not the
+    // rewording the model sends here.
+    const chosen = origin === "chat" ? this.chatRoutes.get(god.ownerId)?.shift() : undefined;
+    if (chosen) return chosen.topicId;
     const r = await this.topics.route(god.ownerId, {
       text,
       origin,
@@ -1984,6 +1989,63 @@ export class RedGiantCore implements OrchestrationHost {
     });
     if (origin === "chat") this.telegramSessions.add(r.topicId);
     return r.topicId;
+  }
+
+  // ---- chats and God's topics (3.12.3) --------------------------------------------------------
+
+  /** What a chat message was said in: a «reply» to it goes to the same topic. */
+  async rememberChatMessage(
+    ownerId: string,
+    chat: string,
+    messageId: string,
+    topicId: string,
+  ): Promise<void> {
+    await this.o.db.query(
+      `INSERT INTO rg_chat_topics (owner_id, chat, message_id, topic_id) VALUES ($1, $2, $3, $4)
+       ON CONFLICT (owner_id, chat, message_id) DO UPDATE SET topic_id = EXCLUDED.topic_id`,
+      [ownerId, chat, messageId, topicId],
+    );
+  }
+
+  async topicOfChatMessage(
+    ownerId: string,
+    chat: string,
+    messageId: string,
+  ): Promise<string | undefined> {
+    const [r] = await this.o.db.query<{ topic_id: string }>(
+      "SELECT topic_id FROM rg_chat_topics WHERE owner_id = $1 AND chat = $2 AND message_id = $3",
+      [ownerId, chat, messageId],
+    );
+    return r?.topic_id;
+  }
+
+  /** The active topics, for the chats' «Move» buttons and /argomenti. */
+  async chatTopics(ownerId: string): Promise<{ id: string; title: string }[]> {
+    const { topics } = await this.topics.list(ownerId);
+    return topics.map((t) => ({ id: t.id, title: t.title }));
+  }
+
+  /**
+   * The chats' «Move» and /sposta: the last exchange the chat had in `from` goes to another
+   * topic (or a new one), with the machinery of the page's «Move». Returns the new topic and
+   * God's answer there once it is written.
+   */
+  async moveFromChat(
+    ownerId: string,
+    from: string,
+    to: string | "new",
+  ): Promise<{ topicId: string; title: string; answer: string }> {
+    const asked = await this.store.list({ sessionId: from, types: ["message.user"] });
+    const last = asked.findLast((e) => e.type === "message.user" && e.payload?.from === "Telegram");
+    if (!last) throw new BadRequestError("No message from the chat to move");
+    const r = await this.topics.move(ownerId, from, last.seq, { to });
+    this.telegramSessions.add(r.sessionId);
+    await r.done.catch(() => {});
+    return {
+      topicId: r.sessionId,
+      title: r.routed.title,
+      answer: await this.lastReply(r.sessionId),
+    };
   }
 
   static async create(o: CoreOptions): Promise<RedGiantCore> {
@@ -2001,6 +2063,15 @@ export class RedGiantCore implements OrchestrationHost {
     await migratePersonRequests(o.db);
     await migrateRooms(o.db);
     await migrateChat(o.db);
+    await o.db.query(`
+      CREATE TABLE IF NOT EXISTS rg_chat_topics (
+        owner_id   text NOT NULL,
+        chat       text NOT NULL,
+        message_id text NOT NULL,
+        topic_id   text NOT NULL,
+        at         timestamptz NOT NULL DEFAULT now(),
+        PRIMARY KEY (owner_id, chat, message_id)
+      )`);
     // Paired devices are gone (G24.7): their tokens stop working with their table.
     await o.db.query("DROP TABLE IF EXISTS rg_devices");
     await migrateLogin(o.db);
@@ -3796,6 +3867,10 @@ export class RedGiantCore implements OrchestrationHost {
       onQueued?: () => void;
       /** «Send anyway» on the chat's secret warning (2026-11-19): as written, in the log. */
       secretOk?: boolean;
+      /** The chat message this one replies to (rule level 1 of God's topics, 3.12.3). */
+      replyTo?: { chat: string; messageId: string };
+      /** Told once the person's words are routed: the gateway's header and «Move» need it. */
+      onRouted?: (r: { topicId: string; title: string; isNew: boolean }) => void;
     } = {},
   ): Promise<string> {
     const demigod = this.registry
@@ -3807,7 +3882,43 @@ export class RedGiantCore implements OrchestrationHost {
     // What Demi-God and God send to the person goes to Telegram too (G25.2).
     this.telegramSessions.add(sid);
     const god = this.registry.list({ ownerId, activeOnly: true }).find((a) => a.kind === "god");
-    if (god) this.telegramSessions.add(await this.workSession(god));
+    // God's topics (3.12.3): the person's own words are routed first, not Demi-God's rewording;
+    // the choice rides with the message (as the photos do) and ask_god writes into that topic.
+    let routed: TopicRouted | undefined;
+    if (god) {
+      const reply = extra.replyTo
+        ? await this.topicOfChatMessage(ownerId, extra.replyTo.chat, extra.replyTo.messageId)
+        : undefined;
+      routed = await this.topics.route(ownerId, {
+        text,
+        origin: "chat",
+        ...(reply && { replyTo: reply }),
+      });
+      this.telegramSessions.add(routed.topicId);
+      const queue = this.chatRoutes.get(ownerId) ?? [];
+      queue.push(routed);
+      this.chatRoutes.set(ownerId, queue);
+      extra.onRouted?.({ topicId: routed.topicId, title: routed.title, isNew: routed.isNew });
+    }
+    try {
+      return await this.askDemigodRouted(ownerId, sid, text, extra);
+    } finally {
+      // A route Demi-God never used (it did not call ask_god) must not leak into the next message.
+      const queue = this.chatRoutes.get(ownerId);
+      const at = routed ? (queue?.indexOf(routed) ?? -1) : -1;
+      if (queue && at >= 0) queue.splice(at, 1);
+    }
+  }
+
+  /** The routes chosen for the chat's messages, waiting for Demi-God's ask_god (first in, first out). */
+  private readonly chatRoutes = new Map<string, TopicRouted[]>();
+
+  private async askDemigodRouted(
+    ownerId: string,
+    sid: string,
+    text: string,
+    extra: Parameters<RedGiantCore["askDemigod"]>[3] = {},
+  ): Promise<string> {
     // Files are saved where God works; their paths travel with the message.
     let lines = "";
     if (extra.files?.length) {
@@ -3846,20 +3957,14 @@ export class RedGiantCore implements OrchestrationHost {
     return r;
   }
 
-  /** Telegram's /new: Demi-God and God start fresh conversations (the old ones stay in the log). */
+  /**
+   * The chats' /new and /nuovo: the next message opens a topic of its own. Nothing is reset any
+   * more: Demi-God stays one conversation and God's topics keep their own prefixes (3.12.3).
+   */
   newConversation(ownerId: string): void {
-    for (const a of this.registry.list({ ownerId, activeOnly: true }))
-      if (a.kind === "demigod" || a.kind === "god") {
-        this.workSessions.delete(a.id);
-        this.freshWork.add(a.id);
-      }
-    // God's topics (3.12): the next message from the chat opens a topic of its own.
     this.topics.newFromChat(ownerId);
     this.relay.delete(ownerId);
   }
-
-  /** Agents whose next work conversation starts anew (/new), not the one kept. */
-  private readonly freshWork = new Set<string>();
 
   /** Telegram's /stop: interrupts what Demi-God and God are doing for it. */
   async stopWork(ownerId: string): Promise<boolean> {
@@ -6410,13 +6515,10 @@ export class RedGiantCore implements OrchestrationHost {
     if (existing) return existing;
     // The same conversation after a restart too: the agent keeps the context of its tasks.
     const key = `work_session:${slot}`;
-    const fresh = this.freshWork.delete(agent.id);
-    const [kept] = fresh
-      ? []
-      : await this.o.db.query<{ value: unknown }>(
-          "SELECT value FROM rg_settings WHERE owner_id = $1 AND key = $2",
-          [agent.ownerId, key],
-        );
+    const [kept] = await this.o.db.query<{ value: unknown }>(
+      "SELECT value FROM rg_settings WHERE owner_id = $1 AND key = $2",
+      [agent.ownerId, key],
+    );
     const keptId = kept && settingValue(kept.value);
     if (typeof keptId === "string") {
       const [row] = await this.o.db.query<{ id: string }>(
