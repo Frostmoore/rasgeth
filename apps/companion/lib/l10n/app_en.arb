@@ -13152,7 +13152,7 @@
   "syEmMiss_cmdline_tools": "cmdline-tools (sdkmanager, avdmanager), to download images and create virtual devices.",
   "syEmMiss_emulator": "The Android Emulator package of the SDK.",
   "syEmMiss_emulator_old": "The emulator is old: Rasgeth can propose the update, which you approve.",
-  "syEmMiss_ios_bridge": "A bridge for touches on iOS simulators (comes with 3.12.2).",
+  "syEmMiss_ios_bridge": "The bridge for the picture and touches of iOS simulators (serve-sim): one guided step downloads it, with your yes.",
   "syEmMiss_platform_tools": "platform-tools (adb), to talk to emulators and phones.",
   "syEmMiss_sdk": "An Android SDK (Android Studio installs it; or choose its folder below).",
   "syEmMiss_system_image": "A system image for this processor.",
@@ -13276,10 +13276,9 @@
   "syEiLicences": "Licences",
   "syEiLicencesLead": "Google's terms for these pieces, in full. Read them: the install starts only once you accept them.",
   "syEiNote_bios": "Virtualization is switched off: switch it on in the BIOS/UEFI (VT-x or AMD-V) and, on Windows, the Windows Hypervisor Platform feature.",
-  "syEiNote_ios_bridge": "iOS: the bridge for touches comes with Rasgeth 3.12.2; there is nothing to install now.",
   "syEiNote_kvm_group": "Linux: /dev/kvm is there but this user may not use it. An administrator can add the user to the kvm group, then log in again.",
   "syEiNote_node": "Settings › Nodes: pair a computer that can run emulators.",
-  "syEiNote_xcode": "iOS simulators need Xcode, from the App Store: Rasgeth does not install it. iOS comes with Rasgeth 3.12.2.",
+  "syEiNote_xcode": "iOS simulators need Xcode, from the App Store: Rasgeth does not install it.",
   "syEiReading": "Reading Google's list of packages…",
   "syEiRunning": "Starting…",
   "syEiStart": "Install",
@@ -13394,5 +13393,40 @@
       }
     }
   },
-  "smpRouting": "Putting it in the right topic…"
+  "smpRouting": "Putting it in the right topic…",
+  "syEmIosBridge": "Bridge for picture and touches",
+  "syEmIosBridgeAt": "serve-sim {version}, in {folder}",
+  "@syEmIosBridgeAt": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "syEmIosBridgeNone": "Not installed",
+  "syEmIosNeedsMac": "iOS simulators exist only on a Mac with Xcode: pair a Mac as a node (Settings › Nodes).",
+  "syEmIosReady": "Ready: the simulators open in the Canvas like the Android emulators.",
+  "syEmMiss_ios_arch": "iOS simulators need a Mac with Apple silicon; this is an Intel Mac. Use another Mac as a node.",
+  "syEmRunningSim": "iOS simulator",
+  "syIbBlock_intel": "The bridge needs a Mac with Apple silicon: this is an Intel Mac. Use another Mac as a node.",
+  "syIbBlock_no_npm": "There is no npm next to the Node Rasgeth runs with, so the bridge cannot be installed here.",
+  "syIbBlock_no_xcode": "Xcode is missing: Rasgeth does not install it (App Store). Then look again.",
+  "syIbBlock_not_mac": "iOS simulators exist only on a Mac: pair a Mac as a node.",
+  "syIbBlock_nothing": "The bridge is already installed.",
+  "syIbBlock_offline": "The npm registry could not be read. Check the internet connection and try again.",
+  "syIbDone": "The iOS bridge is installed.",
+  "syIbFolder": "Folder",
+  "syIbInstall": "Install the iOS bridge",
+  "syIbKeyboard": "With Xcode 27 the keyboard of a simulator needs Device Hub in front and the Accessibility permission for the app that runs Rasgeth. Rasgeth never repairs the keyboard by itself.",
+  "syIbLead": "Rasgeth shows an iOS simulator's screen and sends your touches through serve-sim (Apache-2.0, by Evan Bacon). It is not part of Rasgeth: with your yes it is downloaded from the npm registry into one folder of Rasgeth's on this Mac, checked against the registry's checksum, and nothing else on the Mac changes. Removing that folder removes it.",
+  "syIbLicence": "Licence",
+  "syIbSize": "Size once unpacked",
+  "syIbStart": "Download and install",
+  "syIbStepDownload": "Downloading serve-sim",
+  "syIbStepInstall": "Installing it in the folder",
+  "syIbTitle": "iOS bridge",
+  "syIbVersion": "Version"
 }

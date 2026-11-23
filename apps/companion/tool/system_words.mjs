@@ -48,6 +48,7 @@ const files = [
   "BackupTargets.tsx",
   "Emulators.tsx",
   "EmulatorInstall.tsx",
+  "IosBridgeInstall.tsx",
   "DeviceScreen.tsx",
 ];
 const families = [

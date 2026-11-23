@@ -289,6 +289,15 @@ class FakeSystem {
   ];
   Map<String, dynamic> emulatorSettings = {'sdkPath': null, 'maxRunning': 2};
 
+  /// The iOS bridge's plan (3.12.2): what would be downloaded; `blocked` says why not.
+  Map<String, dynamic> iosBridgePlan = {
+    'planId': 'IB1',
+    'folder': '/Users/ana/Library/Application Support/Rasgeth/ios-bridge',
+    'version': '0.1.49',
+    'bytes': 40000000,
+    'licence': 'Apache-2.0',
+  };
+
   /// The guided install's plan (3.11 phase 5): everything for a machine without an SDK.
   Map<String, dynamic> emulatorInstallPlan = {
     'planId': 'P1',
@@ -378,6 +387,7 @@ class FakeSystem {
           'simulators': [
             {'name': 'iPhone 18', 'udid': 'U1', 'runtime': 'iOS 27.2', 'state': 'shutdown'},
           ],
+          'ready': false,
         },
         'missing': ['sdk', 'ios-bridge'],
         'ready': false,
@@ -742,6 +752,29 @@ class FakeSystem {
           });
         }
         return ok(emulatorInstallPlan);
+      case 'POST /api/emulators/ios-bridge/plan':
+        return ok(iosBridgePlan);
+      case 'POST /api/emulators/ios-bridge/start':
+        if (b['planId'] != iosBridgePlan['planId']) {
+          return no(400, 'This plan is not known any more: look again', 'no-plan');
+        }
+        final ibId = 'job${++_n}';
+        jobs[ibId] = {
+          'id': ibId,
+          'kind': 'ios_bridge_install',
+          'state': 'done',
+          'vars': <String, String>{},
+          'reads': 2,
+          'steps': [
+            {
+              'id': 'ios-download',
+              'state': 'running',
+              'progress': {'done': 1000, 'total': 2000, 'rate': 500, 'secondsLeft': 2},
+            },
+            {'id': 'ios-install', 'state': 'waiting'},
+          ],
+        };
+        return ok({'jobId': ibId});
       case 'POST /api/emulators/install/start':
         if (b['planId'] != emulatorInstallPlan['planId']) {
           return no(400, 'This plan is not known any more: look again', 'no-plan');

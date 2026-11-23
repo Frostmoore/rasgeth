@@ -32532,7 +32532,7 @@ abstract class AppLocalizations {
   /// No description provided for @syEmMiss_ios_bridge.
   ///
   /// In en, this message translates to:
-  /// **'A bridge for touches on iOS simulators (comes with 3.12.2).'**
+  /// **'The bridge for the picture and touches of iOS simulators (serve-sim): one guided step downloads it, with your yes.'**
   String get syEmMiss_ios_bridge;
 
   /// No description provided for @syEmMiss_platform_tools.
@@ -33063,12 +33063,6 @@ abstract class AppLocalizations {
   /// **'Virtualization is switched off: switch it on in the BIOS/UEFI (VT-x or AMD-V) and, on Windows, the Windows Hypervisor Platform feature.'**
   String get syEiNote_bios;
 
-  /// No description provided for @syEiNote_ios_bridge.
-  ///
-  /// In en, this message translates to:
-  /// **'iOS: the bridge for touches comes with Rasgeth 3.12.2; there is nothing to install now.'**
-  String get syEiNote_ios_bridge;
-
   /// No description provided for @syEiNote_kvm_group.
   ///
   /// In en, this message translates to:
@@ -33084,7 +33078,7 @@ abstract class AppLocalizations {
   /// No description provided for @syEiNote_xcode.
   ///
   /// In en, this message translates to:
-  /// **'iOS simulators need Xcode, from the App Store: Rasgeth does not install it. iOS comes with Rasgeth 3.12.2.'**
+  /// **'iOS simulators need Xcode, from the App Store: Rasgeth does not install it.'**
   String get syEiNote_xcode;
 
   /// No description provided for @syEiReading.
@@ -33404,6 +33398,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Putting it in the right topic…'**
   String get smpRouting;
+
+  /// No description provided for @syEmIosBridge.
+  ///
+  /// In en, this message translates to:
+  /// **'Bridge for picture and touches'**
+  String get syEmIosBridge;
+
+  /// No description provided for @syEmIosBridgeAt.
+  ///
+  /// In en, this message translates to:
+  /// **'serve-sim {version}, in {folder}'**
+  String syEmIosBridgeAt(String folder, String version);
+
+  /// No description provided for @syEmIosBridgeNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Not installed'**
+  String get syEmIosBridgeNone;
+
+  /// No description provided for @syEmIosNeedsMac.
+  ///
+  /// In en, this message translates to:
+  /// **'iOS simulators exist only on a Mac with Xcode: pair a Mac as a node (Settings › Nodes).'**
+  String get syEmIosNeedsMac;
+
+  /// No description provided for @syEmIosReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready: the simulators open in the Canvas like the Android emulators.'**
+  String get syEmIosReady;
+
+  /// No description provided for @syEmMiss_ios_arch.
+  ///
+  /// In en, this message translates to:
+  /// **'iOS simulators need a Mac with Apple silicon; this is an Intel Mac. Use another Mac as a node.'**
+  String get syEmMiss_ios_arch;
+
+  /// No description provided for @syEmRunningSim.
+  ///
+  /// In en, this message translates to:
+  /// **'iOS simulator'**
+  String get syEmRunningSim;
+
+  /// No description provided for @syIbBlock_intel.
+  ///
+  /// In en, this message translates to:
+  /// **'The bridge needs a Mac with Apple silicon: this is an Intel Mac. Use another Mac as a node.'**
+  String get syIbBlock_intel;
+
+  /// No description provided for @syIbBlock_no_npm.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no npm next to the Node Rasgeth runs with, so the bridge cannot be installed here.'**
+  String get syIbBlock_no_npm;
+
+  /// No description provided for @syIbBlock_no_xcode.
+  ///
+  /// In en, this message translates to:
+  /// **'Xcode is missing: Rasgeth does not install it (App Store). Then look again.'**
+  String get syIbBlock_no_xcode;
+
+  /// No description provided for @syIbBlock_not_mac.
+  ///
+  /// In en, this message translates to:
+  /// **'iOS simulators exist only on a Mac: pair a Mac as a node.'**
+  String get syIbBlock_not_mac;
+
+  /// No description provided for @syIbBlock_nothing.
+  ///
+  /// In en, this message translates to:
+  /// **'The bridge is already installed.'**
+  String get syIbBlock_nothing;
+
+  /// No description provided for @syIbBlock_offline.
+  ///
+  /// In en, this message translates to:
+  /// **'The npm registry could not be read. Check the internet connection and try again.'**
+  String get syIbBlock_offline;
+
+  /// No description provided for @syIbDone.
+  ///
+  /// In en, this message translates to:
+  /// **'The iOS bridge is installed.'**
+  String get syIbDone;
+
+  /// No description provided for @syIbFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get syIbFolder;
+
+  /// No description provided for @syIbInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Install the iOS bridge'**
+  String get syIbInstall;
+
+  /// No description provided for @syIbKeyboard.
+  ///
+  /// In en, this message translates to:
+  /// **'With Xcode 27 the keyboard of a simulator needs Device Hub in front and the Accessibility permission for the app that runs Rasgeth. Rasgeth never repairs the keyboard by itself.'**
+  String get syIbKeyboard;
+
+  /// No description provided for @syIbLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth shows an iOS simulator\'s screen and sends your touches through serve-sim (Apache-2.0, by Evan Bacon). It is not part of Rasgeth: with your yes it is downloaded from the npm registry into one folder of Rasgeth\'s on this Mac, checked against the registry\'s checksum, and nothing else on the Mac changes. Removing that folder removes it.'**
+  String get syIbLead;
+
+  /// No description provided for @syIbLicence.
+  ///
+  /// In en, this message translates to:
+  /// **'Licence'**
+  String get syIbLicence;
+
+  /// No description provided for @syIbSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Size once unpacked'**
+  String get syIbSize;
+
+  /// No description provided for @syIbStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Download and install'**
+  String get syIbStart;
+
+  /// No description provided for @syIbStepDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading serve-sim'**
+  String get syIbStepDownload;
+
+  /// No description provided for @syIbStepInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Installing it in the folder'**
+  String get syIbStepInstall;
+
+  /// No description provided for @syIbTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'iOS bridge'**
+  String get syIbTitle;
+
+  /// No description provided for @syIbVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get syIbVersion;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

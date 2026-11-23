@@ -58,7 +58,7 @@ class EmulatorReport {
   /// `{ok, kind?, reason?}`.
   final Map<String, dynamic> accel;
 
-  /// `{xcode?, simulators, bridge?}` (macOS only).
+  /// `{xcode?, simulators, bridge?, bridgeVersion?, bridgeDir?, ready}` (macOS only).
   final Map<String, dynamic>? ios;
   final List<String> missing;
   final int maxRunning;
@@ -93,6 +93,22 @@ class EmuInstallPlan {
 
   /// `{path, major}`.
   final Map<String, dynamic>? java;
+}
+
+/// `IosBridgePlan` (3.12.2): what the iOS bridge's install would download and where; a `planId`
+/// only when it can start.
+class IosBridgePlan {
+  IosBridgePlan(Map<String, dynamic> j)
+    : planId = _s(j['planId']),
+      folder = _s(j['folder']) ?? '',
+      version = _s(j['version']) ?? '',
+      bytes = _i(j['bytes']),
+      licence = _s(j['licence']) ?? '',
+      blocked = _s(j['blocked']);
+
+  final String? planId, blocked;
+  final String folder, version, licence;
+  final int bytes;
 }
 
 /// `EmulatorMachineView`: this machine or a node, with its report when it gave one.
@@ -133,9 +149,17 @@ class EmuDeviceView {
       serial = _s(j['serial']),
       link = _s(j['link']),
       machine = _s(j['machine']),
-      ours = j['ours'] == true;
+      ours = j['ours'] == true,
+      platform = j['platform'] == 'ios' ? 'ios' : 'android',
+      runtime = _s(j['runtime']);
 
   final String id, name;
+
+  /// android | ios (3.12.2).
+  final String platform;
+
+  /// For an iOS simulator: `iOS 27.2`.
+  final String? runtime;
 
   /// emulator | phone.
   final String kind;
@@ -555,6 +579,14 @@ extension SystemApi on RedGiantClient {
         }))['jobId'],
       ) ??
       '';
+
+  /// `POST /api/emulators/ios-bridge/plan`: what would be downloaded, and why not when it cannot.
+  Future<IosBridgePlan> iosBridgePlan() async =>
+      IosBridgePlan(await _do('POST', '/api/emulators/ios-bridge/plan', const {}));
+
+  /// `POST /api/emulators/ios-bridge/start`: the person's yes; the job's id.
+  Future<String> startIosBridgeInstall(String planId) async =>
+      _s((await _do('POST', '/api/emulators/ios-bridge/start', {'planId': planId}))['jobId']) ?? '';
 
   /// `POST /api/jobs/:id/cancel`.
   Future<void> cancelEmulatorInstall(String jobId) =>
