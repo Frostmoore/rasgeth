@@ -3206,7 +3206,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get deskKeyUp => 'Su';
 
   @override
-  String get deskLayoutAlways => 'Sempre a pannelli';
+  String get deskLayoutAlways => 'Sempre';
 
   @override
   String deskLayoutFrom(int n) {
@@ -3215,13 +3215,13 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get deskLayoutHint =>
-      'A pannelli: elenco, conversazione e file uno accanto all\'altro. Come sul telefono: una schermata alla volta. Con «da 900 px» o «da 1200 px» la finestra usa i pannelli quando è larga almeno così, e passa a una schermata alla volta quando la stringi.';
+      'Elenco, conversazione e file uno accanto all\'altro. Quando la finestra è stretta si vede una cosa alla volta, come sul telefono.';
 
   @override
-  String get deskLayoutNever => 'Come sul telefono';
+  String get deskLayoutNever => 'Mai';
 
   @override
-  String get deskLayoutTitle => 'Come si dispone la finestra';
+  String get deskLayoutTitle => 'Più colonne affiancate';
 
   @override
   String get deskList => 'Elenco';
@@ -19794,4 +19794,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String sxSetUsed(String name) {
     return 'Creato dal set «$name»';
   }
+
+  @override
+  String get deskLayoutBig => 'Se la finestra è grande';
+
+  @override
+  String get deskLayoutHuge => 'Se è molto grande';
 }

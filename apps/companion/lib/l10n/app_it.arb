@@ -924,11 +924,11 @@
   "deskKeySpace": "Spazio",
   "deskKeyTab": "Tab",
   "deskKeyUp": "Su",
-  "deskLayoutAlways": "Sempre a pannelli",
+  "deskLayoutAlways": "Sempre",
   "deskLayoutFrom": "A pannelli da {n} px",
-  "deskLayoutHint": "A pannelli: elenco, conversazione e file uno accanto all'altro. Come sul telefono: una schermata alla volta. Con «da 900 px» o «da 1200 px» la finestra usa i pannelli quando è larga almeno così, e passa a una schermata alla volta quando la stringi.",
-  "deskLayoutNever": "Come sul telefono",
-  "deskLayoutTitle": "Come si dispone la finestra",
+  "deskLayoutHint": "Elenco, conversazione e file uno accanto all'altro. Quando la finestra è stretta si vede una cosa alla volta, come sul telefono.",
+  "deskLayoutNever": "Mai",
+  "deskLayoutTitle": "Più colonne affiancate",
   "deskList": "Elenco",
   "deskLive": "dal vivo",
   "deskLogSearchHint": "agente:\"Coder Web\" tipo:tool.* testo",
@@ -5664,5 +5664,7 @@
   "sxAgentTab_connections": "Collegamenti",
   "sxCalTitle": "Calendari",
   "sxConnTitle": "Collegamenti",
-  "sxSetUsed": "Creato dal set «{name}»"
+  "sxSetUsed": "Creato dal set «{name}»",
+  "deskLayoutBig": "Se la finestra è grande",
+  "deskLayoutHuge": "Se è molto grande"
 }

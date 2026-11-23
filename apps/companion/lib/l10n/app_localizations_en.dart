@@ -3199,7 +3199,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deskKeyUp => 'Up';
 
   @override
-  String get deskLayoutAlways => 'Always in panels';
+  String get deskLayoutAlways => 'Always';
 
   @override
   String deskLayoutFrom(int n) {
@@ -3208,13 +3208,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deskLayoutHint =>
-      'In panels: the list, the conversation and the files side by side. Like on the phone: one screen at a time. With «from 900 px» or «from 1200 px» the window uses panels when it is at least that wide, and switches to one screen at a time when you make it narrower.';
+      'The list, the conversation and the files next to each other. When the window is narrow you see one thing at a time, like on the phone.';
 
   @override
-  String get deskLayoutNever => 'Like on the phone';
+  String get deskLayoutNever => 'Never';
 
   @override
-  String get deskLayoutTitle => 'How the window is laid out';
+  String get deskLayoutTitle => 'Several columns side by side';
 
   @override
   String get deskList => 'List';
@@ -19735,4 +19735,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String sxSetUsed(String name) {
     return 'Made from the set «$name»';
   }
+
+  @override
+  String get deskLayoutBig => 'When the window is large';
+
+  @override
+  String get deskLayoutHuge => 'When it is very large';
 }

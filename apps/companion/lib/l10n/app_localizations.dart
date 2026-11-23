@@ -5640,7 +5640,7 @@ abstract class AppLocalizations {
   /// No description provided for @deskLayoutAlways.
   ///
   /// In en, this message translates to:
-  /// **'Always in panels'**
+  /// **'Always'**
   String get deskLayoutAlways;
 
   /// No description provided for @deskLayoutFrom.
@@ -5652,19 +5652,19 @@ abstract class AppLocalizations {
   /// No description provided for @deskLayoutHint.
   ///
   /// In en, this message translates to:
-  /// **'In panels: the list, the conversation and the files side by side. Like on the phone: one screen at a time. With «from 900 px» or «from 1200 px» the window uses panels when it is at least that wide, and switches to one screen at a time when you make it narrower.'**
+  /// **'The list, the conversation and the files next to each other. When the window is narrow you see one thing at a time, like on the phone.'**
   String get deskLayoutHint;
 
   /// No description provided for @deskLayoutNever.
   ///
   /// In en, this message translates to:
-  /// **'Like on the phone'**
+  /// **'Never'**
   String get deskLayoutNever;
 
   /// No description provided for @deskLayoutTitle.
   ///
   /// In en, this message translates to:
-  /// **'How the window is laid out'**
+  /// **'Several columns side by side'**
   String get deskLayoutTitle;
 
   /// No description provided for @deskList.
@@ -34091,6 +34091,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Made from the set «{name}»'**
   String sxSetUsed(String name);
+
+  /// No description provided for @deskLayoutBig.
+  ///
+  /// In en, this message translates to:
+  /// **'When the window is large'**
+  String get deskLayoutBig;
+
+  /// No description provided for @deskLayoutHuge.
+  ///
+  /// In en, this message translates to:
+  /// **'When it is very large'**
+  String get deskLayoutHuge;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

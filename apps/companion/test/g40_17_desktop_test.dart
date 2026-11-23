@@ -566,7 +566,7 @@ void main() {
           .descendant(of: find.byKey(const Key('you-list')), matching: find.byType(Scrollable))
           .first,
     );
-    await tester.tap(find.text('Sempre a pannelli'));
+    await tester.tap(find.text('Sempre'));
     await _settle(tester, 4);
     expect(app.desktopFrom, 0);
     expect(await prefs.get('desktopFrom'), '0');

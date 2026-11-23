@@ -151,8 +151,8 @@ class YouScreen extends StatelessWidget {
                   showSelectedIcon: false,
                   segments: [
                     ButtonSegment(value: 0, label: Text(l.deskLayoutAlways)),
-                    ButtonSegment(value: kDesktopFrom, label: Text(l.deskLayoutFrom(kDesktopFrom))),
-                    ButtonSegment(value: 1200, label: Text(l.deskLayoutFrom(1200))),
+                    ButtonSegment(value: kDesktopFrom, label: Text(l.deskLayoutBig)),
+                    ButtonSegment(value: 1200, label: Text(l.deskLayoutHuge)),
                     ButtonSegment(value: -1, label: Text(l.deskLayoutNever)),
                   ],
                   selected: {
