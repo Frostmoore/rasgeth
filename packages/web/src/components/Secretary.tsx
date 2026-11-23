@@ -64,14 +64,16 @@ function AgentPick({ value, onChange }: { value: string; onChange: (id: string) 
   const list = agents.value.filter((a) => a.kind !== "god" && a.kind !== "assistant");
   return (
     <Field label={t("scAgent")} help={t("scAgentHelp")}>
-      <select value={value} onChange={(e) => onChange(v(e))}>
-        <option value="">{t("scAgentNone")}</option>
-        {list.map((a) => (
-          <option key={a.id} value={a.id}>
-            {a.name}
-          </option>
-        ))}
-      </select>
+      {list.length === 0 ? (
+        <p class="ui-help">{t("scAgentNone")}</p>
+      ) : (
+        <Chips<string>
+          wrap
+          options={list.map((a) => ({ id: a.id, label: a.name }))}
+          value={value ? [value] : []}
+          onChange={([id]) => onChange(id ?? "")}
+        />
+      )}
     </Field>
   );
 }

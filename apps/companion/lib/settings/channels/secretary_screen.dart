@@ -16,6 +16,7 @@ import '../../l10n/app_localizations.dart';
 import '../../theme/colors.dart';
 import '../../ui/dialogs.dart' show askConfirm;
 import '../../ui/icons.dart';
+import '../automations/automation_kit.dart' show AutoChips;
 import '../knowledge_kit.dart';
 import '../rules_kit.dart';
 import '../system/remote_screen.dart' show openRemoteSettings;
@@ -557,7 +558,7 @@ class _AccountEditorState extends State<_AccountEditor> {
   }
 }
 
-/// Who answers: any agent the person has.
+/// Who answers: any agent the person has, drawn as choices (never the system's drop-down).
 class AgentPicker extends StatelessWidget {
   const AgentPicker({super.key, required this.value, required this.onChanged});
 
@@ -567,25 +568,33 @@ class AgentPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
     final agents = AppScope.read(context).agents
         .where((a) => a.kind != AgentKind.god && a.kind != AgentKind.assistant)
         .toList();
     return Padding(
       padding: const EdgeInsets.only(top: 10),
-      child: DropdownButtonFormField<String>(
+      child: Column(
         key: const Key('sc-agent'),
-        initialValue: agents.any((a) => a.id == value) ? value : '',
-        isExpanded: true,
-        decoration: InputDecoration(
-          labelText: l.scAgent,
-          helperText: l.scAgentHelp,
-          helperMaxLines: 3,
-        ),
-        items: [
-          DropdownMenuItem(value: '', child: Text(l.scAgentNone)),
-          for (final a in agents) DropdownMenuItem(value: a.id, child: Text(a.name)),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l.scAgent,
+            style: TextStyle(fontWeight: FontWeight.w700, color: c.text),
+          ),
+          const SizedBox(height: 6),
+          if (agents.isEmpty)
+            Text(l.scAgentNone, style: TextStyle(color: c.dim))
+          else
+            AutoChips<String>(
+              options: [for (final a in agents) (a.id, a.name)],
+              value: value.isEmpty ? const [] : [value],
+              keyOf: (id) => 'sc-agent-$id',
+              onChanged: (v) => onChanged(v.isEmpty ? '' : v.first),
+            ),
+          const SizedBox(height: 4),
+          Text(l.scAgentHelp, style: TextStyle(color: c.dim, fontSize: 12.5)),
         ],
-        onChanged: (v) => onChanged(v ?? ''),
       ),
     );
   }
