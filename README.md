@@ -412,8 +412,8 @@ Rasgeth is in pre-alpha. What comes next, in order:
   one switch away), God's conversations sorted by topic, and your own rules in Settings › Rules.
 - **3.12.1 — God and Satellite, emulators**: God big at home with Satellite, the Chat, on its orbit, your agents at
   the bottom, God writing first now and then; Android emulators in the Canvas, for you and the agents.
-- **3.12.2 — Search in the conversation**: images, products, trains and flights, routes as widgets inside the
-  answers; iOS simulators.
+- **3.12.2 — Search in the conversation, iOS**: images, products, trains and flights, routes as widgets inside the
+  answers; iPhone and iPad simulators in the Canvas; the simple interface with stop, attach and a floating strip.
 - **3.12.3 — Ready settings for agents**: research, email, messages, spreadsheets and diary set up well from the
   start; topics from Telegram too.
 - **4.0 — Alpha**: documentation, security and privacy pages, and a stability round on everything.

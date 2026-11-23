@@ -4,10 +4,14 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.12.1';
+const newsVersion = '3.12.2';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.12.2', 'news3122Found', 'news3122FoundText'),
+  NewsRow('3.12.2', 'news3122Simple', 'news3122SimpleText'),
+  NewsRow('3.12.2', 'news3122Ios', 'news3122IosText'),
+  NewsRow('3.12.2', 'news3122Topics', 'news3122TopicsText'),
   NewsRow('3.12.1', 'news3121Home', 'news3121HomeText'),
   NewsRow('3.12.1', 'news3121Nudges', 'news3121NudgesText'),
   NewsRow('3.12.1', 'news3121Emulators', 'news3121EmulatorsText'),
@@ -431,6 +435,14 @@ const generalWords = <String, Map<String, String>>{
     'news3121HomeText': 'L\'interfaccia semplice si apre con God, grande, al centro, che si muove con quello che succede davvero, e Satellite, la Chat, sulla sua orbita: scorri e passa davanti per le chiacchiere di tutti i giorni. In fondo, tutti i tuoi agenti: tocca e salutali. Le conversazioni mostrano solo quello che conta, il tuo messaggio compare subito, e le installazioni nuove partono dall\'interfaccia semplice.',
     'news3121Nudges': 'Ogni tanto God scrive per primo',
     'news3121NudgesText': 'Al massimo una volta al giorno, mai di notte: qualcosa che ti aspetta, o solo «a cosa lavoriamo oggi?». Aprirlo non fa partire niente; un argomento nuovo nasce solo se rispondi. Lo spegni o ne cambi la frequenza nelle Impostazioni.',
+    'news3122Found': 'I risultati delle ricerche dentro la risposta',
+    'news3122FoundText': 'Chiedi un treno, un prodotto, un percorso o delle foto, anche in Chat: arrivano come schede nella risposta, con orari e prezzi, stelle, una mappa disegnata e «Apri in Mappe». Prenotare o pagare è sempre una domanda a te. Widget e immagini generate hanno una larghezza giusta sugli schermi grandi, con più spazio dentro.',
+    'news3122Ios': 'I simulatori di iPhone e iPad',
+    'news3122IosText': 'Su un Mac con Xcode (qui o come nodo) i simulatori iOS si aprono nel Canvas come gli emulatori Android: immagine, tocchi, testo in qualsiasi lingua, e agenti che leggono i pulsanti dello schermo per nome. Il ponte (serve-sim) si scarica solo con il tuo sì; «Ripara i tocchi» c\'è quando il simulatore smette di ascoltare.',
+    'news3122Simple': 'L\'interfaccia semplice, più completa',
+    'news3122SimpleText': 'Stop e allega in ogni casella, il tasto per tornare in fondo, widget e Canvas dentro le conversazioni, e la striscia degli agenti che galleggia in basso: sceglierne un altro fa scivolare il nome, un tocco fuori lo lascia.',
+    'news3122Topics': 'Il tuo lavoro di prima, in ordine',
+    'news3122TopicsText': 'La lunga conversazione con God di prima degli argomenti si divide una volta sola in un argomento per lavoro, con titoli veri: quelli recenti in corso, gli altri in archivio. Non si cancella niente.',
     'news321Linux': 'Strato dopo in anticipo anche su Linux',
     'news321LinuxText': 'L\'interruttore sperimentale «Strato dopo in anticipo» di SSD stream ora funziona anche su Linux con una scheda NVIDIA, con un\'immagine del motore tutta sua scaricata solo quando lo accendi.',
     'news321Settings': 'Le Impostazioni nello stile della configurazione',
@@ -784,6 +796,14 @@ const generalWords = <String, Map<String, String>>{
     'news3121HomeText': 'The simple interface opens with God, big, in the middle, moving with what is really happening, and Satellite, the Chat, on its orbit: swipe and it comes in front for everyday chats. At the bottom, all your agents: touch one and say hello. Conversations show only what matters, your message appears at once, and the simple interface is the one new installations start with.',
     'news3121Nudges': 'God writes first, now and then',
     'news3121NudgesText': 'At most once a day, never at night: something waiting for you, or just «what are we working on today?». Opening it starts nothing; a new topic begins only if you answer. Switch it off or change how often in Settings.',
+    'news3122Found': 'Search results inside the answer',
+    'news3122FoundText': 'Ask for a train, a product, a route or some pictures, even in the Chat: they arrive as cards in the answer, with times and prices, stars, a drawn map and «Open in Maps». Booking or paying is always a question to you. Widgets and generated images keep a sensible width on large screens, with more room inside.',
+    'news3122Ios': 'iPhone and iPad simulators',
+    'news3122IosText': 'On a Mac with Xcode (here or as a node), iOS simulators open in the Canvas like Android emulators: picture, touches, text in any language, and agents that read the screen\'s buttons by name. The bridge (serve-sim) is downloaded only with your yes; «Repair touches» is there when the simulator stops listening.',
+    'news3122Simple': 'The simple interface, more complete',
+    'news3122SimpleText': 'Stop and attach in every box, the button back to the bottom, widgets and the Canvas inside the conversations, and the agents\' strip floating at the bottom: picking another slides the name over, a tap outside lets go.',
+    'news3122Topics': 'Your older work, in order',
+    'news3122TopicsText': 'The long conversation with God from before topics is split once into one topic per work, with real titles: the recent ones in progress, the others in the archive. Nothing is deleted.',
     'news321Linux': 'Next layer ahead on Linux too',
     'news321LinuxText': 'The experimental «Next layer ahead» switch of SSD stream now works on Linux with an NVIDIA card too, with an engine image of its own downloaded only when you turn it on.',
     'news321Settings': 'Settings in the setup\'s style',

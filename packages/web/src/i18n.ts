@@ -2531,6 +2531,18 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news3122Found: "Search results inside the answer",
+  news3122FoundText:
+    "Ask for a train, a product, a route or some pictures, even in the Chat: they arrive as cards in the answer, with times and prices, stars, a drawn map and «Open in Maps». Booking or paying is always a question to you. Widgets and generated images keep a sensible width on large screens, with more room inside.",
+  news3122Simple: "The simple interface, more complete",
+  news3122SimpleText:
+    "Stop and attach in every box, the button back to the bottom, widgets and the Canvas inside the conversations, and the agents' strip floating at the bottom: picking another slides the name over, a tap outside lets go.",
+  news3122Ios: "iPhone and iPad simulators",
+  news3122IosText:
+    "On a Mac with Xcode (here or as a node), iOS simulators open in the Canvas like Android emulators: picture, touches, text in any language, and agents that read the screen's buttons by name. The bridge (serve-sim) is downloaded only with your yes; «Repair touches» is there when the simulator stops listening.",
+  news3122Topics: "Your older work, in order",
+  news3122TopicsText:
+    "The long conversation with God from before topics is split once into one topic per work, with real titles: the recent ones in progress, the others in the archive. Nothing is deleted.",
   news3121Home: "God and Satellite at home",
   news3121HomeText:
     "The simple interface opens with God, big, in the middle, moving with what is really happening, and Satellite, the Chat, on its orbit: swipe and it comes in front for everyday chats. At the bottom, all your agents: touch one and say hello. Conversations show only what matters, your message appears at once, and the simple interface is the one new installations start with.",
@@ -10908,6 +10920,18 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news3122Found: "I risultati delle ricerche dentro la risposta",
+  news3122FoundText:
+    "Chiedi un treno, un prodotto, un percorso o delle foto, anche in Chat: arrivano come schede nella risposta, con orari e prezzi, stelle, una mappa disegnata e «Apri in Mappe». Prenotare o pagare è sempre una domanda a te. Widget e immagini generate hanno una larghezza giusta sugli schermi grandi, con più spazio dentro.",
+  news3122Simple: "L'interfaccia semplice, più completa",
+  news3122SimpleText:
+    "Stop e allega in ogni casella, il tasto per tornare in fondo, widget e Canvas dentro le conversazioni, e la striscia degli agenti che galleggia in basso: sceglierne un altro fa scivolare il nome, un tocco fuori lo lascia.",
+  news3122Ios: "I simulatori di iPhone e iPad",
+  news3122IosText:
+    "Su un Mac con Xcode (qui o come nodo) i simulatori iOS si aprono nel Canvas come gli emulatori Android: immagine, tocchi, testo in qualsiasi lingua, e agenti che leggono i pulsanti dello schermo per nome. Il ponte (serve-sim) si scarica solo con il tuo sì; «Ripara i tocchi» c'è quando il simulatore smette di ascoltare.",
+  news3122Topics: "Il tuo lavoro di prima, in ordine",
+  news3122TopicsText:
+    "La lunga conversazione con God di prima degli argomenti si divide una volta sola in un argomento per lavoro, con titoli veri: quelli recenti in corso, gli altri in archivio. Non si cancella niente.",
   news3121Home: "God e Satellite in primo piano",
   news3121HomeText:
     "L'interfaccia semplice si apre con God, grande, al centro, che si muove con quello che succede davvero, e Satellite, la Chat, sulla sua orbita: scorri e passa davanti per le chiacchiere di tutti i giorni. In fondo, tutti i tuoi agenti: tocca e salutali. Le conversazioni mostrano solo quello che conta, il tuo messaggio compare subito, e le installazioni nuove partono dall'interfaccia semplice.",
