@@ -96,9 +96,26 @@ jobs:
   #   this commit first (ci tags), the OS with them and that version.
   # - otherwise (by hand, work branches, a tag's build): the images of `version`, else the latest
   #   release's, as before.
+  #
+  # Incremental (a failed test must not cost a second round of images): on a version branch, when
+  # an earlier os.yml run of this branch built what is asked and only test files changed since its
+  # commit (scripts/ci-reuse-source.sh, scripts/ci-test-only.mjs):
+  # - images_from: the Docker images of that commit are tagged for this one (images.yml from_sha:
+  #   the same indexes, digests checked equal), not built again;
+  # - build_reuse: if that run also built, booted and kept every OS image (stack, build, lxc,
+  #   raspi green, their artifacts alive), build becomes false: no image is built here. The OS
+  #   images stay THAT run's artifacts; release.yml's os-plan finds them there by itself (its
+  #   candidates are runs whose OS files equal the tag's) and accepts them only after reuse.mjs
+  #   compared their stack with the registry's ci-<version>-<this sha> tags, which the retag made.
+  # This run's summary and notice say which run it reuses. Doubt of any kind: built as before.
   plan:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
     outputs:
+      images_from: ${{ steps.plan.outputs.images_from }}
+      build_reuse: ${{ steps.plan.outputs.build_reuse }}
       build: ${{ steps.plan.outputs.build }}
       release: ${{ steps.plan.outputs.release }}
       version: ${{ steps.plan.outputs.version }}
@@ -167,6 +184,35 @@ jobs:
               build=false; why="a work branch that does not touch the OS"
             fi
           fi
+          images_from="" build_reuse=false
+          if [ "$release" = true ] && [ "$EVENT" = push ]; then
+            reuse_log="$RUNNER_TEMP/reuse.log"
+            if [ "$build" = true ]; then
+              found=$(scripts/ci-reuse-source.sh os.yml "$GITHUB_REF_NAME" "images,stack,build,lxc,raspi" \
+                "rasgeth-os-stack,rasgeth-os-amd64,rasgeth-os-arm64,rasgeth-os-amd64-lxc,rasgeth-os-arm64-raspi" 2>"$reuse_log") || found=""
+              cat "$reuse_log"
+              if [ -n "$found" ]; then
+                images_from=${found#* }; build_reuse=true; build=false
+                why="$why; REUSED: only tests changed since ${images_from:0:7}, whose run ${found%% *} built and booted every OS image (they stay that run's artifacts)"
+              fi
+            fi
+            if [ -z "$images_from" ]; then
+              found=$(scripts/ci-reuse-source.sh os.yml "$GITHUB_REF_NAME" "images" "" 2>"$reuse_log") || found=""
+              cat "$reuse_log"
+              if [ -n "$found" ]; then
+                images_from=${found#* }
+                why="$why; the Docker images of ${images_from:0:7} (run ${found%% *}) are tagged for this commit, only tests changed since"
+              fi
+            fi
+            if [ -n "$images_from" ]; then
+              {
+                echo "| Rasgeth OS | Version | Commit | Decision | Source |"
+                echo "| --- | --- | --- | --- | --- |"
+                echo "| Docker images | $version | \`${GITHUB_SHA:0:7}\` | retagged, not built | \`${images_from:0:7}\` |"
+                echo "| OS images (ISO, qcow2, VHDX, OVA, LXC, Raspberry Pi) | $version | \`${GITHUB_SHA:0:7}\` | $([ "$build_reuse" = true ] && echo "reused, not built" || echo "per the plan (build=$build)") | \`${images_from:0:7}\` |"
+              } >> "$GITHUB_STEP_SUMMARY"
+            fi
+          fi
           if [ "$build" = true ] && [ -z "$version" ]; then
             version="${WANTED#v}"
             [ -n "$version" ] || version=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq .tag_name | sed 's/^v//')
@@ -175,6 +221,8 @@ jobs:
           echo "::notice title=Rasgeth OS::build=$build release=$release update=$update version=${version:-none} ($why)"
           {
             echo "build=$build"
+            echo "images_from=$images_from"
+            echo "build_reuse=$build_reuse"
             echo "release=$release"
             echo "version=$version"
             echo "source_tag=$source_tag"
@@ -193,6 +241,7 @@ jobs:
     with:
       version: ${{ needs.plan.outputs.version }}
       sha: ${{ github.sha }}
+      from_sha: ${{ needs.plan.outputs.images_from }}
       tags: ci
       push: true
 

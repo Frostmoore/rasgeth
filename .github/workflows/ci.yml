@@ -46,10 +46,18 @@ jobs:
       release: ${{ steps.plan.outputs.release }}
       version: ${{ steps.plan.outputs.version }}
       check: ${{ steps.plan.outputs.check }}
+      reuse_run: ${{ steps.plan.outputs.reuse_run }}
+      reuse_sha: ${{ steps.plan.outputs.reuse_sha }}
     steps:
+      # The whole history, no file contents: the reuse decision below compares commits (git diff
+      # --name-only), it never reads a file but the ones named here.
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: packaging/release-kind.json
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: |
+            packaging/release-kind.json
+            scripts
           sparse-checkout-cone-mode: false
       - id: plan
         shell: bash
@@ -77,14 +85,31 @@ jobs:
             [ "$release" = true ] && echo "::warning::release-kind.json has no version X.Y.Z ($version): no release packages"
             release=false
           fi
+          # Incremental (a failed test must not cost a second round of installers): a version
+          # branch's push whose earlier run on this branch built the installers and the Mac app,
+          # and where only test files changed since that run's commit, reuses that run's packages
+          # (job reuse-packages copies them into this run, after checking what they were made for).
+          # Anything else, or any doubt, builds everything as before. scripts/ci-reuse-source.sh.
+          reuse_run="" reuse_sha=""
+          if [ "$run" = true ] && [ "$release" = true ] && [ "$EVENT" = push ]; then
+            found=$(scripts/ci-reuse-source.sh ci.yml "$GITHUB_REF_NAME" "installers,mac-app,companion" \
+              "release-windows-$version,release-mac-$version,rasgeth-app-linux-x64" 2>"$RUNNER_TEMP/reuse.log") || found=""
+            cat "$RUNNER_TEMP/reuse.log"
+            if [ -n "$found" ]; then
+              reuse_run=${found%% *}; reuse_sha=${found#* }
+              echo "::notice title=Packages reused::installers, Mac app and the app's Linux tar come from run $reuse_run (${reuse_sha:0:7}): only tests changed since"
+            fi
+          fi
           check='{"include":[{"os":"ubuntu-latest","node":22},{"os":"ubuntu-latest","node":24},{"os":"macos-latest","node":24},{"os":"windows-latest","node":24}]}'
           {
             echo "run=$run"
             echo "release=$release"
             echo "version=$version"
             echo "check=$check"
+            echo "reuse_run=$reuse_run"
+            echo "reuse_sha=$reuse_sha"
           } >> "$GITHUB_OUTPUT"
-          echo "run=$run release=$release version=$version"
+          echo "run=$run release=$release version=$version reuse_run=${reuse_run:-none}"
 
   check:
     needs: plan
@@ -142,12 +167,141 @@ jobs:
           node-version: 24
       - run: node scripts/name-audit.mjs --strict
 
+  # Incremental CI: only test files changed since an earlier run of this branch that built the
+  # installers, the Mac app and the app's Linux tar (plan: reuse_run). Their build is not repeated:
+  # this job takes those three artifacts FROM THAT RUN (download-artifact with its run-id), checks
+  # that they were made for this version and for the commit the run built (build.json), and
+  # uploads them again under the same names in THIS run, with build.json saying so: `sha` is this
+  # commit (release.yml checks it against the tag's), `builtSha` and `reusedFromRun` are the
+  # truth. release.yml then finds them in this run exactly as if they had been built here. If
+  # anything below fails the job still succeeds with ok=false and installers, mac-app and
+  # companion build as usual (their upload retries with overwrite, so a half copy is replaced).
+  # The installers' and Mac app's own tests are not repeated: the product is the same bytes.
+  reuse-packages:
+    needs: plan
+    if: ${{ needs.plan.outputs.run == 'true' && needs.plan.outputs.reuse_run != '' }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      ok: ${{ steps.done.outputs.ok }}
+    env:
+      SOURCE_RUN: ${{ needs.plan.outputs.reuse_run }}
+      SOURCE_SHA: ${{ needs.plan.outputs.reuse_sha }}
+      VERSION: ${{ needs.plan.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+      - uses: actions/download-artifact@v4
+        id: dl_win
+        continue-on-error: true
+        with:
+          name: release-windows-${{ needs.plan.outputs.version }}
+          path: reuse/windows
+          run-id: ${{ needs.plan.outputs.reuse_run }}
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        id: dl_mac
+        continue-on-error: true
+        with:
+          name: release-mac-${{ needs.plan.outputs.version }}
+          path: reuse/mac
+          run-id: ${{ needs.plan.outputs.reuse_run }}
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        id: dl_linux
+        continue-on-error: true
+        with:
+          name: rasgeth-app-linux-x64
+          path: reuse/linux
+          run-id: ${{ needs.plan.outputs.reuse_run }}
+          github-token: ${{ github.token }}
+      - name: They are what that run built, for this version
+        id: check
+        if: ${{ steps.dl_win.outcome == 'success' && steps.dl_mac.outcome == 'success' && steps.dl_linux.outcome == 'success' }}
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          # shellcheck disable=SC2016  # the template literals are JavaScript's, not the shell's
+          node -e '
+            const fs = require("fs");
+            const [version, sha, run] = process.argv.slice(1);
+            for (const d of ["windows", "mac"]) {
+              const file = `reuse/${d}/build.json`;
+              const b = JSON.parse(fs.readFileSync(file, "utf8").replace(/^\uFEFF/, ""));
+              if (b.version !== version || b.sha !== sha) { console.error(`${file}: made for ${b.version} at ${b.sha}, not ${version} at ${sha}`); process.exit(1); }
+              if (String(b.run) !== run) { console.error(`${file}: made by run ${b.run}, not ${run}`); process.exit(1); }
+              b.builtSha = b.sha;
+              b.reusedFromRun = run;
+              b.sha = process.env.GITHUB_SHA;
+              b.run = process.env.GITHUB_RUN_ID;
+              b.ref = process.env.GITHUB_REF_NAME;
+              fs.writeFileSync(file, JSON.stringify(b, null, 2) + "\n");
+              console.log(`${file}: ${version}, built at ${sha} by run ${run}, now for ${b.sha}`);
+            }
+          ' "$VERSION" "$SOURCE_SHA" "$SOURCE_RUN"
+          [ -f reuse/linux/rasgeth-app-linux-x64.tar.gz ]
+          ls -lR reuse
+      - uses: actions/upload-artifact@v4
+        id: up_win
+        if: ${{ steps.check.outcome == 'success' }}
+        continue-on-error: true
+        with:
+          name: release-windows-${{ needs.plan.outputs.version }}
+          path: reuse/windows
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        id: up_mac
+        if: ${{ steps.up_win.outcome == 'success' }}
+        continue-on-error: true
+        with:
+          name: release-mac-${{ needs.plan.outputs.version }}
+          path: reuse/mac
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        id: up_linux
+        if: ${{ steps.up_mac.outcome == 'success' }}
+        continue-on-error: true
+        with:
+          name: rasgeth-app-linux-x64
+          path: reuse/linux
+          if-no-files-found: error
+          retention-days: 14
+      - name: Reused, or not
+        id: done
+        shell: bash
+        env:
+          OK: ${{ steps.up_linux.outcome == 'success' }}
+        run: |
+          echo "ok=$OK" >> "$GITHUB_OUTPUT"
+          if [ "$OK" = true ]; then
+            msg="Windows installer, update files, Mac app and the app's Linux tar: reused from run $SOURCE_RUN (sha ${SOURCE_SHA:0:7}); only tests changed since"
+            echo "::notice title=Packages reused::$msg"
+          else
+            msg="could not reuse run $SOURCE_RUN's packages: installers, Mac app and the app are built here as usual"
+            echo "::warning title=Packages not reused::$msg"
+          fi
+          {
+            echo "| Packages | Version | Commit | Decision | Source |"
+            echo "| --- | --- | --- | --- | --- |"
+            echo "| installers, Mac app, app for Linux | $VERSION | \`${GITHUB_SHA:0:7}\` | $([ "$OK" = true ] && echo reused || echo built) | run $SOURCE_RUN (\`${SOURCE_SHA:0:7}\`) |"
+            echo
+            echo "$msg"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   # The app for the computers (G40.12, companion.yml with desktop): on a version branch the
   # installers carry the app's window (Windows: app\, the Mac: Contents/Helpers) and keep the
   # Linux tar for the release. Elsewhere the installers are made without it (the browser opens).
   companion:
-    needs: plan
-    if: needs.plan.outputs.run == 'true' && needs.plan.outputs.release == 'true'
+    needs: [plan, reuse-packages]
+    if: ${{ !cancelled() && needs.plan.outputs.run == 'true' && needs.plan.outputs.release == 'true' && needs.reuse-packages.outputs.ok != 'true' }}
     permissions:
       contents: read
     uses: ./.github/workflows/companion.yml
@@ -155,8 +309,8 @@ jobs:
       desktop: true
 
   installers:
-    needs: [plan, companion]
-    if: ${{ !cancelled() && needs.plan.outputs.run == 'true' && (needs.companion.result == 'success' || needs.companion.result == 'skipped') }}
+    needs: [plan, companion, reuse-packages]
+    if: ${{ !cancelled() && needs.plan.outputs.run == 'true' && needs.reuse-packages.outputs.ok != 'true' && (needs.companion.result == 'success' || needs.companion.result == 'skipped') }}
     runs-on: ${{ matrix.os }}
     # A hung installer or launcher must fail the run, not hold it for hours.
     timeout-minutes: 30
@@ -706,8 +860,8 @@ jobs:
   # Rasgeth for macOS (2026-11-05): the app built (signed ad-hoc here), started from its disk
   # image, answering, stopped the proper way with nothing left running, its data where it belongs.
   mac-app:
-    needs: [plan, companion]
-    if: ${{ !cancelled() && needs.plan.outputs.run == 'true' && (needs.companion.result == 'success' || needs.companion.result == 'skipped') }}
+    needs: [plan, companion, reuse-packages]
+    if: ${{ !cancelled() && needs.plan.outputs.run == 'true' && needs.reuse-packages.outputs.ok != 'true' && (needs.companion.result == 'success' || needs.companion.result == 'skipped') }}
     runs-on: macos-latest
     timeout-minutes: 40
     steps:

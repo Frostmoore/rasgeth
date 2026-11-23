@@ -42,6 +42,50 @@ defaults:
     working-directory: apps/companion
 
 jobs:
+  # Incremental (own pushes only, never when ci.yml or release.yml call this file): when an earlier
+  # run of this workflow on this branch built the five apps, and only test files changed since its
+  # commit (scripts/ci-reuse-source.sh, scripts/ci-test-only.mjs), `check` (analysis and tests)
+  # still runs but the builds are not repeated: their artifacts stay that run's (named in this
+  # run's summary). The release does not use these artifacts (ci.yml's `companion` job, desktop,
+  # builds the ones it carries), so nothing published depends on this reuse.
+  plan:
+    if: ${{ !inputs.desktop }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    defaults:
+      run:
+        working-directory: .
+    outputs:
+      reuse_run: ${{ steps.plan.outputs.reuse_run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: scripts
+      - id: plan
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OWN: ${{ github.event_name == 'push' && github.workflow == 'Rasgeth App' && !inputs.desktop }}
+        run: |
+          set -uo pipefail
+          reuse_run="" reuse_sha=""
+          if [ "$OWN" = true ]; then
+            found=$(scripts/ci-reuse-source.sh companion.yml "$GITHUB_REF_NAME" "android,linux,windows,macos,ios" \
+              "rasgeth-android-debug-apk,rasgeth-app-linux-x64,rasgeth-app-windows-x64,rasgeth-app-macos,rasgeth-ios-unsigned" 2>"$RUNNER_TEMP/reuse.log") || found=""
+            cat "$RUNNER_TEMP/reuse.log"
+            if [ -n "$found" ]; then
+              reuse_run=${found%% *}; reuse_sha=${found#* }
+              msg="the five apps' builds (Android, iOS, Linux, Windows, macOS) are reused from run $reuse_run (sha ${reuse_sha:0:7}): only tests changed since; analysis and tests run here"
+              echo "::notice title=Builds reused::$msg"
+              echo "Reused from run $reuse_run (sha ${reuse_sha:0:7}): $msg" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          fi
+          echo "reuse_run=$reuse_run" >> "$GITHUB_OUTPUT"
+
   check:
     if: ${{ !inputs.desktop }}
     runs-on: ubuntu-latest
@@ -64,8 +108,8 @@ jobs:
       - run: flutter test
 
   android:
-    needs: check
-    if: ${{ !inputs.desktop }}
+    needs: [plan, check]
+    if: ${{ !inputs.desktop && needs.plan.outputs.reuse_run == '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -113,8 +157,8 @@ jobs:
           retention-days: 14
 
   linux:
-    needs: check
-    if: ${{ !cancelled() && (needs.check.result == 'success' || needs.check.result == 'skipped') }}
+    needs: [plan, check]
+    if: ${{ !cancelled() && needs.plan.outputs.reuse_run == '' && (needs.check.result == 'success' || needs.check.result == 'skipped') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -163,8 +207,8 @@ jobs:
           retention-days: 14
 
   windows:
-    needs: check
-    if: ${{ !cancelled() && (needs.check.result == 'success' || needs.check.result == 'skipped') }}
+    needs: [plan, check]
+    if: ${{ !cancelled() && needs.plan.outputs.reuse_run == '' && (needs.check.result == 'success' || needs.check.result == 'skipped') }}
     runs-on: windows-latest
     timeout-minutes: 30
     steps:
@@ -201,8 +245,8 @@ jobs:
           retention-days: 14
 
   macos:
-    needs: check
-    if: ${{ !cancelled() && (needs.check.result == 'success' || needs.check.result == 'skipped') }}
+    needs: [plan, check]
+    if: ${{ !cancelled() && needs.plan.outputs.reuse_run == '' && (needs.check.result == 'success' || needs.check.result == 'skipped') }}
     runs-on: macos-latest
     timeout-minutes: 45
     steps:
@@ -246,8 +290,8 @@ jobs:
           retention-days: 14
 
   ios:
-    needs: check
-    if: ${{ !inputs.desktop }}
+    needs: [plan, check]
+    if: ${{ !inputs.desktop && needs.plan.outputs.reuse_run == '' }}
     runs-on: macos-latest
     timeout-minutes: 45
     steps:
