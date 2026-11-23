@@ -3206,22 +3206,22 @@ class AppLocalizationsIt extends AppLocalizations {
   String get deskKeyUp => 'Su';
 
   @override
-  String get deskLayoutAlways => 'Sempre';
+  String get deskLayoutAlways => 'Sempre a pannelli';
 
   @override
   String deskLayoutFrom(int n) {
-    return 'Da $n px';
+    return 'A pannelli da $n px';
   }
 
   @override
   String get deskLayoutHint =>
-      'La sala di controllo quando la finestra è larga almeno così; più stretta, le schermate del telefono.';
+      'A pannelli: elenco, conversazione e file uno accanto all\'altro. Come sul telefono: una schermata alla volta. Con «da 900 px» o «da 1200 px» la finestra usa i pannelli quando è larga almeno così, e passa a una schermata alla volta quando la stringi.';
 
   @override
-  String get deskLayoutNever => 'Mai';
+  String get deskLayoutNever => 'Come sul telefono';
 
   @override
-  String get deskLayoutTitle => 'Layout da computer';
+  String get deskLayoutTitle => 'Come si dispone la finestra';
 
   @override
   String get deskList => 'Elenco';

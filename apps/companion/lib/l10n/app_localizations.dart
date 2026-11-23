@@ -5640,31 +5640,31 @@ abstract class AppLocalizations {
   /// No description provided for @deskLayoutAlways.
   ///
   /// In en, this message translates to:
-  /// **'Always'**
+  /// **'Always in panels'**
   String get deskLayoutAlways;
 
   /// No description provided for @deskLayoutFrom.
   ///
   /// In en, this message translates to:
-  /// **'From {n} px'**
+  /// **'Panels from {n} px'**
   String deskLayoutFrom(int n);
 
   /// No description provided for @deskLayoutHint.
   ///
   /// In en, this message translates to:
-  /// **'The control room when the window is at least this wide; narrower, the phone\'s screens.'**
+  /// **'In panels: the list, the conversation and the files side by side. Like on the phone: one screen at a time. With «from 900 px» or «from 1200 px» the window uses panels when it is at least that wide, and switches to one screen at a time when you make it narrower.'**
   String get deskLayoutHint;
 
   /// No description provided for @deskLayoutNever.
   ///
   /// In en, this message translates to:
-  /// **'Never'**
+  /// **'Like on the phone'**
   String get deskLayoutNever;
 
   /// No description provided for @deskLayoutTitle.
   ///
   /// In en, this message translates to:
-  /// **'Computer\'s layout'**
+  /// **'How the window is laid out'**
   String get deskLayoutTitle;
 
   /// No description provided for @deskList.

@@ -1989,8 +1989,8 @@
   "deskKeySpace": "Space",
   "deskKeyTab": "Tab",
   "deskKeyUp": "Up",
-  "deskLayoutAlways": "Always",
-  "deskLayoutFrom": "From {n} px",
+  "deskLayoutAlways": "Always in panels",
+  "deskLayoutFrom": "Panels from {n} px",
   "@deskLayoutFrom": {
     "placeholders": {
       "n": {
@@ -1998,9 +1998,9 @@
       }
     }
   },
-  "deskLayoutHint": "The control room when the window is at least this wide; narrower, the phone's screens.",
-  "deskLayoutNever": "Never",
-  "deskLayoutTitle": "Computer's layout",
+  "deskLayoutHint": "In panels: the list, the conversation and the files side by side. Like on the phone: one screen at a time. With «from 900 px» or «from 1200 px» the window uses panels when it is at least that wide, and switches to one screen at a time when you make it narrower.",
+  "deskLayoutNever": "Like on the phone",
+  "deskLayoutTitle": "How the window is laid out",
   "deskList": "List",
   "deskLive": "live",
   "deskLogSearchHint": "agente:\"Coder Web\" tipo:tool.* text",

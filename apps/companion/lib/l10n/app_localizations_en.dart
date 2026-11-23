@@ -3199,22 +3199,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deskKeyUp => 'Up';
 
   @override
-  String get deskLayoutAlways => 'Always';
+  String get deskLayoutAlways => 'Always in panels';
 
   @override
   String deskLayoutFrom(int n) {
-    return 'From $n px';
+    return 'Panels from $n px';
   }
 
   @override
   String get deskLayoutHint =>
-      'The control room when the window is at least this wide; narrower, the phone\'s screens.';
+      'In panels: the list, the conversation and the files side by side. Like on the phone: one screen at a time. With «from 900 px» or «from 1200 px» the window uses panels when it is at least that wide, and switches to one screen at a time when you make it narrower.';
 
   @override
-  String get deskLayoutNever => 'Never';
+  String get deskLayoutNever => 'Like on the phone';
 
   @override
-  String get deskLayoutTitle => 'Computer\'s layout';
+  String get deskLayoutTitle => 'How the window is laid out';
 
   @override
   String get deskList => 'List';
