@@ -1544,9 +1544,10 @@ export class RedGiantCore implements OrchestrationHost {
       ...o.iosInstall,
     });
     // iOS simulators only on a Mac, and only once the bridge is there (looked at when one opens).
+    // Given fake devices (tests), never the machine's real simulators either.
     const iosHost =
       o.iosHost ??
-      (process.platform === "darwin"
+      (process.platform === "darwin" && !o.deviceHost
         ? new IosHost({
             bridge: async () => {
               const dir = this.emulators.iosBridgeDir;
