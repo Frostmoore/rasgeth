@@ -164,16 +164,20 @@ export function AssistantWizard({ onDone }: { onDone: (a?: Agent) => void }) {
       <h2>{t("asstNewTitle")}</h2>
       <p class="ui-purpose">{t("asstNewPurpose")}</p>
       <SetPicker value={preset} onChange={pickSet} />
-      <h3>{t("asstStep1")}</h3>
-      <Choice<Job>
-        value={[job]}
-        onChange={([j]) => j && pick(j)}
-        options={JOBS.map((j) => ({
-          id: j,
-          title: t(`asstJob_${j}`),
-          description: t(`asstJobHint_${j}`),
-        }))}
-      />
+      {!preset && (
+        <>
+          <h3>{t("asstStep1")}</h3>
+          <Choice<Job>
+            value={[job]}
+            onChange={([j]) => j && pick(j)}
+            options={JOBS.map((j) => ({
+              id: j,
+              title: t(`asstJob_${j}`),
+              description: t(`asstJobHint_${j}`),
+            }))}
+          />
+        </>
+      )}
       <div class="asst-fields">
         <Field label={t("asstName")}>
           <input
