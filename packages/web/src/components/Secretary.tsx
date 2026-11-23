@@ -17,7 +17,7 @@ import { IconChat, IconPlus, IconSend, IconTelegram } from "../icons.js";
 import { agents, getApi, openTab } from "../state.js";
 import { explain } from "./Brain.js";
 import { askConfirm } from "./dialogs.js";
-import { Acts, Head, Sub, SwitchRow, Tile, WzPage } from "./SettingsKit.js";
+import { Acts, Chips, Head, Sub, SwitchRow, Tile, WzPage } from "./SettingsKit.js";
 import { Field, Modal } from "./ui.js";
 
 const v = (e: Event) => (e.target as HTMLInputElement).value;
