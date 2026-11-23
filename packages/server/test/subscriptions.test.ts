@@ -61,6 +61,18 @@ describe("flat subscriptions", () => {
     expect((await s.api("GET", "/api/limits")).body).toEqual([
       { provider: "fake-plan", windows: [{ id: "7d", label: "7g", usedPct: 36 }] },
     ]);
+    // A provider that knows when it read the plan says so (3.12.3): the tooltip shows it.
+    s.core.providers.register(
+      Object.assign(new FakeProvider([], { id: "fake-read" }), {
+        limits: async () => [{ id: "7d", label: "7g", usedPct: 1 }],
+        readAt: () => "2026-11-23T10:00:00.000Z",
+      }),
+    );
+    expect(
+      ((await s.api("GET", "/api/limits")).body as { provider: string; readAt?: string }[]).find(
+        (l) => l.provider === "fake-read",
+      )?.readAt,
+    ).toBe("2026-11-23T10:00:00.000Z");
   });
 
   it("sign in to Claude from the browser: Anthropic's page, then the code it shows", async () => {

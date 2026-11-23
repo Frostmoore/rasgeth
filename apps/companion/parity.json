@@ -260,6 +260,7 @@
       "files": [
         "lib/settings/budgets_screen.dart",
         "lib/api/budgets.dart",
+        "lib/api/plan_margin.dart",
         "lib/screens/agent_settings_screen.dart",
         "lib/ui/limits_bar.dart"
       ],

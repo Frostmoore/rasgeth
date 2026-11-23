@@ -5666,5 +5666,9 @@
   "sxConnTitle": "Collegamenti",
   "sxSetUsed": "Creato dal set «{name}»",
   "deskLayoutBig": "Se la finestra è grande",
-  "deskLayoutHuge": "Se è molto grande"
+  "deskLayoutHuge": "Se è molto grande",
+  "cvLimitResets": "Si azzera {when}",
+  "cvLimitReadAt": "Piano letto {when}",
+  "cvLimitNotRead": "Piano non ancora letto",
+  "cvLimitMarginTip": "Margine {margin} punti rispetto a un ritmo costante nella settimana"
 }

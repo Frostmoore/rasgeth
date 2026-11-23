@@ -94,7 +94,7 @@ void main() {
         words: _words,
       );
       expect([for (final b in waiting) b.text], ['–']);
-      // A plan without a 5-hour window (3.9.8, Claude's): only what it has, no empty 5h.
+      // A plan without a 5-hour window (Claude's): the 5h bar is there all the same (3.12.3), empty.
       final bars = headerBars(
         provider: 'claude-sub',
         plans: [
@@ -109,8 +109,8 @@ void main() {
         budgets: budgets([_budget('global', 'owner', 6.3, limit: 10)]),
         words: _words,
       );
-      expect([for (final b in bars) b.name], ['7g', 'Fable']);
-      expect([for (final b in bars) b.text], ['41%', '0%']);
+      expect([for (final b in bars) b.name], ['5h', '7g', 'Fable']);
+      expect([for (final b in bars) b.text], ['–', '41%', '0%']);
       final both = headerBars(
         provider: 'claude-sub',
         plans: [

@@ -42,7 +42,6 @@ import {
   openBoard,
   openCanvas,
   openTab,
-  planBars,
   platformInfo,
   questions,
   refresh,
@@ -70,6 +69,7 @@ import { Explorer } from "./Explorer.js";
 import { lazy } from "./lazy.js";
 import { Mascot } from "./Mascot.js";
 import { ConnectionLost, MemoryNotice } from "./PageHealth.js";
+import { Bar, PlanBars } from "./PlanBars.js";
 import { RenameNotice } from "./RenameNotice.js";
 import { SaveDialogHost, SavedPage } from "./Saved.js";
 import { preloadCanvas, SideArea } from "./SideArea.js";
@@ -106,30 +106,6 @@ const Settings = lazy<{ section?: SettingsSection | undefined }>(() =>
   import("./Settings.js").then((m) => m.Settings),
 );
 
-const level = (pct: number) => (pct >= 90 ? "high" : pct >= 70 ? "medium" : "");
-
-/** One bar of the header: a name, how full, the percentage. */
-function Bar({ name, pct, title }: { name: string; pct: number | null; title: string }) {
-  return (
-    <span class={`limit ${pct === null ? "" : level(pct)}`} title={title}>
-      <span class="limit-name">{name}</span>
-      <span class="limit-bar">
-        <span style={{ width: `${Math.min(100, pct ?? 0)}%` }} />
-      </span>
-      <span class="limit-num">{pct === null ? "–" : `${Math.round(pct)}%`}</span>
-    </span>
-  );
-}
-
-const resetAt = (iso?: string) =>
-  iso
-    ? new Date(iso).toLocaleString([], {
-        weekday: "short",
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    : "";
-
 /**
  * The header's bars follow how the open conversation is connected (G21): a flat subscription shows
  * its plan's windows (5h, 7d, per-model), a local model how full the context is before automatic
@@ -139,25 +115,7 @@ function Limits() {
   const chat = activeChat();
   const provider = chat?.model?.provider;
   const plan = limits.value.find((l) => l.provider === provider);
-  if (plan) {
-    const windows = planBars(plan.windows);
-    return (
-      <div class="limits">
-        {windows.map((w) => {
-          // The week's short name follows the page's language, whatever the provider sent.
-          const name = w.id === "7d" ? t("limitWeekShort") : w.label;
-          return (
-            <Bar
-              key={w.id}
-              name={name}
-              pct={w.usedPct}
-              title={`${name}: ${w.usedPct === null ? "–" : `${w.usedPct}%`}${w.resetsAt ? ` · reset ${resetAt(w.resetsAt)}` : ""}`}
-            />
-          );
-        })}
-      </div>
-    );
-  }
+  if (plan) return <PlanBars plan={plan} />;
   if (provider === "local" || provider === OWN_SERVER_ID) {
     const events = chat ? sessionView(chat.sessionId).value.events : [];
     const last = [...events].reverse().find((e) => e.type === "message.assistant");

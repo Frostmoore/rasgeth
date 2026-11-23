@@ -13707,5 +13707,36 @@
     }
   },
   "deskLayoutBig": "When the window is large",
-  "deskLayoutHuge": "When it is very large"
+  "deskLayoutHuge": "When it is very large",
+  "cvLimitResets": "Resets {when}",
+  "@cvLimitResets": {
+    "description": "The page's `limitResets` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "cvLimitReadAt": "Plan read {when}",
+  "@cvLimitReadAt": {
+    "description": "The page's `limitReadAt` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "cvLimitNotRead": "Plan not read yet",
+  "@cvLimitNotRead": {
+    "description": "The page's `limitNotRead` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvLimitMarginTip": "Margin {margin} points against an even pace over the week",
+  "@cvLimitMarginTip": {
+    "description": "The page's `limitMarginTip` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "margin": {
+        "type": "String"
+      }
+    }
+  }
 }

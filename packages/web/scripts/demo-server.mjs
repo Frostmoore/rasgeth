@@ -1469,10 +1469,17 @@ const core = await RedGiantCore.create({
           }),
         }),
         {
+          // 3.12.3: the week is 87% gone and 70% used (margin +17); the 5-hour window has no figure.
           limits: async () => [
-            { id: "7d", label: "7g", usedPct: 36, resetsAt: "2026-11-03T18:00:00.000Z" },
-            { id: "model:Fable", label: "Fable", usedPct: 30 },
+            {
+              id: "7d",
+              label: "7g",
+              usedPct: Number(process.env.DEMO_WEEK_USED ?? 70),
+              resetsAt: new Date(Date.now() + 0.91 * 86_400_000).toISOString(),
+            },
+            { id: "model:Fable", label: "Fable", usedPct: 0 },
           ],
+          readAt: () => new Date(Date.now() - 90_000).toISOString(),
           modelInfo: (model) => ({
             id: model,
             contextWindow: 200_000,

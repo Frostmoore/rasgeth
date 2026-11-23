@@ -545,6 +545,8 @@ export interface SessionInfo {
 export interface PlanLimits {
   provider: string;
   windows: { id: string; label: string; usedPct: number; resetsAt?: string }[];
+  /** When the plan was last read (3.12.3), ISO; absent: unknown. */
+  readAt?: string;
 }
 
 export interface ModelChoice {
