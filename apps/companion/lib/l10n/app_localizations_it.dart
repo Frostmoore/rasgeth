@@ -19393,4 +19393,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String smpSpentHere(String usd) {
     return 'Speso qui: $usd';
   }
+
+  @override
+  String get smpRouting => 'Lo metto nell\'argomento giusto…';
 }

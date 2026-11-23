@@ -8,7 +8,7 @@ import { rebuildHistory } from "@redgiant/agent";
 import { type Event, routeByRules, TopicList } from "@redgiant/protocol";
 import type { CompletionRequest, FakeTurn } from "@redgiant/providers";
 import { afterEach, describe, expect, it } from "vitest";
-import { type RouterFn, SUMMARY_SYSTEM, WarmRouter } from "../src/topics.js";
+import { type RouterFn, SUMMARY_SYSTEM, WarmRouter, warmPoolSize } from "../src/topics.js";
 import { startServer } from "./helpers.js";
 
 type Server = Awaited<ReturnType<typeof startServer>>;
@@ -621,7 +621,7 @@ describe("WarmRouter", () => {
         };
       },
     };
-    const w = new WarmRouter(engine);
+    const w = new WarmRouter(engine, Date.now, 1);
     const call = {
       system: "sys",
       text: "hello",
@@ -636,5 +636,66 @@ describe("WarmRouter", () => {
     expect(started[1]?.closed).toBe(false);
     w.close();
     expect(started[1]?.closed).toBe(true);
+  });
+
+  /** A fake engine: each started one answers with its number, and says when it is closed. */
+  function engines() {
+    const started: { n: number; text?: string; closed: boolean; model: string }[] = [];
+    return {
+      started,
+      engine: {
+        prewarm: (req: { model: string }) => {
+          const p = {
+            n: started.length,
+            closed: false,
+            model: req.model,
+          } as (typeof started)[number];
+          started.push(p);
+          return {
+            ask: async (text: string) => {
+              p.text = text;
+              return `engine ${p.n}`;
+            },
+            close: () => {
+              p.closed = true;
+            },
+          };
+        },
+      },
+    };
+  }
+  const call = (model = "haiku") => ({
+    system: "sys",
+    text: "hello",
+    model: { provider: "claude-subscription", model },
+  });
+
+  it("keeps two ready with memory to spare: the oldest answers, a new one starts (3.12.1)", async () => {
+    const { started, engine } = engines();
+    const w = new WarmRouter(engine, Date.now, 2);
+    w.warm(call());
+    expect(started.map((x) => x.n)).toEqual([0, 1]);
+    expect(await w.ask(call())).toBe("engine 0");
+    // Two still ready: the one started first, and the new one.
+    expect(started.filter((x) => !x.closed).map((x) => x.n)).toEqual([1, 2]);
+    expect(await w.ask(call())).toBe("engine 1");
+    expect(started.filter((x) => !x.closed).map((x) => x.n)).toEqual([2, 3]);
+    // Another routing model: the ready ones for the old one are closed, two for the new start.
+    expect(await w.ask(call("sonnet"))).toBe("engine 4");
+    expect(started.filter((x) => !x.closed).map((x) => [x.n, x.model])).toEqual([
+      [5, "sonnet"],
+      [6, "sonnet"],
+    ]);
+    w.close();
+    expect(started.every((x) => x.closed)).toBe(true);
+  });
+
+  it.each([
+    [16, 8, 2],
+    [8, 2, 2],
+    [8, 1.5, 1],
+    [4, 3, 1],
+  ])("total %d GB, free %d GB: %d ready", (total, free, want) => {
+    expect(warmPoolSize(total * 1024 ** 3, free * 1024 ** 3)).toBe(want);
   });
 });

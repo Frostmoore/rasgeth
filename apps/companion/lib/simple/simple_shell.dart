@@ -135,14 +135,14 @@ class _AskBoxState extends State<AskBox> {
   Future<void> _send() async {
     final words = _text.text.trim();
     if (words.isEmpty || _busy) return;
+    // The box empties at once; what was written comes back only if it could not go (3.12.1).
     setState(() => _busy = true);
+    _text.clear();
+    widget.onTyping?.call('');
     final ok = await widget.onSend(words);
     if (!mounted) return;
     setState(() => _busy = false);
-    if (ok) {
-      _text.clear();
-      widget.onTyping?.call('');
-    }
+    if (!ok) _text.text = words;
   }
 
   @override
@@ -542,6 +542,7 @@ class _TodayScreenState extends State<TodayScreen> {
                           return true;
                         },
                       ),
+                      if (!chat && s.routingText != null) _Routing(text: s.routingText!),
                       if (s.error != null) _ErrorLine(s.error!),
                       if (chat) _RecentChats(app: app),
                       if (!chat && others > 0)
@@ -668,6 +669,48 @@ class _TopicsTrouble extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// What was just sent from «Oggi», while God chooses its topic (3.12.1: no wait in silence).
+class _Routing extends StatelessWidget {
+  const _Routing({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = RgColors.of(context);
+    final l = AppLocalizations.of(context);
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Container(
+        key: const Key('smp-routing'),
+        margin: const EdgeInsets.fromLTRB(48, 4, 20, 4),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: c.panel2,
+          border: Border.all(color: c.line),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+            bottomLeft: Radius.circular(16),
+            bottomRight: Radius.circular(4),
+          ),
+        ),
+        child: Semantics(
+          liveRegion: true,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(text),
+              const SizedBox(height: 4),
+              Text(l.smpRouting, style: TextStyle(color: c.dim, fontSize: 13)),
+            ],
+          ),
+        ),
       ),
     );
   }

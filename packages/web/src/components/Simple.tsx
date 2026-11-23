@@ -49,6 +49,7 @@ import {
   getApi,
   getLive,
   godNudge,
+  godRoutingText,
   greetingKey,
   lastError,
   loadNudgeSettings,
@@ -165,9 +166,11 @@ function AskBox({
     const words = text.trim();
     if (!words || busy) return;
     setBusy(true);
+    // The box empties at once; what was written comes back only if it could not go.
+    setText("");
     const r = await onSend(words);
     setBusy(false);
-    if (r !== undefined) typed("");
+    if (r === undefined) setText(words);
     area.current?.focus();
   };
   // The box grows with what is written, up to a few lines.
@@ -254,6 +257,12 @@ function Today() {
             return chat ? askChat(text) : askGod(text);
           }}
         />
+        {!chat && godRoutingText.value && (
+          <div class="smp-routing" role="status">
+            <span class="smp-routing-text">{godRoutingText.value}</span>
+            <span class="smp-routing-line">{t("smpRouting")}</span>
+          </div>
+        )}
         {chat ? <RecentChats /> : null}
         {!chat && others > 0 && (
           <button

@@ -1,3 +1,4 @@
+import 'dart:async';
 // 3.12: God's topics (topic-routes.ts, topics.ts) in memory, answering as the contract says
 // (`packages/protocol/src/topics.ts`): «Oggi»'s list (pinned first) and the archive with its
 // search, a message routed or written inside a topic, «Move» to another topic or a new one,
@@ -59,6 +60,9 @@ class FakeTopics {
       active.where((t) => t['id'] == id).firstOrNull ??
       archived.where((t) => t['id'] == id).firstOrNull;
 
+  /// While set, messages to God wait for it before they are routed.
+  Completer<void>? holdGod;
+
   Future<bool> handle(
     HttpRequest r,
     String path,
@@ -100,6 +104,8 @@ class FakeTopics {
       return ok({'topics': list, 'archived': archived.length});
     }
     if (m == 'POST' && path == '/api/god/messages') {
+      // A test may hold God's answer to see what shows meanwhile.
+      if (holdGod != null) await holdGod!.future;
       final text = b['text'];
       if (text is! String || text.trim().isEmpty) return ok({'error': 'text'}, 400);
       final inside = b['topicId'] is String ? _find(b['topicId'] as String) : null;

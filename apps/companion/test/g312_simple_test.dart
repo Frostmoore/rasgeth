@@ -163,6 +163,34 @@ void main() {
       await done(tester);
     });
 
+    testWidgets('what was sent shows at once while God chooses, the box already empty (3.12.1)', (
+      tester,
+    ) async {
+      await open(tester);
+      topics.holdGod = Completer<void>();
+      await tester.enterText(find.byKey(const Key('simple-ask')), 'Mi serve un idraulico');
+      await tester.tap(find.byKey(const Key('simple-ask-send')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(find.byKey(const Key('smp-routing')), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('smp-routing')),
+          matching: find.text('Mi serve un idraulico'),
+        ),
+        findsOneWidget,
+      );
+      expect(find.text("Lo metto nell'argomento giusto…"), findsOneWidget);
+      final box = tester.widget<TextField>(find.byKey(const Key('simple-ask')));
+      expect(box.controller?.text ?? '', '');
+      topics.holdGod!.complete();
+      topics.holdGod = null;
+      await _settle(tester);
+      expect(find.byKey(const Key('smp-routing')), findsNothing);
+      expect(find.byType(TopicScreen), findsOneWidget);
+      await done(tester);
+    });
+
     testWidgets('a topic as a document: «in: Titolo · Sposta», the decision box, the move', (
       tester,
     ) async {

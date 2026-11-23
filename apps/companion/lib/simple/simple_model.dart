@@ -202,6 +202,9 @@ class SimpleModel extends ChangeNotifier {
   /// A message to God is being routed (the giant thinks).
   bool routing = false;
 
+  /// What the person sent from «Oggi» while God chooses its topic (shown at once, 3.12.1).
+  String? routingText;
+
   /// God's nudge shown under him on «Oggi» (3.12.1), until opened or closed.
   GodNudge? nudge;
 
@@ -366,9 +369,11 @@ class SimpleModel extends ChangeNotifier {
     final words = text.trim();
     if (words.isEmpty) return null;
     routing = true;
+    if (topicId == null) routingText = words;
     notifyListeners();
     final r = await _try((c) => c.godMessage(words, topicId: topicId));
     routing = false;
+    routingText = null;
     notifyListeners();
     if (r != null) refreshSoon();
     return r;

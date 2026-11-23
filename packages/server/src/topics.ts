@@ -6,6 +6,7 @@
 // only append events; what God needs to know about the other topics rides in the person's
 // messages as data (`<meanwhile>`, `<topics>`), never in the prefix.
 
+import { freemem, totalmem } from "node:os";
 import { budgetKeys } from "@redgiant/hierarchy";
 import type { ChatMessage, Event, ModelSpec, TopicRef, TopicRouted } from "@redgiant/protocol";
 import {
@@ -1156,29 +1157,47 @@ export interface WarmEngine {
 /** An engine kept ready this long, then started again (a long idle process may go stale). */
 const WARM_MAX_AGE_MS = 25 * MINUTE;
 
+/** Two engines kept ready only with memory to spare: total and free, in bytes. */
+const WARM_TWO_TOTAL = 8 * 1024 ** 3;
+const WARM_TWO_FREE = 2 * 1024 ** 3;
+
+/**
+ * How many engines the warm router keeps ready (3.12.1, the person's choice: «two ready engines»):
+ * two when the machine has memory to spare, else one. Pure.
+ */
+export function warmPoolSize(total: number, free: number): 1 | 2 {
+  return total >= WARM_TWO_TOTAL && free >= WARM_TWO_FREE ? 2 : 1;
+}
+
 /**
  * The router on a flat subscription (3.12, the person's choice: «keep a warm fast router
- * running»): an engine is started ahead with the router's fixed instructions and waits for its one
- * message; when a message comes it answers it (no start-up wait) and the next one starts at once.
- * One process more, a few hundred MB; each answer is one ordinary short request of the plan.
+ * running»): engines are started ahead with the router's fixed instructions and each waits for its
+ * one message; when a message comes the oldest ready one answers it (no start-up wait) and a new one
+ * starts at once. With two kept ready (3.12.1), a message that comes while the last one is still
+ * starting finds the other ready. A few hundred MB per engine; each answer is one ordinary short
+ * request of the plan.
  */
 export class WarmRouter {
-  private ready: { key: string; p: Prewarmed; at: number } | undefined;
+  private ready: { key: string; p: Prewarmed; at: number }[] = [];
   private readonly timer: ReturnType<typeof setInterval>;
 
   constructor(
     private readonly engine: WarmEngine,
     private readonly now: () => number = Date.now,
+    private readonly size: 1 | 2 = warmPoolSize(totalmem(), freemem()),
   ) {
     // Kept fresh while nobody writes.
     this.timer = setInterval(() => this.refresh(), WARM_MAX_AGE_MS);
     this.timer.unref?.();
   }
 
+  private static keyOf(call: RouterCall): string {
+    return `${call.model.provider}/${call.model.model}\n${call.system}`;
+  }
+
   private start(call: RouterCall) {
-    const key = `${call.model.provider}/${call.model.model}\n${call.system}`;
     return {
-      key,
+      key: WarmRouter.keyOf(call),
       at: this.now(),
       p: this.engine.prewarm({
         model: call.model.model,
@@ -1190,23 +1209,30 @@ export class WarmRouter {
 
   private last: RouterCall | undefined;
 
-  private refresh(): void {
-    if (!this.ready || !this.last) return;
-    if (this.now() - this.ready.at < WARM_MAX_AGE_MS) return;
-    this.ready.p.close();
-    this.ready = this.start(this.last);
+  /** Ready engines for this call only (another model or instructions: closed), up to the size. */
+  private fill(call: RouterCall): void {
+    const key = WarmRouter.keyOf(call);
+    for (const r of this.ready) if (r.key !== key) r.p.close();
+    this.ready = this.ready.filter((r) => r.key === key);
+    while (this.ready.length < this.size) this.ready.push(this.start(call));
   }
 
-  /** Answers with the engine ready (started now if none), and starts the next one. */
+  private refresh(): void {
+    if (!this.last) return;
+    const now = this.now();
+    for (const r of this.ready) if (now - r.at >= WARM_MAX_AGE_MS) r.p.close();
+    this.ready = this.ready.filter((r) => now - r.at < WARM_MAX_AGE_MS);
+    if (this.ready.length) this.fill(this.last);
+  }
+
+  /** Answers with the oldest engine ready (started now if none), and starts the next one. */
   async ask(call: RouterCall, signal?: AbortSignal): Promise<string> {
     this.last = call;
-    const key = `${call.model.provider}/${call.model.model}\n${call.system}`;
-    let use = this.ready;
-    if (!use || use.key !== key) {
-      use?.p.close();
-      use = this.start(call);
-    }
-    this.ready = this.start(call);
+    const key = WarmRouter.keyOf(call);
+    const i = this.ready.findIndex((r) => r.key === key);
+    const use =
+      i >= 0 ? (this.ready.splice(i, 1)[0] as (typeof this.ready)[number]) : this.start(call);
+    this.fill(call);
     try {
       return await use.p.ask(call.text, signal);
     } finally {
@@ -1214,15 +1240,15 @@ export class WarmRouter {
     }
   }
 
-  /** Starts the engine ahead (the server's start, a routing model chosen). */
+  /** Starts the engines ahead (the server's start, a routing model chosen). */
   warm(call: RouterCall): void {
     this.last = call;
-    if (!this.ready) this.ready = this.start(call);
+    this.fill(call);
   }
 
   close(): void {
     clearInterval(this.timer);
-    this.ready?.p.close();
-    this.ready = undefined;
+    for (const r of this.ready) r.p.close();
+    this.ready = [];
   }
 }

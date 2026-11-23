@@ -21068,7 +21068,7 @@ html[data-theme="dark"] {
   padding: 10px 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: var(--panel2, var(--panel));
+  background: var(--panel-2);
   font-size: 12.5px;
   line-height: 1.45;
 }
@@ -25593,4 +25593,26 @@ fieldset.smp-decide {
 }
 .rl-card-head .wz-switch {
   flex: none;
+}
+
+/* «Oggi»: what was just sent, while God chooses its topic (3.12.1). */
+.smp-routing {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 4px 16px 0 auto;
+  max-width: 80%;
+  width: fit-content;
+  padding: 10px 14px;
+  border-radius: 16px 16px 4px 16px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+}
+.smp-routing-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.smp-routing-line {
+  color: var(--dim);
+  font-size: 0.85em;
 }

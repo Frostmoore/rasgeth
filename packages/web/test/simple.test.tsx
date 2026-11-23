@@ -314,6 +314,30 @@ describe("«Oggi»", () => {
     expect(r.getByRole("heading", { level: 2 }).textContent).toBe("Vacanza in Sardegna");
   });
 
+  it("shows what was sent at once while God chooses its topic, the box already empty (3.12.1)", async () => {
+    let answer: (v: unknown) => void = () => {};
+    const routed = server.send.bind(server);
+    fake.impl.godMessage = (b: unknown) =>
+      new Promise((ok) => {
+        answer = () => ok(routed(b));
+      });
+    const r = render(<SimpleApp />);
+    await waitFor(() => expect(r.getByText("Vacanza in Sardegna")).toBeTruthy());
+    const box = r.getByPlaceholderText("Chiedimi qualcosa…") as HTMLTextAreaElement;
+    fireEvent.input(box, { target: { value: "Mi serve un idraulico domani" } });
+    fireEvent.keyDown(box, { key: "Enter" });
+    await waitFor(() =>
+      expect(r.getByRole("status").textContent).toContain("Mi serve un idraulico domani"),
+    );
+    expect(r.getByRole("status").textContent).toContain("Lo metto nell'argomento giusto…");
+    expect(box.value).toBe("");
+    answer(undefined);
+    await waitFor(() =>
+      expect(state.simpleScreen.value).toMatchObject({ kind: "topic", id: "t_trip" }),
+    );
+    expect(state.godRoutingText.value).toBeNull();
+  });
+
   it("opens a card: its news counts as read", async () => {
     const r = render(<SimpleApp />);
     await waitFor(() => expect(r.getByText("Vacanza in Sardegna")).toBeTruthy());

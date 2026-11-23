@@ -13393,5 +13393,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "smpRouting": "Putting it in the right topic…"
 }

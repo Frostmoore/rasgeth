@@ -15,7 +15,7 @@ import { parseRouterAnswer } from "@redgiant/protocol";
 import { AnthropicProvider, complete } from "@redgiant/providers";
 import { ClaudeEngine } from "@redgiant/subscriptions";
 import { describe, expect, it } from "vitest";
-import { ROUTER_SYSTEM } from "../src/topics.js";
+import { ROUTER_SYSTEM, WarmRouter } from "../src/topics.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const SET = JSON.parse(readFileSync(join(here, "fixtures/topics-routing.json"), "utf8")) as {
@@ -81,21 +81,24 @@ describe.skipIf(!token)("the topics' warm router on a subscription (live)", () =
     const model = process.env.REDGIANT_LIVE_ROUTER_MODEL ?? "claude-haiku-4-5";
     const times: number[] = [];
     let right = 0;
-    let next = engine.prewarm({ model, system: ROUTER_SYSTEM });
-    // The first engine starts while nothing is asked (as the server does at its start).
+    // The server's own warm router, with two engines ready (3.12.1).
+    const router = new WarmRouter(engine, Date.now, 2);
+    const call = (text: string) => ({
+      system: ROUTER_SYSTEM,
+      text,
+      model: { provider: "claude-subscription", model },
+    });
+    router.warm(call(""));
     await new Promise((r) => setTimeout(r, 15_000));
     for (let i = 0; i < 50; i++) {
       const m = asked[i % asked.length];
       if (!m) break;
-      const use = next;
-      next = engine.prewarm({ model, system: ROUTER_SYSTEM });
       const t0 = Date.now();
-      const text = await use.ask(prompt(m.text));
+      const text = await router.ask(call(prompt(m.text)));
       times.push(Date.now() - t0);
-      use.close();
       if (parseRouterAnswer(text, ids)?.to === m.want) right++;
     }
-    next.close();
+    router.close();
     times.sort((a, b) => a - b);
     console.log(
       `warm router: ${right}/50 right, median ${times[25]} ms, worst ${times.at(-1)} ms, rss ${Math.round(process.memoryUsage().rss / 1e6)} MB (this process; the engine's own is apart)`,

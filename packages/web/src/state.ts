@@ -3069,8 +3069,11 @@ export async function askGod(
   const words = text.trim();
   if (!words) return undefined;
   godRouting.value = true;
+  // From «Oggi» the message shows at once while God chooses its topic (3.12.1: no wait in silence).
+  if (o.topicId === undefined) godRoutingText.value = words;
   const r = await attempt(() => getApi().godMessage({ text: words, ...o })).finally(() => {
     godRouting.value = false;
+    godRoutingText.value = null;
   });
   if (!r) return undefined;
   lastRouted.value = { ...lastRouted.value, [r.sessionId]: r.routed };
@@ -3199,6 +3202,8 @@ export const GESTURE_MS: Record<IdleGesture, number> = {
 export const simpleTyping = signal(false);
 /** A message to God is being routed (the giant thinks). */
 export const godRouting = signal(false);
+/** What the person sent from «Oggi» while God chooses its topic (shown at once, 3.12.1). */
+export const godRoutingText = signal<string | null>(null);
 /** A piece of work just finished (the giant is happy for a few seconds). */
 export const giantCheer = signal(false);
 

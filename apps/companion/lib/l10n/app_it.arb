@@ -5550,5 +5550,6 @@
   "smpDoingSearch": "sta cercando…",
   "smpDoingWork": "sta lavorando…",
   "smpDoingWait": "ti aspetta",
-  "smpSpentHere": "Speso qui: {usd}"
+  "smpSpentHere": "Speso qui: {usd}",
+  "smpRouting": "Lo metto nell'argomento giusto…"
 }

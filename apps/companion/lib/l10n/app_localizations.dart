@@ -33398,6 +33398,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Spent here: {usd}'**
   String smpSpentHere(String usd);
+
+  /// No description provided for @smpRouting.
+  ///
+  /// In en, this message translates to:
+  /// **'Putting it in the right topic…'**
+  String get smpRouting;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
