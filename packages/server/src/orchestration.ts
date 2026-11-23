@@ -442,10 +442,10 @@ const CreateAgentInput = z.object({
  * person chooses the models; an agent sets one only when the person asked for it.
  */
 export const MODEL_PARAM_DESCRIPTION =
-  "Set it ONLY when the person explicitly asked for a model for this agent (the one they named); otherwise leave it out and the person's default applies. Never choose a model yourself.";
+  "Leave it out and the person's default applies. Set it when the person asked for a model for this agent (use the one they named), or when your instructions tell you to give each agent the most efficient of the person's models for its work (a project's orchestrator, 3.12.3). Only models the person has.";
 
 export const SET_AGENT_MODEL_DESCRIPTION =
-  "Move an agent below you to another model, ONLY when the person explicitly asked for it: use the model they named, never one you chose yourself (not to save money, not for a harder task). The person approves every change. The agent's next conversations use it; its open ones switch between two turns, never inside one. A conversation where the person chose a model in the composer keeps that one. The provider is also the way the model is paid: claude-subscription and chatgpt-subscription are the person's subscriptions (within their plan), anthropic and openai their API keys (paid per use); when the person named a way, use that provider.";
+  "Move an agent below you to another model: when the person asked for it (use the model they named), or when your instructions tell you to give each agent the most efficient of the person's models for its work (a project's orchestrator, 3.12.3). The person approves every change. The agent's next conversations use it; its open ones switch between two turns, never inside one. A conversation where the person chose a model in the composer keeps that one. The provider is also the way the model is paid: claude-subscription and chatgpt-subscription are the person's subscriptions (within their plan), anthropic and openai their API keys (paid per use); when the person named a way, use that provider.";
 
 /** How much of an agent's latest answer one read_agent call returns. */
 const READ_AGENT_CHARS = 20_000;

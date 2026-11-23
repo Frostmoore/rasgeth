@@ -94,16 +94,15 @@ describe("the agents' models are the person's choice (G38.9)", () => {
       | undefined;
     const model = schema?.properties.model;
     expect(model?.description).toBe(MODEL_PARAM_DESCRIPTION);
-    expect(MODEL_PARAM_DESCRIPTION).toContain(
-      "ONLY when the person explicitly asked for a model for this agent",
-    );
+    expect(MODEL_PARAM_DESCRIPTION).toContain("when the person asked for a model for this agent");
     expect(MODEL_PARAM_DESCRIPTION).toContain("the person's default applies");
     expect(def("set_agent_model")?.description).toBe(SET_AGENT_MODEL_DESCRIPTION);
-    expect(SET_AGENT_MODEL_DESCRIPTION).toContain("ONLY when the person explicitly asked for it");
-    expect(SET_AGENT_MODEL_DESCRIPTION).toContain("never one you chose yourself");
+    expect(SET_AGENT_MODEL_DESCRIPTION).toContain("when the person asked for it");
+    expect(SET_AGENT_MODEL_DESCRIPTION).toContain("the most efficient of the person's models");
     expect(god.system).toContain("The models are the user's choice");
     const orch = await say(s, orchSid, "hello");
-    expect(orch.system).toContain("The models are the user's choice");
+    // A project's orchestrator picks the most efficient model for each part, unless the person named one.
+    expect(orch.system).toContain("when the user asked for a model, use theirs");
     expect(orch.tools.map((t) => t.name)).toContain("set_agent_model");
   });
 
