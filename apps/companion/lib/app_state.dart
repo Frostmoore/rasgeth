@@ -579,6 +579,7 @@ class AppController extends ChangeNotifier {
     final ui = await prefs.get('ui');
     uiChoice = ui == 'simple' || ui == 'full' ? ui : null;
     commandStripMin = await prefs.get('cmdStrip') == 'min';
+    canvasWidth = double.tryParse(await prefs.get('canvasWidth') ?? '');
     try {
       final seen = jsonDecode(await prefs.get('subSeen') ?? '{}');
       if (seen is Map) {
@@ -1763,6 +1764,16 @@ class AppController extends ChangeNotifier {
   void setCommandStripMin(bool v) {
     commandStripMin = v;
     unawaited(prefs.set('cmdStrip', v ? 'min' : null));
+    notifyListeners();
+  }
+
+  /// The Canvas panel's width dragged by the person, kept on this device (the page's
+  /// `rg.sideWidth`); null is the normal width.
+  double? canvasWidth;
+
+  void setCanvasWidth(double? w) {
+    canvasWidth = w;
+    unawaited(prefs.set('canvasWidth', w?.round().toString()));
     notifyListeners();
   }
 

@@ -2009,7 +2009,8 @@
         "lib/canvas/canvas_shell.dart",
         "lib/canvas/canvas_model.dart",
         "lib/screens/conversation_files.dart",
-        "lib/screens/conversation_screen.dart"
+        "lib/screens/conversation_screen.dart",
+        "lib/desktop/advanced/code_view.dart"
       ],
       "phase": "G42.6",
       "rows": [
@@ -2018,7 +2019,7 @@
         113,
         300
       ],
-      "note": "The Canvas's frame (SideArea.tsx and Canvas.tsx's head): tabs with «Chat» and «Maximize», the bar (name, kind and weight from title, save state, the agent's move, the tab's own buttons from bar, keyboard map, reload, download, full screen, open outside), the divider; on a phone the Canvas screen with the same tabs. A few web views alive together (three, two on a phone, one on Linux), the others loaded again on return. Ctrl/Cmd+S, Z, Shift+Z, F passed to the page."
+      "note": "The Canvas's frame (SideArea.tsx and Canvas.tsx's head): tabs with «Chat» and «Maximize», the bar (name, kind and weight from title, save state, the agent's move, the tab's own buttons from bar, keyboard map, reload, download, full screen, open outside), the divider; on a phone the Canvas screen with the same tabs. A few web views alive together (three, two on a phone, one on Linux), the others loaded again on return. Ctrl/Cmd+S, Z, Shift+Z, F passed to the page. 3.12.3: the divider is the page's: dragged or moved with the arrows (320 to what leaves the conversation 360), double tap or Enter for the normal width, the width kept on this device (pref canvasWidth, as the page's rg.sideWidth); the files' divider resets the same way. The advanced interface's Code view (desktop/advanced/code_view.dart) opens a file in this same Canvas editor (save, dirty marker, conflict, undo, find, highlighting, archived project read only); the app's own small edit stands in where the page cannot be shown. The page has no Code view of its own: its files open in the Canvas, and Settings > Code only links GitHub/Gitea (parity row 'code', unchanged)."
     },
     "subagentSign": {
       "app": "native",

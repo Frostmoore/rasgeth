@@ -21,6 +21,7 @@ import 'package:rgcompanion/desktop/desk_controller.dart';
 import 'package:rgcompanion/desktop/desk_menu.dart';
 import 'package:rgcompanion/desktop/desktop_shell.dart';
 import 'package:rgcompanion/desktop/palette.dart';
+import 'package:rgcompanion/embed/web_host.dart';
 import 'package:rgcompanion/l10n/app_localizations.dart';
 import 'package:rgcompanion/screens/conversation_screen.dart';
 import 'package:rgcompanion/screens/home_shell.dart';
@@ -46,6 +47,22 @@ ProjectEvent _e(
   bool error = false,
   String ts = '2026-11-16T10:00:00Z',
 }) => ProjectEvent(seq: seq, ts: ts, type: type, error: error, agentName: agent, payload: payload);
+
+/// The Canvas's web view, drawn as nothing.
+class _NoWeb implements WebHost {
+  @override
+  Stream<String> get messages => const Stream.empty();
+  @override
+  Future<void> load(Uri url, WebRules r) async {}
+  @override
+  Future<void> run(String script) async {}
+  @override
+  Future<void> reload() async {}
+  @override
+  Widget view({required bool eager}) => const SizedBox.expand(key: Key('fake-web'));
+  @override
+  void dispose() {}
+}
 
 void main() {
   group('pure parts', () {
@@ -464,6 +481,8 @@ void main() {
   });
 
   testWidgets('the advanced views: projects, code, terminals, git, log', (tester) async {
+    debugWebHost = (_) => _NoWeb();
+    addTearDown(() => debugWebHost = null);
     await start(tester, advanced: true);
     await tester.ensureVisible(find.byKey(const Key('view-projects')));
     await tester.pump();
@@ -492,6 +511,11 @@ void main() {
     await tester.tap(find.byKey(const Key('tree-src/prices.ts')));
     await _settle(tester, 8);
     expect(find.byKey(const Key('doc-tab-1')), findsOneWidget);
+    // 3.12.3: a file opens in the page's editor (the Canvas) when it can be shown, else in the
+    // app's own view with its small edit; either way a project that is not archived is writable.
+    expect(find.byKey(const Key('code-file-canvas')), findsOneWidget);
+    expect(find.byKey(const Key('file-readonly')), findsNothing);
+    expect(find.byKey(const Key('code-file-readonly')), findsNothing);
     // Terminals: the agents' read only, a shell of one's own.
     await tester.ensureVisible(find.byKey(const Key('view-terminals')));
     await tester.pump();

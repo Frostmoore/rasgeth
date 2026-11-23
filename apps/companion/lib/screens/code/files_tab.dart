@@ -398,6 +398,7 @@ class _FileViewState extends State<FileView> {
     }
     final when = DateTime.tryParse(f.modifiedAt)?.toLocal();
     final edit = _edit;
+    final why = f.text != null && edit == null && widget.ctx.readOnly ? l.codeArchived : null;
     final actions = Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -520,6 +521,12 @@ class _FileViewState extends State<FileView> {
             style: TextStyle(color: c.dim, fontSize: 12.5),
           ),
         ),
+        if (why != null)
+          Padding(
+            key: const Key('file-readonly'),
+            padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
+            child: Text(why, style: TextStyle(color: c.dim, fontSize: 12.5)),
+          ),
         Padding(padding: const EdgeInsets.fromLTRB(14, 0, 14, 8), child: actions),
         Divider(height: 1, color: c.line),
         Expanded(

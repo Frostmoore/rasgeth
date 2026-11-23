@@ -172,9 +172,21 @@ class _FullButton extends StatelessWidget {
 
 /// The panel's left edge: dragged to resize, arrows with the keyboard.
 class PanelResizer extends StatelessWidget {
-  const PanelResizer({super.key, required this.onDrag, required this.onKey});
+  const PanelResizer({
+    super.key,
+    required this.onDrag,
+    required this.onKey,
+    this.onReset,
+    this.onEnd,
+  });
 
   final ValueChanged<double> onDrag;
+
+  /// A double tap (or Enter on the focused edge): back to the normal width.
+  final VoidCallback? onReset;
+
+  /// The drag is over (the width is kept then).
+  final VoidCallback? onEnd;
 
   /// +1 wider, -1 narrower (the arrows when the edge has the focus).
   final ValueChanged<int> onKey;
@@ -197,6 +209,12 @@ class PanelResizer extends StatelessWidget {
             onKey(-1);
             return KeyEventResult.handled;
           }
+          if (onReset != null &&
+              (e.logicalKey == LogicalKeyboardKey.enter ||
+                  e.logicalKey == LogicalKeyboardKey.numpadEnter)) {
+            onReset!();
+            return KeyEventResult.handled;
+          }
           return KeyEventResult.ignored;
         },
         child: MouseRegion(
@@ -205,6 +223,8 @@ class PanelResizer extends StatelessWidget {
             key: const Key('panel-resizer'),
             behavior: HitTestBehavior.translucent,
             onHorizontalDragUpdate: (d) => onDrag(d.delta.dx),
+            onHorizontalDragEnd: onEnd == null ? null : (_) => onEnd!(),
+            onDoubleTap: onReset,
             child: SizedBox(
               width: 7,
               child: Center(

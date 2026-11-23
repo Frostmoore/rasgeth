@@ -12,9 +12,11 @@ import '../../api/client.dart';
 import '../../api/code.dart';
 import '../../api/types.dart';
 import '../../app_state.dart';
+import '../../canvas/canvas_shell.dart';
 import '../../l10n/app_localizations.dart';
 import '../../screens/code/diff_tab.dart';
 import '../../screens/code/files_tab.dart';
+import '../../screens/code/project_screen.dart' show ProjectCtx;
 import '../../screens/conversation_screen.dart';
 import '../../theme/colors.dart';
 import '../../ui/common.dart';
@@ -359,7 +361,12 @@ class _CodeViewState extends State<CodeView> {
               if (mounted && a?.id != _reader?.id) setState(() => _reader = a);
             },
           )
-        : FileView(key: ValueKey('${p.id}:${doc.path}'), ctx: ctx, path: doc.path!);
+        : _CodeFile(
+            key: ValueKey('${p.id}:${doc.path}'),
+            ctx: ctx,
+            path: doc.path!,
+            onClose: () => _close(_docs.indexOf(doc)),
+          );
     final reader = _reader ?? ctx.lead;
     final sid = ctx.latestSessionOf(reader?.id);
     final right = reader == null || sid == null
@@ -412,6 +419,81 @@ class _CodeViewState extends State<CodeView> {
             ),
             child: right,
           ),
+      ],
+    );
+  }
+}
+
+/// A file in Code: the editor the page opens from the conversation's folder (the Canvas, with its
+/// save, dirty marker, conflict handling, undo, find and highlighting), here in the middle. Where
+/// the page cannot be shown inside the app, the app's own view with its small edit stands in; both
+/// follow the project's rules (an archived project is read only) and the server's routes.
+class _CodeFile extends StatefulWidget {
+  const _CodeFile({super.key, required this.ctx, required this.path, required this.onClose});
+
+  final ProjectCtx ctx;
+  final String path;
+  final VoidCallback onClose;
+
+  @override
+  State<_CodeFile> createState() => _CodeFileState();
+}
+
+class _CodeFileState extends State<_CodeFile> {
+  final _model = CanvasPanelModel();
+  String? _save;
+
+  @override
+  void initState() {
+    super.initState();
+    _model
+      ..show(widget.path.split('/').last, {
+        'kind': 'file',
+        'scope': widget.ctx.scope,
+        'path': widget.path,
+      })
+      ..addListener(_changed);
+  }
+
+  /// A save the page reports: the diff and the changed files are read again.
+  void _changed() {
+    final now = _model.info[_model.active]?.save;
+    if (now == 'saved' && _save != 'saved') unawaited(widget.ctx.reloadGit());
+    _save = now;
+  }
+
+  @override
+  void dispose() {
+    _model
+      ..removeListener(_changed)
+      ..dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final app = AppScope.of(context);
+    if (!canvasEmbedWay(app)) return FileView(ctx: widget.ctx, path: widget.path);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (widget.ctx.readOnly)
+          Padding(
+            key: const Key('code-file-readonly'),
+            padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+            child: Text(
+              AppLocalizations.of(context).codeArchived,
+              style: TextStyle(fontSize: 12.5, color: RgColors.of(context).dim),
+            ),
+          ),
+        Expanded(
+          child: CanvasShell(
+            key: const Key('code-file-canvas'),
+            model: _model,
+            whole: true,
+            onClose: widget.onClose,
+          ),
+        ),
       ],
     );
   }
