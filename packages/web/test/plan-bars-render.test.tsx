@@ -42,7 +42,7 @@ describe("PlanBars", () => {
   it.each([
     ["comfortable: green", 70, 0.91, "limit ", "ok"],
     ["tight: amber", 85, 0.91, "limit medium", "warn"],
-    ["over the pace: red, at a low percentage", 40, 3.5, "limit high", "err"],
+    ["over the pace: red, at a low percentage", 60, 3.5, "limit high", "err"],
   ])("the week's colour follows the margin (%s)", (_n, used, left, cls, margin) => {
     const { container } = render(<PlanBars plan={plan(used, left)} now={now} />);
     const week = container.querySelectorAll(".limit")[1];

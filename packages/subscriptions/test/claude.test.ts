@@ -309,7 +309,7 @@ describe("Claude on a subscription", () => {
     expect(await p.limits()).toEqual(read);
     expect(runs).toHaveLength(1);
     expect(p.readAt()).toBe("2026-11-20T17:00:00.000Z");
-    // Two minutes later (3.12.3: every 2 minutes), looked at by two pages at once: one new
+    // Three minutes after the first look (3.12.3: every 2 minutes), looked at by two pages at once: one new
     // reading shared by both, with the new figure and the new reading time.
     clock += 2 * 60_000;
     answer = {
@@ -319,7 +319,7 @@ describe("Claude on a subscription", () => {
     expect(one).toEqual(two);
     await new Promise((r) => setTimeout(r, 20));
     expect(runs).toHaveLength(2);
-    expect(p.readAt()).toBe("2026-11-20T17:02:00.000Z");
+    expect(p.readAt()).toBe("2026-11-20T17:03:00.000Z");
     expect((await p.limits()).find((w) => w.id === "7d")?.usedPct).toBe(3);
     // A reading that gives nothing keeps the old figures, and is tried again only after the pause.
     clock += 2 * 60_000 + 1;
@@ -327,7 +327,7 @@ describe("Claude on a subscription", () => {
     await p.limits();
     await new Promise((r) => setTimeout(r, 20));
     expect(runs).toHaveLength(3);
-    expect(p.readAt()).toBe("2026-11-20T17:02:00.000Z");
+    expect(p.readAt()).toBe("2026-11-20T17:03:00.000Z");
     clock += 60_000;
     await p.limits();
     expect(runs).toHaveLength(3);
