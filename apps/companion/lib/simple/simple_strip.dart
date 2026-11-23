@@ -56,8 +56,27 @@ Future<void> openAgentConversation(BuildContext context, AppController app, Agen
   return openChat(context, sid, a.name);
 }
 
+/// The mascot's size in the strip (the page: 84, on a phone 64).
+double stripMascotSize(BuildContext context) =>
+    MediaQuery.sizeOf(context).width <= 640 ? 64.0 : 84.0;
+
+/// The strip's real height (3.12.3): one mascot plus its title, nothing reserved for the balloon.
+/// The content above pads itself with exactly this; the balloon opens over it.
+double stripBandHeight(BuildContext context) => stripMascotSize(context) + _titleZone + _bottomPad;
+
+const double _titleZone = 26;
+const double _bottomPad = 10;
+const Duration _moveTime = Duration(milliseconds: 250);
+
+/// What the strip needs in height with the picked one enlarged and its balloon open: more than
+/// [stripBandHeight], the rest is drawn over the content (it takes no touch where nothing is).
+double _overlayHeight(double size) => _bottomPad + size * 1.75 + 62;
+
 class SimpleStrip extends StatefulWidget {
   const SimpleStrip({super.key});
+
+  /// True when there is at least one agent to show (otherwise the strip takes no room).
+  static bool shows(AppController app) => stripAgents(app.agents, app.chatAgentId).isNotEmpty;
 
   @override
   State<SimpleStrip> createState() => _SimpleStripState();
@@ -84,142 +103,154 @@ class _SimpleStripState extends State<SimpleStrip> {
     final c = RgColors.of(context);
     final list = stripAgents(app.agents, app.chatAgentId);
     if (list.isEmpty) return const SizedBox.shrink();
-    final phone = MediaQuery.sizeOf(context).width <= 640;
-    final size = phone ? 64.0 : 84.0;
+    final size = stripMascotSize(context);
     // Overlapping by almost half.
     final step = size * 0.55;
+    final band = stripBandHeight(context);
     final at = list.indexWhere((a) => a.id == _on);
     final shownAt = list.indexWhere((a) => a.id == (_on ?? _shown));
     final reduced = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
-    final slide = reduced ? Duration.zero : const Duration(milliseconds: 220);
+    final slide = reduced ? Duration.zero : _moveTime;
     return TapRegion(
       onTapOutside: (_) => _pick(null),
-      child: Container(
-        key: const Key('simple-strip'),
-        decoration: BoxDecoration(
-          color: c.bg,
-          border: Border(top: BorderSide(color: c.line)),
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.transparent, c.text.withValues(alpha: 0.05)],
-          ),
-        ),
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: Text(
-                l.smpYourAgents,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: c.dim,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.5,
-                ),
-              ),
-            ),
-            LayoutBuilder(
-              builder: (context, box) {
-                final width = step * (list.length - 1) + size;
-                final left0 = math.max(0.0, (box.maxWidth - width) / 2);
-                final centres = [for (var i = 0; i < list.length; i++) left0 + i * step + size / 2];
-                void under(double x) {
-                  final i = nearestIndex(centres, x);
-                  if (i >= 0) _pick(list[i].id);
-                }
+      child: SizedBox(
+        height: _overlayHeight(size),
+        child: LayoutBuilder(
+          builder: (context, box) {
+            final width = step * (list.length - 1) + size;
+            final left0 = math.max(0.0, (box.maxWidth - width) / 2);
+            final centres = [for (var i = 0; i < list.length; i++) left0 + i * step + size / 2];
+            void under(double x) {
+              final i = nearestIndex(centres, x);
+              if (i >= 0) _pick(list[i].id);
+            }
 
-                // The picked one on top, its neighbours under it, the rest in order.
-                final order = [for (var i = 0; i < list.length; i++) i]
-                  ..sort((a, b) {
-                    int rank(int i) => i == at ? 2 : (at >= 0 && (i - at).abs() == 1 ? 1 : 0);
-                    final r = rank(a).compareTo(rank(b));
-                    return r != 0 ? r : b.compareTo(a);
-                  });
-                return MouseRegion(
-                  onHover: (e) => under(e.localPosition.dx),
-                  onExit: (_) => _pick(null),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onPanDown: (d) => under(d.localPosition.dx),
-                    onPanUpdate: (d) => under(d.localPosition.dx),
-                    child: SizedBox(
-                      height: size * 1.75 + 64,
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          for (final i in order)
-                            Positioned(
-                              left: centres[i] - size / 2,
-                              bottom: 0,
-                              child: _Mini(
-                                key: Key('strip-${list[i].id}'),
-                                agent: list[i],
-                                size: size,
-                                scale: i == at
-                                    ? 1.75
-                                    : (at >= 0 && (i - at).abs() == 1 ? 1.22 : 1.0),
-                                on: i == at,
-                                reduced: reduced,
-                                onFocus: () => _pick(list[i].id),
-                              ),
+            // The picked one on top, its neighbours under it, the rest in order.
+            final order = [for (var i = 0; i < list.length; i++) i]
+              ..sort((a, b) {
+                int rank(int i) => i == at ? 2 : (at >= 0 && (i - at).abs() == 1 ? 1 : 0);
+                final r = rank(a).compareTo(rank(b));
+                return r != 0 ? r : b.compareTo(a);
+              });
+            return MouseRegion(
+              opaque: false,
+              onHover: (e) => under(e.localPosition.dx),
+              onExit: (_) => _pick(null),
+              // Deferring to the children: the empty part above the band (where the balloon
+              // opens) lets the touches through to the content behind.
+              child: GestureDetector(
+                behavior: HitTestBehavior.deferToChild,
+                onPanDown: (d) => under(d.localPosition.dx),
+                onPanUpdate: (d) => under(d.localPosition.dx),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      height: band,
+                      child: Container(
+                        key: const Key('simple-strip'),
+                        decoration: BoxDecoration(
+                          color: c.bg,
+                          border: Border(top: BorderSide(color: c.line)),
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.transparent, c.text.withValues(alpha: 0.05)],
+                          ),
+                        ),
+                        padding: const EdgeInsets.only(left: 20, top: 8),
+                        alignment: Alignment.topLeft,
+                        // Fades out while a pick is active: the enlarged mascot would cover it.
+                        child: AnimatedOpacity(
+                          key: const Key('strip-title-fade'),
+                          opacity: at >= 0 ? 0 : 1,
+                          duration: reduced ? Duration.zero : const Duration(milliseconds: 150),
+                          child: Text(
+                            l.smpYourAgents,
+                            style: TextStyle(
+                              fontSize: 13,
+                              height: 1.2,
+                              color: c.dim,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
                             ),
-                          if (shownAt >= 0)
-                            Positioned(
-                              left: 0,
-                              right: 0,
-                              top: 0,
-                              child: IgnorePointer(
-                                ignoring: at < 0,
-                                child: AnimatedAlign(
-                                  duration: slide,
-                                  curve: Curves.easeOut,
-                                  alignment: Alignment(
-                                    box.maxWidth <= 0
-                                        ? 0
-                                        : (centres[shownAt] / box.maxWidth) * 2 - 1,
-                                    -1,
-                                  ),
-                                  child: AnimatedOpacity(
-                                    key: const Key('strip-balloon-fade'),
-                                    duration: slide,
-                                    opacity: at >= 0 ? 1 : 0,
-                                    onEnd: () {
-                                      if (_on == null && _shown != null && mounted) {
-                                        setState(() => _shown = null);
-                                      }
-                                    },
-                                    child: _Balloon(
-                                      agent: list[shownAt],
-                                      state: words.stateWord(
-                                        l,
-                                        app.live.mascotStateOf(list[shownAt].id),
-                                      ),
-                                      onTap: () => unawaited(
-                                        openAgentConversation(context, app, list[shownAt]),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-          ],
+                    for (final i in order)
+                      // Keyed: when the order changes the same widget moves (and goes on
+                      // animating); without the key every pick would rebuild it, with no motion.
+                      Positioned(
+                        key: ValueKey('strip-pos-${list[i].id}'),
+                        left: centres[i] - size / 2,
+                        bottom: _bottomPad,
+                        child: _Mini(
+                          key: Key('strip-${list[i].id}'),
+                          agent: list[i],
+                          size: size,
+                          scale: i == at ? 1.75 : (at >= 0 && (i - at).abs() == 1 ? 1.22 : 1.0),
+                          on: i == at,
+                          reduced: reduced,
+                          onFocus: () => _pick(list[i].id),
+                        ),
+                      ),
+                    if (shownAt >= 0)
+                      // The balloon's centre slides to the picked one's (its own width, which
+                      // follows the name, never moves the centre), kept inside the screen.
+                      TweenAnimationBuilder<double>(
+                        key: const Key('strip-balloon-slide'),
+                        tween: Tween(
+                          end: centres[shownAt].clamp(
+                            math.min(70.0, box.maxWidth / 2),
+                            math.max(box.maxWidth - 70.0, box.maxWidth / 2),
+                          ),
+                        ),
+                        duration: slide,
+                        curve: Curves.ease,
+                        builder: (context, x, child) => Positioned(
+                          left: x,
+                          top: 0,
+                          child: FractionalTranslation(
+                            translation: const Offset(-0.5, 0),
+                            child: child,
+                          ),
+                        ),
+                        child: IgnorePointer(
+                          ignoring: at < 0,
+                          child: AnimatedOpacity(
+                            key: const Key('strip-balloon-fade'),
+                            duration: slide,
+                            opacity: at >= 0 ? 1 : 0,
+                            onEnd: () {
+                              if (_on == null && _shown != null && mounted) {
+                                setState(() => _shown = null);
+                              }
+                            },
+                            child: _Balloon(
+                              agent: list[shownAt],
+                              state: words.stateWord(l, app.live.mascotStateOf(list[shownAt].id)),
+                              onTap: () =>
+                                  unawaited(openAgentConversation(context, app, list[shownAt])),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
   }
 }
 
-class _Mini extends StatelessWidget {
+class _Mini extends StatefulWidget {
   const _Mini({
     super.key,
     required this.agent,
@@ -238,38 +269,70 @@ class _Mini extends StatelessWidget {
   final VoidCallback onFocus;
 
   @override
+  State<_Mini> createState() => _MiniState();
+}
+
+class _MiniState extends State<_Mini> with SingleTickerProviderStateMixin {
+  // The small movement of the one picked: a little sway, once. The mascot itself is never
+  // rebuilt from scratch (no key on it), so the scale change below runs as an animation.
+  late final AnimationController _sway = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 700),
+  );
+
+  @override
+  void didUpdateWidget(_Mini old) {
+    super.didUpdateWidget(old);
+    if (widget.on && !old.on && !widget.reduced) _sway.forward(from: 0);
+    if (!widget.on && old.on) _sway.value = 1;
+  }
+
+  @override
+  void dispose() {
+    _sway.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final app = AppScope.of(context);
     final l = AppLocalizations.of(context);
-    final state = app.live.mascotStateOf(agent.id);
-    final d = reduced ? Duration.zero : const Duration(milliseconds: 220);
+    final state = app.live.mascotStateOf(widget.agent.id);
+    final d = widget.reduced ? Duration.zero : _moveTime;
     return Semantics(
       button: true,
-      selected: on,
-      label: l.smpAgentIs(agent.name, words.stateWord(l, state)),
+      selected: widget.on,
+      label: l.smpAgentIs(widget.agent.name, words.stateWord(l, state)),
       child: Focus(
         onFocusChange: (f) {
-          if (f) onFocus();
+          if (f) widget.onFocus();
         },
         child: GestureDetector(
-          onTap: onFocus,
+          onTap: widget.onFocus,
           child: AnimatedScale(
-            scale: scale,
+            scale: widget.scale,
             duration: d,
-            curve: Curves.easeOutBack,
+            curve: Curves.ease,
             alignment: Alignment.bottomCenter,
-            // The small movement of the one picked: a little sway, once.
-            child: TweenAnimationBuilder<double>(
-              key: ValueKey(on),
-              tween: Tween(begin: 0, end: 1),
-              duration: on && !reduced ? const Duration(milliseconds: 700) : Duration.zero,
-              builder: (context, v, child) => Transform.rotate(
-                angle: on ? math.sin(v * 2 * math.pi) * 0.17 * (1 - v) : 0,
-                alignment: Alignment.bottomCenter,
-                child: child,
-              ),
+            child: AnimatedBuilder(
+              animation: _sway,
+              builder: (context, child) {
+                final v = _sway.value;
+                return Transform.rotate(
+                  angle: widget.on && _sway.isAnimating
+                      ? math.sin(v * 2 * math.pi) * 0.17 * (1 - v)
+                      : 0,
+                  alignment: Alignment.bottomCenter,
+                  child: child,
+                );
+              },
               child: ExcludeSemantics(
-                child: MascotView(agentId: agent.id, spec: agent.mascot, state: state, size: size),
+                child: MascotView(
+                  agentId: widget.agent.id,
+                  spec: widget.agent.mascot,
+                  state: state,
+                  size: widget.size,
+                ),
               ),
             ),
           ),

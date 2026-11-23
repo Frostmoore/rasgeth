@@ -5,7 +5,7 @@ import { rebuildHistory } from "@redgiant/agent";
 import type { Event } from "@redgiant/protocol";
 import type { CompletionRequest, FakeTurn } from "@redgiant/providers";
 import { afterEach, describe, expect, it } from "vitest";
-import { SPLIT_SYSTEM, SUMMARY_SYSTEM } from "../src/topics.js";
+import { isMigratedTitle, SPLIT_SYSTEM, SUMMARY_SYSTEM } from "../src/topics.js";
 import { startServer } from "./helpers.js";
 
 type Server = Awaited<ReturnType<typeof startServer>>;
@@ -319,5 +319,49 @@ describe("the retitling of migrated topics", () => {
     expect(rows[1]?.archived).toBe(true);
     expect(await s.core.topics.retitleMigrated(ME)).toBe(0);
     expect(calls.summary).toHaveLength(2);
+  });
+
+  it("renames a title cut in the old way (a real install), and runs again after the first pass", async () => {
+    const { s, god, calls } = await start(["{}"]);
+    const first =
+      "Devo creare un plugin wordpress per mio zio.  Ha iniziato a fare tutto lui che non ha funzionato\nmi aiuti?";
+    await legacy(
+      s,
+      god,
+      "sess_z",
+      "Devo creare un plugin wordpress per mio zio. Ha iniziato a fare tutto lui che no",
+      [[first, "ok", DAY]],
+    );
+    await legacy(s, god, "sess_y", "devo creare un plugin…", [[first, "ok", 2 * DAY]]);
+    // The person's own words are never a beginning of the first message.
+    await legacy(s, god, "sess_x", "Il sito di mio zio", [[first, "ok", 3 * DAY]]);
+    await s.core.topics.prepare(ME);
+    // The broken first pass already ran on this install.
+    await s.core.db.query("INSERT INTO rg_settings (owner_id, key, value) VALUES ($1, $2, $3)", [
+      ME,
+      "topics_retitled",
+      JSON.stringify({ retitled: 0 }),
+    ]);
+    expect(await s.core.topics.retitleMigrated(ME)).toBe(2);
+    expect(calls.summary).toHaveLength(2);
+    const rows = await s.core.db.query<{ id: string; title: string }>(
+      "SELECT id, title FROM rg_sessions WHERE owner_id = $1 ORDER BY id",
+      [ME],
+    );
+    expect(rows.map((r) => r.title)).toEqual([
+      "Il sito di mio zio",
+      "A real title",
+      "A real title",
+    ]);
+    expect(await s.core.topics.retitleMigrated(ME)).toBe(0);
+  });
+
+  it("tells a migrated title from one the person chose (pure)", () => {
+    const text = "Come configuro nginx\nper il sito";
+    expect(isMigratedTitle("Come configuro nginx", text)).toBe(true);
+    expect(isMigratedTitle("come  configuro NGINX per…", text)).toBe(true);
+    expect(isMigratedTitle("Come configuro nginx per il sito...", text)).toBe(true);
+    expect(isMigratedTitle("Nginx del sito", text)).toBe(false);
+    expect(isMigratedTitle("…", text)).toBe(false);
   });
 });

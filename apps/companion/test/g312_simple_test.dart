@@ -526,6 +526,92 @@ void main() {
       await done(tester);
     });
 
+    testWidgets('3.12.3: the strip is one mascot plus its title tall; the balloon opens over', (
+      tester,
+    ) async {
+      await open(tester, size: const Size(390, 844));
+      final strip = find.byKey(const Key('simple-strip'));
+      // 64 (phone mascot) + title zone 26 + bottom 10.
+      expect(tester.getSize(strip).height, 100);
+      final top = tester.getTopLeft(strip).dy;
+      await tester.tap(find.byKey(const Key('strip-a2')));
+      await _settle(tester, 2);
+      final balloon = find.byKey(const Key('strip-balloon'));
+      expect(balloon, findsOneWidget);
+      // The balloon is above the strip's box, over the content, and takes its taps there.
+      expect(tester.getBottomLeft(balloon).dy, lessThan(top));
+      // The strip itself never grew; the content pads itself with the same height only.
+      expect(tester.getSize(strip).height, 100);
+      await done(tester);
+    });
+
+    testWidgets('3.12.3: the title fades out while a pick is active, and back', (tester) async {
+      await open(tester, size: const Size(390, 844));
+      double op() =>
+          tester.widget<AnimatedOpacity>(find.byKey(const Key('strip-title-fade'))).opacity;
+      expect(op(), 1);
+      await tester.tap(find.byKey(const Key('strip-a2')));
+      await _settle(tester, 2);
+      expect(op(), 0);
+      await tester.tapAt(const Offset(200, 40));
+      await _settle(tester, 2);
+      await tester.pump(const Duration(seconds: 1));
+      expect(op(), 1);
+      await done(tester);
+    });
+
+    testWidgets(
+      '3.12.3: a pick change animates: the old shrinks, the new grows, the balloon slides',
+      (tester) async {
+        await open(tester, size: const Size(390, 844));
+        double scaleOf(String id) => tester
+            .widget<ScaleTransition>(
+              find.descendant(
+                of: find.byKey(Key('strip-$id')),
+                matching: find.byType(ScaleTransition),
+              ),
+            )
+            .scale
+            .value;
+        double balloonX() => tester.getCenter(find.byKey(const Key('strip-balloon'))).dx;
+        await tester.tap(find.byKey(const Key('strip-a1')));
+        await _settle(tester, 3);
+        await tester.pump(const Duration(milliseconds: 400));
+        expect(scaleOf('a1'), closeTo(1.75, 0.001));
+        expect(scaleOf('a2'), closeTo(1.22, 0.001));
+        final x0 = balloonX();
+        await tester.tap(find.byKey(const Key('strip-a2')));
+        final grow = <double>[], shrink = <double>[], xs = <double>[];
+        for (var i = 0; i < 5; i++) {
+          await tester.pump(const Duration(milliseconds: 50));
+          grow.add(scaleOf('a2'));
+          shrink.add(scaleOf('a1'));
+          xs.add(balloonX());
+        }
+        for (var i = 0; i < 4; i++) {
+          expect(grow[i], lessThan(grow[i + 1]));
+          expect(shrink[i], greaterThan(shrink[i + 1]));
+        }
+        expect(grow[1], greaterThan(1.22));
+        expect(grow[2], lessThan(1.75));
+        expect(shrink[2], greaterThan(1.22));
+        expect(shrink[2], lessThan(1.75));
+        await tester.pump(const Duration(milliseconds: 400));
+        expect(scaleOf('a2'), closeTo(1.75, 0.001));
+        expect(scaleOf('a1'), closeTo(1.22, 0.001));
+        // The balloon slid: in the middle it is between where it was and where it ends (its own
+        // width follows the name, hence the few pixels of tolerance).
+        final x1 = balloonX();
+        expect(x1 - x0, closeTo(35.2, 0.5)); // the step between two mascots (64 * 0.55)
+        expect(xs[1], greaterThan(x0 + 1));
+        expect(xs[1], lessThan(x1 - 1));
+        for (var i = 0; i < 4; i++) {
+          expect(xs[i], lessThan(xs[i + 1]));
+        }
+        await done(tester);
+      },
+    );
+
     testWidgets('3.12.1: a card shows the agents of its topic; a card with nobody, none', (
       tester,
     ) async {

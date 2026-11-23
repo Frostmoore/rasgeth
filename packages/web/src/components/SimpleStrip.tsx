@@ -79,7 +79,7 @@ export function SimpleStrip() {
         if (e.pointerType === "mouse") setOn(null);
       }}
     >
-      <div class="smp-lbl smp-strip-t">{t("smpYourAgents")}</div>
+      <div class={`smp-lbl smp-strip-t${open ? " hide" : ""}`}>{t("smpYourAgents")}</div>
       <div
         ref={strip}
         class="smp-strip"
