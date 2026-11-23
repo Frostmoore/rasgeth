@@ -86,6 +86,7 @@ import {
   EditorSettings,
   EmulatorSettings,
   type Event,
+  type GodNudge,
   type ImagePart,
   isCriticalId,
   isMediaRef,
@@ -310,6 +311,7 @@ import { nodeHandlers } from "./nodes/serve.js";
 import { Nodes, type NodesOptions } from "./nodes/service.js";
 import { type NodeToolsHost, nodeTools } from "./nodes/tools.js";
 import { memoryTool, type NoteOwner, Notes } from "./notes.js";
+import { NudgeService } from "./nudges.js";
 import {
   completeTaskTool,
   modelApprover,
@@ -997,6 +999,14 @@ export class RedGiantCore implements OrchestrationHost {
   notify:
     | ((ownerId: string, text: string, to?: string[]) => Promise<NotifyReport | undefined | void>)
     | undefined;
+  /** God's friendly nudges (3.12.1): a notification, never a request. */
+  readonly nudges: NudgeService;
+  private readonly nudgeListeners = new Set<(ownerId: string, nudge: GodNudge) => void>();
+  /** The open pages and apps hear God's nudges (`god.nudge`). */
+  onNudge(listener: (ownerId: string, nudge: GodNudge) => void): () => void {
+    this.nudgeListeners.add(listener);
+    return () => this.nudgeListeners.delete(listener);
+  }
   private readonly noticeListeners = new Set<
     (ownerId: string, text: string, info: NoticeInfo) => boolean
   >();
@@ -1232,6 +1242,17 @@ export class RedGiantCore implements OrchestrationHost {
       devices: this.devices,
       vault: this.vault,
       ...o.push,
+    });
+    this.nudges = new NudgeService({
+      db: o.db,
+      topics: async (ownerId) => (await this.topics.list(ownerId)).topics,
+      language: (ownerId) => this.language(ownerId),
+      godName: (ownerId) =>
+        this.registry.list({ ownerId, activeOnly: true }).find((a) => a.kind === "god")?.name,
+      deliver: (ownerId, nudge, godName) => {
+        for (const f of this.nudgeListeners) f(ownerId, nudge);
+        this.push.nudge(ownerId, nudge, godName);
+      },
     });
     this.browserLinks = new BrowserLinks({ db: o.db, vault: this.vault });
     // Conversions (G34.3): programs in the data folder's tools, LibreOffice with its own profile.
@@ -1820,7 +1841,11 @@ export class RedGiantCore implements OrchestrationHost {
         .filter((a) => a.kind === "god")
         .map((a) => a.ownerId),
     );
-    for (const ownerId of owners) await this.topics.tick(ownerId, now);
+    for (const ownerId of owners) {
+      await this.topics.tick(ownerId, now);
+      // God's friendly nudge, when one is due (3.12.1).
+      await this.nudges.tick(ownerId, now).catch(() => null);
+    }
   }
 
   /**

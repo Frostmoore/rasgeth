@@ -15,6 +15,7 @@
 import type { SqlClient } from "@redgiant/events";
 import {
   type Event,
+  type GodNudge,
   type PermissionRequestInfo,
   PRODUCT_NAME,
   type PushChannelView,
@@ -376,6 +377,11 @@ export class PushService {
     },
   ): void {
     this.track(this.notify(ownerId, { type: "automation", ...info, text }));
+  }
+
+  /** God's friendly nudge (3.12.1): to every device, a notification that asks nothing. */
+  nudge(ownerId: string, nudge: GodNudge, godName: string): void {
+    this.track(this.notify(ownerId, { type: "nudge", nudge, godName }));
   }
 
   /** Listens to the core: requests, questions, tasks and answers nobody watches. */

@@ -16,6 +16,7 @@ import {
 import { DeviceInput } from "./emulators.js";
 import { Event } from "./events.js";
 import { ImagePart } from "./messages.js";
+import { GodNudge } from "./nudges.js";
 import { Answers, QuestionRequestInfo } from "./questions.js";
 import { RequestWords } from "./request-words.js";
 import { TopicRef, TopicRouted } from "./topics.js";
@@ -432,6 +433,8 @@ export const ServerMessage = z.discriminatedUnion("type", [
   z.object({ type: z.literal("automations.changed"), automationId: z.string() }),
   /** The person's rules changed (3.12): saved, switched, acted, a stop put or lifted, a magic rule. */
   z.object({ type: z.literal("rules.changed") }),
+  /** God's friendly nudge (3.12.1): a notification, never a request; nothing waits for it. */
+  z.object({ type: z.literal("god.nudge"), nudge: GodNudge }),
   /** An automation's message for the web page (`notify.to: [web]`). */
   z.object({
     type: z.literal("automation.notice"),

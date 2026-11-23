@@ -5,10 +5,17 @@
 //   POST /api/god/topics/:id/archive | /restore | /read → { ok: true } (404: not a topic of God)
 //   GET  /api/god/topics/settings                  → { model, defaultModel } (the routing model)
 //   PUT  /api/god/topics/settings { model | null } → { ok: true }
+//   GET  /api/god/nudges → NudgeSettings; PUT /api/god/nudges NudgeSettings → { ok: true } (3.12.1)
 // Shapes in `@redgiant/protocol` (`topics.ts`). The old apps' `POST /api/agents/:id/work-session`
 // gives God's latest active topic.
 
-import { GodMessageRequest, ModelSpec, MoveRequest, TopicListQuery } from "@redgiant/protocol";
+import {
+  GodMessageRequest,
+  ModelSpec,
+  MoveRequest,
+  NudgeSettings,
+  TopicListQuery,
+} from "@redgiant/protocol";
 import type { Context, Hono } from "hono";
 import { z } from "zod";
 import type { RedGiantCore } from "./core.js";
@@ -28,6 +35,15 @@ export function topicRoutes<E extends { Variables: any }>(
       return c.json({ error: (err as Error).message }, 409);
     throw err;
   };
+
+  // God's friendly nudges (3.12.1): on or off and how often (Settings, and the simple interface).
+  app.get("/api/god/nudges", async (c) => c.json(await core.nudges.settings(owner(c)), 200));
+  app.put("/api/god/nudges", async (c) => {
+    const b = NudgeSettings.safeParse(await c.req.json().catch(() => ({})));
+    if (!b.success) return c.json({ error: b.error.message }, 400);
+    await core.nudges.setSettings(owner(c), b.data);
+    return c.json({ ok: true }, 200);
+  });
 
   app.get("/api/god/topics", async (c) => {
     const q = TopicListQuery.safeParse(c.req.query());

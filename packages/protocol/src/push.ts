@@ -7,6 +7,7 @@
 import { z } from "zod";
 import { ARTIFACT_GRANT_TOOL } from "./artifact-bridge.js";
 import { criticalTitle, isCriticalRequest } from "./critical.js";
+import type { GodNudge } from "./nudges.js";
 import type { QuestionRequestInfo } from "./questions.js";
 import { requestSentence } from "./requests.js";
 import type { PermissionRequestInfo } from "./wire.js";
@@ -67,7 +68,8 @@ export const PushNotice = z.object({
   v: z.literal(1),
   /** The same id for the update that withdraws it. */
   id: z.string(),
-  kind: z.enum(["request", "question", "task", "message", "automation", "test"]),
+  /** `nudge` (3.12.1): God's friendly word of the day; its `sessionId` is the topic it is about. */
+  kind: z.enum(["request", "question", "task", "message", "automation", "test", "nudge"]),
   /** Which RedGiant it comes from (the machine's name). */
   server: z.string(),
   title: z.string(),
@@ -96,6 +98,7 @@ const it = (lang: string) => lang.toLowerCase().startsWith("it");
 
 /** What may be notified, as the server sees it happen. */
 export type PushTrigger =
+  | { type: "nudge"; nudge: GodNudge; godName: string }
   | { type: "approval"; info: PermissionRequestInfo }
   | { type: "question"; info: QuestionRequestInfo }
   | {
@@ -153,6 +156,15 @@ export function quickAnswerAllowed(info: PermissionRequestInfo, decision: "allow
 export function pushFor(t: PushTrigger, lang: string, server: string): PushNotice | null {
   const base = { v: 1 as const, server };
   switch (t.type) {
+    case "nudge":
+      return {
+        ...base,
+        id: `nudge:${t.nudge.id}`,
+        kind: "nudge",
+        title: clip(t.godName, PUSH_TITLE_MAX),
+        body: clip(t.nudge.text, PUSH_BODY_MAX),
+        ...(t.nudge.topicId && { sessionId: t.nudge.topicId }),
+      };
     case "approval": {
       const critical = isCriticalRequest(t.info);
       const what = requestSentence(lang, t.info.tool, t.info.input, t.info.names);

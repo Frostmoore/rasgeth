@@ -46,6 +46,7 @@ export * from "./metrics.js";
 export * from "./model-routes.js";
 export * from "./models-catalog.js";
 export * from "./nodes.js";
+export * from "./nudges.js";
 export * from "./password-export.js";
 export * from "./paths.js";
 export * from "./person-rules.js";

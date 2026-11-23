@@ -124,6 +124,7 @@ export function attachWebSocket(
     let offBoard: (() => void) | undefined;
     let offAutomations: (() => void) | undefined;
     let offNotices: (() => void) | undefined;
+    let offNudges: (() => void) | undefined;
     let offPlatform: (() => void) | undefined;
     let offRules: (() => void) | undefined;
     let offRooms: (() => void) | undefined;
@@ -264,6 +265,10 @@ export function attachWebSocket(
           core.questions.on("closed", onQuestionClosed);
           offBoard = core.board.onChange(onBoard);
           offAutomations = core.automations.onChange(onAutomation);
+          offNudges = core.onNudge((ownerId, nudge) => {
+            if (principal?.ownerId === ownerId && ws.readyState === ws.OPEN)
+              send({ type: "god.nudge", nudge });
+          });
           offNotices = core.onNotice((ownerId, text, info) => {
             if (principal?.ownerId !== ownerId || ws.readyState !== ws.OPEN) return false;
             send({ type: "automation.notice", ...info, text });
@@ -751,6 +756,7 @@ export function attachWebSocket(
       offBoard?.();
       offAutomations?.();
       offNotices?.();
+      offNudges?.();
       offPlatform?.();
       offRules?.();
       offRooms?.();
