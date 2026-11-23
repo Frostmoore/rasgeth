@@ -18,7 +18,7 @@ export function useCalendars(): { calendars: CalendarInfo[]; reload: () => void 
     void getApi()
       .calendars()
       .then(
-        (r) => setCalendars(r.calendars),
+        (r) => setCalendars(r?.calendars ?? []),
         () => setCalendars([]),
       );
   useEffect(reload, []);
