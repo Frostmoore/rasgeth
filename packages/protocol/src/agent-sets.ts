@@ -3,8 +3,8 @@
 // the connections it wants and the requests it always asks). They live here and only here: God's
 // `create_agent` (`preset`), the create-agent flow's «Start from...» and the tests read this table.
 import { z } from "zod";
-import type { ConnectionKind } from "./connections.js";
 import type { Effort } from "./agents.js";
+import type { ConnectionKind } from "./connections.js";
 import type { ToolKit } from "./tools.js";
 
 export const AGENT_SET_IDS = ["researcher", "email", "messages", "sheets", "agenda"] as const;

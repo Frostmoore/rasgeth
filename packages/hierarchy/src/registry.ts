@@ -2,10 +2,12 @@ import { randomUUID } from "node:crypto";
 import type { EventStore, SqlClient } from "@redgiant/events";
 import { hasOwnMascot, MascotBook, mascotSpec, SATELLITE_SEED } from "@redgiant/mascot";
 import {
+  type AgentConnection,
   type AgentSpec,
   LOCAL_OWNER_ID,
   type MascotSpec,
   type ModelSpec,
+  normalizeConnections,
   type PermissionMode,
   PROJECT_AGENTS_DEFAULT,
 } from "@redgiant/protocol";
@@ -68,7 +70,7 @@ export interface NewAgent {
   systemPrompt?: string;
   model?: ModelSpec;
   mode?: PermissionMode;
-  connections?: string[];
+  connections?: AgentConnection[];
   subprojectId?: string;
   compaction?: { at?: number; keep?: number };
   skills?: string[];
@@ -210,7 +212,7 @@ const fromRow = (r: Row): AgentRecord => ({
   ...(r.system_prompt !== null && { systemPrompt: r.system_prompt }),
   ...(r.model !== null && { model: JSON.parse(r.model) as ModelSpec }),
   ...(r.mode !== null && { mode: r.mode }),
-  ...(r.connections !== null && { connections: JSON.parse(r.connections) as string[] }),
+  ...(r.connections !== null && { connections: normalizeConnections(JSON.parse(r.connections)) }),
   ...(r.subproject_id !== null && { subprojectId: r.subproject_id }),
   ...(r.skills !== null && { skills: JSON.parse(r.skills) as string[] }),
   ...(r.projects && { projects: JSON.parse(r.projects) as string[] }),
@@ -840,7 +842,7 @@ export class AgentRegistry {
       model?: ModelSpec | null;
       mode?: PermissionMode | null;
       systemPrompt?: string | null;
-      connections?: string[] | null;
+      connections?: AgentConnection[] | null;
       role?: string | null;
       compaction?: { at?: number; keep?: number } | null;
       skills?: string[] | null;

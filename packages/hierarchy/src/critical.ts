@@ -1229,6 +1229,9 @@ const OUTBOUND = (name: string) =>
     // Email (G38.1): what is sent, and a draft kept on the mail server.
     "mail_send",
     "mail_draft",
+    // A calendar event written and a message to the person's chats (3.12.3).
+    "calendar_create_event",
+    "chat_send",
   ].includes(name);
 
 /**

@@ -71,13 +71,17 @@ import {
 import {
   type AcpWorkerConfig,
   type AcpWorkerInfo,
+  type AgentConnection,
   type AgentKind,
   type ArtifactError,
   type ArtifactRef,
   agentLanguage,
+  agentSetOf,
+  agentSetsGuidance,
   CAPABILITY_FOLDER,
   type Capability,
   CommandSettings,
+  connectionRefs,
   DEFAULT_COMMAND_SETTINGS,
   DEFAULT_EDITOR_SETTINGS,
   DEFAULT_REQUEST_SETTINGS,
@@ -87,6 +91,7 @@ import {
   EmulatorSettings,
   type Event,
   type GodNudge,
+  hasConnectionKind,
   type ImagePart,
   isCriticalId,
   isMediaRef,
@@ -200,6 +205,8 @@ import { type ReapDeps, reapOrphan } from "./background-reap.js";
 import type { BackupDeps } from "./backup.js";
 import { type Browsers, browserTools } from "./browser.js";
 import { BrowserLinks } from "./browser-links.js";
+import { type CalendarFetch, CalendarService } from "./calendar/service.js";
+import { calendarTools, chatTools } from "./calendar/tools.js";
 import { contentType, inside, lastChange, Previews, type PreviewTarget } from "./canvas.js";
 import { CanvasLive } from "./canvas-live.js";
 import { lookAt } from "./canvas-look.js";
@@ -497,6 +504,8 @@ export interface CoreOptions {
   nodes?: Pick<NodesOptions, "dial" | "reconnectMs" | "waitMs" | "pollMs" | "hostName">;
   /** Email for the agents (G38.1): how mailboxes are reached and mail leaves (tests: servers in the process). */
   mailClient?: MailClient;
+  /** How calendars are fetched (CalDAV, iCal): tests give a fake, never a real server. */
+  calendarFetch?: CalendarFetch;
   mailTransport?: MailTransport;
   /**
    * Product pictures (G40.16): tests and the demo only, hosts allowed although local (a test
@@ -902,6 +911,8 @@ export class RedGiantCore implements OrchestrationHost {
   readonly nodes: Nodes;
   /** Email for the agents (G38.1): the same mailboxes, for the mail_* tools. */
   readonly mail: MailService;
+  /** The person's calendars (3.12.3): CalDAV and iCal addresses, secrets in the keychain. */
+  readonly calendars: CalendarService;
   /** Routines on files that change in a project's folder (G33.3). */
   readonly files: FileTriggers;
   /** Automations built in a conversation with God (G33.3). */
@@ -1618,6 +1629,11 @@ export class RedGiantCore implements OrchestrationHost {
       client: o.mailClient ?? imapMailClient(),
       transport: o.mailTransport ?? smtpTransport,
       ...(o.mailSendLimit && { limiter: new SendLimiter(o.mailSendLimit) }),
+    });
+    this.calendars = new CalendarService({
+      db: o.db,
+      vault: this.vault,
+      ...(o.calendarFetch && { fetch: o.calendarFetch }),
     });
     this.files = new FileTriggers({
       automations: this.automations,
@@ -2551,7 +2567,10 @@ export class RedGiantCore implements OrchestrationHost {
               ownerId,
               agent.projectId,
               // An assistant uses only the services it was given (G24.11).
-              agent.kind === "assistant" ? (agent.connections ?? []) : undefined,
+              // Any agent with MCP connections sees only those (3.12.3).
+              agent.kind === "assistant" || hasConnectionKind(agent.connections, "mcp")
+                ? connectionRefs(agent.connections, "mcp")
+                : undefined,
             )),
         proposeTool(
           agent,
@@ -2608,7 +2627,23 @@ export class RedGiantCore implements OrchestrationHost {
       // What the permission rules read about the machines, fresh for this conversation.
       await this.machines.list(ownerId).catch(() => []);
       // Email (G38.1): always offered; without a mailbox open to the agents they say so.
-      if (agent.kind !== "subagent") tools.push(...mailTools(() => this.mail, ws));
+      if (agent.kind !== "subagent") {
+        tools.push(
+          ...mailTools(() => this.mailOf(agent.id), ws),
+          // Calendars and chats (3.12.3): only those connected to this agent.
+          ...calendarTools(
+            () => this.calendars,
+            () => connectionRefs(this.connectionsOf(agent.id), "calendar"),
+          ),
+          ...chatTools(
+            () => ({
+              linked: async (owner) => (await this.automationLinks(owner)).chats,
+              tell: async (owner, text, to) => this.tell(owner, text, to),
+            }),
+            () => connectionRefs(this.connectionsOf(agent.id), "chat"),
+          ),
+        );
+      }
     }
     if (agent.kind === "assistant") tools.push(this.requestConnectionTool(agent));
     if (
@@ -2775,6 +2810,10 @@ export class RedGiantCore implements OrchestrationHost {
         tools.some((t) => t.def.name === "show_results") ? FOUND_GUIDANCE : "",
         // Email is data, never instructions (G38.1): for every agent that can read it.
         tools.some((t) => t.def.name === "mail_read") ? MAIL_GUIDANCE : "",
+        // The ready-made agent sets (3.12.3): when God uses which one (a fixed text).
+        agent.kind === "god" && tools.some((t) => t.def.name === "create_agent")
+          ? agentSetsGuidance()
+          : "",
         assignedTo
           ? `## Assigned to a project\nIn this conversation you work for the project "${(await this.projects.get(ownerId, assignedTo))?.name ?? assignedTo}", on tasks its orchestrator gives you. Your files here are your own worktree of that project; close each task with complete_task.`
           : "",
@@ -2789,7 +2828,7 @@ export class RedGiantCore implements OrchestrationHost {
         // Git Bash's paths on Windows (p3.5.4): every tool's paths as Windows names them, before
         // the guardian and the tool read them (`nativePaths`, the guardian uses the same rule).
         // mail_send's message prepared before it is checked (G38.1): the person approves what leaves.
-        preToolUse: [gitBashPaths, mailSendHook(() => this.mail, ws)],
+        preToolUse: [gitBashPaths, mailSendHook(() => this.mailOf(agent.id), ws)],
         ...((receivesTasks || (agent.kind !== "demigod" && agent.kind !== "inspector")) && {
           // G36.8: one quiet nudge to propose a skill after a problem solved.
           ...(agent.kind !== "demigod" &&
@@ -3113,6 +3152,38 @@ export class RedGiantCore implements OrchestrationHost {
     const problem = acpConfigProblem(c);
     if (problem) throw new BadRequestError(problem);
     return probeAcp(c);
+  }
+
+  /** What an agent is connected to now (3.12.3), read when a tool is used, so a change counts at once. */
+  connectionsOf(agentId: string): AgentConnection[] {
+    return this.registry.get(agentId)?.connections ?? [];
+  }
+
+  /**
+   * The mail service an agent uses (3.12.3): all the mailboxes open to the agents, unless it was
+   * connected to some mailboxes, then only those.
+   */
+  mailOf(agentId: string): MailService {
+    const c = this.connectionsOf(agentId);
+    return hasConnectionKind(c, "mailbox")
+      ? this.mail.scoped(connectionRefs(c, "mailbox"))
+      : this.mail;
+  }
+
+  /**
+   * A ready-made set for an agent just made (3.12.3): its kits on for it alone. Kits only go on,
+   * never off, and only for the agent given.
+   */
+  async applyAgentSet(ownerId: string, agentId: string, setId: string): Promise<void> {
+    const set = agentSetOf(setId);
+    if (!set) return;
+    const kits = set.kits.filter((k) => k !== "core");
+    if (kits.length)
+      await this.setAgentKits(
+        ownerId,
+        agentId,
+        Object.fromEntries(kits.map((k) => [k, "on" as const])),
+      );
   }
 
   /** The tools a new agent starts without, chosen by the agent that made it (G36.14). */

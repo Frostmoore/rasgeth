@@ -61,7 +61,7 @@ describe("personal assistants (G24.11)", () => {
         args: [join(here, "../../extensions/test/mcp-server.mjs")],
       },
     });
-    const a = await s.api<{ id: string; kind: string; connections: string[] }>(
+    const a = await s.api<{ id: string; kind: string; connections: unknown[] }>(
       "POST",
       "/api/agents",
       {
@@ -73,7 +73,10 @@ describe("personal assistants (G24.11)", () => {
       },
     );
     expect(a.status).toBe(201);
-    expect(a.body).toMatchObject({ kind: "assistant", connections: ["echo"] });
+    expect(a.body).toMatchObject({
+      kind: "assistant",
+      connections: [{ kind: "mcp", ref: "echo" }],
+    });
     secretary = a.body.id;
     const b = await s.api<{ id: string }>("POST", "/api/agents", {
       kind: "assistant",
