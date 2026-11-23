@@ -245,6 +245,100 @@ const MAGIC_DEMO = [
 
 // G40.16, DEMO_PRODUCTS=1: a shop's pictures on 127.0.0.1 (the server downloads them; the page
 // never calls it), and the four products the Chat shows.
+const demoFound = (base) => ({
+  gallery: {
+    kind: "gallery",
+    title: "Fontana di Trevi",
+    source: "Immagini dal web",
+    images: ["a", "b", "c", "d", "e", "f"]
+      .map((k, i) => ({
+        url: `${base}/photo-${k}.png`,
+        title: `Fontana di Trevi ${i + 1}`,
+        pageUrl: "https://it.wikipedia.org/wiki/Fontana_di_Trevi",
+      }))
+      .concat([{ url: "https://nonexistent.invalid/x.jpg", title: "Non raggiungibile" }]),
+  },
+  trips: {
+    kind: "trips",
+    mode: "train",
+    from: "Milano C.le",
+    to: "Roma Termini",
+    date: "ven 27 nov",
+    operators: "Trenitalia e Italo",
+    offers: [
+      {
+        departs: "06:20",
+        arrives: "09:15",
+        duration: "2 h 55",
+        stops: 0,
+        label: "Frecciarossa 9505",
+        operator: "Trenitalia",
+        price: 39.9,
+        currency: "EUR",
+        availability: "posti liberi",
+      },
+      {
+        departs: "07:00",
+        arrives: "09:59",
+        duration: "2 h 59",
+        stops: 0,
+        label: "Italo 9909",
+        operator: "Italo",
+        price: 34.9,
+        currency: "EUR",
+        availability: "ultimi 4 posti",
+      },
+      {
+        departs: "07:35",
+        arrives: "10:45",
+        duration: "3 h 10",
+        stops: 1,
+        label: "Frecciarossa 9515",
+        operator: "Trenitalia",
+        price: 29.9,
+        currency: "EUR",
+        availability: "posti liberi",
+      },
+    ],
+  },
+  route: {
+    kind: "route",
+    from: { name: "Roma Termini", lat: 41.9009, lon: 12.5016 },
+    to: { name: "Colosseo", lat: 41.8902, lon: 12.4922 },
+    points: [
+      { lat: 41.9009, lon: 12.5016 },
+      { lat: 41.8985, lon: 12.5008 },
+      { lat: 41.8962, lon: 12.4968 },
+      { lat: 41.8935, lon: 12.4938 },
+      { lat: 41.8902, lon: 12.4922 },
+    ],
+    options: [
+      {
+        mode: "walk",
+        durationMin: 22,
+        distanceM: 1700,
+        steps: [
+          { text: "Esci su piazza dei Cinquecento, verso via Cavour", minute: 0 },
+          { text: "Segui via Cavour fino a largo Corrado Ricci", minute: 12 },
+          { text: "Gira a sinistra su via dei Fori Imperiali", minute: 20 },
+        ],
+      },
+      {
+        mode: "transit",
+        durationMin: 8,
+        distanceM: 1900,
+        steps: [{ text: "Metro B direzione Laurentina, scendi a Colosseo", minute: 0 }],
+      },
+      {
+        mode: "drive",
+        durationMin: 6,
+        distanceM: 2100,
+        steps: [{ text: "Via Cavour, poi via dei Fori Imperiali", minute: 0 }],
+      },
+    ],
+    note: "Con la metro B sono 2 fermate, circa 8 minuti.",
+  },
+});
 let productShop;
 const demoProducts = (base) => ({
   title: "Moka da 3-4 tazze",
@@ -389,6 +483,75 @@ const brain = (req) => {
     )
   )
     return { text: "Fatto: l'orchestratore è pronto." };
+  // 3.12.2, DEMO_FOUND=1: one answer with every search widget (gallery, trains, products, a route)
+  // and an interactive chart widget.
+  if (productShop && said.startsWith("Mostrami i widget") && !results)
+    return {
+      text: "Ecco tutto quello che ho trovato.",
+      toolCalls: [
+        { name: "show_results", input: demoFound(productShop).gallery },
+        { name: "show_results", input: demoFound(productShop).trips },
+        {
+          name: "show_products",
+          input: {
+            title: "Cuffie bluetooth sotto i 100 euro",
+            products: [
+              {
+                name: "Cuffie Aurio Wave 3",
+                price: 89.9,
+                currency: "EUR",
+                shop: "Amazon",
+                rating: 4.6,
+                reviews: 1280,
+                url: "https://www.amazon.it/dp/B1",
+                image_url: `${productShop}/moka-express.png`,
+              },
+              {
+                name: "Sonar Buds Pro",
+                price: 74,
+                currency: "EUR",
+                shop: "MediaWorld",
+                rating: 4.4,
+                reviews: 410,
+                url: "https://www.mediaworld.it/p/2",
+                image_url: `${productShop}/venus.png`,
+              },
+              {
+                name: "Kord Studio BT",
+                price: 99,
+                currency: "EUR",
+                shop: "Unieuro",
+                rating: 4.7,
+                reviews: 96,
+                url: "https://www.unieuro.it/p/3",
+                image_url: `${productShop}/brikka.png`,
+              },
+              {
+                name: "Lumo Air 2",
+                price: 59.99,
+                currency: "EUR",
+                shop: "Amazon",
+                rating: 4.1,
+                reviews: 2210,
+                url: "https://www.amazon.it/dp/B4",
+              },
+            ],
+          },
+        },
+        { name: "show_results", input: demoFound(productShop).route },
+      ],
+    };
+  if (
+    results &&
+    last.parts.some(
+      (p) => p.type === "tool_result" && String(p.content).startsWith("Shown to the person inside"),
+    )
+  )
+    return {
+      text:
+        "La più equilibrata per prezzo e microfoni è la **Aurio Wave 3**. Se vuoi, prendo il primo treno: ti chiedo la conferma prima di pagare.\n\n" +
+        '```widget Spesa mensile\n<div class="rg-head"><h3>Spesa mensile</h3><p>Prova a cambiare i mesi</p></div>\n<div class="rg-tabs"><button class="on">Mese</button><button>Anno</button></div>\n<div class="rg-bars"><div style="--v:.8"><span>Gen</span><span></span><b>820</b></div><div style="--v:.55"><span>Feb</span><span></span><b>560</b></div><div style="--v:.95"><span>Mar</span><span></span><b>970</b></div></div>\n```\n',
+    };
   // G40.16, DEMO_PRODUCTS=1: the Chat shows four moka pots as cards, then picks one.
   if (productShop && said.startsWith("Mi consigli una moka") && !results)
     return {
@@ -1332,7 +1495,9 @@ const core = await RedGiantCore.create({
     pollMs: 2000,
   },
   // DEMO_PRODUCTS=1 (G40.16): the shop's pictures come from 127.0.0.1.
-  ...(process.env.DEMO_PRODUCTS && { productImages: { allowHosts: ["127.0.0.1"] } }),
+  ...((process.env.DEMO_PRODUCTS || process.env.DEMO_FOUND) && {
+    productImages: { allowHosts: ["127.0.0.1"] },
+  }),
   // DEMO_SSH=1 (G38.2): every machine leads to a fake SSH server on 127.0.0.1, never a real one.
   ...(process.env.DEMO_SSH && {
     machines: { dial: () => ({ host: "127.0.0.1", port: sshDemo.port }), connectTimeoutMs: 5000 },
@@ -2059,8 +2224,8 @@ if (process.env.DEMO_ARCHIVE === "1") {
   done.catch(() => {});
 }
 
-// DEMO_PRODUCTS=1 (G40.16): the Chat recommends moka pots with product cards.
-if (process.env.DEMO_PRODUCTS === "1") {
+// DEMO_PRODUCTS=1 (G40.16), DEMO_FOUND=1 (3.12.2): pictures on 127.0.0.1; the Chat shows cards or widgets.
+if (process.env.DEMO_PRODUCTS === "1" || process.env.DEMO_FOUND === "1") {
   const { createServer } = await import("node:http");
   const { encode: encodePng } = await import(
     createRequire(new URL("../../server/package.json", import.meta.url)).resolve("fast-png")
@@ -2069,6 +2234,12 @@ if (process.env.DEMO_PRODUCTS === "1") {
     "/moka-express.png": mokaPicture(encodePng, [168, 170, 176], false),
     "/venus.png": mokaPicture(encodePng, [205, 208, 214], true),
     "/brikka.png": mokaPicture(encodePng, [150, 40, 40], false),
+    ...Object.fromEntries(
+      ["a", "b", "c", "d", "e", "f"].map((k, i) => [
+        `/photo-${k}.png`,
+        mokaPicture(encodePng, [90 + i * 25, 120 + i * 10, 170 - i * 15], i % 2 === 0),
+      ]),
+    ),
   };
   const pictureServer = createServer((req, res) => {
     const body = pictures[req.url ?? ""];
@@ -2081,10 +2252,27 @@ if (process.env.DEMO_PRODUCTS === "1") {
   });
   await new Promise((r) => pictureServer.listen(0, "127.0.0.1", r));
   productShop = `http://127.0.0.1:${pictureServer.address().port}`;
+  if (process.env.DEMO_FOUND === "1") {
+    // The «present» kit is off until an agent asks for it: on from the start for this demo.
+    await core.toolChoices.set("local", {
+      ...(await core.toolChoices.get("local")),
+      kits: { present: "on" },
+    });
+  }
   const chatAgent = await core.chatAgent("local");
   const psid = await core.startSession("local", chatAgent.id);
-  await core.nameSession(psid, "Una moka nuova");
-  await (await core.send("local", psid, "Mi consigli una moka da 3-4 tazze?")).done;
+  if (process.env.DEMO_FOUND === "1") {
+    await core.nameSession(psid, "Cosa ho trovato");
+    const { done } = await core.send("local", psid, "Mostrami i widget");
+    // Not awaited: the demo listens at once, the answer arrives while the page loads.
+    done.then(
+      () => console.log("found demo: answered"),
+      (e) => console.log("found demo failed:", e),
+    );
+  } else {
+    await core.nameSession(psid, "Una moka nuova");
+    await (await core.send("local", psid, "Mi consigli una moka da 3-4 tazze?")).done;
+  }
 }
 
 // DEMO_WEB: another build of the page (3.5.11, the measures before and after a change).

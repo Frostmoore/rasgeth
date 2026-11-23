@@ -386,7 +386,7 @@ export function FoundCard({
   sessionId?: string | undefined;
 }) {
   return (
-    <section class={`found found-${widget.kind}`} data-found={widget.kind}>
+    <section class={`found found-k-${widget.kind}`} data-found={widget.kind}>
       {widget.kind === "gallery" && <Gallery w={widget} />}
       {widget.kind === "trips" && <Trips w={widget} sessionId={sessionId} />}
       {widget.kind === "route" && <Route r={widget} />}

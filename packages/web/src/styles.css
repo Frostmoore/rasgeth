@@ -26040,12 +26040,23 @@ fieldset.smp-decide {
   }
   .found-offer {
     grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "times side"
+      "body body"
+      "choose choose";
+  }
+  .found-times {
+    grid-area: times;
+  }
+  .found-offer-body {
+    grid-area: body;
   }
   .found-offer-side {
+    grid-area: side;
     align-items: flex-end;
   }
   .found-choose {
-    grid-column: 1 / -1;
+    grid-area: choose;
     justify-content: center;
   }
   .found-maps {
