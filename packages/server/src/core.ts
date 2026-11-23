@@ -1829,6 +1829,31 @@ export class RedGiantCore implements OrchestrationHost {
     // Topics idle for days go to the archive; quiet ones get their one-line summary (3.12).
     this.topicsTimer = setInterval(() => void this.topicsTick().catch(() => {}), 10 * 60_000);
     this.topicsTimer.unref();
+    // Once after the update (3.12.2): the old work conversation split by work, migrated topics
+    // named; in the background, never blocking the start.
+    this.modernizeTimer = setTimeout(() => void this.topicsModernize().catch(() => {}), 20_000);
+    this.modernizeTimer.unref();
+  }
+
+  private readonly modernizeTimer: ReturnType<typeof setTimeout>;
+
+  /** The one-time topic passes for every owner with a God (3.12.2); logged, never throws. */
+  async topicsModernize(): Promise<void> {
+    const owners = new Set(
+      this.registry
+        .list({ activeOnly: true })
+        .filter((a) => a.kind === "god")
+        .map((a) => a.ownerId),
+    );
+    for (const ownerId of owners) {
+      try {
+        const r = await this.topics.modernize(ownerId);
+        if (r.split || r.retitled)
+          console.warn(`topics: split into ${r.split} topics, ${r.retitled} retitled`);
+      } catch (err) {
+        console.warn(`topics split: ${(err as Error).message}`);
+      }
+    }
   }
 
   private readonly topicsTimer: ReturnType<typeof setInterval>;
@@ -9432,6 +9457,7 @@ export class RedGiantCore implements OrchestrationHost {
     this.echo.stop();
     clearInterval(this.sweeper);
     clearInterval(this.topicsTimer);
+    clearTimeout(this.modernizeTimer);
     this.warmRouter?.close();
     this.inspector.stop();
     this.code?.unwatch();

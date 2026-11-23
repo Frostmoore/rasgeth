@@ -81,7 +81,7 @@ export const MessageMovedPayload = z.object({
   /** The last event moved with it (God's answer, or everything after with «from here on»). */
   throughSeq: z.number().int().nonnegative(),
   toSessionId: z.string(),
-  by: z.enum(["person", "god"]),
+  by: z.enum(["person", "god", "migration"]),
 });
 
 export const TaskRedirectedPayload = z.object({
@@ -438,4 +438,28 @@ export function shouldArchive(t: {
 }): boolean {
   if (t.archived || t.pinned || t.tasks > 0 || t.requests > 0 || t.running) return false;
   return t.now - t.lastAt >= (t.idleDays ?? TOPIC_IDLE_DAYS) * 24 * HOUR;
+}
+
+/**
+ * The one-time split of the old work conversation (3.12.2): the model groups exchanges by work.
+ * `exchanges` are the numbers of the lines it was shown.
+ */
+export const SplitGroup = z.object({
+  title: z.string().min(1),
+  exchanges: z.array(z.number().int().nonnegative()).min(1),
+  summary: z.string().optional(),
+});
+export type SplitGroup = z.infer<typeof SplitGroup>;
+export const SplitAnswer = z.object({ groups: z.array(SplitGroup) });
+
+/** The groups of a model's answer, or undefined when it is not usable JSON. */
+export function parseSplitAnswer(text: string): SplitGroup[] | undefined {
+  const json = text.match(/\{[\s\S]*\}/u)?.[0];
+  if (!json) return undefined;
+  try {
+    const r = SplitAnswer.safeParse(JSON.parse(json));
+    return r.success ? r.data.groups : undefined;
+  } catch {
+    return undefined;
+  }
 }
