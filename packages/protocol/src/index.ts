@@ -88,3 +88,4 @@ export * from "./video-timeline.js";
 export * from "./voice.js";
 export * from "./widget.js";
 export * from "./wire.js";
+export * from "./secretary.js";
