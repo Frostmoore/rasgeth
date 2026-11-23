@@ -4,10 +4,14 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.12.2';
+const newsVersion = '3.12.3';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.12.3', 'news3123Sets', 'news3123SetsText'),
+  NewsRow('3.12.3', 'news3123Team', 'news3123TeamText'),
+  NewsRow('3.12.3', 'news3123Telegram', 'news3123TelegramText'),
+  NewsRow('3.12.3', 'news3123More', 'news3123MoreText'),
   NewsRow('3.12.2', 'news3122Found', 'news3122FoundText'),
   NewsRow('3.12.2', 'news3122Simple', 'news3122SimpleText'),
   NewsRow('3.12.2', 'news3122Ios', 'news3122IosText'),
@@ -443,6 +447,14 @@ const generalWords = <String, Map<String, String>>{
     'news3122SimpleText': 'Stop e allega in ogni casella, il tasto per tornare in fondo, widget e Canvas dentro le conversazioni, e la striscia degli agenti che galleggia in basso: sceglierne un altro fa scivolare il nome, un tocco fuori lo lascia.',
     'news3122Topics': 'Il tuo lavoro di prima, in ordine',
     'news3122TopicsText': 'La lunga conversazione con God di prima degli argomenti si divide una volta sola in un argomento per lavoro, con titoli veri: quelli recenti in corso, gli altri in archivio. Non si cancella niente.',
+    'news3123More': 'Cose più piccole',
+    'news3123MoreText': 'La barra dell\'abbonamento come deve essere (5 ore sempre, il margine della settimana e il suo colore, aggiornata ogni due minuti); copiare una risposta nell\'app tiene gli a capo; un editor di codice vero nella vista Codice dell\'app e colonne ridimensionabili; la striscia degli agenti più bassa e fluida; argomenti con titoli veri.',
+    'news3123Sets': 'Agenti pronti per il lavoro di tutti i giorni',
+    'news3123SetsText': 'Crea un agente partendo da un set pronto: Ricercatore, Email, Segretario sui messaggi, Fogli di lavoro, Agenda e promemoria. God sceglie quello giusto quando chiedi «puoi controllare le mie email?». Ogni agente può avere tutte le caselle, le chat e i calendari che vuoi; i calendari si collegano con CalDAV o con un indirizzo iCal.',
+    'news3123Team': 'Coordinatori che guidano una squadra',
+    'news3123TeamText': 'Se ha posto per degli agenti, il coordinatore di un progetto divide il lavoro e lo passa in parallelo, dando a ognuno il più efficiente dei tuoi modelli; con il limite a 0 lavora da solo.',
+    'news3123Telegram': 'Gli argomenti anche da Telegram',
+    'news3123TelegramText': 'Quello che chiedi su Telegram finisce nell\'argomento giusto di God: il titolo compare quando cambia, «Sposta» corregge un errore, e /argomenti, /sposta, /nuovo fanno il resto.',
     'news321Linux': 'Strato dopo in anticipo anche su Linux',
     'news321LinuxText': 'L\'interruttore sperimentale «Strato dopo in anticipo» di SSD stream ora funziona anche su Linux con una scheda NVIDIA, con un\'immagine del motore tutta sua scaricata solo quando lo accendi.',
     'news321Settings': 'Le Impostazioni nello stile della configurazione',
@@ -804,6 +816,14 @@ const generalWords = <String, Map<String, String>>{
     'news3122SimpleText': 'Stop and attach in every box, the button back to the bottom, widgets and the Canvas inside the conversations, and the agents\' strip floating at the bottom: picking another slides the name over, a tap outside lets go.',
     'news3122Topics': 'Your older work, in order',
     'news3122TopicsText': 'The long conversation with God from before topics is split once into one topic per work, with real titles: the recent ones in progress, the others in the archive. Nothing is deleted.',
+    'news3123More': 'Smaller things',
+    'news3123MoreText': 'The plan\'s bar like it should be (5 hours always, the week\'s margin and its colour, fresh every two minutes); copying an answer in the app keeps its lines; a real code editor in the app\'s Code view and resizable columns; a lower agents\' strip that moves smoothly; topics with real titles.',
+    'news3123Sets': 'Agents ready for everyday work',
+    'news3123SetsText': 'Start an agent from a ready set: Researcher, Email, Message secretary, Spreadsheets, Diary and reminders. God picks the right one when you ask «can you check my email?». Every agent can have as many mailboxes, chats and calendars as you like; calendars connect with CalDAV or an iCal address.',
+    'news3123Team': 'Orchestrators that lead a team',
+    'news3123TeamText': 'With room for agents a project\'s orchestrator splits the work and hands the parts over in parallel, giving each the most efficient of your models; with a limit of 0 it works alone.',
+    'news3123Telegram': 'Topics from Telegram too',
+    'news3123TelegramText': 'What you ask on Telegram lands in God\'s right topic: the title shows when it changes, «Move» fixes a wrong one, and /argomenti, /sposta, /nuovo do the rest.',
     'news321Linux': 'Next layer ahead on Linux too',
     'news321LinuxText': 'The experimental «Next layer ahead» switch of SSD stream now works on Linux with an NVIDIA card too, with an engine image of its own downloaded only when you turn it on.',
     'news321Settings': 'Settings in the setup\'s style',

@@ -415,7 +415,10 @@ Rasgeth is in pre-alpha. What comes next, in order:
 - **3.12.2 — Search in the conversation, iOS**: images, products, trains and flights, routes as widgets inside the
   answers; iPhone and iPad simulators in the Canvas; the simple interface with stop, attach and a floating strip.
 - **3.12.3 — Ready settings for agents**: research, email, messages, spreadsheets and diary set up well from the
-  start; topics from Telegram too.
+  start, with any number of mailboxes, chats and calendars per agent; orchestrators that lead a team; topics from
+  Telegram too.
+- **3.12.4 — A secretary that answers people**: the message secretary answers contacts on Telegram and WhatsApp
+  Business within what it was told, with a step-by-step guide to connect WhatsApp Business.
 - **4.0 — Alpha**: documentation, security and privacy pages, and a stability round on everything.
 - **Then** the beta (community, documentation site) and the production release.
 

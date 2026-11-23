@@ -2535,6 +2535,18 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news3123Sets: "Agents ready for everyday work",
+  news3123SetsText:
+    "Start an agent from a ready set: Researcher, Email, Message secretary, Spreadsheets, Diary and reminders. God picks the right one when you ask «can you check my email?». Every agent can have as many mailboxes, chats and calendars as you like; calendars connect with CalDAV or an iCal address.",
+  news3123Team: "Orchestrators that lead a team",
+  news3123TeamText:
+    "With room for agents a project's orchestrator splits the work and hands the parts over in parallel, giving each the most efficient of your models; with a limit of 0 it works alone.",
+  news3123Telegram: "Topics from Telegram too",
+  news3123TelegramText:
+    "What you ask on Telegram lands in God's right topic: the title shows when it changes, «Move» fixes a wrong one, and /argomenti, /sposta, /nuovo do the rest.",
+  news3123More: "Smaller things",
+  news3123MoreText:
+    "The plan's bar like it should be (5 hours always, the week's margin and its colour, fresh every two minutes); copying an answer in the app keeps its lines; a real code editor in the app's Code view and resizable columns; a lower agents' strip that moves smoothly; topics with real titles.",
   news3122Found: "Search results inside the answer",
   news3122FoundText:
     "Ask for a train, a product, a route or some pictures, even in the Chat: they arrive as cards in the answer, with times and prices, stars, a drawn map and «Open in Maps». Booking or paying is always a question to you. Widgets and generated images keep a sensible width on large screens, with more room inside.",
@@ -11006,6 +11018,18 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news3123Sets: "Agenti pronti per il lavoro di tutti i giorni",
+  news3123SetsText:
+    "Crea un agente partendo da un set pronto: Ricercatore, Email, Segretario sui messaggi, Fogli di lavoro, Agenda e promemoria. God sceglie quello giusto quando chiedi «puoi controllare le mie email?». Ogni agente può avere tutte le caselle, le chat e i calendari che vuoi; i calendari si collegano con CalDAV o con un indirizzo iCal.",
+  news3123Team: "Coordinatori che guidano una squadra",
+  news3123TeamText:
+    "Se ha posto per degli agenti, il coordinatore di un progetto divide il lavoro e lo passa in parallelo, dando a ognuno il più efficiente dei tuoi modelli; con il limite a 0 lavora da solo.",
+  news3123Telegram: "Gli argomenti anche da Telegram",
+  news3123TelegramText:
+    "Quello che chiedi su Telegram finisce nell'argomento giusto di God: il titolo compare quando cambia, «Sposta» corregge un errore, e /argomenti, /sposta, /nuovo fanno il resto.",
+  news3123More: "Cose più piccole",
+  news3123MoreText:
+    "La barra dell'abbonamento come deve essere (5 ore sempre, il margine della settimana e il suo colore, aggiornata ogni due minuti); copiare una risposta nell'app tiene gli a capo; un editor di codice vero nella vista Codice dell'app e colonne ridimensionabili; la striscia degli agenti più bassa e fluida; argomenti con titoli veri.",
   news3122Found: "I risultati delle ricerche dentro la risposta",
   news3122FoundText:
     "Chiedi un treno, un prodotto, un percorso o delle foto, anche in Chat: arrivano come schede nella risposta, con orari e prezzi, stelle, una mappa disegnata e «Apri in Mappe». Prenotare o pagare è sempre una domanda a te. Widget e immagini generate hanno una larghezza giusta sugli schermi grandi, con più spazio dentro.",
