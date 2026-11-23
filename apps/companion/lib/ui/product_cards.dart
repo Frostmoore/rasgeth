@@ -13,6 +13,7 @@ import '../api/products.dart';
 import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
+import 'found_widgets.dart';
 import 'icons.dart';
 
 /// Loads a picture's bytes (null: none to show).
@@ -81,55 +82,57 @@ class _ProductCarouselState extends State<ProductCarousel> {
     final load = widget.load ?? _serverLoader(AppScope.maybeRead(context));
     final open = widget.open ?? _openOutside;
     const width = 216.0;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            RgIcon(RgIcons.bag, size: 15, color: c.dim),
-            const SizedBox(width: 6),
-            Expanded(
-              child: Text(
-                widget.title ?? '',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: c.dim, fontSize: 13, fontWeight: FontWeight.w600),
+    return ChatWidgetBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              RgIcon(RgIcons.bag, size: 15, color: c.dim),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  widget.title ?? '',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: c.dim, fontSize: 13, fontWeight: FontWeight.w600),
+                ),
               ),
-            ),
-            if (widget.products.length > 1) ...[
-              IconButton(
-                key: const Key('products-prev'),
-                tooltip: l.productPrevious,
-                visualDensity: VisualDensity.compact,
-                onPressed: () => _by(-(width + 10)),
-                icon: RgIcon(RgIcons.chevronLeft, size: 18, color: c.dim),
-              ),
-              IconButton(
-                key: const Key('products-next'),
-                tooltip: l.productNext,
-                visualDensity: VisualDensity.compact,
-                onPressed: () => _by(width + 10),
-                icon: RgIcon(RgIcons.chevronRight, size: 18, color: c.dim),
-              ),
+              if (widget.products.length > 1) ...[
+                IconButton(
+                  key: const Key('products-prev'),
+                  tooltip: l.productPrevious,
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () => _by(-(width + 10)),
+                  icon: RgIcon(RgIcons.chevronLeft, size: 18, color: c.dim),
+                ),
+                IconButton(
+                  key: const Key('products-next'),
+                  tooltip: l.productNext,
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () => _by(width + 10),
+                  icon: RgIcon(RgIcons.chevronRight, size: 18, color: c.dim),
+                ),
+              ],
             ],
-          ],
-        ),
-        const SizedBox(height: 4),
-        SizedBox(
-          height: 336,
-          child: ListView.separated(
-            key: const Key('products-row'),
-            controller: _row,
-            scrollDirection: Axis.horizontal,
-            itemCount: widget.products.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 10),
-            itemBuilder: (context, i) => SizedBox(
-              width: width,
-              child: _Card(key: Key('product-$i'), p: widget.products[i], load: load, open: open),
+          ),
+          const SizedBox(height: 4),
+          SizedBox(
+            height: 336,
+            child: ListView.separated(
+              key: const Key('products-row'),
+              controller: _row,
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.products.length,
+              separatorBuilder: (_, _) => const SizedBox(width: 10),
+              itemBuilder: (context, i) => SizedBox(
+                width: width,
+                child: _Card(key: Key('product-$i'), p: widget.products[i], load: load, open: open),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -147,118 +150,128 @@ class _Card extends StatelessWidget {
     final c = RgColors.of(context);
     final price = priceText(p.price, p.currency, l.localeName);
     final link = p.link;
-    return Container(
-      decoration: BoxDecoration(
-        color: c.panel,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: c.line),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(
-            height: 150,
-            child: _Picture(image: p.image, name: p.name, load: load),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(11, 9, 11, 6),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    p.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: c.text,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14.5,
-                      height: 1.25,
+    return GestureDetector(
+      key: const Key('product-tap'),
+      behavior: HitTestBehavior.opaque,
+      onTap: link == null ? null : () => unawaited(open(link)),
+      child: Container(
+        decoration: BoxDecoration(
+          color: c.panel,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: c.line),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              height: 150,
+              child: _Picture(image: p.image, name: p.name, load: load),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(11, 9, 11, 6),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      p.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: c.text,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14.5,
+                        height: 1.25,
+                      ),
                     ),
-                  ),
-                  if (price.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 3),
-                      child: Text(
-                        price,
-                        key: const Key('product-price'),
-                        style: TextStyle(
-                          color: c.accent,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 15,
+                    if (p.rating != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Stars(rating: p.rating!, reviews: p.reviews),
+                      ),
+                    if (price.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 3),
+                        child: Text(
+                          price,
+                          key: const Key('product-price'),
+                          style: TextStyle(
+                            color: c.accent,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 15,
+                          ),
                         ),
                       ),
-                    ),
-                  if (p.shop != null && p.shop!.isNotEmpty)
-                    Text(
-                      p.shop!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: c.dim, fontSize: 12.5),
-                    ),
-                  if (p.description != null && p.description!.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(
-                        p.description!,
-                        maxLines: 3,
+                    if (p.shop != null && p.shop!.isNotEmpty)
+                      Text(
+                        p.shop!,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: c.text, fontSize: 12.5, height: 1.3),
+                        style: TextStyle(color: c.dim, fontSize: 12.5),
                       ),
-                    ),
-                ],
+                    if (p.description != null && p.description!.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          p.description!,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: c.text, fontSize: 12.5, height: 1.3),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(11, 0, 4, 6),
-            child: Row(
-              children: [
-                if (p.source != null)
-                  Semantics(
-                    container: true,
-                    label: l.productSource(p.source!),
-                    child: Tooltip(
-                      message: l.productSource(p.source!),
-                      child: Container(
-                        key: const Key('product-source'),
-                        constraints: const BoxConstraints(minWidth: 22),
-                        height: 22,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
-                        decoration: BoxDecoration(
-                          color: c.panel2,
-                          borderRadius: BorderRadius.circular(11),
-                          border: Border.all(color: c.line),
-                        ),
-                        child: ExcludeSemantics(
-                          child: Text(
-                            '${p.source}',
-                            style: TextStyle(
-                              color: c.dim,
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.w700,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(11, 0, 4, 6),
+              child: Row(
+                children: [
+                  if (p.source != null)
+                    Semantics(
+                      container: true,
+                      label: l.productSource(p.source!),
+                      child: Tooltip(
+                        message: l.productSource(p.source!),
+                        child: Container(
+                          key: const Key('product-source'),
+                          constraints: const BoxConstraints(minWidth: 22),
+                          height: 22,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          decoration: BoxDecoration(
+                            color: c.panel2,
+                            borderRadius: BorderRadius.circular(11),
+                            border: Border.all(color: c.line),
+                          ),
+                          child: ExcludeSemantics(
+                            child: Text(
+                              '${p.source}',
+                              style: TextStyle(
+                                color: c.dim,
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                const Spacer(),
-                if (link != null)
-                  TextButton.icon(
-                    key: const Key('product-open'),
-                    onPressed: () => unawaited(open(link)),
-                    iconAlignment: IconAlignment.end,
-                    icon: RgIcon(RgIcons.external, size: 14, color: c.accent),
-                    label: Text(l.productOpen, style: TextStyle(color: c.accent)),
-                  ),
-              ],
+                  const Spacer(),
+                  if (link != null)
+                    TextButton.icon(
+                      key: const Key('product-open'),
+                      onPressed: () => unawaited(open(link)),
+                      iconAlignment: IconAlignment.end,
+                      icon: RgIcon(RgIcons.external, size: 14, color: c.accent),
+                      label: Text(l.productOpen, style: TextStyle(color: c.accent)),
+                    ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

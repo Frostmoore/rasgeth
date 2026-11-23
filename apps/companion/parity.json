@@ -1053,11 +1053,22 @@
       "app": "native",
       "files": [
         "lib/api/conversation.dart",
-        "lib/ui/product_cards.dart"
+        "lib/ui/product_cards.dart",
+        "lib/ui/found_widgets.dart"
       ],
       "rows": [
         77
       ]
+    },
+    "found": {
+      "app": "native",
+      "files": [
+        "lib/api/conversation.dart",
+        "lib/api/found.dart",
+        "lib/ui/found_widgets.dart"
+      ],
+      "phase": "3.12.2",
+      "note": "Search widgets in the answer (3.12.2, show_results): a gallery (one big, four small, All), trains and flights as rows with Choose (a message to the agent, which asks before booking), a route on a drawn map with the way chips and Open in Maps. Every widget, the interactive ones and the pictures too, at most 640 px wide."
     },
     "variants": {
       "app": "native",

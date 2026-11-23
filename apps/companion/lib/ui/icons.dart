@@ -223,7 +223,26 @@ enum RgIcons {
   book(
     '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5zM4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
   ),
-  wallet('<rect x="2" y="5" width="20" height="15" rx="2"/><path d="M2 10h20M16 15h2"/>');
+  wallet('<rect x="2" y="5" width="20" height="15" rx="2"/><path d="M2 10h20M16 15h2"/>'),
+  // 3.12.2: search widgets (the page's IconTrain, IconPlane, IconMapPin, IconWalk, IconBus, IconCar).
+  train(
+    '<rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l2-4M15 21l-2-4"/><circle cx="9" cy="14" r=".6"/><circle cx="15" cy="14" r=".6"/>',
+  ),
+  plane(
+    '<path d="M10.5 13.5L3 11l1.5-2 7.5.5 4-5.5a1.8 1.8 0 0 1 3 2l-3.5 6 2 7-2 .5-4-5.5-3 .5z"/>',
+  ),
+  mapPin(
+    '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+  ),
+  walk(
+    '<circle cx="13" cy="4.5" r="1.8"/><path d="M9 21l2-6 2.5 2.5V21M11 15l.5-5 3 1.5 2 3M11.5 10L8 12"/>',
+  ),
+  bus(
+    '<rect x="4" y="3" width="16" height="15" rx="3"/><path d="M4 11h16M7 21v-3M17 21v-3"/><circle cx="8" cy="14.5" r=".6"/><circle cx="16" cy="14.5" r=".6"/>',
+  ),
+  car(
+    '<path d="M5 16V12l2-5h10l2 5v4M3 16h18M5 16v3M19 16v3"/><circle cx="8" cy="13.5" r=".6"/><circle cx="16" cy="13.5" r=".6"/>',
+  );
 
   const RgIcons(this.paths);
   final String paths;

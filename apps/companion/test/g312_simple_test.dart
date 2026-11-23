@@ -252,6 +252,28 @@ void main() {
       await done(tester);
     });
 
+    testWidgets('3.12.2: a topic has «Vai in fondo» once scrolled up, as the full view', (
+      tester,
+    ) async {
+      for (var i = 0; i < 40; i++) {
+        server.store('t_trip', 'message.user', {'text': 'Messaggio $i\n\nriga\n\nriga'});
+      }
+      await open(tester);
+      await tap(tester, find.byKey(const Key('topic-t_trip')));
+      expect(find.byType(TopicScreen), findsOneWidget);
+      expect(find.byKey(const Key('to-bottom')), findsNothing);
+      await tester.drag(find.byKey(const Key('topic-doc')), const Offset(0, 900));
+      await _settle(tester, 2);
+      expect(find.byKey(const Key('to-bottom')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('to-bottom')));
+      for (var i = 0; i < 10; i++) {
+        await tester.pump(const Duration(milliseconds: 60));
+      }
+      await _settle(tester, 2);
+      expect(find.byKey(const Key('to-bottom')), findsNothing);
+      await done(tester);
+    });
+
     testWidgets('a plain question is its buttons, as the board («Vuoi che lo prenoti?»)', (
       tester,
     ) async {

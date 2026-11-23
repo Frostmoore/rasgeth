@@ -20,12 +20,14 @@ import '../screens/notifications_screen.dart';
 import '../settings/channels/telegram_screen.dart';
 import '../theme/colors.dart';
 import '../ui/accent_picker.dart';
+import '../ui/chat/following_list.dart';
 import '../ui/chat/question_card.dart';
 import '../ui/chat/request_cards.dart' show armDelay;
 import '../ui/dialogs.dart';
 import '../ui/icons.dart';
 import '../ui/markdown.dart';
 import '../ui/model_sheet.dart' show ChoiceRow;
+import '../ui/found_widgets.dart';
 import '../ui/product_cards.dart';
 import '../ui/rg_menu.dart';
 import '../screens/new_agent_screen.dart' show RgSwitch;
@@ -1073,18 +1075,20 @@ class _TopicScreenState extends State<TopicScreen> {
   late final SessionView _view = _app.follow(widget.id);
   final _scroll = ScrollController();
 
+  /// Following the newest text, as the full interface (`following_list.dart`): «Vai in fondo»,
+  /// «Nuovo testo».
+  final _follow = FollowController();
+
   @override
   void dispose() {
     _app.unfollow(widget.id);
+    _follow.dispose();
     _scroll.dispose();
     super.dispose();
   }
 
-  void _toEnd() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scroll.hasClients) _scroll.jumpTo(_scroll.position.maxScrollExtent);
-    });
-  }
+  /// A message sent: back at the bottom and following again.
+  void _toEnd() => _follow.resume();
 
   Future<void> _move(int seq) async {
     final r = await showMoveSheet(context, from: widget.id, seq: seq);
@@ -1192,38 +1196,49 @@ class _TopicScreenState extends State<TopicScreen> {
                             ),
                     ),
                     Expanded(
-                      child: ListView(
-                        key: const Key('topic-doc'),
-                        controller: _scroll,
-                        padding: const EdgeInsets.fromLTRB(20, 6, 20, 18),
-                        children: [
-                          if (items.isEmpty && _view.liveText.isEmpty)
-                            Text(
-                              _view.synced ? l.smpEmptyTopic : l.smpLoading,
-                              style: TextStyle(color: c.dim, fontSize: 15),
-                            ),
-                          for (final i in items)
-                            _DocItem(
-                              key: Key('doc-${i.key}'),
-                              item: i,
-                              topicId: widget.id,
-                              open: open,
-                              onMove: _move,
-                            ),
-                          if (_view.liveText.isNotEmpty)
-                            SafeMarkdown(_view.liveText, reading: true, cursor: true),
-                          // While it works: only its mascot and a word (3.12.1).
-                          if (doing != null && _view.liveText.isEmpty)
-                            _Working(switch (doing) {
-                              'wait' => l.smpDoingWait,
-                              'search' => l.smpDoingSearch,
-                              'work' => l.smpDoingWork,
-                              _ => l.smpDoingThink,
-                            }, agent: worker),
-                          for (final r in approvals)
-                            Decision(key: Key('decide-${r.requestId}'), request: r),
-                          for (final q in questions) _QuestionBox(q: q),
-                        ],
+                      child: Builder(
+                        builder: (context) {
+                          // The rows, oldest first: the stored items, then what is being written
+                          // and what waits for the person.
+                          final rows = <Widget>[
+                            for (final i in items)
+                              _DocItem(
+                                key: Key('doc-${i.key}'),
+                                item: i,
+                                topicId: widget.id,
+                                open: open,
+                                onMove: _move,
+                              ),
+                            if (items.isEmpty && _view.liveText.isEmpty)
+                              Text(
+                                _view.synced ? l.smpEmptyTopic : l.smpLoading,
+                                style: TextStyle(color: c.dim, fontSize: 15),
+                              ),
+                            if (_view.liveText.isNotEmpty)
+                              SafeMarkdown(_view.liveText, reading: true, cursor: true),
+                            // While it works: only its mascot and a word (3.12.1).
+                            if (doing != null && _view.liveText.isEmpty)
+                              _Working(switch (doing) {
+                                'wait' => l.smpDoingWait,
+                                'search' => l.smpDoingSearch,
+                                'work' => l.smpDoingWork,
+                                _ => l.smpDoingThink,
+                              }, agent: worker),
+                            for (final r in approvals)
+                              Decision(key: Key('decide-${r.requestId}'), request: r),
+                            for (final q in questions) _QuestionBox(q: q),
+                          ];
+                          return FollowingList(
+                            listKey: const Key('topic-doc'),
+                            controller: _scroll,
+                            follow: _follow,
+                            count: rows.length,
+                            history: items.length,
+                            settled: _view.synced,
+                            padding: const EdgeInsets.fromLTRB(20, 6, 20, 18),
+                            itemBuilder: (context, at) => rows[at],
+                          );
+                        },
                       ),
                     ),
                     AskBox(
@@ -1420,6 +1435,8 @@ class _DocItem extends StatelessWidget {
         );
       case ProductsItem(:final products, :final title):
         return ProductCarousel(products: products, title: title);
+      case FoundItem(:final widget):
+        return FoundCard(widget: widget, onChoose: conversationSender(context, topicId));
       case FileItem(:final name):
         return Padding(
           padding: const EdgeInsets.only(bottom: 10),

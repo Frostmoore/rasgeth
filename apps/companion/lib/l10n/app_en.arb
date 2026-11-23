@@ -6136,7 +6136,7 @@
   "@cvVwDownload": {
     "description": "The page's `vwDownload` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
   },
-  "cvVwCanvasBack": "Canvas ({n})",
+  "cvVwCanvasBack": "Nebula ({n})",
   "@cvVwCanvasBack": {
     "description": "The page's `vwCanvasBack` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
     "placeholders": {
@@ -13394,5 +13394,175 @@
       }
     }
   },
-  "smpRouting": "Putting it in the right topic…"
+  "smpRouting": "Putting it in the right topic…",
+  "cvFoundGalleryTitle": "Pictures from the web",
+  "@cvFoundGalleryTitle": {
+    "description": "The page's `foundGalleryTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundAll": "All",
+  "@cvFoundAll": {
+    "description": "The page's `foundAll` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundAllTitle": "All the pictures ({n})",
+  "@cvFoundAllTitle": {
+    "description": "The page's `foundAllTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvFoundImageBroken": "Picture not available",
+  "@cvFoundImageBroken": {
+    "description": "The page's `foundImageBroken` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundOpenPage": "Open the page",
+  "@cvFoundOpenPage": {
+    "description": "The page's `foundOpenPage` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundOpenPicture": "Open the picture big",
+  "@cvFoundOpenPicture": {
+    "description": "The page's `foundOpenPicture` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundClose": "Close",
+  "@cvFoundClose": {
+    "description": "The page's `foundClose` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundPrevious": "Previous picture",
+  "@cvFoundPrevious": {
+    "description": "The page's `foundPrevious` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundNext": "Next picture",
+  "@cvFoundNext": {
+    "description": "The page's `foundNext` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundDirect": "direct",
+  "@cvFoundDirect": {
+    "description": "The page's `foundDirect` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundStop1": "1 stop",
+  "@cvFoundStop1": {
+    "description": "The page's `foundStop1` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundStopN": "{n} stops",
+  "@cvFoundStopN": {
+    "description": "The page's `foundStopN` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvFoundChoose": "Choose",
+  "@cvFoundChoose": {
+    "description": "The page's `foundChoose` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundChooseText": "I choose the {kind} {label}, {departs} to {arrives}, {from} to {to}{date}{price}. Ask me to confirm before you book or pay anything.",
+  "@cvFoundChooseText": {
+    "description": "The page's `foundChooseText` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      },
+      "label": {
+        "type": "String"
+      },
+      "departs": {
+        "type": "String"
+      },
+      "arrives": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "cvFoundKindTrain": "train",
+  "@cvFoundKindTrain": {
+    "description": "The page's `foundKind_train` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundKindFlight": "flight",
+  "@cvFoundKindFlight": {
+    "description": "The page's `foundKind_flight` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundMapAlt": "Map of the route from {from} to {to}",
+  "@cvFoundMapAlt": {
+    "description": "The page's `foundMapAlt` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "cvFoundModeWalk": "On foot",
+  "@cvFoundModeWalk": {
+    "description": "The page's `foundMode_walk` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundModeTransit": "Transit",
+  "@cvFoundModeTransit": {
+    "description": "The page's `foundMode_transit` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundModeDrive": "Car",
+  "@cvFoundModeDrive": {
+    "description": "The page's `foundMode_drive` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundModeByWalk": "on foot",
+  "@cvFoundModeByWalk": {
+    "description": "The page's `foundModeBy_walk` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundModeByTransit": "by transit",
+  "@cvFoundModeByTransit": {
+    "description": "The page's `foundModeBy_transit` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundModeByDrive": "by car",
+  "@cvFoundModeByDrive": {
+    "description": "The page's `foundModeBy_drive` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundMinutes": "{n} min",
+  "@cvFoundMinutes": {
+    "description": "The page's `foundMinutes` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cvFoundHours": "{h} h {m} min",
+  "@cvFoundHours": {
+    "description": "The page's `foundHours` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "h": {
+        "type": "String"
+      },
+      "m": {
+        "type": "String"
+      }
+    }
+  },
+  "cvFoundOpenMaps": "Open in Maps",
+  "@cvFoundOpenMaps": {
+    "description": "The page's `foundOpenMaps` (packages/web/src/i18n.ts, tool/chat_words.mjs)."
+  },
+  "cvFoundRating": "Rated {n} out of 5",
+  "@cvFoundRating": {
+    "description": "The page's `foundRating` (packages/web/src/i18n.ts, tool/chat_words.mjs).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  }
 }

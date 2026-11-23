@@ -4,6 +4,7 @@
 // leniently. [buildItems] is the app's `buildItems` (packages/web/src/state.ts): pure, events in,
 // chat items out.
 import 'metrics.dart';
+import 'found.dart';
 import 'products.dart';
 import 'types.dart';
 import 'widgets.dart';
@@ -548,6 +549,20 @@ class ProductsItem extends ChatItem {
   Map<String, Object?> toJson() => {...super.toJson(), 'title': ?title, 'count': products.length};
 }
 
+/// `found.shown` (3.12.2): a search widget, pictures, trains or flights, a route.
+class FoundItem extends ChatItem {
+  const FoundItem({super.key, required this.seq, required this.widget});
+
+  final int seq;
+  final FoundWidget widget;
+
+  @override
+  String get kind => 'found';
+
+  @override
+  Map<String, Object?> toJson() => {...super.toJson(), 'widget': widget.kind};
+}
+
 /// A board of variants (G25.4): a card that opens it, with what the person said.
 class VariantsItem extends ChatItem {
   VariantsItem({
@@ -960,6 +975,9 @@ List<ChatItem> buildItems(
       case 'products.shown':
         final cards = [for (final c in _list(p['products'])) ?ProductCard.fromJson(c)];
         out.add(ProductsItem(key: key, seq: e.seq, title: _str(p['title']), products: cards));
+      case 'found.shown':
+        final w = FoundWidget.fromJson(p);
+        if (w != null) out.add(FoundItem(key: key, seq: e.seq, widget: w));
       case 'canvas.show':
         out.add(CanvasItem(key: key, title: _str(p['title']) ?? '', target: _map(p['target'])));
       case 'cache.missed':
@@ -1322,6 +1340,7 @@ List<ChatItem> documentItems(List<ChatItem> items) {
         UserItem() ||
         QuestionItem() ||
         ProductsItem() ||
+        FoundItem() ||
         FileItem() ||
         WidgetItem() => !gone(seqOf(i)),
         _ => false,

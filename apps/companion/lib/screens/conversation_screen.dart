@@ -37,6 +37,7 @@ import '../ui/limits_bar.dart';
 import '../ui/markdown.dart';
 import '../ui/metrics_line.dart';
 import '../ui/passage_selection.dart';
+import '../ui/found_widgets.dart';
 import '../ui/product_cards.dart';
 import '../ui/send_keys.dart';
 import '../ui/turn_progress.dart';
@@ -1771,6 +1772,13 @@ class ChatItemView extends StatelessWidget {
               child: GoOnButton(sessionId: a.sessionId!),
             ),
         ],
+      ),
+      FoundItem(:final widget) => FoundCard(
+        key: Key('found-${it.seq}'),
+        widget: widget,
+        onChoose: a.sessionId == null || a.readOnly
+            ? null
+            : conversationSender(context, a.sessionId!),
       ),
       ProductsItem(:final products, :final title) => ProductCarousel(
         key: Key('products-${it.seq}'),

@@ -16,6 +16,8 @@ class ProductCard {
     this.description,
     this.source,
     this.image,
+    this.rating,
+    this.reviews,
   });
 
   static ProductCard? fromJson(Object? o) {
@@ -32,6 +34,8 @@ class ProductCard {
       shop: _str(o['shop']),
       description: _str(o['description']),
       source: o['source'] is num ? (o['source'] as num).toInt() : null,
+      rating: o['rating'] is num ? ((o['rating'] as num).toDouble().clamp(0.0, 5.0)) : null,
+      reviews: o['reviews'] is num ? (o['reviews'] as num).toInt() : null,
       // Only the server's cache ids: a hex SHA-256, nothing that could be a path.
       image: image != null && RegExp(r'^[0-9a-f]{64}$').hasMatch(image) ? image : null,
     );
@@ -45,6 +49,10 @@ class ProductCard {
   final String? description;
   final int? source;
   final String? image;
+
+  /// The shop's rating, 0 to 5, and the reviews it rests on (stars in the card).
+  final double? rating;
+  final int? reviews;
 
   /// The shop's page, when it is one people may open (http or https).
   Uri? get link => productLink(url);

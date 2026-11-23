@@ -417,6 +417,21 @@ describe("a topic", () => {
     expect(r.getByPlaceholderText("Rispondi…")).toBeTruthy();
   });
 
+  it("has the «back to the bottom» button once the person scrolled up, and following again after it", async () => {
+    state.openTopic("t_trip", "Vacanza in Sardegna");
+    const r = render(<SimpleApp />);
+    expect(r.container.querySelector(".to-bottom")).toBeNull();
+    fireEvent.wheel(r.container.querySelector(".smp-doc") as Element, { deltaY: -40 });
+    const button = await waitFor(() => {
+      const b = r.container.querySelector(".to-bottom");
+      expect(b).not.toBeNull();
+      return b as HTMLElement;
+    });
+    expect(button.getAttribute("title")).toBe("Vai in fondo");
+    fireEvent.click(button);
+    await waitFor(() => expect(r.container.querySelector(".to-bottom")).toBeNull());
+  });
+
   it("writes inside the topic: no routing elsewhere", async () => {
     state.openTopic("t_trip", "Vacanza in Sardegna");
     const r = render(<SimpleApp />);

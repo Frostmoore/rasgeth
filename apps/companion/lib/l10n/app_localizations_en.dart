@@ -7942,7 +7942,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String cvVwCanvasBack(String n) {
-    return 'Canvas ($n)';
+    return 'Nebula ($n)';
   }
 
   @override
@@ -19338,4 +19338,108 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get smpRouting => 'Putting it in the right topic…';
+
+  @override
+  String get cvFoundGalleryTitle => 'Pictures from the web';
+
+  @override
+  String get cvFoundAll => 'All';
+
+  @override
+  String cvFoundAllTitle(String n) {
+    return 'All the pictures ($n)';
+  }
+
+  @override
+  String get cvFoundImageBroken => 'Picture not available';
+
+  @override
+  String get cvFoundOpenPage => 'Open the page';
+
+  @override
+  String get cvFoundOpenPicture => 'Open the picture big';
+
+  @override
+  String get cvFoundClose => 'Close';
+
+  @override
+  String get cvFoundPrevious => 'Previous picture';
+
+  @override
+  String get cvFoundNext => 'Next picture';
+
+  @override
+  String get cvFoundDirect => 'direct';
+
+  @override
+  String get cvFoundStop1 => '1 stop';
+
+  @override
+  String cvFoundStopN(String n) {
+    return '$n stops';
+  }
+
+  @override
+  String get cvFoundChoose => 'Choose';
+
+  @override
+  String cvFoundChooseText(
+    String kind,
+    String label,
+    String departs,
+    String arrives,
+    String from,
+    String to,
+    String date,
+    String price,
+  ) {
+    return 'I choose the $kind $label, $departs to $arrives, $from to $to$date$price. Ask me to confirm before you book or pay anything.';
+  }
+
+  @override
+  String get cvFoundKindTrain => 'train';
+
+  @override
+  String get cvFoundKindFlight => 'flight';
+
+  @override
+  String cvFoundMapAlt(String from, String to) {
+    return 'Map of the route from $from to $to';
+  }
+
+  @override
+  String get cvFoundModeWalk => 'On foot';
+
+  @override
+  String get cvFoundModeTransit => 'Transit';
+
+  @override
+  String get cvFoundModeDrive => 'Car';
+
+  @override
+  String get cvFoundModeByWalk => 'on foot';
+
+  @override
+  String get cvFoundModeByTransit => 'by transit';
+
+  @override
+  String get cvFoundModeByDrive => 'by car';
+
+  @override
+  String cvFoundMinutes(String n) {
+    return '$n min';
+  }
+
+  @override
+  String cvFoundHours(String h, String m) {
+    return '$h h $m min';
+  }
+
+  @override
+  String get cvFoundOpenMaps => 'Open in Maps';
+
+  @override
+  String cvFoundRating(String n) {
+    return 'Rated $n out of 5';
+  }
 }

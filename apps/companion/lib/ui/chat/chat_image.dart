@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import '../../app_state.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/colors.dart';
+import '../found_widgets.dart' show chatWidgetMax;
 import '../icons.dart';
 
 /// The last pictures fetched, so scrolling back does not fetch them again.
@@ -142,7 +143,7 @@ class _ChatImagePreviewState extends State<ChatImagePreview> with SingleTickerPr
                 key: Key('chat-image-${widget.path}'),
                 onTap: widget.onOpen,
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 480, maxHeight: 360),
+                  constraints: const BoxConstraints(maxWidth: chatWidgetMax, maxHeight: 480),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.memory(

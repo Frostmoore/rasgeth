@@ -18,6 +18,7 @@ import { usd } from "../format.js";
 import { lang, setLang, t } from "../i18n.js";
 import {
   IconArchive,
+  IconArrowDown,
   IconChevronLeft,
   IconClose,
   IconMonitor,
@@ -575,27 +576,41 @@ function TopicScreen({ id, title, chat = false }: { id: string; title: string; c
             <TopicMenu id={id} title={name} pinned={!!known?.pinned} close={() => setMenu(false)} />
           )}
         </TopBar>
-        <div class="smp-doc" ref={scroller} tabIndex={-1}>
-          {items.length === 0 && !view.text && (
-            <p class="smp-empty">{t(view.synced ? "smpEmptyTopic" : "smpLoading")}</p>
+        <div class="smp-doc-wrap">
+          <div class="smp-doc" ref={scroller} tabIndex={-1}>
+            {items.length === 0 && !view.text && (
+              <p class="smp-empty">{t(view.synced ? "smpEmptyTopic" : "smpLoading")}</p>
+            )}
+            {items.map((item) => (
+              <DocItem key={item.key} item={item} topicId={id} onMove={setMoving} />
+            ))}
+            {view.text && (
+              <div
+                class="md md-read smp-answer"
+                dangerouslySetInnerHTML={{ __html: renderStreamingMarkdown(view.text) }}
+              />
+            )}
+            {/* While it works: only its mascot and a word, no tools, no reasoning (3.12.1). */}
+            {doing && !view.text && <WorkLine agentId={agentId} word={doing} />}
+            {waiting.approvals.map((r) => (
+              <Decision key={r.requestId} r={r} />
+            ))}
+            {otherQuestions.map((q) => (
+              <QuestionBox key={q.requestId} q={q} />
+            ))}
+          </div>
+          {follow.away && (
+            <button
+              type="button"
+              class={`to-bottom${follow.unseen ? " unseen" : ""}`}
+              title={t("toBottom")}
+              aria-label={t("toBottom")}
+              onClick={follow.toBottom}
+            >
+              <IconArrowDown />
+              {follow.unseen && <span>{t("newText")}</span>}
+            </button>
           )}
-          {items.map((item) => (
-            <DocItem key={item.key} item={item} topicId={id} onMove={setMoving} />
-          ))}
-          {view.text && (
-            <div
-              class="md md-read smp-answer"
-              dangerouslySetInnerHTML={{ __html: renderStreamingMarkdown(view.text) }}
-            />
-          )}
-          {/* While it works: only its mascot and a word, no tools, no reasoning (3.12.1). */}
-          {doing && !view.text && <WorkLine agentId={agentId} word={doing} />}
-          {waiting.approvals.map((r) => (
-            <Decision key={r.requestId} r={r} />
-          ))}
-          {otherQuestions.map((q) => (
-            <QuestionBox key={q.requestId} q={q} />
-          ))}
         </div>
         <AskBox
           hint={t("smpReplyHint")}

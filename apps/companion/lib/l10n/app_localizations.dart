@@ -13620,7 +13620,7 @@ abstract class AppLocalizations {
   /// The page's `vwCanvasBack` (packages/web/src/i18n.ts, tool/chat_words.mjs).
   ///
   /// In en, this message translates to:
-  /// **'Canvas ({n})'**
+  /// **'Nebula ({n})'**
   String cvVwCanvasBack(String n);
 
   /// The page's `kbTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).
@@ -33404,6 +33404,177 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Putting it in the right topic…'**
   String get smpRouting;
+
+  /// The page's `foundGalleryTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Pictures from the web'**
+  String get cvFoundGalleryTitle;
+
+  /// The page's `foundAll` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get cvFoundAll;
+
+  /// The page's `foundAllTitle` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'All the pictures ({n})'**
+  String cvFoundAllTitle(String n);
+
+  /// The page's `foundImageBroken` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Picture not available'**
+  String get cvFoundImageBroken;
+
+  /// The page's `foundOpenPage` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Open the page'**
+  String get cvFoundOpenPage;
+
+  /// The page's `foundOpenPicture` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Open the picture big'**
+  String get cvFoundOpenPicture;
+
+  /// The page's `foundClose` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get cvFoundClose;
+
+  /// The page's `foundPrevious` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Previous picture'**
+  String get cvFoundPrevious;
+
+  /// The page's `foundNext` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Next picture'**
+  String get cvFoundNext;
+
+  /// The page's `foundDirect` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'direct'**
+  String get cvFoundDirect;
+
+  /// The page's `foundStop1` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'1 stop'**
+  String get cvFoundStop1;
+
+  /// The page's `foundStopN` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{n} stops'**
+  String cvFoundStopN(String n);
+
+  /// The page's `foundChoose` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Choose'**
+  String get cvFoundChoose;
+
+  /// The page's `foundChooseText` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'I choose the {kind} {label}, {departs} to {arrives}, {from} to {to}{date}{price}. Ask me to confirm before you book or pay anything.'**
+  String cvFoundChooseText(
+    String kind,
+    String label,
+    String departs,
+    String arrives,
+    String from,
+    String to,
+    String date,
+    String price,
+  );
+
+  /// The page's `foundKind_train` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'train'**
+  String get cvFoundKindTrain;
+
+  /// The page's `foundKind_flight` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'flight'**
+  String get cvFoundKindFlight;
+
+  /// The page's `foundMapAlt` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Map of the route from {from} to {to}'**
+  String cvFoundMapAlt(String from, String to);
+
+  /// The page's `foundMode_walk` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'On foot'**
+  String get cvFoundModeWalk;
+
+  /// The page's `foundMode_transit` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Transit'**
+  String get cvFoundModeTransit;
+
+  /// The page's `foundMode_drive` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Car'**
+  String get cvFoundModeDrive;
+
+  /// The page's `foundModeBy_walk` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'on foot'**
+  String get cvFoundModeByWalk;
+
+  /// The page's `foundModeBy_transit` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'by transit'**
+  String get cvFoundModeByTransit;
+
+  /// The page's `foundModeBy_drive` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'by car'**
+  String get cvFoundModeByDrive;
+
+  /// The page's `foundMinutes` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{n} min'**
+  String cvFoundMinutes(String n);
+
+  /// The page's `foundHours` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'{h} h {m} min'**
+  String cvFoundHours(String h, String m);
+
+  /// The page's `foundOpenMaps` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Maps'**
+  String get cvFoundOpenMaps;
+
+  /// The page's `foundRating` (packages/web/src/i18n.ts, tool/chat_words.mjs).
+  ///
+  /// In en, this message translates to:
+  /// **'Rated {n} out of 5'**
+  String cvFoundRating(String n);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

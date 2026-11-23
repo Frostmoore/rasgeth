@@ -56,7 +56,11 @@ teachStart teachHint teachWho teachRecording teachDone teachTitle chatPlaceholde
 canvasFullscreen canvasFullscreenExit sideMaximize sideBackToChat vwDownload vwCanvasBack kbTitle
 sideTabsLabel canvasAgentOpened vwKind_archive vwKind_audio vwKind_code vwKind_document vwKind_font
 vwKind_image vwKind_layers vwKind_markdown vwKind_model vwKind_pdf vwKind_sheet vwKind_site
-vwKind_slides vwKind_table vwKind_text vwKind_tree vwKind_unknown vwKind_video vwKind_timeline`
+vwKind_slides vwKind_table vwKind_text vwKind_tree vwKind_unknown vwKind_video vwKind_timeline
+foundGalleryTitle foundAll foundAllTitle foundImageBroken foundOpenPage foundOpenPicture foundClose
+foundPrevious foundNext foundDirect foundStop1 foundStopN foundChoose foundChooseText foundKind_train
+foundKind_flight foundMapAlt foundMode_walk foundMode_transit foundMode_drive foundModeBy_walk
+foundModeBy_transit foundModeBy_drive foundMinutes foundHours foundOpenMaps foundRating`
   .split(/\s+/)
   .filter(Boolean);
 

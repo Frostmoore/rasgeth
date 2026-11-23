@@ -25049,7 +25049,14 @@ html[data-theme="dark"] .app-simple {
 .smp-menu button:hover {
   background: var(--panel-2);
 }
-/* A topic read as a document. */
+/* A topic read as a document. The wrap holds the «back to the bottom» button over it. */
+.smp-doc-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
 .smp-doc {
   flex: 1;
   min-height: 0;

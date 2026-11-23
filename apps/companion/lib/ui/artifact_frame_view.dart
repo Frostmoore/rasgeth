@@ -33,6 +33,7 @@ import '../app_state.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/colors.dart';
 import 'dialogs.dart';
+import 'found_widgets.dart' show chatWidgetMax;
 import 'icons.dart';
 
 /// Where frames can run.
@@ -685,7 +686,7 @@ class _WidgetCardState extends State<WidgetCard> with AutomaticKeepAliveClientMi
     // which WebKitGTK's native view on Linux cannot follow, so the plugin hid the widget (3.8.11).
     return ConstrainedBox(
       key: Key('widget-${it.seq}.${it.index}'),
-      constraints: const BoxConstraints(maxWidth: 720),
+      constraints: const BoxConstraints(maxWidth: chatWidgetMax),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: DecoratedBox(
@@ -699,7 +700,7 @@ class _WidgetCardState extends State<WidgetCard> with AutomaticKeepAliveClientMi
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(10, 2, 4, 0),
+                padding: const EdgeInsets.fromLTRB(14, 8, 8, 2),
                 child: Row(
                   children: [
                     RgIcon(RgIcons.canvas, size: 12, color: c.dim),
@@ -742,7 +743,7 @@ class _WidgetCardState extends State<WidgetCard> with AutomaticKeepAliveClientMi
                   ],
                 ),
               ),
-              body,
+              Padding(padding: const EdgeInsets.fromLTRB(8, 0, 8, 10), child: body),
               if (kept != null)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 6),
