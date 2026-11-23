@@ -346,7 +346,13 @@ export interface EmulatorFacts {
   /** The AVD each running emulator runs (`emu avd name` over its console), by serial. */
   runningAvds?: Record<string, string>;
   accel: EmuAccel;
-  ios?: { xcode?: string; simulators: IosReport["simulators"]; bridge?: IosReport["bridge"] };
+  ios?: {
+    xcode?: string;
+    simulators: IosReport["simulators"];
+    bridge?: IosReport["bridge"];
+    bridgeVersion?: string;
+    bridgeDir?: string;
+  };
   maxRunning: number;
   at: string;
 }
@@ -379,6 +385,7 @@ export function detectEmulators(f: EmulatorFacts): EmulatorReport {
   }
   if (f.os === "macos") {
     if (!f.ios?.xcode) missing.push("xcode");
+    else if (f.arch !== "arm64") missing.push("ios-arch");
     else if (!f.ios.bridge) missing.push("ios-bridge");
   }
   const attached = f.attached?.map((d): AttachedDevice => {
@@ -410,6 +417,9 @@ export function detectEmulators(f: EmulatorFacts): EmulatorReport {
         ...(f.ios?.xcode && { xcode: f.ios.xcode }),
         simulators: f.ios?.simulators ?? [],
         ...(f.ios?.bridge && { bridge: f.ios.bridge }),
+        ...(f.ios?.bridgeVersion && { bridgeVersion: f.ios.bridgeVersion }),
+        ...(f.ios?.bridgeDir && { bridgeDir: f.ios.bridgeDir }),
+        ready: Boolean(f.ios?.xcode) && f.arch === "arm64" && Boolean(f.ios?.bridge),
       },
     }),
     missing,

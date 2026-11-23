@@ -7,7 +7,7 @@ import { constants, existsSync } from "node:fs";
 import { access, readdir, readFile, realpath, stat } from "node:fs/promises";
 import { connect } from "node:net";
 import { homedir } from "node:os";
-import { delimiter } from "node:path";
+import { delimiter, join } from "node:path";
 import type { EmuAccel, EmuArch, EmuOs, IosReport } from "@redgiant/protocol";
 import {
   avdHome,
@@ -195,22 +195,44 @@ async function accelOf(
   return parseAccelCheck(os, r.out, r.code);
 }
 
-async function iosOf(): Promise<EmulatorFacts["ios"]> {
+/** serve-sim as installed by the guided step: `<dir>/node_modules/serve-sim` (never the PATH). */
+export function iosBridgeScript(dir: string): string {
+  return join(dir, "node_modules", "serve-sim", "dist", "serve-sim.js");
+}
+
+async function iosOf(bridgeDir: string | undefined): Promise<EmulatorFacts["ios"]> {
   const x = await run("xcodebuild", ["-version"], 15_000);
   const xcode = x.code === 0 ? parseXcodeVersion(x.out) : undefined;
   if (!xcode) return { simulators: [] };
   const s = await run("xcrun", ["simctl", "list", "-j", "devices"], 20_000);
-  const bridge: IosReport["bridge"] | undefined = (await onPath("macos", "serve-sim")).length
-    ? "serve-sim"
-    : (await onPath("macos", "idb")).length
-      ? "idb"
-      : undefined;
-  return { xcode, simulators: s.code === 0 ? parseSimctl(s.out) : [], ...(bridge && { bridge }) };
+  let bridge: IosReport["bridge"] | undefined;
+  let bridgeVersion: string | undefined;
+  if (bridgeDir) {
+    const pkg = await text(join(bridgeDir, "node_modules", "serve-sim", "package.json"));
+    const script = await access(iosBridgeScript(bridgeDir)).then(
+      () => true,
+      () => false,
+    );
+    if (pkg && script) {
+      bridge = "serve-sim";
+      try {
+        bridgeVersion = (JSON.parse(pkg) as { version?: string }).version;
+      } catch {}
+    }
+  }
+  return {
+    xcode,
+    simulators: s.code === 0 ? parseSimctl(s.out) : [],
+    ...(bridge && { bridge, ...(bridgeDir && { bridgeDir }) }),
+    ...(bridgeVersion && { bridgeVersion }),
+  };
 }
 
 export interface GatherOptions {
   custom?: string | null;
   maxRunning: number;
+  /** Where the guided step puts the iOS bridge (3.12.2). */
+  iosBridgeDir?: string;
   /** Tests and nodes: another adb port. */
   adbPort?: number;
 }
@@ -262,7 +284,7 @@ export async function gatherEmulatorFacts(o: GatherOptions): Promise<EmulatorFac
     avds: await readAvds(os, home, env),
     ...(attached && { attached, runningAvds }),
     accel: await accelOf(os, emulatorExe, container),
-    ...(os === "macos" && { ios: (await iosOf()) ?? { simulators: [] } }),
+    ...(os === "macos" && { ios: (await iosOf(o.iosBridgeDir)) ?? { simulators: [] } }),
     maxRunning: o.maxRunning,
     at: new Date().toISOString(),
   };

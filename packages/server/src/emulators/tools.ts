@@ -4,12 +4,14 @@
 // element by its number (or on a point as a fraction of the screen), look again. uiautomator's tree
 // takes seconds, so it is kept until the screen changes. Every action shows in the person's live
 // view; while the person has control the agents wait. Passwords are never typed by an agent.
-// Installing reads the APK from the agent's workspace only; what asks whom is the policy's
+// iOS simulators (3.12.2) use the same tools: no element list (the picture and x, y), `.app`
+// folders instead of APKs, bundle ids instead of packages, the simulator's log.
+// Installing reads the APK (or .app folder) from the agent's workspace only; what asks whom is the policy's
 // (an ordinary request on an emulator, the person's on a real phone).
-import { realpath } from "node:fs/promises";
+import { realpath, stat } from "node:fs/promises";
 import { isAbsolute, relative, resolve, sep } from "node:path";
 import type { Tool, ToolContext } from "@redgiant/agent";
-import { DEVICE_BUTTONS, DEVICE_KEYS, type DeviceInput } from "@redgiant/protocol";
+import { DEVICE_BUTTONS, DEVICE_KEYS, type DeviceInput, isIosId } from "@redgiant/protocol";
 import { z } from "zod";
 import { type DeviceAccess, DeviceError } from "./devices.js";
 
@@ -111,6 +113,10 @@ export function describeUi(nodes: readonly UiNode[], limit = 150): string {
 }
 
 const PACKAGE = /^[A-Za-z][\w]*(\.[A-Za-z][\w]*)+$/;
+/** An iOS bundle id (`com.example.App`, dashes allowed). */
+const BUNDLE_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,150}$/;
+const NO_ELEMENTS =
+  "iOS simulators give no list of elements: read the picture and use x and y (fractions of the screen).";
 const ACTIVITY = /^[\w.$]+$/;
 
 export interface DeviceToolsOptions {
@@ -176,6 +182,7 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
     },
   };
   const point = async (device: string, i: { ref?: number; x?: number; y?: number }) => {
+    if (i.ref !== undefined && isIosId(device)) throw new DeviceError(NO_ELEMENTS);
     if (i.ref !== undefined) {
       const n = (await tree(device)).find((x) => x.ref === i.ref);
       if (!n)
@@ -207,7 +214,7 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
       {
         name: "device_list",
         description:
-          "The Android devices of this machine: virtual devices (AVDs, on or off), emulators running and real phones over USB or Wi-Fi, with their ids and who drives them now.",
+          "The devices of this machine: Android virtual devices (AVDs, on or off), emulators running, real Android phones over USB or Wi-Fi and iOS simulators (on a Mac), with their ids and who drives them now.",
         inputSchema: { type: "object", properties: {} },
       },
       z.object({}),
@@ -218,7 +225,7 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
         return list
           .map(
             (x) =>
-              `${x.id}: ${x.name} — ${x.kind === "phone" ? `phone (${x.link ?? "usb"})` : "emulator"}, ${x.state}${x.control === "person" ? ", the person has control" : ""}`,
+              `${x.id}: ${x.name} — ${x.kind === "phone" ? `phone (${x.link ?? "usb"})` : x.platform === "ios" ? `iOS simulator${x.runtime ? ` (${x.runtime})` : ""}` : "emulator"}, ${x.state}${x.control === "person" ? ", the person has control" : ""}`,
           )
           .join("\n");
       },
@@ -248,16 +255,21 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
       async ({ device }: { device: string }, ctx) => {
         try {
           const frame = await d.frame(device, ctx?.signal);
-          const nodes = await tree(device);
+          const nodes = isIosId(device) ? [] : await tree(device);
           const head = `${device}, screen ${frame.width}×${frame.height}${d.controlOf(device) === "person" ? " (the person has control now)" : ""}:\n`;
+          const body = isIosId(device)
+            ? o.vision
+              ? NO_ELEMENTS
+              : `${NO_ELEMENTS} This model cannot read images, so an iOS simulator cannot be worked from here.`
+            : describeUi(nodes);
           return o.vision
             ? {
-                content: head + describeUi(nodes),
+                content: head + body,
                 images: [
                   { type: "image" as const, mediaType: "image/jpeg" as const, data: frame.data },
                 ],
               }
-            : head + describeUi(nodes);
+            : head + body;
         } catch (e) {
           return err(e);
         }
@@ -361,7 +373,7 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
             await input(i.device, { kind: "tap", x: p.x, y: p.y });
             await sleep(400, ctx?.signal);
           }
-          const nodes = await tree(i.device, true);
+          const nodes = isIosId(i.device) ? [] : await tree(i.device, true);
           const field =
             i.ref !== undefined ? nodes.find((n) => n.ref === i.ref) : nodes.find((n) => n.focused);
           if (field?.password)
@@ -439,6 +451,10 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
             await sleep(i.ms ?? 1000, ctx?.signal);
             return `Waited ${i.ms ?? 1000} ms.`;
           }
+          if (isIosId(i.device))
+            throw new DeviceError(
+              "Waiting for a text is not possible on an iOS simulator: wait a number of milliseconds and look.",
+            );
           const until = Date.now() + Math.min(i.ms ?? 30_000, 30_000);
           const want = i.text.toLowerCase();
           while (Date.now() < until && !ctx?.signal?.aborted) {
@@ -458,12 +474,15 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
       {
         name: "device_install",
         description:
-          "Install an APK from your workspace on a device (on an emulator it is an ordinary request; on a real phone the person always decides).",
+          "Install an APK from your workspace on an Android device, or an .app folder (built for the simulator) on an iOS simulator (on an emulator it is an ordinary request; on a real phone the person always decides).",
         inputSchema: {
           type: "object",
           properties: {
             ...deviceProp,
-            apk: { type: "string", description: "Path of the .apk in your workspace" },
+            apk: {
+              type: "string",
+              description: "Path of the .apk (iOS: the .app folder) in your workspace",
+            },
           },
           required: ["device", "apk"],
         },
@@ -471,26 +490,33 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
       z.object({ device: z.string().min(1), apk: z.string().min(1).max(1000) }),
       (i: { device: string; apk: string }, ctx) =>
         act(i.device, ctx, async () => {
-          if (!/\.apk$/i.test(i.apk)) throw new DeviceError("Only .apk files are installed");
+          const ios = isIosId(i.device);
+          if (ios ? !/\.app\/?$/i.test(i.apk) : !/\.apk$/i.test(i.apk))
+            throw new DeviceError(
+              ios ? "Only .app folders are installed on a simulator" : "Only .apk files are installed",
+            );
           const root = await realpath(o.root).catch(() => o.root);
           const file = await realpath(isAbsolute(i.apk) ? i.apk : resolve(root, i.apk)).catch(
             () => {
               throw new DeviceError(`There is no ${i.apk} in your workspace`);
             },
           );
+          if (ios && !(await stat(file)).isDirectory())
+            throw new DeviceError("An iOS app is a folder (the built .app), not a file");
           const rel = relative(root, file);
           if (rel.startsWith("..") || isAbsolute(rel) || rel.split(sep)[0] === "..")
-            throw new DeviceError("The APK must be in your workspace");
+            throw new DeviceError("The app must be in your workspace");
           const out = await d.install(i.device, file, ctx?.signal);
           if (!/Success/.test(out))
-            throw new DeviceError(`The device refused the APK: ${out.slice(0, 500)}`);
+            throw new DeviceError(`The device refused the app: ${out.slice(0, 500)}`);
           return `Installed ${rel.split(sep).join("/")} on ${i.device}.`;
         }),
     ),
     tool(
       {
         name: "device_launch",
-        description: "Start an app by its package (and an activity, if you know it).",
+        description:
+          "Start an app by its package (and an activity, if you know it); on an iOS simulator by its bundle id (package takes it).",
         inputSchema: {
           type: "object",
           properties: { ...deviceProp, package: { type: "string" }, activity: { type: "string" } },
@@ -499,11 +525,18 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
       },
       z.object({
         device: z.string().min(1),
-        package: z.string().regex(PACKAGE),
+        package: z.string().min(1).max(160),
         activity: z.string().regex(ACTIVITY).optional(),
       }),
       (i: { device: string; package: string; activity?: string }, ctx) =>
         act(i.device, ctx, async () => {
+          if (isIosId(i.device)) {
+            if (!BUNDLE_ID.test(i.package))
+              throw new DeviceError("Give the app's bundle id (com.example.App)");
+            await d.shell(i.device, ["launch", i.package], ctx?.signal);
+            return `Started ${i.package}.${LOOK_AGAIN}`;
+          }
+          if (!PACKAGE.test(i.package)) throw new DeviceError("Not a package name");
           const out = i.activity
             ? await d.shell(
                 i.device,
@@ -527,12 +560,14 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
       {
         name: "device_logs",
         description:
-          "The device's recent log (logcat): an app's lines by its package, or warnings and errors of everything.",
+          "The device's recent log (logcat; an iOS simulator's log): an app's lines by its package (iOS: its bundle id as the log's subsystem, or process for its executable's name), or warnings and errors of everything.",
         inputSchema: {
           type: "object",
           properties: {
             ...deviceProp,
             package: { type: "string" },
+            process: { type: "string", description: "iOS only: the app's process name" },
+            minutes: { type: "integer", maximum: 60, description: "iOS only: how far back" },
             lines: { type: "integer", maximum: 500 },
             contains: { type: "string" },
           },
@@ -541,12 +576,48 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
       },
       z.object({
         device: z.string().min(1),
-        package: z.string().regex(PACKAGE).optional(),
+        package: z.string().min(1).max(160).optional(),
+        process: z.string().min(1).max(100).optional(),
+        minutes: z.number().int().min(1).max(60).optional(),
         lines: z.number().int().min(10).max(500).optional(),
         contains: z.string().max(200).optional(),
       }),
-      async (i: { device: string; package?: string; lines?: number; contains?: string }, ctx) => {
+      async (
+        i: {
+          device: string;
+          package?: string;
+          process?: string;
+          minutes?: number;
+          lines?: number;
+          contains?: string;
+        },
+        ctx,
+      ) => {
         try {
+          if (isIosId(i.device)) {
+            if (i.package && !BUNDLE_ID.test(i.package))
+              throw new DeviceError("Give the app's bundle id (com.example.App)");
+            const filter = i.process
+              ? ["process", i.process]
+              : i.package
+                ? ["subsystem", i.package]
+                : ["all"];
+            let text = await d.shell(
+              i.device,
+              ["logs", String(i.minutes ?? 5), ...filter],
+              ctx?.signal,
+            );
+            if (i.contains) {
+              const want = i.contains.toLowerCase();
+              text = text
+                .split("\n")
+                .filter((l) => l.toLowerCase().includes(want))
+                .join("\n");
+            }
+            const lines = text.trim().split("\n");
+            return lines.slice(-(i.lines ?? 200)).join("\n").slice(-20_000) || "Nothing in the log.";
+          }
+          if (i.package && !PACKAGE.test(i.package)) throw new DeviceError("Not a package name");
           const n = String(i.lines ?? 200);
           let args = ["logcat", "-d", "-t", n, "*:W"];
           if (i.package) {

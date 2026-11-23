@@ -5,13 +5,16 @@
 // a frame or a state) until the asker stops it. Only the commands the agents' tools need run on a
 // device (uiautomator's tree, starting an app, its log), never one an asker writes. Apps are
 // installed from another machine on emulators only: a real phone's are its own machine's call.
-import { mkdir, rm, writeFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { DeviceInput, isEmulatorId } from "@redgiant/protocol";
+import { DeviceInput, isEmulatorId, isIosId } from "@redgiant/protocol";
 import type { DeviceAccess } from "../emulators/devices.js";
 import { type NodeCaller, NodeError } from "./service.js";
 
 const PACKAGE = /^[A-Za-z][\w]*(\.[A-Za-z][\w]*)+$/;
+const BUNDLE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,150}$/;
+const LOG_NAME = /^[A-Za-z0-9][A-Za-z0-9._ -]{0,100}$/;
 const COMPONENT = /^[A-Za-z][\w]*(\.[A-Za-z][\w]*)+\/[\w.$]+$/;
 /** Pieces of an APK sent to a node: at most this big each, and in all. */
 export const DEVICE_PIECE = 2 * 1024 * 1024;
@@ -46,14 +49,37 @@ export function deviceCommandAllowed(args: readonly unknown[]): boolean {
         /^\d{1,3}$/.test(r[2] ?? "") &&
         (r[3] === "*:W" || /^--pid=\d{1,7}$/.test(r[3] ?? ""))
       );
+    // iOS simulators (3.12.2): the verbs `IosHost.shell` knows, nothing else.
+    case "launch":
+    case "terminate":
+      return r.length === 1 && BUNDLE.test(r[0] ?? "");
+    case "logs":
+      return (
+        /^\d{1,2}$/.test(r[0] ?? "") &&
+        ((r.length === 2 && r[1] === "all") ||
+          (r.length === 3 &&
+            (r[1] === "subsystem" || r[1] === "process") &&
+            LOG_NAME.test(r[2] ?? "")))
+      );
     default:
       return false;
   }
 }
 
+/** Unpacks the archive of an `.app` folder a machine sent (tar, no shell; paths stay inside). */
+export type Unpack = (archive: string, into: string) => Promise<void>;
+const untar: Unpack = (archive, into) =>
+  new Promise((resolve, reject) => {
+    execFile("tar", ["-xf", archive, "-C", into], { timeout: 120_000 }, (e, _o, err) =>
+      e ? reject(new Error(String(err || e.message).slice(0, 300))) : resolve(),
+    );
+  });
+
 export interface NodeDeviceOptions {
+  /** Tests: another way to unpack an app folder. */
+  unpack?: Unpack;
   devices: () => DeviceAccess;
-  /** Where APKs sent by other machines wait (one folder per asker). */
+  /** Where APKs and app folders sent by other machines wait (one folder per asker). */
   dir: string;
   /** This machine lends its devices (the person may switch it off). */
   lends?: (ownerId: string) => boolean;
@@ -125,7 +151,8 @@ export function nodeDeviceHandler(o: NodeDeviceOptions) {
         if (data.length > DEVICE_PIECE) throw new NodeError("invalid", "Piece too big");
         const dir = join(o.dir, safe(c.from));
         await mkdir(dir, { recursive: true });
-        await writeFile(join(dir, `${upload}.apk`), data, { flag: offset === 0 ? "w" : "a" });
+        const ext = b.kind === "app" ? "tar" : "apk";
+        await writeFile(join(dir, `${upload}.${ext}`), data, { flag: offset === 0 ? "w" : "a" });
         return { offset: offset + data.length };
       }
       case "install": {
@@ -138,6 +165,21 @@ export function nodeDeviceHandler(o: NodeDeviceOptions) {
         const upload =
           typeof b.upload === "string" && /^[A-Za-z0-9-]{8,64}$/.test(b.upload) ? b.upload : "";
         if (!upload) throw new NodeError("invalid", "Which APK?");
+        if (isIosId(dev)) {
+          // An `.app` folder came as a tar: unpacked here, installed, and both removed.
+          const archive = join(o.dir, safe(c.from), `${upload}.tar`);
+          const into = join(o.dir, safe(c.from), `${upload}.d`);
+          try {
+            await mkdir(into, { recursive: true });
+            await wrap(() => (o.unpack ?? untar)(archive, into));
+            const app = (await readdir(into)).find((n) => /\.app$/i.test(n));
+            if (!app) throw new NodeError("invalid", "No .app folder in what was sent");
+            return { out: await wrap(() => d.install(dev, join(into, app), c.signal)) };
+          } finally {
+            await rm(archive, { force: true }).catch(() => {});
+            await rm(into, { recursive: true, force: true }).catch(() => {});
+          }
+        }
         const file = join(o.dir, safe(c.from), `${upload}.apk`);
         try {
           return { out: await wrap(() => d.install(dev, file, c.signal)) };
