@@ -477,6 +477,8 @@ export const ServerMessage = z.discriminatedUnion("type", [
     control: z.enum(["agents", "person"]),
     /** Why it cannot be shown (no SDK, too many emulators, adb refused…), in English. */
     error: z.string().optional(),
+    /** 3.12.2: several taps left the screen unchanged: offer «Repair touches». */
+    hint: z.literal("touches").optional(),
   }),
   z.object({
     type: z.literal("browser.state"),

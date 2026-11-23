@@ -187,6 +187,14 @@ export class RemoteDevices implements DeviceAccess {
     await this.ask({ action: "stop", id }, { timeoutMs: 60_000 });
   }
 
+  touchProblem(id: string): boolean {
+    return this.live.get(id)?.state?.hint === "touches";
+  }
+
+  async repair(id: string): Promise<void> {
+    await this.ask({ action: "repair", id }, { timeoutMs: 180_000 });
+  }
+
   exclusive<T>(id: string, f: () => Promise<T>): Promise<T> {
     const next = (this.queues.get(id) ?? Promise.resolve()).then(f, f);
     this.queues.set(
@@ -314,6 +322,14 @@ export class DeviceHub {
       stop: async (id) => {
         const r = await route(id);
         return r.d.stop(r.id);
+      },
+      touchProblem: (id) => {
+        const r = routeSync(id);
+        return r.d.touchProblem(r.id);
+      },
+      repair: async (id) => {
+        const r = await route(id);
+        return r.d.repair(r.id);
       },
       exclusive: (id, f) => local.exclusive(id, f),
     };

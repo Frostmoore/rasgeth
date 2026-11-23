@@ -4,6 +4,7 @@
 // person after «Take control» (their gestures are never logged). An AVD opened while off is started
 // without a window, within the person's limit of emulators at once; the ones Rasgeth started are
 // switched off after a while unused, never the person's own. Agents act one at a time.
+import { createHash } from "node:crypto";
 import {
   DEFAULT_MAX_EMULATORS,
   type DeviceInput,
@@ -18,7 +19,14 @@ export type DeviceEvent =
   | { type: "frame"; frame: DeviceFrame }
   /** 3.11 phase 7: the H.264 itself (only to who asked for it). */
   | { type: "video"; packet: VideoPacket }
-  | { type: "state"; state: DeviceState; control: "agents" | "person"; error?: string };
+  | {
+      type: "state";
+      state: DeviceState;
+      control: "agents" | "person";
+      error?: string;
+      /** 3.12.2: several taps in a row left the screen unchanged: the person may repair touches. */
+      hint?: "touches";
+    };
 type Listener = (e: DeviceEvent) => void;
 
 export class DeviceError extends Error {}
@@ -48,12 +56,18 @@ export interface DeviceAccess {
   /** The device is on (an AVD started when off). */
   ensure(id: string, signal?: AbortSignal): Promise<void>;
   stop(id: string): Promise<void>;
+  /** Several taps in a row changed nothing on the screen (iOS: touches may not arrive). */
+  touchProblem(id: string): boolean;
+  /** iOS only, the person's action: restarts the simulator's home screen to get touches back. */
+  repair(id: string): Promise<void>;
   exclusive<T>(id: string, f: () => Promise<T>): Promise<T>;
 }
 
 /** What iOS simulators add to a `DeviceHost` (3.12.2): all of them, booted or not. */
 export interface IosDeviceHost extends DeviceHost {
   simulators(): Promise<IosReport["simulators"]>;
+  /** `serve-sim repair-input` and a fresh bridge (the person asked, after a warning). */
+  repair(udid: string): Promise<void>;
 }
 
 export interface DevicesOptions {
@@ -65,6 +79,8 @@ export interface DevicesOptions {
   maxRunning?: () => number;
   /** An emulator Rasgeth started is switched off after this long unused (default 15 minutes). */
   idleMs?: number;
+  /** How long after a tap the screen is compared with before it (default 900 ms). */
+  touchCheckMs?: number;
   /** A screen nobody looks at closes after this long (default one minute). */
   screenIdleMs?: number;
   now?: () => number;
@@ -110,6 +126,8 @@ export class Devices implements DeviceAccess {
   private readonly queues = new Map<string, Promise<unknown>>();
   /** Frames seen per device: what an agent's cached tree is checked against. */
   private readonly seqs = new Map<string, number>();
+  /** Taps in a row that left the screen as it was, by device (iOS). */
+  private readonly stuck = new Map<string, number>();
   private readonly timer: NodeJS.Timeout;
 
   constructor(private readonly o: DevicesOptions) {
@@ -203,7 +221,13 @@ export class Devices implements DeviceAccess {
   }
 
   private stateEvent(id: string, state: DeviceState, error?: string): DeviceEvent {
-    return { type: "state", state, control: this.controlOf(id), ...(error && { error }) };
+    return {
+      type: "state",
+      state,
+      control: this.controlOf(id),
+      ...(error && { error }),
+      ...(this.touchProblem(id) && { hint: "touches" as const }),
+    };
   }
 
   /** The device's serial, starting its AVD when it is off (within the limit). */
@@ -363,8 +387,51 @@ export class Devices implements DeviceAccess {
         "The person has control of this device right now: try again later, or ask them",
       );
     const live = await this.screenOf(id);
+    const before = live.frame?.data;
     await live.screen.input(e);
     this.touch(id);
+    if (isIosId(id) && (e.kind === "tap" || e.kind === "long" || e.kind === "swipe"))
+      this.checkTouch(id, live, before);
+  }
+
+  private frameHash(data: string | undefined): string {
+    return data === undefined ? "" : createHash("md5").update(data).digest("hex");
+  }
+
+  /** After a touch: the screen is compared with the one before; three unchanged in a row is a hint. */
+  private checkTouch(id: string, live: Live, before: string | undefined) {
+    const was = this.frameHash(before);
+    const t = setTimeout(() => {
+      const same = was !== "" && this.frameHash(live.frame?.data) === was;
+      const had = this.touchProblem(id);
+      this.stuck.set(id, same ? (this.stuck.get(id) ?? 0) + 1 : 0);
+      if (had !== this.touchProblem(id)) this.emit(id, this.stateEvent(id, "on"));
+    }, this.o.touchCheckMs ?? 900);
+    t.unref();
+  }
+
+  touchProblem(id: string): boolean {
+    return (this.stuck.get(id) ?? 0) >= 3;
+  }
+
+  /** The person's repair of an iOS simulator's touches; the screen is opened again afterwards. */
+  async repair(id: string): Promise<void> {
+    if (!isIosId(id) || !this.o.ios) throw new DeviceError("Only an iOS simulator is repaired");
+    const udid = id.slice(4);
+    await this.closeScreen(id);
+    this.emit(id, this.stateEvent(id, "starting"));
+    try {
+      await this.o.ios.repair(udid);
+    } finally {
+      this.stuck.delete(id);
+    }
+    if (this.listeners.get(id)?.size)
+      void this.screenOf(id).then(
+        () => this.emit(id, this.stateEvent(id, "on")),
+        (e: unknown) =>
+          this.emit(id, this.stateEvent(id, "offline", e instanceof Error ? e.message : String(e))),
+      );
+    else this.emit(id, this.stateEvent(id, "on"));
   }
 
   /** The screen now (JPEG), waiting a moment for the first frame. */

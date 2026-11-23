@@ -116,7 +116,67 @@ const PACKAGE = /^[A-Za-z][\w]*(\.[A-Za-z][\w]*)+$/;
 /** An iOS bundle id (`com.example.App`, dashes allowed). */
 const BUNDLE_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,150}$/;
 const NO_ELEMENTS =
-  "iOS simulators give no list of elements: read the picture and use x and y (fractions of the screen).";
+  "The element list is not available now: read the picture and use x and y (fractions of the screen).";
+/** Added to a result while several taps in a row left the screen unchanged (iOS). */
+export const TOUCH_HINT =
+  " Touches seem not to arrive: the screen did not change after several taps. Ask the person to use «Repair touches» on this device (it restarts the simulator's home screen and closes its open apps).";
+
+/** One element of serve-sim's accessibility snapshot. */
+interface AxElement {
+  label?: string;
+  value?: string;
+  role?: string;
+  type?: string;
+  enabled?: boolean;
+  frame?: { x: number; y: number; width: number; height: number };
+}
+
+const AX_ACTIONABLE =
+  /button|cell|link|switch|toggle|textfield|searchfield|securetextfield|tab|slider|segmented|picker|stepper|menuitem|checkbox|image/i;
+
+/**
+ * serve-sim's `/ax` snapshot (`{screen:{width,height}, elements:[{label,value,role,type,enabled,
+ * frame}]}`) as the same numbered elements uiautomator's tree gives: centres as fractions of the
+ * screen, empty and off-screen things left out. Pure.
+ */
+export function parseAxTree(json: string): UiNode[] {
+  let snap: { screen?: { width?: number; height?: number }; elements?: AxElement[] };
+  try {
+    snap = JSON.parse(json);
+  } catch {
+    return [];
+  }
+  const W = snap.screen?.width ?? 0;
+  const H = snap.screen?.height ?? 0;
+  if (!(W > 0 && H > 0)) return [];
+  const out: UiNode[] = [];
+  for (const e of snap.elements ?? []) {
+    const f = e.frame;
+    if (!f || !(f.width > 0 && f.height > 0)) continue;
+    const label = (e.label ?? "").trim();
+    const value = (e.value ?? "").trim();
+    const kind = `${e.type ?? ""} ${e.role ?? ""}`;
+    const interactive = e.enabled !== false && AX_ACTIONABLE.test(kind);
+    if (!label && !value && !interactive) continue;
+    const x = (f.x + f.width / 2) / W;
+    const y = (f.y + f.height / 2) / H;
+    if (x < 0 || x > 1 || y < 0 || y > 1) continue;
+    const secure = /secure/i.test(kind);
+    out.push({
+      ref: out.length + 1,
+      text: secure ? "" : label,
+      desc: secure ? "" : value && value !== label ? value : "",
+      id: "",
+      cls: (e.type || e.role || "Element").replace(/^AX/, ""),
+      clickable: interactive,
+      focused: false,
+      password: secure,
+      x: Math.round(x * 1000) / 1000,
+      y: Math.round(y * 1000) / 1000,
+    });
+  }
+  return out;
+}
 const ACTIVITY = /^[\w.$]+$/;
 
 export interface DeviceToolsOptions {
@@ -143,10 +203,14 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
     const seq = d.seq(device);
     const kept = trees.get(device);
     if (!fresh && kept && seq !== undefined && kept.seq === seq) return kept.nodes;
-    const out = await d.shell(device, ["uiautomator", "dump", "/dev/tty"]);
-    const start = out.indexOf("<?xml");
-    const end = out.lastIndexOf("</hierarchy>");
-    const nodes = start >= 0 && end > start ? parseUiTree(out.slice(start, end + 12)) : [];
+    let nodes: UiNode[];
+    if (isIosId(device)) nodes = parseAxTree(await d.shell(device, ["ax"]));
+    else {
+      const out = await d.shell(device, ["uiautomator", "dump", "/dev/tty"]);
+      const start = out.indexOf("<?xml");
+      const end = out.lastIndexOf("</hierarchy>");
+      nodes = start >= 0 && end > start ? parseUiTree(out.slice(start, end + 12)) : [];
+    }
     trees.set(device, { seq: d.seq(device) ?? -1, nodes });
     return nodes;
   };
@@ -168,6 +232,7 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
         }
         return f();
       })
+      .then((r) => (typeof r === "string" && d.touchProblem(device) ? r + TOUCH_HINT : r))
       .catch(err);
   const input = (device: string, e: DeviceInput) => d.input(device, e, "agents");
   const tool = (
@@ -182,7 +247,6 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
     },
   };
   const point = async (device: string, i: { ref?: number; x?: number; y?: number }) => {
-    if (i.ref !== undefined && isIosId(device)) throw new DeviceError(NO_ELEMENTS);
     if (i.ref !== undefined) {
       const n = (await tree(device)).find((x) => x.ref === i.ref);
       if (!n)
@@ -255,13 +319,19 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
       async ({ device }: { device: string }, ctx) => {
         try {
           const frame = await d.frame(device, ctx?.signal);
-          const nodes = isIosId(device) ? [] : await tree(device);
+          let nodes: UiNode[] = [];
+          let axError = "";
+          try {
+            nodes = await tree(device);
+          } catch (e) {
+            // An iOS simulator without its element list still has its picture.
+            if (!isIosId(device)) throw e;
+            axError = ` (${e instanceof Error ? e.message : String(e)})`;
+          }
           const head = `${device}, screen ${frame.width}×${frame.height}${d.controlOf(device) === "person" ? " (the person has control now)" : ""}:\n`;
-          const body = isIosId(device)
-            ? o.vision
-              ? NO_ELEMENTS
-              : `${NO_ELEMENTS} This model cannot read images, so an iOS simulator cannot be worked from here.`
-            : describeUi(nodes);
+          const body =
+            (axError ? `${NO_ELEMENTS}${axError}` : describeUi(nodes)) +
+            (d.touchProblem(device) ? `\n${TOUCH_HINT.trim()}` : "");
           return o.vision
             ? {
                 content: head + body,
@@ -373,7 +443,10 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
             await input(i.device, { kind: "tap", x: p.x, y: p.y });
             await sleep(400, ctx?.signal);
           }
-          const nodes = isIosId(i.device) ? [] : await tree(i.device, true);
+          const nodes = await tree(i.device, true).catch((e) => {
+            if (!isIosId(i.device)) throw e;
+            return [] as UiNode[];
+          });
           const field =
             i.ref !== undefined ? nodes.find((n) => n.ref === i.ref) : nodes.find((n) => n.focused);
           if (field?.password)
@@ -451,10 +524,6 @@ export function deviceTools(d: DeviceAccess, o: DeviceToolsOptions): Tool[] {
             await sleep(i.ms ?? 1000, ctx?.signal);
             return `Waited ${i.ms ?? 1000} ms.`;
           }
-          if (isIosId(i.device))
-            throw new DeviceError(
-              "Waiting for a text is not possible on an iOS simulator: wait a number of milliseconds and look.",
-            );
           const until = Date.now() + Math.min(i.ms ?? 30_000, 30_000);
           const want = i.text.toLowerCase();
           while (Date.now() < until && !ctx?.signal?.aborted) {

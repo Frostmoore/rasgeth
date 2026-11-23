@@ -25,13 +25,13 @@ export class IosError extends Error {}
 export type Run = (
   file: string,
   args: string[],
-  o: { timeoutMs: number; signal?: AbortSignal; env?: NodeJS.ProcessEnv },
+  o: { timeoutMs: number; signal?: AbortSignal; env?: NodeJS.ProcessEnv; input?: string },
 ) => Promise<{ code: number | null; out: string; err: string }>;
 
 /** `execFile` (no shell): the answer even when the program fails. */
 export const runProgram: Run = (file, args, o) =>
   new Promise((resolve) => {
-    execFile(
+    const child = execFile(
       file,
       args,
       {
@@ -50,6 +50,11 @@ export const runProgram: Run = (file, args, o) =>
         resolve({ code, out: String(out), err: String(errOut || (err ? err.message : "")) });
       },
     );
+    // Text for the program's stdin (never a shell string).
+    if (o.input !== undefined) {
+      child.stdin?.on("error", () => {});
+      child.stdin?.end(o.input);
+    }
   });
 
 /** The bridge process serve-sim runs as for one simulator. */
@@ -239,6 +244,18 @@ export function typeEvents(text: string): { type: "down" | "up"; usage: number }
   return out;
 }
 
+const HID_LEFT_GUI = 227;
+const HID_V = 25;
+/** Cmd+V as key presses. */
+export function pasteEvents(): { type: "down" | "up"; usage: number }[] {
+  return [
+    { type: "down", usage: HID_LEFT_GUI },
+    { type: "down", usage: HID_V },
+    { type: "up", usage: HID_V },
+    { type: "up", usage: HID_LEFT_GUI },
+  ];
+}
+
 const KEY_USAGE: Record<string, number> = {
   Enter: 40,
   Escape: 41,
@@ -336,10 +353,11 @@ export class IosHost implements DeviceHost {
     this.run = o.run ?? runProgram;
   }
 
-  private async simctl(args: string[], timeoutMs = 60_000, signal?: AbortSignal) {
+  private async simctl(args: string[], timeoutMs = 60_000, signal?: AbortSignal, input?: string) {
     const r = await this.run("xcrun", ["simctl", ...args], {
       timeoutMs,
       ...(signal && { signal }),
+      ...(input !== undefined && { input }),
     });
     if (r.code !== 0) throw new IosError((r.err || r.out || "simctl failed").trim().slice(0, 600));
     return r.out;
@@ -556,12 +574,26 @@ export class IosHost implements DeviceHost {
               if (t.wait) await sleep(t.wait);
             }
             return;
-          case "text":
+          case "text": {
+            // Any language: the text goes on the simulator's pasteboard and Cmd+V pastes it. When
+            // that is refused, plain US-keyboard text is typed key by key as before.
+            const pasted = await this.simctl(["pbcopy", udid], 15_000, undefined, e.text).then(
+              () => true,
+              () => false,
+            );
+            if (pasted) {
+              for (const k of pasteEvents()) {
+                await send(TAG.key, k);
+                await sleep(this.o.keyMs ?? 4);
+              }
+              return;
+            }
             for (const k of typeEvents(e.text)) {
               await send(TAG.key, k);
               await sleep(this.o.keyMs ?? 4);
             }
             return;
+          }
           case "key": {
             const usage = KEY_USAGE[e.key];
             if (usage === undefined) throw new IosError(`No such key: ${e.key}`);
@@ -631,9 +663,49 @@ export class IosHost implements DeviceHost {
         );
         return out;
       }
+      case "ax": {
+        if (r.length) throw new IosError("ax takes no argument");
+        return this.accessibility(udid);
+      }
       default:
         throw new IosError("That command does not run on an iOS simulator");
     }
+  }
+
+  /** serve-sim's accessibility snapshot of the screen (JSON text), through the running bridge. */
+  private async accessibility(udid: string): Promise<string> {
+    const info = await this.acquire(udid).catch((e) => {
+      this.release(udid);
+      throw e;
+    });
+    try {
+      const url = info.streamUrl.replace(/\/stream\.mjpeg(\?.*)?$/, "/ax");
+      const res = await (this.o.fetch ?? fetch)(url, { signal: AbortSignal.timeout(15_000) });
+      const body = await res.text();
+      if (!res.ok)
+        throw new IosError(`Accessibility unavailable (${res.status}): ${body.slice(0, 200)}`);
+      return body.slice(0, 4 * 1024 * 1024);
+    } finally {
+      this.release(udid);
+    }
+  }
+
+  /**
+   * `serve-sim repair-input -d <udid>`: restarts the simulator's home screen (SpringBoard) and
+   * closes its open apps, to get touches and keys working again. Only ever called for an explicit
+   * action of the person; the bridge is restarted afterwards.
+   */
+  async repair(udid: string): Promise<void> {
+    if (!UDID.test(udid)) throw new IosError("Not a simulator's id");
+    const script = await this.o.bridge();
+    if (!script) throw new IosError("The iOS bridge (serve-sim) is not installed");
+    this.release(udid, true);
+    const r = await this.run(process.execPath, [script, "repair-input", "-d", udid], {
+      timeoutMs: 90_000,
+      env: bridgeEnv(process.env),
+    });
+    if (r.code !== 0)
+      throw new IosError((r.err || r.out || "repair-input failed").trim().slice(-400));
   }
 
   /** An `.app` folder of this Mac installed on the simulator; «Success» when simctl did it. */

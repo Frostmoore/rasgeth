@@ -186,8 +186,14 @@ class FakeSimctl {
     { name: "iPad Air", udid: UDID2, state: "Booted" },
   ];
   logs = "2026-11-23 app[1] error: boom";
-  run: Run = async (file, args) => {
+  /** Texts sent to simctl's stdin (pbcopy), and whether pbcopy is refused. */
+  inputs: string[] = [];
+  pbcopyFails = false;
+  run: Run = async (file, args, o) => {
     this.calls.push([file, ...args]);
+    if (o?.input !== undefined) this.inputs.push(o.input);
+    if (args[1] === "pbcopy" && this.pbcopyFails) return { code: 1, out: "", err: "refused" };
+    if (file !== "xcrun" && args[1] === "repair-input") return { code: 0, out: "", err: "" };
     if (file !== "xcrun") return { code: 1, out: "", err: "no" };
     const [, sub, ...r] = args;
     if (sub === "list")
@@ -250,6 +256,7 @@ function rig(o: { bridge?: boolean } = {}) {
   let push: (b: Buffer) => void = () => {};
   let endStream: () => void = () => {};
   const streams: string[] = [];
+  const axUrls: string[] = [];
   const host = new IosHost({
     bridge: async () => (o.bridge === false ? undefined : "/bridge/serve-sim.js"),
     run: simctl.run,
@@ -287,6 +294,10 @@ function rig(o: { bridge?: boolean } = {}) {
       return proc;
     },
     fetch: (async (url: string) => {
+      if (url.endsWith("/ax")) {
+        axUrls.push(url);
+        return new Response(AX, { status: 200 });
+      }
       streams.push(url);
       const body = new ReadableStream<Uint8Array>({
         start(c) {
@@ -308,10 +319,58 @@ function rig(o: { bridge?: boolean } = {}) {
     procs,
     sockets,
     streams,
+    axUrls,
     send: (b: Buffer) => push(part(b)),
     end: () => endStream(),
   };
 }
+
+/** What serve-sim's /ax answers: a screen of 400 x 800 points and a few elements. */
+const AX = JSON.stringify({
+  screen: { width: 400, height: 800 },
+  elements: [
+    {
+      id: "1",
+      path: "0",
+      label: "Search",
+      value: "",
+      role: "AXTextField",
+      type: "SearchField",
+      enabled: true,
+      frame: { x: 20, y: 80, width: 360, height: 40 },
+    },
+    {
+      id: "2",
+      path: "1",
+      label: "Wi-Fi",
+      value: "Home",
+      role: "AXButton",
+      type: "Cell",
+      enabled: true,
+      frame: { x: 0, y: 200, width: 400, height: 60 },
+    },
+    {
+      id: "3",
+      path: "2",
+      label: "",
+      value: "",
+      role: "AXGroup",
+      type: "Other",
+      enabled: true,
+      frame: { x: 0, y: 0, width: 400, height: 800 },
+    },
+    {
+      id: "4",
+      path: "3",
+      label: "Password",
+      value: "",
+      role: "AXTextField",
+      type: "SecureTextField",
+      enabled: true,
+      frame: { x: 20, y: 300, width: 360, height: 40 },
+    },
+  ],
+});
 
 const tick = (ms = 5) => new Promise((r) => setTimeout(r, ms));
 
@@ -416,7 +475,7 @@ describe("IosHost", () => {
     await screen.input({ kind: "tap", x: 0.5, y: 0.485 });
     await screen.input({ kind: "button", button: "home" });
     await screen.input({ kind: "key", key: "Enter" });
-    await screen.input({ kind: "text", text: "a" });
+    await screen.input({ kind: "text", text: "Perché sì" });
     await screen.input({ kind: "rotate" });
     const ws = r.sockets[0];
     expect(ws?.url).toContain(`/helper/${UDID2}/ws`);
@@ -426,13 +485,70 @@ describe("IosHost", () => {
       [TAG.button, { button: "home" }],
       [TAG.key, { type: "down", usage: 40 }],
       [TAG.key, { type: "up", usage: 40 }],
-      [TAG.key, { type: "down", usage: 4 }],
-      [TAG.key, { type: "up", usage: 4 }],
+      // The text went on the pasteboard, then Cmd+V.
+      [TAG.key, { type: "down", usage: 227 }],
+      [TAG.key, { type: "down", usage: 25 }],
+      [TAG.key, { type: "up", usage: 25 }],
+      [TAG.key, { type: "up", usage: 227 }],
       [TAG.orientation, { orientation: "landscape_left" }],
     ]);
     await expect(screen.input({ kind: "button", button: "back" })).rejects.toThrow(/no back/);
+    expect(r.simctl.calls.find((c) => c[2] === "pbcopy")).toEqual([
+      "xcrun",
+      "simctl",
+      "pbcopy",
+      UDID2,
+    ]);
+    expect(r.simctl.inputs).toEqual(["Perché sì"]);
     await screen.close();
     expect(ws?.closed).toBe(true);
+  });
+
+  it("types plain text key by key when the pasteboard is refused; other text is refused", async () => {
+    const r = rig();
+    r.simctl.pbcopyFails = true;
+    const screen = await r.host.screen(
+      UDID2,
+      () => {},
+      () => {},
+    );
+    await screen.input({ kind: "text", text: "a" });
+    expect(r.sockets[0]?.sent.map((m) => m.body)).toEqual([
+      { type: "down", usage: 4 },
+      { type: "up", usage: 4 },
+    ]);
+    await expect(screen.input({ kind: "text", text: "è" })).rejects.toThrow(/US-keyboard/);
+    await screen.close();
+  });
+
+  it("reads the accessibility snapshot through the bridge, only on its own verb", async () => {
+    const r = rig();
+    expect(await r.host.shell(UDID2, ["ax"])).toBe(AX);
+    expect(r.axUrls[0]).toBe(`http://127.0.0.1:3200/helper/${UDID2}/ax`);
+    // The bridge was started for it and is stopped again.
+    expect(r.procs[0]?.killed).toBe(true);
+    await expect(r.host.shell(UDID2, ["ax", "x"])).rejects.toThrow(/no argument/);
+  });
+
+  it("repairs touches with serve-sim repair-input, only when asked, and stops the bridge", async () => {
+    const r = rig();
+    const screen = await r.host.screen(
+      UDID2,
+      () => {},
+      () => {},
+    );
+    expect(r.simctl.calls.some((c) => c.includes("repair-input"))).toBe(false);
+    await r.host.repair(UDID2);
+    expect(r.simctl.calls.at(-1)).toEqual([
+      process.execPath,
+      "/bridge/serve-sim.js",
+      "repair-input",
+      "-d",
+      UDID2,
+    ]);
+    expect(r.procs[0]?.killed).toBe(true);
+    await expect(r.host.repair("nope")).rejects.toThrow(/simulator/);
+    await screen.close();
   });
 
   it("runs only the verbs the tools need, with checked arguments", async () => {
@@ -485,6 +601,9 @@ class FakeIos extends FakeDeviceHost implements IosDeviceHost {
     if (s) s.state = "booted";
     return udid;
   }
+  async repair(udid: string) {
+    this.calls.push(`repair ${udid}`);
+  }
   override async stop(udid: string) {
     this.calls.push(`stop ${udid}`);
     const s = this.sims.find((x) => x.udid === udid);
@@ -531,6 +650,21 @@ describe("simulators in Devices", () => {
     d.close();
   });
 
+  it("repairs touches only for an iOS simulator, closes the screen and opens it again", async () => {
+    const ios = new FakeIos();
+    const android = new FakeDeviceHost();
+    const d = new Devices({ host: android, ios, avds: async () => [] });
+    const events: string[] = [];
+    await d.watch(`ios:${UDID}`, (e) => events.push(e.type === "state" ? e.state : e.type));
+    await d.repair(`ios:${UDID}`);
+    await new Promise((r) => setTimeout(r, 20));
+    expect(ios.calls).toContain(`repair ${UDID}`);
+    expect(ios.calls.filter((c) => c === `screen ${UDID}`)).toHaveLength(2);
+    expect(events).toContain("starting");
+    await expect(d.repair("emulator-5554")).rejects.toThrow(/Only an iOS simulator/);
+    d.close();
+  });
+
   it("a Mac without the bridge or an unknown id is refused in words", async () => {
     const d = new Devices({ host: new FakeDeviceHost(), avds: async () => [] });
     await expect(d.ensure(`ios:${UDID}`)).rejects.toThrow(/not available/);
@@ -562,8 +696,14 @@ describe("the device tools on a simulator", () => {
   async function setup() {
     const ios = new FakeIos();
     ios.answers.launch = "com.example.App: 1234";
+    ios.answers.ax = AX;
     ios.answers.logs = "line one\nline two boom";
-    const d = new Devices({ host: new FakeDeviceHost(), ios, avds: async () => [] });
+    const d = new Devices({
+      host: new FakeDeviceHost(),
+      ios,
+      avds: async () => [],
+      touchCheckMs: 5,
+    });
     root = await realpath(await mkdtemp(join(tmpdir(), "rg-ios-tools-")));
     await mkdir(join(root, "build", "My.app"), { recursive: true });
     await writeFile(join(root, "build", "app.apk"), "apk");
@@ -581,24 +721,49 @@ describe("the device tools on a simulator", () => {
       content: string;
       images: unknown[];
     };
-    expect(look.content).toContain("no list of elements");
+    expect(look.content).toContain('[1] SearchField "Search"');
+    expect(look.content).toContain('[2] Cell "Wi-Fi" (Home)');
+    expect(look.content).toContain("(password field)");
     expect(look.images).toHaveLength(1);
   });
 
-  it("tap by point works, by number is refused, text waits are refused", async () => {
+  it("tap by point and by number work, text waits work, a password field is refused", async () => {
     const { ios, tools } = await setup();
     await run(tools, "device_tap", { device: id, x: 0.5, y: 0.485 });
     expect(ios.inputs.at(-1)?.event).toEqual({ kind: "tap", x: 0.5, y: 0.485 });
-    const byRef = (await run(tools, "device_tap", { device: id, ref: 3 })) as {
+    await run(tools, "device_look", { device: id });
+    expect(text(await run(tools, "device_tap", { device: id, ref: 2 }))).toContain("Tapped [2]");
+    expect(ios.inputs.at(-1)?.event).toEqual({ kind: "tap", x: 0.5, y: 0.288 });
+    expect(text(await run(tools, "device_wait", { device: id, text: "wi-fi" }))).toContain(
+      "is on the screen",
+    );
+    const pass = (await run(tools, "device_type", { device: id, ref: 3, text: "x" })) as {
+      isError: boolean;
       content: string;
-      isError: boolean;
     };
-    expect(byRef.isError).toBe(true);
-    expect(byRef.content).toMatch(/no list of elements/);
-    const wait = (await run(tools, "device_wait", { device: id, text: "Hi" })) as {
-      isError: boolean;
-    };
-    expect(wait.isError).toBe(true);
+    expect(pass.isError).toBe(true);
+    expect(pass.content).toMatch(/password/);
+  });
+
+  it("says when touches seem not to arrive, after several taps changed nothing", async () => {
+    const { ios, d, tools } = await setup();
+    await run(tools, "device_open", { device: id });
+    const t = deviceTools(d, { root, vision: true, waitMs: 50 });
+    let last = "";
+    for (let i = 0; i < 3; i++) {
+      last = text(await run(t, "device_tap", { device: id, x: 0.5, y: 0.5 }));
+      await tick(30);
+    }
+    expect(d.touchProblem(id)).toBe(true);
+    last = text(await run(t, "device_tap", { device: id, x: 0.5, y: 0.5 }));
+    expect(last).toContain("Touches seem not to arrive");
+    expect(text(await run(t, "device_look", { device: id }))).toContain("Repair touches");
+    // The screen changing clears it again.
+    ios.frame(`${UDID}`, "BBBB");
+    await run(t, "device_tap", { device: id, x: 0.5, y: 0.5 });
+    ios.frame(`${UDID}`, "CCCC");
+    await tick(30);
+    expect(d.touchProblem(id)).toBe(false);
   });
 
   it("install takes an .app folder from the workspace only", async () => {
@@ -664,6 +829,8 @@ describe("a Mac node's commands", () => {
     expect(deviceCommandAllowed(["launch", "a b"])).toBe(false);
     expect(deviceCommandAllowed(["launch"])).toBe(false);
     expect(deviceCommandAllowed(["spawn", "x"])).toBe(false);
+    expect(deviceCommandAllowed(["ax"])).toBe(true);
+    expect(deviceCommandAllowed(["ax", "x"])).toBe(false);
   });
 });
 

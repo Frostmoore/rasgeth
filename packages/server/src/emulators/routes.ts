@@ -4,6 +4,7 @@
 //                                  forget it) and how many emulators at once, on this machine
 //   GET /api/emulators/devices     the devices one can open in the Canvas (3.11 phase 2)
 //   POST /api/emulators/devices/stop {id}   the person switches an emulator off
+//   POST /api/emulators/devices/repair {id}   the person's repair of an iOS simulator's touches
 //   POST /api/emulators/install/plan {target?, avdName?, only?}   the guided install's plan for
 //                                  this machine (3.11 phase 5): steps, sizes, licence texts, planId
 //   POST /api/emulators/install/start {planId, licenceAccepted}   the person's yes: the plan runs
@@ -67,6 +68,18 @@ export function emulatorRoutes<E extends { Variables: any }>(
       throw err;
     }
     return c.json({ devices: await core.deviceHub.of(owner(c)).list() });
+  });
+  // 3.12.2: the person's repair of an iOS simulator's touches (restarts its home screen).
+  app.post("/api/emulators/devices/repair", async (c) => {
+    const b = (await c.req.json().catch(() => ({}))) as { id?: unknown };
+    if (typeof b.id !== "string" || !b.id) return c.json({ error: "Which device?" }, 400);
+    try {
+      await core.deviceHub.of(owner(c)).repair(b.id);
+    } catch (err) {
+      if (err instanceof Error) return c.json({ error: err.message }, 400);
+      throw err;
+    }
+    return c.json({ ok: true });
   });
   app.put("/api/emulators/settings", async (c) => {
     const parsed = EmulatorSettingsBody.safeParse(await c.req.json().catch(() => null));

@@ -50,6 +50,8 @@ export function deviceCommandAllowed(args: readonly unknown[]): boolean {
         (r[3] === "*:W" || /^--pid=\d{1,7}$/.test(r[3] ?? ""))
       );
     // iOS simulators (3.12.2): the verbs `IosHost.shell` knows, nothing else.
+    case "ax":
+      return r.length === 0;
     case "launch":
     case "terminate":
       return r.length === 1 && BUNDLE.test(r[0] ?? "");
@@ -189,6 +191,9 @@ export function nodeDeviceHandler(o: NodeDeviceOptions) {
       }
       case "stop":
         await wrap(() => d.stop(needId()));
+        return {};
+      case "repair":
+        await wrap(() => d.repair(needId()));
         return {};
       default:
         throw new NodeError("invalid", "Unknown device action");

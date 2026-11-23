@@ -420,6 +420,7 @@ export function attachWebSocket(
                       state: e.state,
                       control: e.control,
                       ...(e.error && { error: e.error }),
+                      ...(e.hint && { hint: e.hint }),
                     });
                 },
                 { video: h264 },
