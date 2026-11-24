@@ -2535,6 +2535,15 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news3124Secretary: "A secretary that answers people",
+  news3124SecretaryText:
+    "Connect a WhatsApp Business number or a Telegram bot and the message secretary answers your customers and contacts, within what you told it. Anything else reaches you with a ready reply to send in one tap; appointments, commitments and new prices always wait for your yes. A step-by-step guide connects WhatsApp Business, checking each step.",
+  news3124Models: "Choosing a model, finally clear",
+  news3124ModelsText:
+    "One picker everywhere: models grouped by how they are paid (subscription, API key, local engine, your own server), the newest first, a search box and the one in use lit.",
+  news3124Math: "Formulas that look like formulas",
+  news3124MathText:
+    "Math in the answers is drawn properly, in the text or on a line of its own; prices like $5 stay prices, and copying keeps the formula's source.",
   news3123Sets: "Agents ready for everyday work",
   news3123SetsText:
     "Start an agent from a ready set: Researcher, Email, Message secretary, Spreadsheets, Diary and reminders. God picks the right one when you ask «can you check my email?». Every agent can have as many mailboxes, chats and calendars as you like; calendars connect with CalDAV or an iCal address.",
@@ -11142,6 +11151,15 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news3124Secretary: "Un segretario che risponde alle persone",
+  news3124SecretaryText:
+    "Collega un numero WhatsApp Business o un bot Telegram e il segretario sui messaggi risponde ai tuoi clienti e contatti, entro quello che gli hai detto. Il resto arriva a te con una risposta pronta da mandare con un tocco; appuntamenti, impegni e prezzi nuovi aspettano sempre il tuo sì. Una guida passo passo collega WhatsApp Business, controllando ogni passo.",
+  news3124Models: "Scegliere il modello, finalmente chiaro",
+  news3124ModelsText:
+    "Un solo selettore ovunque: i modelli divisi per come si pagano (abbonamento, chiave API, motore locale, server tuo), i più nuovi in cima, una ricerca e quello in uso in evidenza.",
+  news3124Math: "Formule che sembrano formule",
+  news3124MathText:
+    "La matematica nelle risposte si vede come si deve, nel testo o su una riga a sé; i prezzi come $5 restano prezzi, e copiando resta la formula originale.",
   news3123Sets: "Agenti pronti per il lavoro di tutti i giorni",
   news3123SetsText:
     "Crea un agente partendo da un set pronto: Ricercatore, Email, Segretario sui messaggi, Fogli di lavoro, Agenda e promemoria. God sceglie quello giusto quando chiedi «puoi controllare le mie email?». Ogni agente può avere tutte le caselle, le chat e i calendari che vuoi; i calendari si collegano con CalDAV o con un indirizzo iCal.",

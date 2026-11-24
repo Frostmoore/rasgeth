@@ -4,10 +4,13 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.12.3';
+const newsVersion = '3.12.4';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.12.4', 'news3124Secretary', 'news3124SecretaryText'),
+  NewsRow('3.12.4', 'news3124Models', 'news3124ModelsText'),
+  NewsRow('3.12.4', 'news3124Math', 'news3124MathText'),
   NewsRow('3.12.3', 'news3123Sets', 'news3123SetsText'),
   NewsRow('3.12.3', 'news3123Team', 'news3123TeamText'),
   NewsRow('3.12.3', 'news3123Telegram', 'news3123TelegramText'),
@@ -455,6 +458,12 @@ const generalWords = <String, Map<String, String>>{
     'news3123TeamText': 'Se ha posto per degli agenti, il coordinatore di un progetto divide il lavoro e lo passa in parallelo, dando a ognuno il più efficiente dei tuoi modelli; con il limite a 0 lavora da solo.',
     'news3123Telegram': 'Gli argomenti anche da Telegram',
     'news3123TelegramText': 'Quello che chiedi su Telegram finisce nell\'argomento giusto di God: il titolo compare quando cambia, «Sposta» corregge un errore, e /argomenti, /sposta, /nuovo fanno il resto.',
+    'news3124Math': 'Formule che sembrano formule',
+    'news3124MathText': 'La matematica nelle risposte si vede come si deve, nel testo o su una riga a sé; i prezzi come \$5 restano prezzi, e copiando resta la formula originale.',
+    'news3124Models': 'Scegliere il modello, finalmente chiaro',
+    'news3124ModelsText': 'Un solo selettore ovunque: i modelli divisi per come si pagano (abbonamento, chiave API, motore locale, server tuo), i più nuovi in cima, una ricerca e quello in uso in evidenza.',
+    'news3124Secretary': 'Un segretario che risponde alle persone',
+    'news3124SecretaryText': 'Collega un numero WhatsApp Business o un bot Telegram e il segretario sui messaggi risponde ai tuoi clienti e contatti, entro quello che gli hai detto. Il resto arriva a te con una risposta pronta da mandare con un tocco; appuntamenti, impegni e prezzi nuovi aspettano sempre il tuo sì. Una guida passo passo collega WhatsApp Business, controllando ogni passo.',
     'news321Linux': 'Strato dopo in anticipo anche su Linux',
     'news321LinuxText': 'L\'interruttore sperimentale «Strato dopo in anticipo» di SSD stream ora funziona anche su Linux con una scheda NVIDIA, con un\'immagine del motore tutta sua scaricata solo quando lo accendi.',
     'news321Settings': 'Le Impostazioni nello stile della configurazione',
@@ -824,6 +833,12 @@ const generalWords = <String, Map<String, String>>{
     'news3123TeamText': 'With room for agents a project\'s orchestrator splits the work and hands the parts over in parallel, giving each the most efficient of your models; with a limit of 0 it works alone.',
     'news3123Telegram': 'Topics from Telegram too',
     'news3123TelegramText': 'What you ask on Telegram lands in God\'s right topic: the title shows when it changes, «Move» fixes a wrong one, and /argomenti, /sposta, /nuovo do the rest.',
+    'news3124Math': 'Formulas that look like formulas',
+    'news3124MathText': 'Math in the answers is drawn properly, in the text or on a line of its own; prices like \$5 stay prices, and copying keeps the formula\'s source.',
+    'news3124Models': 'Choosing a model, finally clear',
+    'news3124ModelsText': 'One picker everywhere: models grouped by how they are paid (subscription, API key, local engine, your own server), the newest first, a search box and the one in use lit.',
+    'news3124Secretary': 'A secretary that answers people',
+    'news3124SecretaryText': 'Connect a WhatsApp Business number or a Telegram bot and the message secretary answers your customers and contacts, within what you told it. Anything else reaches you with a ready reply to send in one tap; appointments, commitments and new prices always wait for your yes. A step-by-step guide connects WhatsApp Business, checking each step.',
     'news321Linux': 'Next layer ahead on Linux too',
     'news321LinuxText': 'The experimental «Next layer ahead» switch of SSD stream now works on Linux with an NVIDIA card too, with an engine image of its own downloaded only when you turn it on.',
     'news321Settings': 'Settings in the setup\'s style',

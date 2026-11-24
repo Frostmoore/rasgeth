@@ -418,7 +418,8 @@ Rasgeth is in pre-alpha. What comes next, in order:
   start, with any number of mailboxes, chats and calendars per agent; orchestrators that lead a team; topics from
   Telegram too.
 - **3.12.4 — A secretary that answers people**: the message secretary answers contacts on Telegram and WhatsApp
-  Business within what it was told, with a step-by-step guide to connect WhatsApp Business.
+  Business within what it was told, with a step-by-step guide to connect WhatsApp Business; one clear model picker;
+  math formulas in the answers.
 - **4.0 — Alpha**: documentation, security and privacy pages, and a stability round on everything.
 - **Then** the beta (community, documentation site) and the production release.
 
