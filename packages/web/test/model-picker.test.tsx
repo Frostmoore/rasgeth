@@ -2,7 +2,7 @@
 // One model picker everywhere (roadmap, 3.12.4): grouped by how the model is paid, newest first
 // in each group, a search, the model in use highlighted and scrolled into view, the keys.
 import { readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, sep } from "node:path";
 import { cleanup, fireEvent, render } from "@testing-library/preact";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ModelChoice } from "../src/api.js";
@@ -153,7 +153,17 @@ describe("one picker everywhere", () => {
     readdirSync(d, { withFileTypes: true }).flatMap((e) =>
       e.isDirectory() ? files(join(d, e.name)) : /\.tsx?$/.test(e.name) ? [join(d, e.name)] : [],
     );
-  const all = files(src).map((f) => [f.slice(src.length + 1), readFileSync(f, "utf8")] as const);
+  // Paths with "/" on every system (Windows lists them with "\\").
+  const all = files(src).map(
+    (f) =>
+      [
+        f
+          .slice(src.length + 1)
+          .split(sep)
+          .join("/"),
+        readFileSync(f, "utf8"),
+      ] as const,
+  );
 
   it("builds the grouped list in one place only", () => {
     const own = (re: RegExp) => all.filter(([, s]) => re.test(s)).map(([f]) => f);
