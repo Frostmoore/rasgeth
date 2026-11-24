@@ -59,11 +59,11 @@ const vectors = lists.map((choices) => {
 });
 
 const searches = [
-  [{ provider: "anthropic", model: "claude-opus-5-5", name: "Opus 5.5" }, "Anthropic · API key", ""],
-  [{ provider: "anthropic", model: "claude-opus-5-5", name: "Opus 5.5" }, "Anthropic · API key", "OPUS"],
-  [{ provider: "anthropic", model: "claude-opus-5-5" }, "Anthropic · API key", "api k"],
-  [{ provider: "anthropic", model: "claude-opus-5-5" }, "Anthropic · API key", "5-5"],
-  [{ provider: "anthropic", model: "claude-opus-5-5" }, "Anthropic · API key", "gpt"],
+  [{ provider: "anthropic", model: "claude-opus-5-5", name: "Opus 5.5" }, "Anthropic API key", ""],
+  [{ provider: "anthropic", model: "claude-opus-5-5", name: "Opus 5.5" }, "Anthropic API key", "OPUS"],
+  [{ provider: "anthropic", model: "claude-opus-5-5" }, "Anthropic API key", "api k"],
+  [{ provider: "anthropic", model: "claude-opus-5-5" }, "Anthropic API key", "5-5"],
+  [{ provider: "anthropic", model: "claude-opus-5-5" }, "Anthropic API key", "gpt"],
 ].map(([m, heading, query]) => ({ m, heading, query, matches: modelMatches(m, heading, query) }));
 
 const out = join(here, "../test/fixtures/model_groups_vectors.json");

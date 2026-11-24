@@ -23934,6 +23934,12 @@ fieldset.saved-filter legend {
 }
 .ui-drop-list button.on {
   font-weight: 600;
+  background: var(--accent-soft, var(--hover));
+}
+/* The model in use that is not the chosen value (the composer's "the agent's"). */
+.ui-drop-list button.use {
+  font-weight: 600;
+  box-shadow: inset 2px 0 0 var(--accent);
 }
 .ui-drop-mark {
   display: inline-flex;

@@ -3,10 +3,9 @@
 // agents under them; aside, the backup model for tasks given up on. A model is changed in a
 // window. Orchestrators and agents take the model of who is above them (the registry's
 // inheritance): the tree says so instead of offering a choice that would not be kept.
-import { familyOf, groupTitle, modelFamilies, modelGroups } from "@redgiant/protocol";
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import type { Agent, ModelChoice } from "../api.js";
-import { lang, t } from "../i18n.js";
+import { t } from "../i18n.js";
 import {
   IconChat,
   IconChevronDown,
@@ -20,7 +19,7 @@ import {
 import { attempt, getApi } from "../state.js";
 import { type Spec, sameModel, suggestModel } from "../wizard.js";
 import { modelName } from "./ModelMenu.js";
-import { sourceOf, useModels, wayHint } from "./ModelSelect.js";
+import { ModelFamilySelect, sourceOf, useModels } from "./ModelSelect.js";
 import { Acts, Head, Seg } from "./SettingsKit.js";
 import { useOnNext, useWz } from "./SetupKit.js";
 import { Modal } from "./ui.js";
@@ -307,12 +306,7 @@ export function AssignStep() {
         ...(m.effort && { effort: v[role]?.effort ?? (role === "god" ? "high" : "medium") }),
       },
     }));
-  const families = modelFamilies(models);
   const current = open ? val[open] : null;
-  const wayHintOf = (m: ModelChoice) => {
-    const at = familyOf(families, m);
-    return at ? wayHint(at.family, at.index) : "";
-  };
   const hasEffort = !!current && !!models.find((x) => key(x) === key(current))?.effort;
   return (
     <div class="wz-inner wide">
@@ -367,47 +361,13 @@ export function AssignStep() {
       {open && (
         <Modal title={roleTitle[open]} onClose={() => setOpen(null)}>
           <p class="wz-lead2">{roleText[open]}</p>
-          {/* By provider and way, the newest first (2026-11-20, the person). */}
-          {modelGroups(models).map((g) => (
-            <div key={g.id}>
-              <div class="wz-grp">{groupTitle(g, lang.value)}</div>
-              <div class="wz-opt">
-                {g.choices.map((m) => {
-                  const on = !!current && key(current) === key(m);
-                  return (
-                    <button
-                      type="button"
-                      key={key(m)}
-                      class={on ? "on" : ""}
-                      aria-pressed={on}
-                      onClick={() => !on && choose(open, m)}
-                    >
-                      <b>{m.name ?? modelName(m.model)}</b>
-                      <em>{on ? t("wzChosen") : ""}</em>
-                      <small>{wayHintOf(m)}</small>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-          {open === "backup" && (
-            <>
-              <div class="wz-grp">{t("wzNone")}</div>
-              <div class="wz-opt">
-                <button
-                  type="button"
-                  class={current ? "" : "on"}
-                  aria-pressed={!current}
-                  onClick={() => choose("backup", null)}
-                >
-                  <b>{t("wzNone")}</b>
-                  <em>{current ? "" : t("wzChosen")}</em>
-                  <small>{t("backupModelNone")}</small>
-                </button>
-              </div>
-            </>
-          )}
+          {/* The shared model picker: by how it is paid, newest first, with a search. */}
+          <ModelFamilySelect
+            value={current ? key(current) : ""}
+            models={models}
+            {...(open === "backup" && { empty: t("wzNone") })}
+            onChange={(_, m) => choose(open, m ?? null)}
+          />
           {hasEffort && current && (
             <>
               <h4>{t("wzEffortTitle")}</h4>

@@ -200,15 +200,15 @@ describe("modelGroups (2026-11-20: by provider and way, the newest first)", () =
 
   it("names each group clearly, it and en", () => {
     const table: [string, string, string][] = [
-      ["claude-subscription", "Anthropic · Abbonamento Claude", "Anthropic · Claude subscription"],
-      ["anthropic", "Anthropic · Chiave API", "Anthropic · API key"],
-      ["chatgpt-subscription", "OpenAI · Abbonamento ChatGPT", "OpenAI · ChatGPT subscription"],
-      ["openai", "OpenAI · Chiave API", "OpenAI · API key"],
-      ["deepseek", "DeepSeek · Chiave API", "DeepSeek · API key"],
+      ["claude-subscription", "Abbonamento Claude", "Claude subscription"],
+      ["anthropic", "Chiave API Anthropic", "Anthropic API key"],
+      ["chatgpt-subscription", "Abbonamento ChatGPT", "ChatGPT subscription"],
+      ["openai", "Chiave API OpenAI", "OpenAI API key"],
+      ["deepseek", "Chiave API DeepSeek", "DeepSeek API key"],
       ["acme", "acme", "acme"],
       ["node-rig|anthropic", "Tramite Rig · Anthropic", "Via Rig · Anthropic"],
-      ["local", "Su questo computer", "On this computer"],
-      ["server", "Il tuo server", "Your own server"],
+      ["local", "Motore locale", "Local engine"],
+      ["server", "Server tuo", "Your own server"],
     ];
     for (const [id, it_, en] of table) {
       const g = groups.find((x) => x.id === id);
@@ -219,9 +219,9 @@ describe("modelGroups (2026-11-20: by provider and way, the newest first)", () =
 
   it("finds a model by its name, id or heading", () => {
     const m = { provider: "anthropic", model: "claude-opus-5-5", name: "Opus 5.5" };
-    expect(modelMatches(m, "Anthropic · API key", "")).toBe(true);
-    expect(modelMatches(m, "Anthropic · API key", "opus")).toBe(true);
-    expect(modelMatches(m, "Anthropic · API key", "api KEY")).toBe(true);
-    expect(modelMatches(m, "Anthropic · API key", "gpt")).toBe(false);
+    expect(modelMatches(m, "Anthropic API key", "")).toBe(true);
+    expect(modelMatches(m, "Anthropic API key", "opus")).toBe(true);
+    expect(modelMatches(m, "Anthropic API key", "api KEY")).toBe(true);
+    expect(modelMatches(m, "Anthropic API key", "gpt")).toBe(false);
   });
 });

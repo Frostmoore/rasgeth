@@ -122,13 +122,18 @@ export const effortOptions = () =>
  * The models as the menus list them (2026-11-20, the person): under a heading per provider and
  * way («Anthropic · Abbonamento Claude», «Anthropic · Chiave API»…), the newest first in each.
  */
-export function modelOptions(models: ModelChoice[]): DropOption<string>[] {
+export function modelOptions(
+  models: ModelChoice[],
+  inUse?: { provider: string; model: string },
+): DropOption<string>[] {
   return modelGroups(models).flatMap((g) => {
     const group = groupTitle(g, lang.value);
     return g.choices.map((c) => ({
       id: key(c),
+      ...(inUse && key(c) === key(inUse) && { inUse: true }),
       label: `${c.name ?? modelName(c.model)}${modelNote(c)}`,
       group,
+      keywords: c.model,
     }));
   });
 }
@@ -173,7 +178,7 @@ export function ModelFamilySelect({
   const [provider = "", ...rest] = value.split("/");
   const at = value ? familyOf(families, { provider, model: rest.join("/") }) : undefined;
   const way = at ?? (!value && wayFor ? familyOf(families, wayFor) : undefined);
-  const listed = modelOptions(models);
+  const listed = modelOptions(models, !value ? wayFor : undefined);
   const options: DropOption<string>[] = [
     ...(empty !== undefined || !value
       ? [{ id: "", label: emptyText ?? empty ?? t("modelPick") }]
@@ -189,7 +194,7 @@ export function ModelFamilySelect({
         {...(title !== undefined && { title })}
         {...(disabled !== undefined && { disabled })}
         {...(onFocus && { onOpen: onFocus })}
-        {...(listed.length > 8 && { search: t("modelSearch") })}
+        search={t("modelSearch")}
         value={value}
         options={options}
         onChange={(v) => {

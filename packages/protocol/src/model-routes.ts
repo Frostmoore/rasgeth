@@ -302,7 +302,7 @@ const VENDOR_NAMES: Readonly<Record<string, string>> = {
   openrouter: "OpenRouter",
 };
 
-/** A group's heading: «Anthropic · Abbonamento Claude», «OpenAI · Chiave API», «Tramite Rig · Anthropic». */
+/** A group's heading: how it is paid first: «Abbonamento Claude», «Chiave API OpenAI», «Motore locale», «Tramite Rig · Anthropic». */
 export function groupTitle(
   g: Pick<ModelGroup<unknown>, "kind" | "vendor" | "provider" | "node">,
   lang: string,
@@ -317,11 +317,11 @@ export function groupTitle(
           : g.provider === "chatgpt-subscription"
             ? "ChatGPT"
             : "";
-      if (it) return `${vendor} · Abbonamento${plan ? ` ${plan}` : ""}`;
-      return `${vendor} · ${plan ? `${plan} subscription` : "Subscription"}`;
+      if (it) return `Abbonamento ${plan || vendor}`;
+      return `${plan || vendor} subscription`;
     }
     case "key":
-      return `${vendor} · ${it ? "Chiave API" : "API key"}`;
+      return it ? `Chiave API ${vendor}` : `${vendor} API key`;
     case "node": {
       const own = g.vendor === "local" || g.vendor === "server";
       return `${it ? "Tramite" : "Via"} ${g.node} · ${own ? (it ? "Locale" : "Local") : vendor}`;
@@ -329,10 +329,10 @@ export function groupTitle(
     case "local":
       return g.provider === "local"
         ? it
-          ? "Su questo computer"
-          : "On this computer"
+          ? "Motore locale"
+          : "Local engine"
         : it
-          ? "Il tuo server"
+          ? "Server tuo"
           : "Your own server";
     default:
       return vendor;

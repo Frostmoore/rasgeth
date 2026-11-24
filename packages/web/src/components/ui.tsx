@@ -196,6 +196,10 @@ export interface DropOption<T extends string> {
   hint?: string;
   /** The heading it sits under; a new heading starts where the group changes. */
   group?: string;
+  /** More words a search matches (a model's id). */
+  keywords?: string;
+  /** In use now without being the chosen value (the composer's: the agent's model); drawn apart. */
+  inUse?: boolean;
 }
 
 /**
@@ -238,7 +242,14 @@ export function DropChoice<T extends string>({
   onClose?: () => void;
 }) {
   /** Where the list opens: under the button, from its left, or from its right near the edge. */
-  const [at, setAt] = useState<{ left?: number; right?: number; top: number; width: number }>();
+  const [at, setAt] = useState<{
+    left?: number;
+    right?: number;
+    top?: number;
+    bottom?: number;
+    maxHeight: number;
+    width: number;
+  }>();
   const btn = useRef<HTMLButtonElement>(null);
   const list = useRef<HTMLDivElement>(null);
   const id = useId();
@@ -247,7 +258,9 @@ export function DropChoice<T extends string>({
   const q = query.trim().toLowerCase();
   const shown = q
     ? options.filter((o) =>
-        [o.label, o.hint ?? "", o.group ?? ""].some((w) => w.toLowerCase().includes(q)),
+        [o.label, o.hint ?? "", o.group ?? "", o.keywords ?? ""].some((w) =>
+          w.toLowerCase().includes(q),
+        ),
       )
     : options;
   const close = (focus = true) => {
@@ -260,11 +273,18 @@ export function DropChoice<T extends string>({
     onOpen?.();
     const r = btn.current?.getBoundingClientRect();
     const width = Math.max(r?.width ?? 0, 200);
-    const top = (r?.bottom ?? 0) + 4;
+    // Under the button, or over it when there is little room below (a composer at the bottom).
+    const below = window.innerHeight - (r?.bottom ?? 0) - 12;
+    const above = (r?.top ?? 0) - 12;
+    const up = below < 260 && above > below;
+    const room = Math.max(160, Math.min(up ? above : below, window.innerHeight * 0.7));
+    const y = up
+      ? { bottom: window.innerHeight - (r?.top ?? 0) + 4, maxHeight: room }
+      : { top: (r?.bottom ?? 0) + 4, maxHeight: room };
     // Near the window's right edge the list grows leftwards from the button's right side.
     if ((r?.left ?? 0) + 280 > window.innerWidth)
-      setAt({ right: Math.max(4, window.innerWidth - (r?.right ?? 0)), top, width });
-    else setAt({ left: Math.max(4, r?.left ?? 0), top, width });
+      setAt({ right: Math.max(4, window.innerWidth - (r?.right ?? 0)), ...y, width });
+    else setAt({ left: Math.max(4, r?.left ?? 0), ...y, width });
   };
   useEffect(() => {
     if (startOpen) open();
@@ -275,6 +295,8 @@ export function DropChoice<T extends string>({
       list.current?.querySelector<HTMLElement>("[aria-checked=true]") ??
       list.current?.querySelector<HTMLElement>("button");
     on?.focus();
+    // A long list opens at the chosen row, not at the top.
+    on?.scrollIntoView?.({ block: "center" });
     const away = (e: PointerEvent) => {
       const n = e.target as Node;
       if (!list.current?.contains(n) && !btn.current?.contains(n)) close(false);
@@ -298,6 +320,11 @@ export function DropChoice<T extends string>({
       return close(e.key === "Escape");
     }
     const typing = (e.target as HTMLElement).tagName === "INPUT";
+    // A letter typed on a row goes to the search, as in any list with one.
+    if (search && !typing && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      list.current?.querySelector<HTMLInputElement>(".ui-drop-search")?.focus();
+      return;
+    }
     const move: Record<string, () => void> = {
       ArrowDown: () => go(i + 1),
       ArrowUp: () => go(i - 1),
@@ -342,7 +369,8 @@ export function DropChoice<T extends string>({
           aria-label={label}
           style={{
             ...(at.right !== undefined ? { right: `${at.right}px` } : { left: `${at.left}px` }),
-            top: `${at.top}px`,
+            ...(at.top !== undefined ? { top: `${at.top}px` } : { bottom: `${at.bottom}px` }),
+            maxHeight: `${at.maxHeight}px`,
             minWidth: `${at.width}px`,
           }}
           onKeyDown={listKey}
@@ -372,7 +400,8 @@ export function DropChoice<T extends string>({
               role="option"
               aria-selected={o.id === value}
               aria-checked={o.id === value}
-              class={o.id === value ? "on" : ""}
+              class={o.id === value ? "on" : o.inUse ? "use" : ""}
+              {...(o.inUse && { "aria-current": "true" as const })}
               onClick={() => {
                 close();
                 if (o.id !== value) onChange(o.id);

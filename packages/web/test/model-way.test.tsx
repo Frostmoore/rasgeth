@@ -59,9 +59,9 @@ describe("ModelSelect", () => {
       />,
     );
     expect(options(container)).toEqual([
-      "# Anthropic · Abbonamento Claude",
+      "# Abbonamento Claude",
       "Opus 5.5",
-      "# Anthropic · Chiave API",
+      "# Chiave API Anthropic",
       "Opus 5.5",
       "Haiku 4.5",
     ]);
@@ -127,11 +127,11 @@ describe("The model menu by provider and way (2026-11-20)", () => {
     const shown = options(container);
     expect(shown.slice(0, 4)).toEqual([
       "Il predefinito",
-      "# Anthropic · Chiave API",
+      "# Chiave API Anthropic",
       "Fable 5.2",
       "Haiku 4.5",
     ]);
-    expect(shown).toContain("# OpenRouter · Chiave API");
+    expect(shown).toContain("# Chiave API OpenRouter");
     const search = screen.getByRole("searchbox", { name: "Cerca un modello" });
     fireEvent.input(search, { target: { value: "fable" } });
     expect(
