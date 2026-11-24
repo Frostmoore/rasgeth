@@ -8,27 +8,29 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ModelChoice } from "../src/api.js";
 import { lang } from "../src/i18n.js";
 
-const MODELS: ModelChoice[] = [
-  {
-    provider: "claude-subscription",
-    model: "claude-sonnet-5",
-    name: "Sonnet 5",
-    released: "2026-05-01",
-  },
-  {
-    provider: "claude-subscription",
-    model: "claude-opus-5-5",
-    name: "Opus 5.5",
-    released: "2026-09-01",
-    status: "new",
-  },
-  { provider: "anthropic", model: "claude-opus-5-5", name: "Opus 5.5", released: "2026-09-01" },
-  { provider: "chatgpt-subscription", model: "gpt-5.5", name: "GPT 5.5", released: "2026-04-10" },
-  { provider: "chatgpt-subscription", model: "gpt-6", name: "GPT 6", released: "2026-10-01" },
-  { provider: "openai", model: "gpt-5.5", name: "GPT 5.5", released: "2026-04-10" },
-  { provider: "local", model: "qwen3-8b" },
-  { provider: "server", model: "llama-5" },
-];
+const MODELS: ModelChoice[] = (
+  [
+    {
+      provider: "claude-subscription",
+      model: "claude-sonnet-5",
+      name: "Sonnet 5",
+      released: "2026-05-01",
+    },
+    {
+      provider: "claude-subscription",
+      model: "claude-opus-5-5",
+      name: "Opus 5.5",
+      released: "2026-09-01",
+      status: "new",
+    },
+    { provider: "anthropic", model: "claude-opus-5-5", name: "Opus 5.5", released: "2026-09-01" },
+    { provider: "chatgpt-subscription", model: "gpt-5.5", name: "GPT 5.5", released: "2026-04-10" },
+    { provider: "chatgpt-subscription", model: "gpt-6", name: "GPT 6", released: "2026-10-01" },
+    { provider: "openai", model: "gpt-5.5", name: "GPT 5.5", released: "2026-04-10" },
+    { provider: "local", model: "qwen3-8b" },
+    { provider: "server", model: "llama-5" },
+  ] as Omit<ModelChoice, "effort">[]
+).map((m) => ({ effort: false, ...m }));
 vi.mock("../src/state.js", async (orig) => ({
   ...(await orig<typeof import("../src/state.js")>()),
   getApi: () => ({ models: () => Promise.resolve(MODELS) }),
