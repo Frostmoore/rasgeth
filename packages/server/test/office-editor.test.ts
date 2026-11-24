@@ -21,10 +21,11 @@ import { startServer, TOKEN, wsClient } from "./helpers.js";
 
 type Server = Awaited<ReturnType<typeof startServer>>;
 let s: Server | undefined;
+// Closing took over 10 s twice on GitHub's Windows runner for 3.12.5 (93 ms here): give it 30 s.
 afterEach(async () => {
   await s?.close();
   s = undefined;
-});
+}, 30_000);
 
 type Req = { messages: { role: string; parts: { type: string; content?: string }[] }[] };
 const resultOf = (req: Req) =>
