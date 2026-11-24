@@ -148,10 +148,14 @@ const scopeOf = (agentId: string) => {
  * its result only confirming it. Results are recorded once every call of the same message has
  * run, so waiting for it left the panel one update behind while a long command ran beside it.
  * A call the tool refused (or would refuse: two steps in progress) leaves the previous list.
+ * A list written before the latest message to the agent counts only while it has open steps
+ * (3.12.5): once a new piece of work begins, a finished list is no longer the agent's plan.
  */
 export function latestTodos(items: ChatItem[]): { content: string; status: string }[] {
+  let afterMessage = false;
   for (let i = items.length - 1; i >= 0; i--) {
     const it = items[i];
+    if (it?.kind === "user") afterMessage = true;
     if (it?.kind !== "tool" || it.tool !== "update_todos") continue;
     if (it.result && !it.result.ok) continue;
     const todos = (it.input as { todos?: unknown } | null | undefined)?.todos;
@@ -164,6 +168,7 @@ export function latestTodos(items: ChatItem[]): { content: string; status: strin
         typeof (x as { status?: unknown }).status === "string",
     );
     if (steps.filter((x) => x.status === "in_progress").length > 1) continue;
+    if (afterMessage && steps.every((x) => x.status === "completed")) return [];
     return steps;
   }
   return [];

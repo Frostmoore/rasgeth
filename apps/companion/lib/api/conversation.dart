@@ -1042,9 +1042,13 @@ bool showsSomething(AssistantItem a) =>
 
 /// The steps the panel above the composer shows (`latestTodos`, Chat.tsx): the latest
 /// `update_todos` call as soon as it is recorded; one the tool refused (or would refuse: two in
-/// progress) leaves the previous list.
+/// progress) leaves the previous list. A list written before the latest message to the agent counts
+/// only while it has open steps (3.12.5): once a new piece of work begins, a finished list is no
+/// longer the agent's plan.
 List<({String content, String status})> latestTodos(List<ChatItem> items) {
+  var afterMessage = false;
   for (final it in items.reversed) {
+    if (it is UserItem) afterMessage = true;
     if (it is! ToolItem || it.tool != 'update_todos') continue;
     if (it.ok == false) continue;
     final todos = it.input is Map ? (it.input as Map)['todos'] : null;
@@ -1055,6 +1059,7 @@ List<({String content, String status})> latestTodos(List<ChatItem> items) {
           (content: x['content'] as String, status: x['status'] as String),
     ];
     if (steps.where((x) => x.status == 'in_progress').length > 1) continue;
+    if (afterMessage && steps.every((x) => x.status == 'completed')) return const [];
     return steps;
   }
   return const [];

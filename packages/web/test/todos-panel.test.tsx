@@ -121,6 +121,41 @@ describe("the list of steps", () => {
     expect(latestTodos(items).filter((x) => x.status === "completed")).toHaveLength(12);
   });
 
+  it("a finished list goes away when a new message starts new work (3.12.5)", () => {
+    // The orchestrator finished its 17 steps; the person gives a new task and the agent works
+    // again without a new list yet: the old list, all done, is not the plan of this work.
+    const done = list(17);
+    sessionView("s1").value = {
+      events: [
+        ev("message.user", { text: "first task" }),
+        call("t1", "update_todos", done),
+        result("t1", "17 of 17 done."),
+        ev("message.user", { text: "a new task" }),
+        call("c1", "run_command", { command: "ls" }),
+      ],
+      text: "",
+      thinking: "",
+      state: "running",
+      synced: true,
+    };
+    const { container } = render(<Chat sessionId="s1" agentId="god" />);
+    expect(container.querySelector(".todos")).toBeNull();
+    // The new list shows as soon as the agent writes it.
+    for (const e of [call("t2", "update_todos", list(0)), result("t2", "0 of 17 done.")])
+      act(() => applyMessage({ type: "event", sessionId: "s1", event: e }));
+    expect(container.querySelector(".todos-head")?.textContent).toContain("0 su 17");
+  });
+
+  it("a list with open steps stays across the person's messages", () => {
+    const items = buildItems([
+      ev("message.user", { text: "go" }),
+      call("t1", "update_todos", list(5)),
+      result("t1", "5 of 17 done."),
+      ev("message.user", { text: "go on" }),
+    ]);
+    expect(latestTodos(items).filter((x) => x.status === "completed")).toHaveLength(5);
+  });
+
   it("a list whose turn was cancelled before its result does not count", () => {
     const items = buildItems([
       call("t1", "update_todos", list(3)),
