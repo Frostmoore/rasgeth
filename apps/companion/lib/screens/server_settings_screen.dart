@@ -52,6 +52,7 @@ import '../settings/person_rules/person_rules_screen.dart' show openPersonRulesS
 import '../settings/skills_screen.dart' show openSkills;
 // G42.13 and G42.15: Telegram, Chats, Models and subscriptions, native.
 import '../settings/channels/chats_screen.dart' show openChatPlatforms;
+import '../settings/channels/secretary_screen.dart' show openSecretarySettings;
 import '../settings/channels/telegram_screen.dart' show openTelegramSettings;
 import '../settings/models/models_screen.dart' show openModelsSettings;
 import '../settings/system/backup_screen.dart' show openBackupSettings;
@@ -634,6 +635,15 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                       l.chChats,
                       l.chHubChats,
                       () => openChatPlatforms(context),
+                    ),
+                    // 3.12.4: the secretary that answers other people (Settings › Messages).
+                    _hub(
+                      c,
+                      'secretary',
+                      RgIcons.mail,
+                      l.scSection,
+                      l.scHub,
+                      () => openSecretarySettings(context),
                     ),
                     _hub(
                       c,

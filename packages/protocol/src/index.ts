@@ -67,6 +67,7 @@ export * from "./request-words.js";
 export * from "./requests.js";
 export * from "./saved.js";
 export * from "./search.js";
+export * from "./secretary.js";
 export * from "./secrets.js";
 export * from "./setup-network.js";
 export * from "./shell-summary.js";

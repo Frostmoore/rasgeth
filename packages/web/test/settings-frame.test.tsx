@@ -70,14 +70,14 @@ describe("Settings drawn as the wizard", () => {
     // Knowledge (G36.5), 21 with Projects (archiving one, 2026-11-09), 22 with Artifacts (3.5.9),
     // 23 with Machines (G38.2), 24 with External agents (ACP, G38.6), 25 with Voice (G38.4).
     // 26 with System (the machine, the role, data and backups, G39.3), 27 with Nodes (G39.4),
-    // 28 with Devices (RGCompanion, G40.1), 29 with Portrait (3.9.4), 30 with Rules (3.12), 31 with Emulators.
-    expect(nav.querySelectorAll(".st-nav-item")).toHaveLength(31);
+    // 28 with Devices (RGCompanion, G40.1), 29 with Portrait (3.9.4), 30 with Rules (3.12), 31 with Emulators, 32 with Messages (3.12.4).
+    expect(nav.querySelectorAll(".st-nav-item")).toHaveLength(32);
     expect(nav.querySelectorAll(".wz-grp")).toHaveLength(5);
     expect(nav.querySelector(".st-nav-item.cur")?.textContent).toBe("Telegram");
     expect(r.container.querySelector(".st-pick")?.textContent).toContain("Telegram");
     fireEvent.click(r.container.querySelector(".st-pick") as HTMLElement);
     const sheet = r.container.querySelector(".ui-modal") as HTMLElement;
-    expect(sheet.querySelectorAll(".st-nav-item")).toHaveLength(31);
+    expect(sheet.querySelectorAll(".st-nav-item")).toHaveLength(32);
     // Rasgeth's named systems (3.10.3): the name, and under it what it is in the person's words.
     const named = [...nav.querySelectorAll(".st-nav-item .sys")].map((x) => [
       x.querySelector(".sys-name")?.textContent,

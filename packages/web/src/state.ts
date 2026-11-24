@@ -1416,6 +1416,8 @@ export type SettingsSection =
   | "keychain"
   | "telegram"
   | "chats"
+  /** The secretary that answers other people on a business number or bot (3.12.4). */
+  | "secretary"
   | "budgets"
   | "subscriptions"
   | "code"

@@ -34127,6 +34127,654 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Margin {margin} points against an even pace over the week'**
   String cvLimitMarginTip(String margin);
+
+  /// No description provided for @scSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get scSection;
+
+  /// No description provided for @scQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Who writes to you, and who answers'**
+  String get scQ;
+
+  /// No description provided for @scLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Your secretary can answer other people (customers, contacts) on a WhatsApp Business number or a Telegram bot, only about what you told it. Everything else, and every appointment, commitment or new price, comes to you first, with a ready reply.'**
+  String get scLead;
+
+  /// No description provided for @scPendingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} waiting for you'**
+  String scPendingTitle(String n);
+
+  /// No description provided for @scPendingLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the ready reply as it is, change it, or refuse. Nothing goes out before your yes.'**
+  String get scPendingLead;
+
+  /// No description provided for @scAccountsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Business numbers and bots'**
+  String get scAccountsTitle;
+
+  /// No description provided for @scAccountsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'What other people write to. The keys stay in the keychain.'**
+  String get scAccountsLead;
+
+  /// No description provided for @scAddWa.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect WhatsApp Business'**
+  String get scAddWa;
+
+  /// No description provided for @scAddWaText.
+  ///
+  /// In en, this message translates to:
+  /// **'A guide, step by step, with Meta\'s official API'**
+  String get scAddWaText;
+
+  /// No description provided for @scAddTg.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect a Telegram bot'**
+  String get scAddTg;
+
+  /// No description provided for @scAddTgText.
+  ///
+  /// In en, this message translates to:
+  /// **'A bot you make with @BotFather; others write to it'**
+  String get scAddTgText;
+
+  /// No description provided for @scConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get scConnected;
+
+  /// No description provided for @scNotFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Not finished'**
+  String get scNotFinished;
+
+  /// No description provided for @scContactsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations'**
+  String get scContactsTitle;
+
+  /// No description provided for @scContactsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Every person who wrote has their own conversation. Open one to read it, take over, or pause the agent for that person.'**
+  String get scContactsLead;
+
+  /// No description provided for @scNoContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody has written yet.'**
+  String get scNoContacts;
+
+  /// No description provided for @scPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get scPaused;
+
+  /// No description provided for @scAsks.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks you'**
+  String get scAsks;
+
+  /// No description provided for @scReason_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'the agent cannot answer alone'**
+  String get scReason_unknown;
+
+  /// No description provided for @scReason_commitment.
+  ///
+  /// In en, this message translates to:
+  /// **'needs your yes: a commitment'**
+  String get scReason_commitment;
+
+  /// No description provided for @scReason_price.
+  ///
+  /// In en, this message translates to:
+  /// **'needs your yes: a new price'**
+  String get scReason_price;
+
+  /// No description provided for @scReason_file.
+  ///
+  /// In en, this message translates to:
+  /// **'sent a file'**
+  String get scReason_file;
+
+  /// No description provided for @scReason_limit.
+  ///
+  /// In en, this message translates to:
+  /// **'too many messages in an hour'**
+  String get scReason_limit;
+
+  /// No description provided for @scReason_other.
+  ///
+  /// In en, this message translates to:
+  /// **'needs an answer from you'**
+  String get scReason_other;
+
+  /// No description provided for @scReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready reply'**
+  String get scReady;
+
+  /// No description provided for @scSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get scSend;
+
+  /// No description provided for @scSendEdited.
+  ///
+  /// In en, this message translates to:
+  /// **'Send my version'**
+  String get scSendEdited;
+
+  /// No description provided for @scRefuse.
+  ///
+  /// In en, this message translates to:
+  /// **'Refuse'**
+  String get scRefuse;
+
+  /// No description provided for @scByAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent'**
+  String get scByAgent;
+
+  /// No description provided for @scByYou.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get scByYou;
+
+  /// No description provided for @scThread.
+  ///
+  /// In en, this message translates to:
+  /// **'The conversation'**
+  String get scThread;
+
+  /// No description provided for @scWrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Write to this person yourself'**
+  String get scWrite;
+
+  /// No description provided for @scNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get scNotes;
+
+  /// No description provided for @scNotesHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Only you and the agent see them: who this person is, what they like.'**
+  String get scNotesHelp;
+
+  /// No description provided for @scPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause the agent for this person'**
+  String get scPause;
+
+  /// No description provided for @scPauseHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The agent stops answering them; you read and answer.'**
+  String get scPauseHelp;
+
+  /// No description provided for @scStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'asked to stop'**
+  String get scStopped;
+
+  /// No description provided for @scWindowOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'you can write freely'**
+  String get scWindowOpen;
+
+  /// No description provided for @scWindowShut.
+  ///
+  /// In en, this message translates to:
+  /// **'24 hours passed: WhatsApp allows only an approved template'**
+  String get scWindowShut;
+
+  /// No description provided for @scWindowClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'More than 24 hours since they wrote: WhatsApp allows only an approved template message. Set one in the account.'**
+  String get scWindowClosed;
+
+  /// No description provided for @scDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this conversation'**
+  String get scDelete;
+
+  /// No description provided for @scDeleteQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this conversation and its history?'**
+  String get scDeleteQ;
+
+  /// No description provided for @scRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get scRemove;
+
+  /// No description provided for @scRemoveQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this account? The keys leave the keychain and nobody can write to it any more.'**
+  String get scRemoveQ;
+
+  /// No description provided for @scLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers an hour, for each person'**
+  String get scLimit;
+
+  /// No description provided for @scLimitHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'More than this and the agent stops and asks you.'**
+  String get scLimitHelp;
+
+  /// No description provided for @scAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Who answers'**
+  String get scAgent;
+
+  /// No description provided for @scAgentHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The agent that answers, with the instructions you gave it (hours, prices, address…). The «Message secretary» set is made for this.'**
+  String get scAgentHelp;
+
+  /// No description provided for @scAgentNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an agent'**
+  String get scAgentNone;
+
+  /// No description provided for @scNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get scNext;
+
+  /// No description provided for @scDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get scDone;
+
+  /// No description provided for @scTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get scTest;
+
+  /// No description provided for @scTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'Testing…'**
+  String get scTesting;
+
+  /// No description provided for @scConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get scConnect;
+
+  /// No description provided for @scCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get scCopy;
+
+  /// No description provided for @scCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get scCopied;
+
+  /// No description provided for @scCheckAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Check again'**
+  String get scCheckAgain;
+
+  /// No description provided for @scOpenRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Remote access'**
+  String get scOpenRemote;
+
+  /// No description provided for @scKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It goes to the keychain and never comes back to this page.'**
+  String get scKeyHelp;
+
+  /// No description provided for @scWa_remote.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach Rasgeth from outside'**
+  String get scWa_remote;
+
+  /// No description provided for @scWa_app.
+  ///
+  /// In en, this message translates to:
+  /// **'Make an app at Meta'**
+  String get scWa_app;
+
+  /// No description provided for @scWa_number.
+  ///
+  /// In en, this message translates to:
+  /// **'The number\'s ID'**
+  String get scWa_number;
+
+  /// No description provided for @scWa_token.
+  ///
+  /// In en, this message translates to:
+  /// **'A permanent token'**
+  String get scWa_token;
+
+  /// No description provided for @scWa_secret.
+  ///
+  /// In en, this message translates to:
+  /// **'The app\'s secret'**
+  String get scWa_secret;
+
+  /// No description provided for @scWa_webhook.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell Meta where to write'**
+  String get scWa_webhook;
+
+  /// No description provided for @scWa_subscribe.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe to messages'**
+  String get scWa_subscribe;
+
+  /// No description provided for @scWa_finish.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose who answers'**
+  String get scWa_finish;
+
+  /// No description provided for @scWaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect WhatsApp Business'**
+  String get scWaTitle;
+
+  /// No description provided for @scWaLead.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp does it through Meta\'s official Cloud API. It takes about ten minutes and a free Meta developer account; each step is checked before the next.'**
+  String get scWaLead;
+
+  /// No description provided for @scRemoteText.
+  ///
+  /// In en, this message translates to:
+  /// **'Meta must reach Rasgeth from the internet, so remote access has to be on first.'**
+  String get scRemoteText;
+
+  /// No description provided for @scRemoteOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Reachable from outside at {url}.'**
+  String scRemoteOk(String url);
+
+  /// No description provided for @scWaAppText.
+  ///
+  /// In en, this message translates to:
+  /// **'At Meta for Developers, create an app of type Business and add the WhatsApp product. Meta gives you a test number to try with; you can add your own business number later.'**
+  String get scWaAppText;
+
+  /// No description provided for @scWaAppLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Meta for Developers'**
+  String get scWaAppLink;
+
+  /// No description provided for @scWaNumberText.
+  ///
+  /// In en, this message translates to:
+  /// **'In the app, open WhatsApp, then API Setup. Copy the «Phone number ID» (digits only, not the phone number itself).'**
+  String get scWaNumberText;
+
+  /// No description provided for @scWaNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number ID'**
+  String get scWaNumberLabel;
+
+  /// No description provided for @scWaTokenText.
+  ///
+  /// In en, this message translates to:
+  /// **'The token on that page lasts a day. Make a lasting one: in Meta Business settings create a system user, give it your app, and generate a token with the permissions whatsapp_business_messaging and whatsapp_business_management, set to never expire.'**
+  String get scWaTokenText;
+
+  /// No description provided for @scWaTokenLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Token'**
+  String get scWaTokenLabel;
+
+  /// No description provided for @scTokenOk.
+  ///
+  /// In en, this message translates to:
+  /// **'The token works. Number: {number} {name}'**
+  String scTokenOk(String name, String number);
+
+  /// No description provided for @scWaSecretText.
+  ///
+  /// In en, this message translates to:
+  /// **'In the app, open App settings, then Basic, and show the «App secret» (32 letters and digits). It signs every message Meta sends, so nobody else can write to Rasgeth in its name.'**
+  String get scWaSecretText;
+
+  /// No description provided for @scWaSecretLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'App secret'**
+  String get scWaSecretLabel;
+
+  /// No description provided for @scWaWebhookText.
+  ///
+  /// In en, this message translates to:
+  /// **'In the app, open WhatsApp, then Configuration, then Edit the webhook. Paste these two values. Meta checks them at once, and this page will show it.'**
+  String get scWaWebhookText;
+
+  /// No description provided for @scCallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Callback URL'**
+  String get scCallback;
+
+  /// No description provided for @scVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify token'**
+  String get scVerify;
+
+  /// No description provided for @scWebhookOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Meta confirmed the address.'**
+  String get scWebhookOk;
+
+  /// No description provided for @scWebhookWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for Meta to check the address…'**
+  String get scWebhookWait;
+
+  /// No description provided for @scWaSubscribeText.
+  ///
+  /// In en, this message translates to:
+  /// **'Still under Configuration, in the webhook fields, subscribe to «messages».'**
+  String get scWaSubscribeText;
+
+  /// No description provided for @scWaTemplateText.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. After 24 hours from a person\'s message WhatsApp lets you write only with an approved template message (one text variable). If you made one at Meta, write its name here.'**
+  String get scWaTemplateText;
+
+  /// No description provided for @scTemplateName.
+  ///
+  /// In en, this message translates to:
+  /// **'Template name'**
+  String get scTemplateName;
+
+  /// No description provided for @scTemplateLang.
+  ///
+  /// In en, this message translates to:
+  /// **'Template language code (it, en…)'**
+  String get scTemplateLang;
+
+  /// No description provided for @scTg_botfather.
+  ///
+  /// In en, this message translates to:
+  /// **'Make the bot'**
+  String get scTg_botfather;
+
+  /// No description provided for @scTg_token.
+  ///
+  /// In en, this message translates to:
+  /// **'The bot\'s token'**
+  String get scTg_token;
+
+  /// No description provided for @scTg_finish.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose who answers'**
+  String get scTg_finish;
+
+  /// No description provided for @scTgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect a Telegram bot'**
+  String get scTgTitle;
+
+  /// No description provided for @scTgLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Others write to a bot you make. It is not your own Telegram account.'**
+  String get scTgLead;
+
+  /// No description provided for @scTgBotfatherText.
+  ///
+  /// In en, this message translates to:
+  /// **'In Telegram, talk to @BotFather: send /newbot, choose a name and a username ending in «bot». BotFather answers with a token.'**
+  String get scTgBotfatherText;
+
+  /// No description provided for @scTgBotfatherLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Open @BotFather'**
+  String get scTgBotfatherLink;
+
+  /// No description provided for @scTgTokenLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'The token BotFather gave you'**
+  String get scTgTokenLabel;
+
+  /// No description provided for @scBotOk.
+  ///
+  /// In en, this message translates to:
+  /// **'The bot is @{name}.'**
+  String scBotOk(String name);
+
+  /// No description provided for @scErr_no_remote.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote access is not set up. Set it up in Settings, Remote access, then come back.'**
+  String get scErr_no_remote;
+
+  /// No description provided for @scErr_not_https.
+  ///
+  /// In en, this message translates to:
+  /// **'The address from outside is not HTTPS, and Meta and Telegram need HTTPS.'**
+  String get scErr_not_https;
+
+  /// No description provided for @scErr_bad_token.
+  ///
+  /// In en, this message translates to:
+  /// **'The token is wrong or expired. Make a new one and try again.'**
+  String get scErr_bad_token;
+
+  /// No description provided for @scErr_bad_number.
+  ///
+  /// In en, this message translates to:
+  /// **'This number ID does not exist for that token. Copy it again from API Setup.'**
+  String get scErr_bad_number;
+
+  /// No description provided for @scErr_bad_secret.
+  ///
+  /// In en, this message translates to:
+  /// **'The app secret is 32 letters and digits.'**
+  String get scErr_bad_secret;
+
+  /// No description provided for @scErr_no_access.
+  ///
+  /// In en, this message translates to:
+  /// **'The token has no access to this number. Give the system user the app and the two WhatsApp permissions.'**
+  String get scErr_no_access;
+
+  /// No description provided for @scErr_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'The platform cannot be reached from here. Check the internet connection.'**
+  String get scErr_unreachable;
+
+  /// No description provided for @scErr_webhook_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The platform did not accept the address. Check remote access and try again.'**
+  String get scErr_webhook_failed;
+
+  /// No description provided for @scErr_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'It did not work.'**
+  String get scErr_failed;
+
+  /// No description provided for @scHub.
+  ///
+  /// In en, this message translates to:
+  /// **'Business numbers and bots: connect them, read the conversations, answer what the agent passes on.'**
+  String get scHub;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

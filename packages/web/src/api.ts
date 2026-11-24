@@ -88,6 +88,12 @@ import {
   type SavedQuery,
   type SavedUpdateBody,
   type SearchProviderId,
+  type SecretaryAccountView,
+  type SecretaryChannel,
+  type SecretaryCheck,
+  type SecretaryContactView,
+  type SecretaryMessageView,
+  type SecretaryPendingView,
   type ServerMessage,
   type SetupHomeChoice,
   type SetupHomeResult,
@@ -97,6 +103,7 @@ import {
   type SshAccess,
   type StorageInfo,
   type SystemInfo,
+  type TelegramBotInput,
   type TopicList,
   type UpdateStatus,
   type VaultBrowser,
@@ -105,6 +112,7 @@ import {
   type VaultImportPreview,
   type VaultInput,
   type VaultView,
+  type WhatsAppBusinessInput,
   type WifiState,
 } from "@redgiant/protocol";
 
@@ -1787,6 +1795,59 @@ export class Api {
     this.call<CalendarInfo>("PUT", `/api/settings/calendars/${encodeURIComponent(id)}`, b);
   removeCalendar = (id: string) =>
     this.call("DELETE", `/api/settings/calendars/${encodeURIComponent(id)}`);
+  /** The message secretary (3.12.4): business accounts, contacts, ready replies; keys never come back. */
+  secretaryAccounts = () =>
+    this.call<{ accounts: SecretaryAccountView[] }>("GET", "/api/secretary/accounts");
+  secretaryCheck = (b: {
+    channel: SecretaryChannel;
+    step: string;
+    token?: string;
+    phoneNumberId?: string;
+  }) => this.call<SecretaryCheck>("POST", "/api/secretary/check", b);
+  secretaryStartWhatsApp = (b: { name: string }) =>
+    this.call<SecretaryAccountView>("POST", "/api/secretary/whatsapp/start", b);
+  secretaryFinishWhatsApp = (id: string, b: WhatsAppBusinessInput) =>
+    this.call<SecretaryAccountView>(
+      "POST",
+      `/api/secretary/whatsapp/${encodeURIComponent(id)}/finish`,
+      b,
+    );
+  secretaryConnectTelegram = (b: TelegramBotInput) =>
+    this.call<SecretaryAccountView>("POST", "/api/secretary/telegram", b);
+  secretaryUpdateAccount = (
+    id: string,
+    b: { name?: string; agentId?: string | null; limitPerHour?: number },
+  ) =>
+    this.call<SecretaryAccountView>(
+      "PATCH",
+      `/api/secretary/accounts/${encodeURIComponent(id)}`,
+      b,
+    );
+  secretaryRemoveAccount = (id: string) =>
+    this.call("DELETE", `/api/secretary/accounts/${encodeURIComponent(id)}`);
+  secretaryContacts = () =>
+    this.call<{ contacts: SecretaryContactView[]; pending: SecretaryPendingView[] }>(
+      "GET",
+      "/api/secretary/contacts",
+    );
+  secretaryConversation = (id: string) =>
+    this.call<{
+      contact: SecretaryContactView;
+      messages: SecretaryMessageView[];
+      pending: SecretaryPendingView[];
+    }>("GET", `/api/secretary/contacts/${encodeURIComponent(id)}`);
+  secretaryPatchContact = (id: string, b: { name?: string; notes?: string; paused?: boolean }) =>
+    this.call("PATCH", `/api/secretary/contacts/${encodeURIComponent(id)}`, b);
+  secretaryDeleteContact = (id: string) =>
+    this.call("DELETE", `/api/secretary/contacts/${encodeURIComponent(id)}`);
+  secretarySend = (id: string, text: string) =>
+    this.call("POST", `/api/secretary/contacts/${encodeURIComponent(id)}/send`, { text });
+  secretaryApprove = (id: string, text?: string) =>
+    this.call("POST", `/api/secretary/pending/${encodeURIComponent(id)}/approve`, {
+      ...(text !== undefined && { text }),
+    });
+  secretaryRefuse = (id: string) =>
+    this.call("POST", `/api/secretary/pending/${encodeURIComponent(id)}/refuse`);
   /** Many mailboxes, by category (G33.3); passwords never come back. */
   mailboxes = () =>
     this.call<{ boxes: MailboxInfo[]; categories: string[] }>("GET", "/api/settings/mailboxes");

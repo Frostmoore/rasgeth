@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'fake_automations.dart';
 import 'fake_channels.dart';
+import 'fake_secretary.dart';
 import 'fake_extensions.dart';
 import 'fake_files.dart';
 import 'fake_knowledge.dart';
@@ -37,6 +38,7 @@ class FakeRedGiant {
 
   /// G42.13: Telegram, the chats and the mailboxes in memory (null: the canned answers).
   FakeChannels? channels;
+  FakeSecretary? secretary;
 
   /// G42.15: the ways of thinking and the local engine in memory (null: the canned answers).
   FakeModels? modelsFake;
@@ -1059,6 +1061,7 @@ class FakeRedGiant {
     if (portrait case final p? when await p.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (skills case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (channels case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;
+    if (secretary case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (modelsFake case final k? when await k.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (extensions case final x? when await x.handle(r, path, (s, b) => _json(r, s, b))) return;
     if (vault case final v? when await v.handle(r, path, (s, b) => _json(r, s, b))) return;

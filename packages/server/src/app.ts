@@ -52,6 +52,9 @@ import {
   ProjectMaxAgents,
   RefineRequest,
   SEARCH_PROVIDER_IDS,
+  SecretaryChannel,
+  TelegramBotInput,
+  WhatsAppBusinessInput,
   withRequestWords,
 } from "@redgiant/protocol";
 import type { TelegramGateway } from "@redgiant/telegram";
@@ -131,6 +134,8 @@ import { ProjectError, SubprojectError } from "./projects.js";
 import { RefineError } from "./prompt-refiner.js";
 import { RoomError } from "./rooms.js";
 import { savedRoutes } from "./saved-routes.js";
+import { SendError } from "./secretary/engine.js";
+import { SecretaryError } from "./secretary/service.js";
 import type { SetupService } from "./setup.js";
 import type { SetupNetwork } from "./setup-network.js";
 import { setupCaptive, setupNetworkRoutes } from "./setup-network-routes.js";
@@ -1006,7 +1011,9 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       (c.req.method === "GET" && c.req.path.startsWith("/api/voice/wake-models/")) ||
       /^\/api\/automations\/[\w-]+\/hook(\/[\w-]+)?$/.test(c.req.path) ||
       // A person's rule called by a webhook (3.12): its own secret, checked by the rules.
-      /^\/api\/rules\/[\w-]+\/hook(\/[\w-]+)?$/.test(c.req.path)
+      /^\/api\/rules\/[\w-]+\/hook(\/[\w-]+)?$/.test(c.req.path) ||
+      // The secretary's webhooks (3.12.4): Meta signs them, Telegram sends its secret header.
+      /^\/api\/secretary\/(whatsapp|telegram)\/[\w-]+\/webhook$/.test(c.req.path)
     )
       return next();
     const principal = await auth.authenticate(bearer(c.req.header("authorization")));
@@ -2187,6 +2194,136 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     const ok = await wa.webhook(await c.req.text(), c.req.header("x-hub-signature-256"));
     return ok ? c.json({ ok: true }, 200) : c.json({ error: "Forbidden" }, 403);
   });
+
+  // The message secretary (3.12.4): other people write to the person's business number or bot.
+  // The webhooks are public (signed); everything else is the person's own.
+  app.get("/api/secretary/whatsapp/:id/webhook", async (c) => {
+    const challenge = await core.secretary.whatsappHandshake(c.req.param("id"), c.req.query());
+    return challenge !== undefined ? c.text(challenge, 200) : c.json({ error: "Forbidden" }, 403);
+  });
+  app.post("/api/secretary/whatsapp/:id/webhook", async (c) => {
+    const r = await core.secretary.whatsappWebhook(
+      c.req.param("id"),
+      await c.req.text(),
+      c.req.header("x-hub-signature-256"),
+    );
+    // Meta wants an answer at once; the agents may take a while.
+    void r.done.catch(() => {});
+    return r.ok ? c.json({ ok: true }, 200) : c.json({ error: "Forbidden" }, 403);
+  });
+  app.post("/api/secretary/telegram/:id/webhook", async (c) => {
+    const r = await core.secretary.telegramWebhook(
+      c.req.param("id"),
+      c.req.header("x-telegram-bot-api-secret-token"),
+      await c.req.json().catch(() => ({})),
+    );
+    void r.done.catch(() => {});
+    return r.ok ? c.json({ ok: true }, 200) : c.json({ error: "Forbidden" }, 403);
+  });
+  const secretary = async (c: Context<Env>, f: () => Promise<unknown>, status = 200) => {
+    try {
+      return c.json((await f()) ?? { ok: true }, status as 200);
+    } catch (err) {
+      if (err instanceof SecretaryError || err instanceof SendError)
+        return c.json({ error: err.message, code: err.code }, err.code === "not_found" ? 404 : 400);
+      throw err;
+    }
+  };
+  const body = async <T extends z.ZodType>(c: Context<Env>, schema: T) =>
+    schema.safeParse(await c.req.json().catch(() => ({})));
+  app.get("/api/secretary/accounts", async (c) =>
+    c.json({ accounts: await core.secretary.accounts(owner(c)) }, 200),
+  );
+  app.post("/api/secretary/check", async (c) => {
+    const b = await body(
+      c,
+      z.object({
+        channel: SecretaryChannel,
+        step: z.string().max(40),
+        token: z.string().max(1000).optional(),
+        phoneNumberId: z.string().max(40).optional(),
+      }),
+    );
+    if (!b.success) return c.json({ error: "Bad check" }, 400);
+    return c.json(await core.secretary.check(b.data.channel, b.data.step, b.data), 200);
+  });
+  app.post("/api/secretary/whatsapp/start", async (c) => {
+    const b = await body(
+      c,
+      z.object({ name: z.string().max(80).default(""), agentId: z.string().max(100).optional() }),
+    );
+    if (!b.success) return c.json({ error: "Bad request" }, 400);
+    return secretary(
+      c,
+      () => core.secretary.startWhatsApp(owner(c), b.data.name, b.data.agentId),
+      201,
+    );
+  });
+  app.post("/api/secretary/whatsapp/:id/finish", async (c) => {
+    const b = await body(c, WhatsAppBusinessInput);
+    if (!b.success) return c.json({ error: "Bad request", code: "bad_input" }, 400);
+    return secretary(c, () => core.secretary.finishWhatsApp(owner(c), c.req.param("id"), b.data));
+  });
+  app.post("/api/secretary/telegram", async (c) => {
+    const b = await body(c, TelegramBotInput);
+    if (!b.success) return c.json({ error: "Bad request", code: "bad_token" }, 400);
+    return secretary(c, () => core.secretary.connectTelegram(owner(c), b.data), 201);
+  });
+  app.patch("/api/secretary/accounts/:id", async (c) => {
+    const b = await body(
+      c,
+      z.object({
+        name: z.string().max(80).optional(),
+        agentId: z.string().max(100).nullable().optional(),
+        limitPerHour: z.number().int().min(1).max(60).optional(),
+      }),
+    );
+    if (!b.success) return c.json({ error: "Bad request" }, 400);
+    return secretary(c, () => core.secretary.updateAccount(owner(c), c.req.param("id"), b.data));
+  });
+  app.delete("/api/secretary/accounts/:id", (c) =>
+    secretary(c, () => core.secretary.removeAccount(owner(c), c.req.param("id"))),
+  );
+  app.get("/api/secretary/contacts", async (c) =>
+    c.json(
+      {
+        contacts: await core.secretary.contacts(owner(c)),
+        pending: await core.secretary.pending(owner(c)),
+      },
+      200,
+    ),
+  );
+  app.get("/api/secretary/contacts/:id", (c) =>
+    secretary(c, () => core.secretary.conversation(owner(c), c.req.param("id"))),
+  );
+  app.patch("/api/secretary/contacts/:id", async (c) => {
+    const b = await body(
+      c,
+      z.object({
+        name: z.string().max(120).optional(),
+        notes: z.string().max(4000).optional(),
+        paused: z.boolean().optional(),
+      }),
+    );
+    if (!b.success) return c.json({ error: "Bad request" }, 400);
+    return secretary(c, () => core.secretary.patchContact(owner(c), c.req.param("id"), b.data));
+  });
+  app.delete("/api/secretary/contacts/:id", (c) =>
+    secretary(c, () => core.secretary.deleteContact(owner(c), c.req.param("id"))),
+  );
+  app.post("/api/secretary/contacts/:id/send", async (c) => {
+    const b = await body(c, z.object({ text: z.string().min(1).max(4000) }));
+    if (!b.success) return c.json({ error: "Bad request" }, 400);
+    return secretary(c, () => core.secretary.send(owner(c), c.req.param("id"), b.data.text));
+  });
+  app.post("/api/secretary/pending/:id/approve", async (c) => {
+    const b = await body(c, z.object({ text: z.string().min(1).max(4000).optional() }));
+    if (!b.success) return c.json({ error: "Bad request" }, 400);
+    return secretary(c, () => core.secretary.approve(owner(c), c.req.param("id"), b.data.text));
+  });
+  app.post("/api/secretary/pending/:id/refuse", (c) =>
+    secretary(c, () => core.secretary.refuse(owner(c), c.req.param("id"))),
+  );
 
   // Teams (G36.9): Microsoft posts here, signed; the app package names the bot for Teams.
   app.post("/api/chats/teams/messages", async (c) => {

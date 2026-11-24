@@ -5670,5 +5670,144 @@
   "cvLimitResets": "Si azzera {when}",
   "cvLimitReadAt": "Piano letto {when}",
   "cvLimitNotRead": "Piano non ancora letto",
-  "cvLimitMarginTip": "Margine {margin} punti rispetto a un ritmo costante nella settimana"
+  "cvLimitMarginTip": "Margine {margin} punti rispetto a un ritmo costante nella settimana",
+  "scSection": "Messaggi",
+  "scQ": "Chi ti scrive e chi risponde",
+  "scLead": "Il segretario può rispondere ad altre persone (clienti, contatti) su un numero WhatsApp Business o su un bot Telegram, solo su quello che gli hai detto. Tutto il resto, e ogni appuntamento, impegno o prezzo nuovo, arriva prima a te, con una risposta pronta.",
+  "scPendingTitle": "{n} in attesa di te",
+  "@scPendingTitle": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "scPendingLead": "Invia la risposta pronta così com'è, cambiala o rifiutala. Niente parte prima del tuo sì.",
+  "scAccountsTitle": "Numeri e bot dell'attività",
+  "scAccountsLead": "Dove scrivono gli altri. Le chiavi restano nel portachiavi.",
+  "scAddWa": "Collega WhatsApp Business",
+  "scAddWaText": "Una guida passo passo con l'API ufficiale di Meta",
+  "scAddTg": "Collega un bot Telegram",
+  "scAddTgText": "Un bot che fai con @BotFather; gli altri scrivono a lui",
+  "scConnected": "Collegato",
+  "scNotFinished": "Non finito",
+  "scContactsTitle": "Conversazioni",
+  "scContactsLead": "Ogni persona che ha scritto ha la sua conversazione. Aprila per leggerla, prendere in mano o mettere in pausa l'agente per quella persona.",
+  "scNoContacts": "Nessuno ha ancora scritto.",
+  "scPaused": "In pausa",
+  "scAsks": "Chiede a te",
+  "scReason_unknown": "l'agente non sa rispondere da solo",
+  "scReason_commitment": "serve il tuo sì: un impegno",
+  "scReason_price": "serve il tuo sì: un prezzo nuovo",
+  "scReason_file": "ha mandato un file",
+  "scReason_limit": "troppi messaggi in un'ora",
+  "scReason_other": "serve una tua risposta",
+  "scReady": "Risposta pronta",
+  "scSend": "Invia",
+  "scSendEdited": "Invia la mia versione",
+  "scRefuse": "Rifiuta",
+  "scByAgent": "Agente",
+  "scByYou": "Tu",
+  "scThread": "La conversazione",
+  "scWrite": "Scrivi tu a questa persona",
+  "scNotes": "Note",
+  "scNotesHelp": "Le vedi solo tu e l'agente: chi è questa persona, cosa le piace.",
+  "scPause": "Metti in pausa l'agente per questa persona",
+  "scPauseHelp": "L'agente non le risponde più; leggi e rispondi tu.",
+  "scStopped": "ha chiesto di fermarsi",
+  "scWindowOpen": "puoi scrivere liberamente",
+  "scWindowShut": "sono passate 24 ore: WhatsApp ammette solo un modello approvato",
+  "scWindowClosed": "Sono passate più di 24 ore da quando ha scritto: WhatsApp ammette solo un messaggio con modello approvato. Impostane uno nell'account.",
+  "scDelete": "Elimina questa conversazione",
+  "scDeleteQ": "Eliminare questa conversazione e la sua storia?",
+  "scRemove": "Rimuovi",
+  "scRemoveQ": "Rimuovere questo account? Le chiavi escono dal portachiavi e nessuno potrà più scrivergli.",
+  "scLimit": "Risposte all'ora, per ogni persona",
+  "scLimitHelp": "Oltre questo numero l'agente si ferma e ti chiede.",
+  "scAgent": "Chi risponde",
+  "scAgentHelp": "L'agente che risponde, con le istruzioni che gli hai dato (orari, prezzi, indirizzo…). Il set «Segretario sui messaggi» è fatto per questo.",
+  "scAgentNone": "Scegli un agente",
+  "scNext": "Avanti",
+  "scDone": "Fatto",
+  "scTest": "Prova",
+  "scTesting": "Provo…",
+  "scConnect": "Collega",
+  "scCopy": "Copia",
+  "scCopied": "Copiato",
+  "scCheckAgain": "Controlla di nuovo",
+  "scOpenRemote": "Apri Accesso da fuori",
+  "scKeyHelp": "Va nel portachiavi e non torna mai in questa pagina.",
+  "scWa_remote": "Raggiungere Rasgeth da fuori",
+  "scWa_app": "Fai un'app su Meta",
+  "scWa_number": "L'ID del numero",
+  "scWa_token": "Un token permanente",
+  "scWa_secret": "Il segreto dell'app",
+  "scWa_webhook": "Di' a Meta dove scrivere",
+  "scWa_subscribe": "Iscriviti ai messaggi",
+  "scWa_finish": "Scegli chi risponde",
+  "scWaTitle": "Collega WhatsApp Business",
+  "scWaLead": "WhatsApp passa dall'API Cloud ufficiale di Meta. Servono una decina di minuti e un account sviluppatore Meta gratuito; ogni passo è controllato prima del successivo.",
+  "scRemoteText": "Meta deve raggiungere Rasgeth da internet, quindi prima va attivato l'accesso da fuori.",
+  "scRemoteOk": "Raggiungibile da fuori su {url}.",
+  "@scRemoteOk": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "scWaAppText": "In Meta for Developers crea un'app di tipo Business e aggiungi il prodotto WhatsApp. Meta ti dà un numero di prova; il numero della tua attività lo puoi aggiungere dopo.",
+  "scWaAppLink": "Apri Meta for Developers",
+  "scWaNumberText": "Nell'app apri WhatsApp, poi API Setup. Copia il «Phone number ID» (solo cifre, non il numero di telefono).",
+  "scWaNumberLabel": "Phone number ID",
+  "scWaTokenText": "Il token di quella pagina dura un giorno. Ne serve uno duraturo: nelle impostazioni di Meta Business crea un utente di sistema, assegnagli la tua app e genera un token con i permessi whatsapp_business_messaging e whatsapp_business_management, senza scadenza.",
+  "scWaTokenLabel": "Token",
+  "scTokenOk": "Il token funziona. Numero: {number} {name}",
+  "@scTokenOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "scWaSecretText": "Nell'app apri Impostazioni app, poi Di base, e mostra il «Segreto app» (32 lettere e cifre). Firma ogni messaggio che Meta manda, così nessun altro può scrivere a Rasgeth a suo nome.",
+  "scWaSecretLabel": "Segreto dell'app",
+  "scWaWebhookText": "Nell'app apri WhatsApp, poi Configurazione, poi Modifica il webhook. Incolla questi due valori. Meta li controlla subito e questa pagina lo mostra.",
+  "scCallback": "URL di callback",
+  "scVerify": "Token di verifica",
+  "scWebhookOk": "Meta ha confermato l'indirizzo.",
+  "scWebhookWait": "Aspetto che Meta controlli l'indirizzo…",
+  "scWaSubscribeText": "Sempre in Configurazione, nei campi del webhook, iscriviti a «messages».",
+  "scWaTemplateText": "Facoltativo. Dopo 24 ore dal messaggio di una persona WhatsApp lascia scrivere solo con un modello di messaggio approvato (con una variabile di testo). Se ne hai fatto uno su Meta, scrivi qui il nome.",
+  "scTemplateName": "Nome del modello",
+  "scTemplateLang": "Codice lingua del modello (it, en…)",
+  "scTg_botfather": "Fai il bot",
+  "scTg_token": "Il token del bot",
+  "scTg_finish": "Scegli chi risponde",
+  "scTgTitle": "Collega un bot Telegram",
+  "scTgLead": "Gli altri scrivono a un bot che fai tu. Non è il tuo account Telegram.",
+  "scTgBotfatherText": "In Telegram parla con @BotFather: manda /newbot, scegli un nome e uno username che finisca con «bot». BotFather risponde con un token.",
+  "scTgBotfatherLink": "Apri @BotFather",
+  "scTgTokenLabel": "Il token che ti ha dato BotFather",
+  "scBotOk": "Il bot è @{name}.",
+  "@scBotOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "scErr_no_remote": "L'accesso da fuori non è attivo. Attivalo in Impostazioni, Accesso da fuori, poi torna qui.",
+  "scErr_not_https": "L'indirizzo da fuori non è HTTPS, e Meta e Telegram vogliono HTTPS.",
+  "scErr_bad_token": "Il token è sbagliato o scaduto. Creane uno nuovo e riprova.",
+  "scErr_bad_number": "Questo ID numero non esiste per quel token. Copialo di nuovo da API Setup.",
+  "scErr_bad_secret": "Il segreto dell'app è di 32 lettere e cifre.",
+  "scErr_no_access": "Il token non ha accesso a questo numero. Dai all'utente di sistema l'app e i due permessi WhatsApp.",
+  "scErr_unreachable": "La piattaforma non si raggiunge da qui. Controlla la connessione a internet.",
+  "scErr_webhook_failed": "La piattaforma non ha accettato l'indirizzo. Controlla l'accesso da fuori e riprova.",
+  "scErr_failed": "Non ha funzionato.",
+  "scHub": "Numeri e bot dell'attività: collegali, leggi le conversazioni, rispondi a ciò che l'agente ti passa."
 }
