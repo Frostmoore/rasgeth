@@ -4,11 +4,12 @@
 #
 #   pwsh cuda-redist.ps1 -Out C:\cuda [-Version 12.8.1]
 #
-# In CUDA 12.8 the compiler's archive (cuda_nvcc) carries nvvm and crt itself.
+# In CUDA 12.8 the compiler's archive (cuda_nvcc) carries nvvm and crt itself. llama.cpp b12679 includes nvml.h
+# (the card's memory through NVML): cuda_nvml_dev brings the header.
 param(
   [Parameter(Mandatory = $true)][string]$Out,
   [string]$Version = "12.8.1",
-  [string[]]$Components = @("cuda_nvcc", "cuda_cudart", "cuda_cccl", "libcublas", "cuda_profiler_api", "cuda_nvtx")
+  [string[]]$Components = @("cuda_nvcc", "cuda_cudart", "cuda_cccl", "libcublas", "cuda_profiler_api", "cuda_nvtx", "cuda_nvml_dev")
 )
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
