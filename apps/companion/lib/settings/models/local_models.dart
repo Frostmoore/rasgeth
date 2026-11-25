@@ -119,6 +119,10 @@ class _LocalModelsSectionState extends State<LocalModelsSection> {
   Timer? _timer;
   bool _slow = false;
 
+  /// Deep Field as the person chose it (starts as the engine's); it needs the computer to allow it.
+  late bool _stream = widget.s.engineStream;
+  bool get _streaming => _stream && widget.s.streamAvailability(_variant).ok;
+
   @override
   void initState() {
     super.initState();
@@ -136,7 +140,7 @@ class _LocalModelsSectionState extends State<LocalModelsSection> {
     final c = AppScope.read(context).client;
     if (c == null) return;
     try {
-      final r = await c.localModels(_variant, stream: widget.s.engineStream);
+      final r = await c.localModels(_variant, stream: _streaming);
       List<LmJob> jobs;
       try {
         jobs = await c.lmJobs();
@@ -217,6 +221,7 @@ class _LocalModelsSectionState extends State<LocalModelsSection> {
       m: m,
       s: widget.s,
       variant: _variant,
+      stream: _streaming,
       files: () => _files,
       jobs: () => _jobs,
       poll: widget.poll,
@@ -244,6 +249,117 @@ class _LocalModelsSectionState extends State<LocalModelsSection> {
           await _changed();
           close();
         },
+      ),
+    );
+  }
+
+  Future<void> _setStream(bool on) async {
+    setState(() {
+      _stream = on;
+      _models = null;
+    });
+    await _load();
+  }
+
+  Future<void> _howItWorks() {
+    final l = AppLocalizations.of(context);
+    return kbWindow<void>(
+      context,
+      key: const Key('lm-stream-info'),
+      title: sysName(context, RgSystem.deepField),
+      body: (ctx, close) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          KbLine(l.moWzStreamInfo1),
+          KbLine(l.moWzStreamInfo2),
+          KbLine(l.moWzStreamInfo3),
+          const SizedBox(height: 8),
+          FilledButton(onPressed: close, child: Text(l.moWzUnderstood)),
+        ],
+      ),
+    );
+  }
+
+  String _planText(AppLocalizations l, StreamPlan p) => l.moLmStreamPlan(
+    p.moeCacheMib > 0 ? l.moLmStreamCache(_gb(p.moeCacheMib / 1024)) : '',
+    '${(p.ctx / 1024).round()}k',
+    p.ramGb != null ? _gb(p.ramGb!) : '?',
+    switch (p.source) {
+      'ssd' => l.moLmStreamFromSsd(p.ssdGbPerWord.toStringAsFixed(2)),
+      'ram' => l.moLmStreamFromRam,
+      _ => l.moLmStreamFromCard,
+    },
+  );
+
+  /// The computer's Deep Field switch with its line, the reason when it cannot, «How it works» and
+  /// the plan of the engine that runs with it (the page's `WzMachine`).
+  Widget _deepField(AppLocalizations l, RgColors c, ModelsSetup s) {
+    final av = s.streamAvailability(_variant);
+    final on = _streaming;
+    String label(String? d) => d == null || d == '/' ? l.moLmStreamThisDisk : '$d:';
+    final disk = s.modelDiskName(_variant);
+    final plan = on ? s.streamPlan : null;
+    final style = TextStyle(color: c.dim, fontSize: 12.5, height: 1.35);
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Column(
+        key: const Key('lm-stream'),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: SysTitle(RgSystem.deepField, size: 14)),
+              Semantics(
+                label: sysName(context, RgSystem.deepField),
+                toggled: on,
+                button: true,
+                child: InkWell(
+                  key: const Key('lm-stream-switch'),
+                  borderRadius: BorderRadius.circular(99),
+                  onTap: av.ok && !s.lockedOf('engine') ? () => _setStream(!on) : null,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: RgSwitch(on: on),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 3),
+          Text(
+            on ? l.moWzStreamOn(label(disk == '/' ? null : disk)) : l.moWzStreamOff,
+            key: const Key('lm-stream-line'),
+            style: style,
+          ),
+          if (!av.ok)
+            KbLine(
+              av.reason == 'hdd'
+                  ? l.moLmStreamHdd(label(av.disk))
+                  : l.moLmStreamNoRoom(label(av.disk), _gb(av.freeGb)),
+              key: const Key('lm-stream-why'),
+              error: true,
+            ),
+          if (av.ok && av.warn != null)
+            Text(
+              av.warn == 'unknownDisk'
+                  ? l.moLmStreamUnknownDisk
+                  : l.moLmStreamMaybeSsd(label(av.disk)),
+              key: const Key('lm-stream-warn'),
+              style: style,
+            ),
+          TextButton(
+            key: const Key('lm-stream-how'),
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: const Size(0, 32),
+              alignment: Alignment.centerLeft,
+            ),
+            onPressed: _howItWorks,
+            child: Text(l.moWzHowItWorks),
+          ),
+          if (plan != null)
+            Text(_planText(l, plan), key: const Key('lm-stream-plan'), style: style),
+        ],
       ),
     );
   }
@@ -342,7 +458,7 @@ class _LocalModelsSectionState extends State<LocalModelsSection> {
               padding: const EdgeInsets.only(top: 6),
               child: Text(l.moLmEngineHelp, style: TextStyle(color: c.dim, fontSize: 12.5)),
             ),
-            SysExplain(RgSystem.deepField, sysWord(context, 'wzStreamInfo1')),
+            _deepField(l, c, s),
             SysExplain(RgSystem.persistar, l.moSysPersistarLine),
           ],
         ),
@@ -461,6 +577,7 @@ class _ModelPanel extends StatefulWidget {
     required this.m,
     required this.s,
     required this.variant,
+    required this.stream,
     required this.files,
     required this.jobs,
     required this.poll,
@@ -470,6 +587,9 @@ class _ModelPanel extends StatefulWidget {
   final LocalChoice m;
   final ModelsSetup s;
   final String variant;
+
+  /// Deep Field as chosen in the computer's box.
+  final bool stream;
   final List<LocalFile> Function() files;
   final List<LmJob> Function() jobs;
   final bool poll;
@@ -558,7 +678,7 @@ class _ModelPanelState extends State<_ModelPanel> {
             m: m,
             s: s,
             variant: variant,
-            stream: s.engineStream,
+            stream: widget.stream,
             name: _name,
             choices: _choices,
             onChoices: (v) => setState(() => _choices = v),
@@ -578,7 +698,7 @@ class _ModelPanelState extends State<_ModelPanel> {
                       body: (ctx, close) => _SpeedTest(
                         variant: variant,
                         model: _name,
-                        stream: s.engineStream,
+                        stream: widget.stream,
                         draftModel: draft,
                         poll: widget.poll,
                         onClose: close,
@@ -598,7 +718,7 @@ class _ModelPanelState extends State<_ModelPanel> {
             jobs: widget.jobs,
             poll: widget.poll,
             choices: _choices,
-            stream: s.engineStream,
+            stream: widget.stream,
             draftName: m.draftFile == null ? null : targetName(m.draftFile!.file),
             onChange: _changed,
           ),

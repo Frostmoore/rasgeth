@@ -76,6 +76,35 @@ class ModelsSetup {
 
   // ---- the improvements the engine runs with (p3.12.6) ----
   bool get engineStream => engine?['stream'] == true;
+
+  /// What the last start with Deep Field decided (`engine.plan`), when the engine runs with it.
+  StreamPlan? get streamPlan =>
+      engineStream && engine?['plan'] is Map ? StreamPlan(_m(engine!['plan'])) : null;
+
+  /// Whether Deep Field can be used with this engine's models folder (the page's `streamAvailable`).
+  StreamAvailability streamAvailability(String variant) {
+    final name = _s(_m(hardware['modelDisk'])[variant == 'windows' ? 'windows' : 'docker']);
+    final disks = [
+      for (final d in hardware['disks'] is List ? hardware['disks'] as List : const [])
+        if (d is Map) d.cast<String, dynamic>(),
+    ];
+    final disk =
+        disks.where((d) => d['name'] == name).firstOrNull ??
+        (disks.length == 1 ? disks.first : null);
+    if (disk == null) return const StreamAvailability(ok: true, warn: 'unknownDisk');
+    final diskName = '${disk['name'] ?? '/'}';
+    final free = _n(disk['freeGb']);
+    if (disk['ssd'] == false) return StreamAvailability(ok: false, reason: 'hdd', disk: diskName);
+    if (free < 20) {
+      return StreamAvailability(ok: false, reason: 'noRoom', disk: diskName, freeGb: free);
+    }
+    if (disk['ssd'] == null) return StreamAvailability(ok: true, warn: 'maybeSsd', disk: diskName);
+    return const StreamAvailability(ok: true);
+  }
+
+  /// The disk the engine keeps its models on, for «On: … from the SSD ({disk})».
+  String modelDiskName(String variant) =>
+      _s(_m(hardware['modelDisk'])[variant == 'windows' ? 'windows' : 'docker']) ?? '/';
   bool get engineBigChunks => engine?['bigChunks'] == true;
   bool get engineMoePrefetch => engine?['moePrefetch'] == true;
   bool get engineNoRepack => engine?['noRepack'] == true;
@@ -100,6 +129,35 @@ class ModelsSetup {
     }
     return null;
   }
+}
+
+/// Deep Field's availability here: `reason` hdd | noRoom (off), `warn` unknownDisk | maybeSsd.
+class StreamAvailability {
+  const StreamAvailability({required this.ok, this.reason, this.warn, this.disk, this.freeGb = 0});
+
+  final bool ok;
+  final String? reason;
+  final String? warn;
+  final String? disk;
+  final double freeGb;
+}
+
+/// What the last start with Deep Field decided: context, the experts' cache, where it reads from.
+class StreamPlan {
+  StreamPlan(Map<String, dynamic> j)
+    : ctx = _n(j['ctx']),
+      moeCacheMib = _n(j['moeCacheMib']),
+      source = '${j['source'] ?? ''}',
+      ssdGbPerWord = _n(j['ssdGbPerWord']),
+      ramGb = j['ramGb'] is num ? (j['ramGb'] as num).toDouble() : null;
+
+  final double ctx;
+  final double moeCacheMib;
+
+  /// ssd | ram | card.
+  final String source;
+  final double ssdGbPerWord;
+  final double? ramGb;
 }
 
 /// A subscription's state: on, who is signed in, where its program comes from.

@@ -39,6 +39,9 @@ class FakeModels {
   final calls = <String>[];
   final bodies = <String, Object?>{};
 
+  /// The query of every `GET /api/setup/local-models`.
+  final queries = <String>[];
+
   bool claudeOn = false;
   String? claudeEmail;
   bool chatgptOn = false;
@@ -213,7 +216,29 @@ class FakeModels {
         }
         await json(200, {'ok': true});
       case ('GET', '/api/setup/local-models'):
-        await json(200, {'models': models, 'files': files, 'diskFreeGb': 400});
+        final stream = r.uri.queryParameters['stream'] == '1';
+        queries.add(r.uri.query);
+        await json(200, {
+          // With Deep Field on, Prefetch and Big Chunks are no longer locked.
+          'models': [
+            for (final m in models)
+              if (stream && m['improvements'] is List)
+                {
+                  ...m,
+                  'improvements': [
+                    for (final i in m['improvements']! as List)
+                      if (i is Map && i['reason'] == 'needDeepField')
+                        {'id': i['id'], 'available': true}
+                      else
+                        i,
+                  ],
+                }
+              else
+                m,
+          ],
+          'files': files,
+          'diskFreeGb': 400,
+        });
       case ('POST', '/api/setup/local-models/download'):
         final name = '${b['file']}'.split('/').last;
         final j = addJob(
