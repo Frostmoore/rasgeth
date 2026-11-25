@@ -23,10 +23,9 @@ import {
 } from "@redgiant/protocol";
 import { freePort } from "../embedded-db.js";
 import { JobFailure, type JobHandle, type Jobs } from "../jobs.js";
-import { WIN_ENGINE_BUILD } from "../win-engine.js";
 
-/** The llama.cpp release used here: the same one as the chat engine. */
-export const LLAMA_EMBED_BUILD = WIN_ENGINE_BUILD;
+/** The llama.cpp release used here: its own pin, with the sha256 digests below (the chat engine moved on). */
+export const LLAMA_EMBED_BUILD = "b12034";
 
 /** sha256 of each program archive of release b12034 (GitHub's `digest`, 2026-11-07). */
 export const LLAMA_ASSETS: Readonly<Record<string, { file: string; sha256: string }>> = {

@@ -130,7 +130,7 @@ describe("«next layer ahead»: the patched llama.cpp (G32.2)", () => {
     const r: WinEngineRequest = {
       id: "x",
       model: "m.gguf",
-      build: "b12034",
+      build: "b12679",
       ctx: 4096,
       parallel: 1,
       flavor: "cuda",
@@ -223,7 +223,7 @@ describe("«next layer ahead»: the patched llama.cpp (G32.2)", () => {
     expect(engineContainerEnv(true)).toEqual([...plain, "LLAMA_MOE_PREFETCH=1"]);
   });
 
-  it("the patched image has the usual engine's defaults, b12034 with apply.sh, every card family", async () => {
+  it("the patched image has the usual engine's defaults, b12679 with apply.sh, every card family", async () => {
     const root = join(import.meta.dirname, "..", "..", "..");
     const usual = await readFile(join(root, "docker", "engine.Dockerfile"), "utf8");
     const patched = await readFile(join(root, "docker", "engine-prefetch.Dockerfile"), "utf8");
@@ -236,7 +236,7 @@ describe("«next layer ahead»: the patched llama.cpp (G32.2)", () => {
       ];
     };
     expect(defaults(patched)).toEqual(defaults(usual));
-    expect(patched).toContain("ARG LLAMA_BUILD=b12034");
+    expect(patched).toContain("ARG LLAMA_BUILD=b12679");
     expect(patched).toContain("sh /patches/apply.sh");
     expect(patched).toContain('CUDA_ARCHS="75-real;80-real;86-real;89-real;90-real;120"');
     const workflow = await readFile(join(root, ".github", "workflows", "release.yml"), "utf8");
@@ -273,7 +273,7 @@ describe("«next layer ahead»: the patched llama.cpp (G32.2)", () => {
           execFileSync("git", ["-c", "user.name=t", "-c", "user.email=t@t", ...args], { cwd: dir });
         const env = {
           ...process.env,
-          LLAMA_BUILD: "b12034",
+          LLAMA_BUILD: "b12679",
           CUDA_VERSION: "12.8.1",
           CUDA_ARCHS: "75-real;80-real;86-real;89-real;90-real;120",
         };

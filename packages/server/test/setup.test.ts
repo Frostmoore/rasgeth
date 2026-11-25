@@ -507,6 +507,30 @@ describe("the setup wizard", () => {
     expect(calls.at(-1)).toBe("engine:cuda:big.gguf");
   });
 
+  it("accepts the model's MTP as a speed test mode (p3.12.6)", async () => {
+    const { hooks } = await setup();
+    const api = (s as Server).api;
+    const seen: (string | undefined)[] = [];
+    const engine = hooks.engine.bind(hooks);
+    hooks.engine = async (cfg, h) => {
+      seen.push(cfg ? (cfg.speculative ?? "none") : "off");
+      return engine(cfg, h);
+    };
+    s?.core.providers.register(new FakeProvider(() => ({ text: "OK" }), { id: "local" }));
+    const started = await api<Job>("PUT", "/api/setup/engine", {
+      engine: { variant: "cuda", model: "big.gguf", speculative: "mtp" },
+    });
+    await s?.core.jobs.settled(started.body.id);
+    seen.length = 0;
+    const job = await api<Job>("POST", "/api/setup/engine/speed-test", {
+      engine: { variant: "cuda", model: "big.gguf" },
+      modes: ["none", "mtp"],
+    });
+    const done = await s?.core.jobs.settled(job.body.id);
+    expect(done?.state).toBe("done");
+    expect(seen).toEqual(["none", "mtp"]);
+  });
+
   it("measures one improvement without and with it, keeps the result and puts the engine back (p3.12.6)", async () => {
     const { calls, hooks } = await setup();
     const api = (s as Server).api;

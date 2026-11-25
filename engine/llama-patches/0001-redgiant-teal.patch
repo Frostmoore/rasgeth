@@ -1,3 +1,65 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 426c487..389128f 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -18,6 +18,7 @@ set(LLAMA_CORE_SOURCES
+     llama-cparams.cpp
+     llama-grammar.cpp
+     llama-graph.cpp
++    llama-teal.cpp
+     llama-hparams.cpp
+     llama-impl.cpp
+     llama-io.cpp
+diff --git a/src/llama-context.cpp b/src/llama-context.cpp
+index 4caca65..0252829 100644
+--- a/src/llama-context.cpp
++++ b/src/llama-context.cpp
+@@ -1,4 +1,7 @@
+ #include "llama-context.h"
++#include "llama-teal.h"
++
++#include <cstdlib>
+ 
+ #include "ggml.h"
+ #include "llama-arch.h"
+@@ -619,6 +622,9 @@ llama_context::llama_context(
+             moe_cache = std::make_unique<llama_moe_cache>(model, model.no_alloc(), backend_ptrs, backend_buft, cparams.moe_cache_size, cparams.moe_cache_cpu_share);
+         }
+ 
++        // RedGiant (G27): the copies by columns of the weights in RAM, before the graphs.
++        llama_teal_init(model, cparams.n_threads);
++
+         sched_reserve();
+ 
+         if (!cparams.flash_attn) {
+@@ -2905,6 +2911,13 @@ void llama_context::output_reorder() {
+ //
+ 
+ uint32_t llama_context::graph_max_nodes() const {
++    // RedGiant (G27): the measuring mask adds about 7 nodes to every layer's product, the
++    // sparse product 2 more (and a copy).
++    const uint32_t teal = (getenv("LLAMA_TEAL_MASK_C") || getenv("LLAMA_TEAL_C")) ? 8u * model.n_tensors() : 0u;
++    return graph_max_nodes_base() + teal;
++}
++
++uint32_t llama_context::graph_max_nodes_base() const {
+     uint32_t res = std::max<uint32_t>(1024u, model.graph_nodes_per_tensor()*model.n_tensors());
+     for (const auto & lora : model.loras) {
+         res += lora->get_n_nodes();
+diff --git a/src/llama-context.h b/src/llama-context.h
+index 3e3921c..f831324 100644
+--- a/src/llama-context.h
++++ b/src/llama-context.h
+@@ -272,6 +272,7 @@ private:
+ 
+ public:
+     uint32_t graph_max_nodes() const;
++    uint32_t graph_max_nodes_base() const;
+ 
+     // can reuse the llm_graph_result instance of the context (for example to update a memory module)
+     llm_graph_result * get_gf_res_reserve() const;
+diff --git a/src/llama-graph.cpp b/src/llama-graph.cpp
+index 5fef4c4..19efbca 100644
 --- a/src/llama-graph.cpp
 +++ b/src/llama-graph.cpp
 @@ -1,4 +1,5 @@
@@ -6,8 +68,8 @@
  
  #include "llama-impl.h"
  #include "llama-model.h"
-@@ -1562,13 +1563,37 @@
-     return x;
+@@ -1840,6 +1841,17 @@ ggml_tensor * llm_graph_context::build_rope_indexer(ggml_tensor * cur, ggml_tens
+     return rp.n_rot > 0 && rp.n_offs > 0 ? ggml_rope_set_offset(res, rp.n_offs) : res;
  }
  
 +// RedGiant (G27): LLAMA_TEAL_MASK_C=c sets to zero the inputs below c times the token's mean
@@ -24,7 +86,10 @@
  ggml_tensor * llm_graph_context::build_lora_mm(
            ggml_tensor * w,
            ggml_tensor * cur,
-           ggml_tensor * w_s) const {
+@@ -1848,9 +1860,22 @@ ggml_tensor * llm_graph_context::build_lora_mm(
+         w_s = model.get_w_scale(w);
+     }
+ 
 +    if (redgiant_teal_mask_c() > 0.0f && strncmp(w->name, "blk.", 4) == 0) {
 +        ggml_tensor * x    = ggml_is_contiguous(cur) ? cur : ggml_cont(ctx0, cur);
 +        ggml_tensor * mag  = ggml_abs(ctx0, x);
@@ -43,59 +108,5 @@
 +        res = ggml_mul_mat(ctx0, w, cur_mm);
 +    }
  
-     if (prec_policy) {
-         prec_policy->apply(res);
---- a/src/llama-context.cpp
-+++ b/src/llama-context.cpp
-@@ -1,4 +1,7 @@
- #include "llama-context.h"
-+#include "llama-teal.h"
-+
-+#include <cstdlib>
- 
- #include "ggml.h"
- #include "llama-arch.h"
-@@ -563,6 +566,9 @@
-             moe_cache = std::make_unique<llama_moe_cache>(model, model.no_alloc(), backend_ptrs, backend_buft, cparams.moe_cache_size);
-         }
- 
-+        // RedGiant (G27): the copies by columns of the weights in RAM, before the graphs.
-+        llama_teal_init(model, cparams.n_threads);
-+
-         sched_reserve();
- 
-         if (!cparams.flash_attn) {
-@@ -2527,6 +2533,13 @@
- //
- 
- uint32_t llama_context::graph_max_nodes(uint32_t n_tokens) const {
-+    // RedGiant (G27): the measuring mask adds about 7 nodes to every layer's product, the
-+    // sparse product 2 more (and a copy).
-+    const uint32_t teal = (getenv("LLAMA_TEAL_MASK_C") || getenv("LLAMA_TEAL_C")) ? 8u * model.n_tensors() : 0u;
-+    return graph_max_nodes_base(n_tokens) + teal;
-+}
-+
-+uint32_t llama_context::graph_max_nodes_base(uint32_t n_tokens) const {
-     uint32_t res;
-     if (model.arch == LLM_ARCH_KIMI_K3 || model.arch == LLM_ARCH_GLM5_NEXT) {
-         // the n_tokens*40 budget below is exhausted at ubatch 3840
---- a/src/llama-context.h
-+++ b/src/llama-context.h
-@@ -249,6 +249,7 @@
- 
- public:
-     uint32_t graph_max_nodes(uint32_t n_tokens) const;
-+    uint32_t graph_max_nodes_base(uint32_t n_tokens) const;
- 
-     // can reuse the llm_graph_result instance of the context (for example to update a memory module)
-     llm_graph_result * get_gf_res_reserve() const;
---- a/src/CMakeLists.txt
-+++ b/src/CMakeLists.txt
-@@ -18,6 +18,7 @@
-     llama-cparams.cpp
-     llama-grammar.cpp
-     llama-graph.cpp
-+    llama-teal.cpp
-     llama-hparams.cpp
-     llama-impl.cpp
-     llama-io.cpp
+     if (w->type == GGML_TYPE_NVFP4) {
+         ggml_prec_set_acc(res, GGML_PREC_BF16);

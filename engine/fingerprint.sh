@@ -2,7 +2,7 @@
 # The fingerprint of a patched llama.cpp build (G32.2): a hash of everything that changes the
 # result, so a release reuses the engine an earlier release built instead of compiling it again
 # (release.yml, job engine-plan). Run from anywhere inside the repository:
-#   LLAMA_BUILD=b12034 CUDA_VERSION=12.8.1 CUDA_ARCHS='75-real;...;120' engine/fingerprint.sh win|linux
+#   LLAMA_BUILD=b12679 CUDA_VERSION=12.8.1 CUDA_ARCHS='75-real;...;120' engine/fingerprint.sh win|linux
 # win: the zip llama-redgiant-win-cuda12.8-x64.zip (engine/build-win.ps1);
 # linux: the image redgiant2-engine:cuda-prefetch (docker/engine-prefetch.Dockerfile).
 # Both: llama.cpp's tag, CUDA's version, the card families and every file in engine/llama-patches.

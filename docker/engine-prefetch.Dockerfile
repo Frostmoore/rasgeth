@@ -1,4 +1,4 @@
-# RedGiant local engine for NVIDIA cards with «Next layer ahead» (G32.2): llama.cpp b12034 plus
+# RedGiant local engine for NVIDIA cards with «Next layer ahead» (G32.2): llama.cpp b12679 plus
 # RedGiant's patches (engine/llama-patches, apply.sh), built from source with CUDA 12.8. Image
 # ghcr.io/frostmoore/redgiant2-engine:cuda-prefetch, used only when the person turns the option on
 # (the server passes LLAMA_MOE_PREFETCH=1); without the variable it behaves as the official build.
@@ -8,7 +8,7 @@ ARG CUDA_VERSION=12.8.1
 ARG UBUNTU_VERSION=24.04
 
 FROM docker.io/nvidia/cuda:${CUDA_VERSION}-devel-ubuntu${UBUNTU_VERSION} AS build
-ARG LLAMA_BUILD=b12034
+ARG LLAMA_BUILD=b12679
 # Turing to Blackwell, as the Windows build (release.yml, llama-cuda): "-real" is machine code for
 # that family only; 120 also carries PTX for newer cards.
 ARG CUDA_ARCHS="75-real;80-real;86-real;89-real;90-real;120"

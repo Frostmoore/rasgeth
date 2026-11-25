@@ -196,8 +196,47 @@ describe("Improvements in the model's card (p3.12.6)", () => {
     expect(gold.textContent).toContain("Provato da noi su questo modello");
     expect(gold.textContent).toContain("Scrittura da 2,88 a 3,21 token/s (+11%). Intel i5-12500H.");
     expect(gold.querySelector(".impr-star svg")).toBeTruthy();
-    // Nothing else is gold: only what was measured.
-    expect(document.querySelectorAll(".impr-card.gold")).toHaveLength(1);
+    // Nothing else is gold: only what was measured (No Repack and the model's MTP).
+    expect(document.querySelectorAll(".impr-card.gold")).toHaveLength(2);
+    const spec = card("speculative");
+    expect(spec.classList.contains("gold")).toBe(true);
+    expect(spec.textContent).toContain(
+      "Con l'MTP del modello. Scrittura da 2,98 a 3,88 token/s (+30%). Intel i5-12500H.",
+    );
+  });
+
+  it("offers the model's MTP only where the model has it, and starts with it", async () => {
+    choices = [
+      entry("qwen3.8-27b", {
+        improvements: [
+          { id: "prefetch", available: false, reason: "needMoe" },
+          { id: "bigChunks", available: false, reason: "needMoe" },
+          { id: "speculative", available: true, draft: false, mtp: true },
+          { id: "noRepack", available: true },
+        ],
+      }),
+    ];
+    const r = render(<LocalModels s={state()} reload={() => {}} />);
+    await open(r, "Qwen3.8 27B");
+    const choice = Array.from(card("speculative").querySelectorAll("button")).find(
+      (b) => b.textContent === "MTP del modello",
+    ) as HTMLElement;
+    expect(choice).toBeTruthy();
+    fireEvent.click(choice);
+    expect(card("speculative").textContent).toContain("nessun secondo modello");
+    fireEvent.click(startButton(r));
+    const sent = calls.find((c) => c.name === "setupEngine")?.args[0];
+    expect(sent).toMatchObject({ speculative: "mtp" });
+  });
+
+  it("does not offer the model's MTP when the model has none", async () => {
+    choices = [entry("qwen3.8-27b")];
+    const r = render(<LocalModels s={state()} reload={() => {}} />);
+    await open(r, "Qwen3.8 27B");
+    const labels = Array.from(card("speculative").querySelectorAll("button")).map(
+      (b) => b.textContent,
+    );
+    expect(labels).not.toContain("MTP del modello");
   });
 
   it("shows what was measured on this computer", async () => {

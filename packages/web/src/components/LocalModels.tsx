@@ -530,7 +530,7 @@ function FileActions({
   /** The card's improvements chosen for the start (p3.12.6). */
   improve?: EngineChoices | undefined;
   /** Start it with speculative decoding (2026-11-04). */
-  speculative?: { speculative: "draft" | "ngram"; draftModel?: string } | undefined;
+  speculative?: { speculative: "draft" | "ngram" | "mtp"; draftModel?: string } | undefined;
   /** The model in use, turned off by the person (2026-11-04). */
   off?: boolean | undefined;
   onChange: () => void;
@@ -853,8 +853,8 @@ function Speculation({
   /** The big model's file in the folder (downloaded), for the speed test. */
   model: string | undefined;
   stream: boolean;
-  mode: "none" | "draft" | "ngram";
-  setMode: (v: "none" | "draft" | "ngram") => void;
+  mode: "none" | "draft" | "ngram" | "mtp";
+  setMode: (v: "none" | "draft" | "ngram" | "mtp") => void;
   files: LocalFile[];
   jobs: Job[];
   variant: EngineVariant;
@@ -881,6 +881,11 @@ function Speculation({
         <Pick small on={mode === "ngram"} onChange={() => setMode("ngram")}>
           {t("lmSpecNgram")}
         </Pick>
+        {m.improvements?.find((x) => x.id === "speculative")?.mtp && (
+          <Pick small on={mode === "mtp"} onChange={() => setMode("mtp")}>
+            {t("lmSpecMtp")}
+          </Pick>
+        )}
       </div>
       {mode === "draft" && draft && (
         <>
@@ -907,6 +912,7 @@ function Speculation({
         </>
       )}
       {mode === "ngram" && <p class="ui-help">{t("lmSpecNgramHelp")}</p>}
+      {mode === "mtp" && <p class="ui-help">{t("lmSpecMtpHelp")}</p>}
       {model && (
         <button type="button" onClick={() => setTesting(true)}>
           {t("lmSpeedTest")}
@@ -918,6 +924,7 @@ function Speculation({
           model={model}
           stream={stream}
           draftModel={local && !local.partial ? name : undefined}
+          mtp={Boolean(m.improvements?.find((x) => x.id === "speculative")?.mtp)}
           onClose={() => {
             setTesting(false);
             onChange();
@@ -955,6 +962,7 @@ export function testedText(r: TestedResult): string {
     pct: gainText(x.before, x.after),
   });
   return [
+    r.mode === "mtp" && t("lmImprTestedMtp"),
     r.write && t("lmImprTestedWrite", speeds(r.write)),
     r.read && t("lmImprTestedRead", speeds(r.read)),
     `${r.hardware}.`,
@@ -1101,20 +1109,25 @@ function SpeedTest({
   model,
   stream,
   draftModel,
+  mtp,
   onClose,
 }: {
   variant: EngineVariant;
   model: string;
   stream: boolean;
   draftModel: string | undefined;
+  mtp: boolean;
   onClose: () => void;
 }) {
   const [jobId, setJobId] = useState<string>();
   const [error, setError] = useState<string>();
   const job = useJob(jobId);
-  const modes: ("none" | "draft" | "ngram")[] = draftModel
-    ? ["none", "draft", "ngram"]
-    : ["none", "ngram"];
+  const modes: ("none" | "draft" | "ngram" | "mtp")[] = [
+    "none",
+    ...(draftModel ? (["draft"] as const) : []),
+    "ngram",
+    ...(mtp ? (["mtp"] as const) : []),
+  ];
   let trials: {
     mode: string;
     state: string;
@@ -1234,15 +1247,18 @@ function ModelPanel({
   const plan = inUse && s.config.engine?.stream ? s.config.engine.plan : undefined;
   // Speculative decoding (2026-11-04): what runs now for this model, and what the person picks.
   const running = inUse ? (s.config.engine?.speculative ?? "none") : "none";
-  const [spec, setSpec] = useState<"none" | "draft" | "ngram">(running);
+  const [spec, setSpec] = useState<"none" | "draft" | "ngram" | "mtp">(running);
+  const mtpAvailable = Boolean(m.improvements?.find((x) => x.id === "speculative")?.mtp);
   const draftName = m.draftFile ? target(m.draftFile.file) : undefined;
   const draftReady = !!draftName && files.some((f) => f.file === draftName && !f.partial);
   const chosenSpec =
     spec === "ngram"
       ? { speculative: "ngram" as const }
-      : spec === "draft" && draftReady && draftName
-        ? { speculative: "draft" as const, draftModel: draftName }
-        : undefined;
+      : spec === "mtp" && mtpAvailable
+        ? { speculative: "mtp" as const }
+        : spec === "draft" && draftReady && draftName
+          ? { speculative: "draft" as const, draftModel: draftName }
+          : undefined;
   // The improvements (p3.12.6): what runs now for this model, and what the person switched on.
   const eng = s.config.engine;
   const [flags, setFlags] = useState({

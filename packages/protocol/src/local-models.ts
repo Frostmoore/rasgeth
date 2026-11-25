@@ -25,6 +25,12 @@ export interface LocalModel {
    * this quantisation in the repository.
    */
   draft?: { repo: string; quant: string };
+  /**
+   * The GGUF has the model's own MTP heads (multi-token prediction, `<arch>.nextn_predict_layers`
+   * above 0): speculative decoding with no second model, `--spec-type draft-mtp`. Set only when
+   * the header of the catalogue's file says so.
+   */
+  mtp?: true;
   /** What we measured ourselves with an improvement on this model (p3.12.6). */
   tested?: TestedResult[];
 }
@@ -139,6 +145,8 @@ export const LOCAL_MODELS: readonly LocalModel[] = [
     totalB: 27,
     activeB: 27,
     scores: { smart: 5, code: 4, tools: 5, languages: 3 },
+    // Header checked 2026-11-25: `qwen35.nextn_predict_layers = 1`.
+    mtp: true,
     // Measured by us (p3.12.6): llama.cpp re-arranges the weights for the processor; writing one
     // token at a time was faster without it on this computer, reading the message unchanged.
     tested: [
@@ -146,6 +154,13 @@ export const LOCAL_MODELS: readonly LocalModel[] = [
         improvement: "noRepack",
         hardware: "Intel i5-12500H",
         write: { before: 2.88, after: 3.21 },
+      },
+      // The model's own MTP heads, 2 drafts, 128 tokens, 54 W (measured on Coder).
+      {
+        improvement: "speculative",
+        mode: "mtp",
+        hardware: "Intel i5-12500H",
+        write: { before: 2.98, after: 3.88 },
       },
     ],
   },
