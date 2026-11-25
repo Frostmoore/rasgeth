@@ -49,7 +49,7 @@ const areas = [
       "ModelMenu.tsx",
       "ModelsCatalogRow.tsx",
     ],
-    families: ["effort_", "lmEngine_", "wzEffort_", "lmQuality_", "lmScore_", "lmSpeedMode_"],
+    families: ["effort_", "lmEngine_", "wzEffort_", "lmQuality_", "lmScore_", "lmSpeedMode_", "lmImpr_", "lmImprSub_", "lmImprWhy_"],
     extra: [
       "subscriptions",
       "modelSearch",
@@ -60,7 +60,11 @@ const areas = [
       "job_engine",
       "job_engine_load",
       "job_speed_test",
-      ...["image", "start", "load", "try", "tune", "none", "draft", "ngram", "preload"].map(
+      "job_improvement_test",
+      "lmImprHelp_noRepack",
+      "lmMoePrefetchHelp",
+      "lmMoePrefetchHelpDocker",
+      ...["image", "start", "load", "try", "tune", "none", "draft", "ngram", "preload", "without", "with", "restore"].map(
         (s) => `job_step_${s}`,
       ),
       "job_step_model_download",

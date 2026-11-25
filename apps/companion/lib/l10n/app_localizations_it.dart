@@ -20173,4 +20173,146 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get scHub =>
       'Numeri e bot dell\'attività: collegali, leggi le conversazioni, rispondi a ciò che l\'agente ti passa.';
+
+  @override
+  String moJob_improvement_test(String model) {
+    return 'Misuro $model';
+  }
+
+  @override
+  String get moJob_step_restore => 'Rimetto il motore com\'era';
+
+  @override
+  String get moJob_step_with => 'Con il miglioramento';
+
+  @override
+  String get moJob_step_without => 'Senza il miglioramento';
+
+  @override
+  String get moLmImprAskText =>
+      'Richiede molto tempo e molto calcolo: il modello viene caricato più volte (minuti, anche decine di minuti per uno grande) e intanto il modello locale non risponde agli agenti. Può non mostrare nessun guadagno, o anche una perdita. Alla fine il motore torna com\'era.';
+
+  @override
+  String moLmImprAskTitle(String name) {
+    return 'Misurare $name su questo computer?';
+  }
+
+  @override
+  String get moLmImprAskYes => 'Avvia la misura';
+
+  @override
+  String get moLmImprHelp_noRepack =>
+      'Di solito llama.cpp riordina i pesi del modello per il processore quando li carica. Per scrivere un token alla volta, su un Intel i5-12500H questo era più lento: con No Repack 3,21 token/s invece di 2,88 (+11%), mentre la lettura del messaggio restava uguale. Su altri processori può non dare nulla o andare più piano.';
+
+  @override
+  String get moLmImprIntegratedOnly => 'solo la grafica integrata';
+
+  @override
+  String get moLmImprMeasure => 'Misura su questo computer';
+
+  @override
+  String moLmImprMeasured(String ra, String rb, String wa, String wb) {
+    return 'Misurato su questo computer: lettura $rb → $ra, scrittura $wb → $wa token/s.';
+  }
+
+  @override
+  String get moLmImprSub_bigChunks => 'il messaggio letto a blocchi grandi';
+
+  @override
+  String get moLmImprSub_noRepack => 'i pesi come sono nel file, senza riordinarli';
+
+  @override
+  String get moLmImprSub_prefetch => 'gli esperti dello strato dopo arrivano in anticipo';
+
+  @override
+  String get moLmImprSub_speculative => 'più token per ogni passaggio';
+
+  @override
+  String get moLmImprTestDone => 'Il motore è tornato com\'era. Il risultato resta sulla scheda.';
+
+  @override
+  String get moLmImprTestRead => 'Lettura (token/s)';
+
+  @override
+  String moLmImprTestTitle(String name) {
+    return 'Misuro $name';
+  }
+
+  @override
+  String get moLmImprTestWay => 'Modo';
+
+  @override
+  String get moLmImprTestWrite => 'Scrittura (token/s)';
+
+  @override
+  String get moLmImprTested => 'Provato da noi su questo modello';
+
+  @override
+  String moLmImprTestedRead(String after, String before, String pct) {
+    return 'Lettura da $before a $after token/s ($pct).';
+  }
+
+  @override
+  String moLmImprTestedWrite(String after, String before, String pct) {
+    return 'Scrittura da $before a $after token/s ($pct).';
+  }
+
+  @override
+  String get moLmImprTitle => 'Miglioramenti';
+
+  @override
+  String get moLmImprWarn =>
+      'Si accendono a mano, uno per uno. Per sapere se qui convengono puoi misurarli: ogni misura richiede molto tempo e molto calcolo (il modello viene caricato più volte, anche decine di minuti per uno grande; intanto il modello locale non risponde agli agenti) e può dare zero guadagno o anche peggiorare le cose.';
+
+  @override
+  String get moLmImprWhy_missingEngine =>
+      'Spento: il motore modificato non è disponibile (questa versione di Rasgeth è uscita senza, oppure manca la rete).';
+
+  @override
+  String get moLmImprWhy_needDeepField =>
+      'Spento: serve Deep Field, che è spento. Accendilo nel riquadro del computer.';
+
+  @override
+  String get moLmImprWhy_needGpu =>
+      'Spento: serve una scheda video con una memoria sua. Questo computer ha solo la grafica integrata.';
+
+  @override
+  String get moLmImprWhy_needMoe =>
+      'Spento: funziona solo con i modelli a esperti, e questo non lo è.';
+
+  @override
+  String moLmImprWhy_needNvidia(String gpu) {
+    return 'Spento: serve una scheda video NVIDIA. Questo computer ha $gpu.';
+  }
+
+  @override
+  String get moLmImprWith => 'Con';
+
+  @override
+  String get moLmImprWithout => 'Senza';
+
+  @override
+  String get moLmImpr_bigChunks => 'Big Chunks';
+
+  @override
+  String get moLmImpr_noRepack => 'No Repack';
+
+  @override
+  String get moLmImpr_prefetch => 'Prefetch';
+
+  @override
+  String get moLmImpr_speculative => 'Speculative Decoding';
+
+  @override
+  String get moSysDeepFieldWhat => 'lo streaming dall\'SSD di Rasgeth';
+
+  @override
+  String moLmMoePrefetchHelp(String size) {
+    return 'Usa una versione di llama.cpp modificata da Rasgeth: mentre la scheda video calcola uno strato, gli esperti di quello dopo le stanno già arrivando, e il modello è caricato nella RAM quando ci sta. Con i modelli a esperti i messaggi lunghi si leggono fino a 1,7 volte più in fretta (misurato con una RTX 4080 Super). Al primo avvio scarica quel motore (circa $size), tenuto accanto a quello ufficiale. Solo schede NVIDIA su Windows.';
+  }
+
+  @override
+  String moLmMoePrefetchHelpDocker(String size) {
+    return 'Usa una versione di llama.cpp modificata da Rasgeth: mentre la scheda video calcola uno strato, gli esperti di quello dopo le stanno già arrivando, e il modello è caricato nella RAM quando ci sta. Con i modelli a esperti i messaggi lunghi si leggono fino a 1,7 volte più in fretta (misurato con una RTX 4080 Super). Al primo avvio scarica l\'immagine di quel motore (circa $size), tenuta accanto a quella solita. Solo schede NVIDIA, con il runtime NVIDIA di Docker.';
+  }
 }

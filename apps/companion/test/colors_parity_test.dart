@@ -34,6 +34,8 @@ Map<String, Color> _vars(RgColors c) => {
   'ok': c.ok,
   'warn': c.warn,
   'warn-text': c.warnText,
+  'gold': c.gold,
+  'gold-soft': c.goldSoft,
   'err': c.err,
   'critical': c.critical,
   'critical-ink': c.criticalInk,

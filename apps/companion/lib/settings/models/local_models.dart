@@ -20,6 +20,7 @@ import '../api/models_api.dart';
 import '../automations/automation_kit.dart' show AutoChips;
 import '../knowledge_kit.dart';
 import '../rules_kit.dart';
+import 'improvements.dart';
 import 'local_speed.dart';
 import '../../ui/systems.dart';
 
@@ -135,7 +136,7 @@ class _LocalModelsSectionState extends State<LocalModelsSection> {
     final c = AppScope.read(context).client;
     if (c == null) return;
     try {
-      final r = await c.localModels(_variant);
+      final r = await c.localModels(_variant, stream: widget.s.engineStream);
       List<LmJob> jobs;
       try {
         jobs = await c.lmJobs();
@@ -454,8 +455,8 @@ class _Meter extends StatelessWidget {
   }
 }
 
-/// Everything about one suggested model: what it is good at, its speed, its file.
-class _ModelPanel extends StatelessWidget {
+/// Everything about one suggested model: what it is good at, its speed, its file, its improvements.
+class _ModelPanel extends StatefulWidget {
   const _ModelPanel({
     required this.m,
     required this.s,
@@ -475,10 +476,43 @@ class _ModelPanel extends StatelessWidget {
   final Future<void> Function() onChange;
 
   @override
+  State<_ModelPanel> createState() => _ModelPanelState();
+}
+
+class _ModelPanelState extends State<_ModelPanel> {
+  late EngineChoices _choices;
+  final _bump = ValueNotifier<int>(0);
+
+  LocalChoice get m => widget.m;
+  ModelsSetup get s => widget.s;
+  String get _name => m.file == null ? '' : targetName(m.file!.file);
+
+  @override
+  void initState() {
+    super.initState();
+    // What runs now when this is the model in use; nothing switched on otherwise.
+    _choices = s.activeModel == _name && _name.isNotEmpty
+        ? EngineChoices.running(s)
+        : const EngineChoices();
+  }
+
+  @override
+  void dispose() {
+    _bump.dispose();
+    super.dispose();
+  }
+
+  Future<void> _changed() async {
+    _bump.value++;
+    await widget.onChange();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final c = RgColors.of(context);
     final f = m.file;
+    final variant = widget.variant;
     String score(String k) => switch (k) {
       'smart' => l.moLmScore_smart,
       'code' => l.moLmScore_code,
@@ -520,16 +554,53 @@ class _ModelPanel extends StatelessWidget {
             dim: true,
           ),
           if (f.sizeGb > s.ramGb + (s.kind == 'gpu' ? s.vramGb : 0)) KbLine(l.moLmBeyondMemory),
+          ImprovementsSection(
+            m: m,
+            s: s,
+            variant: variant,
+            stream: s.engineStream,
+            name: _name,
+            choices: _choices,
+            onChoices: (v) => setState(() => _choices = v),
+            files: widget.files,
+            jobs: widget.jobs,
+            bump: _bump,
+            poll: widget.poll,
+            onChange: widget.onChange,
+            speedTest: (downloaded, draft) => downloaded
+                ? OutlinedButton(
+                    key: const Key('lm-speed-test'),
+                    onPressed: () => kbWindow<void>(
+                      context,
+                      key: const Key('lm-speed-window'),
+                      title: l.moLmSpeedTestTitle,
+                      wide: true,
+                      body: (ctx, close) => _SpeedTest(
+                        variant: variant,
+                        model: _name,
+                        stream: s.engineStream,
+                        draftModel: draft,
+                        poll: widget.poll,
+                        onClose: close,
+                      ),
+                    ),
+                    child: Text(l.moLmSpeedTest),
+                  )
+                : const SizedBox.shrink(),
+          ),
           _FileActions(
             repo: m.repo,
             file: f.file,
             sizeGb: f.sizeGb,
             s: s,
             variant: variant,
-            files: files,
-            jobs: jobs,
-            poll: poll,
-            onChange: onChange,
+            files: widget.files,
+            jobs: widget.jobs,
+            poll: widget.poll,
+            choices: _choices,
+            stream: s.engineStream,
+            draftName: m.draftFile == null ? null : targetName(m.draftFile!.file),
+            onChange: _changed,
           ),
         ],
       ],
@@ -548,8 +619,18 @@ class _FileActions extends StatefulWidget {
     required this.files,
     required this.jobs,
     this.poll = true,
+    this.choices,
+    this.stream = false,
+    this.draftName,
     required this.onChange,
   });
+
+  /// The card's improvements (p3.12.6) and Deep Field, as the activation sends them.
+  final EngineChoices? choices;
+  final bool stream;
+
+  /// The small model's file in the folder, for the speculative choice «draft».
+  final String? draftName;
 
   final String? repo;
   final String file;
@@ -573,8 +654,10 @@ class _FileActionsState extends State<_FileActions> {
   List<LocalFile>? _ownFiles;
   late bool _off = widget.s.engineOff;
   late String? _active = widget.s.activeModel;
+  late ModelsSetup _s = widget.s;
 
   String get _name => targetName(widget.file);
+  EngineChoices get _choices => widget.choices ?? EngineChoices.running(_s);
   List<LmJob> get _jobs => _ownJobs ?? widget.jobs();
   List<LocalFile> get _files => _ownFiles ?? widget.files();
 
@@ -615,6 +698,7 @@ class _FileActionsState extends State<_FileActions> {
       setState(() {
         _ownJobs = jobs;
         _ownFiles = r.files;
+        _s = s;
         _active = s.activeModel;
         _off = s.engineOff;
       });
@@ -713,7 +797,8 @@ class _FileActionsState extends State<_FileActions> {
     final dl = _latest(_jobs, 'model_download', _name);
     final eng = _latest(_jobs, 'engine', _name);
     final local = _files.where((f) => f.file == _name).firstOrNull;
-    final active = _active == _name;
+    // The model in use with what the card now switches on is «on»; otherwise it must be started again.
+    final active = _active == _name && _choices.sameAs(_s, stream: widget.stream);
     final repo = widget.repo;
     final children = <Widget>[];
     Future<void> download() =>
@@ -824,28 +909,22 @@ class _FileActionsState extends State<_FileActions> {
             ] else if (eng?.state != 'running')
               FilledButton.icon(
                 key: const Key('lm-start'),
-                onPressed: () =>
-                    _act(() => client!.setupEngine({'variant': widget.variant, 'model': _name})),
+                onPressed: () => _act(
+                  () => client!.setupEngine(
+                    _choices.body(
+                      widget.variant,
+                      _name,
+                      stream: widget.stream,
+                      draftModel: _files.any((f) => f.file == widget.draftName && !f.partial)
+                          ? widget.draftName
+                          : null,
+                    ),
+                  ),
+                ),
                 icon: const RgIcon(RgIcons.play, size: 15, color: Colors.white),
                 label: Text(l.moLmStart),
               ),
             if (eng?.state != 'running') ...[
-              OutlinedButton(
-                key: const Key('lm-speed-test'),
-                onPressed: () => kbWindow<void>(
-                  context,
-                  key: const Key('lm-speed-window'),
-                  title: l.moLmSpeedTestTitle,
-                  wide: true,
-                  body: (ctx, close) => _SpeedTest(
-                    variant: widget.variant,
-                    model: _name,
-                    poll: widget.poll,
-                    onClose: close,
-                  ),
-                ),
-                child: Text(l.moLmSpeedTest),
-              ),
               TextButton.icon(
                 key: const Key('lm-delete'),
                 onPressed: () async {
@@ -899,12 +978,16 @@ class _SpeedTest extends StatefulWidget {
   const _SpeedTest({
     required this.variant,
     required this.model,
+    this.stream = false,
+    this.draftModel,
     required this.poll,
     required this.onClose,
   });
 
   final String variant;
   final String model;
+  final bool stream;
+  final String? draftModel;
   final bool poll;
   final void Function([void]) onClose;
 
@@ -929,10 +1012,12 @@ class _SpeedTestState extends State<_SpeedTest> {
     if (c == null) return;
     setState(() => _error = null);
     try {
-      final j = await c.speedTest(
-        {'variant': widget.variant, 'model': widget.model},
-        const ['none', 'ngram'],
-      );
+      final j = await c.speedTest({
+        'variant': widget.variant,
+        'model': widget.model,
+        if (widget.stream) 'stream': true,
+        'draftModel': ?widget.draftModel,
+      }, widget.draftModel != null ? const ['none', 'draft', 'ngram'] : const ['none', 'ngram']);
       setState(() => _job = j);
       if (widget.poll) {
         _timer = Timer.periodic(const Duration(seconds: 1), (_) async {

@@ -18,6 +18,8 @@ class RgColors extends ThemeExtension<RgColors> {
     required this.ok,
     required this.warn,
     required this.warnText,
+    required this.gold,
+    required this.goldSoft,
     required this.err,
     required this.critical,
     required this.criticalInk,
@@ -42,6 +44,8 @@ class RgColors extends ThemeExtension<RgColors> {
     ok: Color(0xFF2E9D5B),
     warn: Color(0xFFC99A14),
     warnText: Color(0xFF7A5600),
+    gold: Color(0xFFB8860B),
+    goldSoft: Color(0xFFFBF3D9),
     err: Color(0xFFD23D3D),
     critical: Color(0xFFB0151C),
     criticalInk: Color(0xFFFFFFFF),
@@ -66,6 +70,8 @@ class RgColors extends ThemeExtension<RgColors> {
     ok: Color(0xFF2E9D5B),
     warn: Color(0xFFC99A14),
     warnText: Color(0xFFE0B23A),
+    gold: Color(0xFFD4A72C),
+    goldSoft: Color(0xFF2E2711),
     err: Color(0xFFD23D3D),
     critical: Color(0xFFC8242C),
     criticalInk: Color(0xFFFFFFFF),
@@ -88,6 +94,10 @@ class RgColors extends ThemeExtension<RgColors> {
   final Color ok;
   final Color warn;
   final Color warnText;
+
+  /// What we tried ourselves (p3.12.6): the border and the soft background.
+  final Color gold;
+  final Color goldSoft;
   final Color err;
   final Color critical;
   final Color criticalInk;
@@ -115,6 +125,8 @@ class RgColors extends ThemeExtension<RgColors> {
       ok: ok,
       warn: warn,
       warnText: warnText,
+      gold: gold,
+      goldSoft: goldSoft,
       err: err,
       critical: critical,
       criticalInk: criticalInk,
@@ -150,6 +162,8 @@ class RgColors extends ThemeExtension<RgColors> {
       ok: l(ok, other.ok),
       warn: l(warn, other.warn),
       warnText: l(warnText, other.warnText),
+      gold: l(gold, other.gold),
+      goldSoft: l(goldSoft, other.goldSoft),
       err: l(err, other.err),
       critical: l(critical, other.critical),
       criticalInk: l(criticalInk, other.criticalInk),

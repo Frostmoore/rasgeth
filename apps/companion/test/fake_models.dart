@@ -67,6 +67,20 @@ class FakeModels {
         'quality': 'good',
       },
       'smallestGb': 12.0,
+      'improvements': [
+        {'id': 'prefetch', 'available': false, 'reason': 'needDeepField'},
+        {'id': 'bigChunks', 'available': false, 'reason': 'needDeepField'},
+        {'id': 'speculative', 'available': true, 'draft': false},
+        {'id': 'noRepack', 'available': true},
+      ],
+      'tested': [
+        {
+          'improvement': 'noRepack',
+          'hardware': 'Intel i5-12500H',
+          'write': {'before': 2.88, 'after': 3.21},
+          'read': {'before': 14.0, 'after': 14.0},
+        },
+      ],
     },
     {
       'id': 'gemma3-12b',
@@ -222,13 +236,40 @@ class FakeModels {
           _config.remove('engine');
           await json(200, <String, dynamic>{});
         } else {
-          _config['engine'] = {'variant': (e as Map)['variant'], 'model': e['model']};
+          _config['engine'] = {...(e as Map).cast<String, dynamic>()};
           await json(200, addJob('engine', '${e['model']}', state: 'done'));
         }
       case ('PUT', '/api/setup/engine/power'):
         final e = _config['engine'] as Json?;
         if (e != null) e['off'] = b['on'] != true;
         await json(200, <String, dynamic>{});
+      case ('POST', '/api/setup/engine/improvement-test'):
+        final e = (b['engine'] as Map).cast<String, dynamic>();
+        final test = {
+          'model': e['model'],
+          'improvement': b['improvement'],
+          'at': '2026-11-25T10:00:00.000Z',
+          'read': {'before': 14.0, 'after': 15.5},
+          'write': {'before': 2.9, 'after': 3.3},
+        };
+        _config['improvementTests'] = [test];
+        await json(
+          200,
+          addJob('improvement_test', '${e['model']}', state: 'done')
+            ..['vars'] = {
+              'model': e['model'],
+              'improvement': b['improvement'],
+              'trials': jsonEncode([
+                {'mode': 'with', 'state': 'done', 'readTps': 15.5, 'writeTps': 3.3},
+                {'mode': 'without', 'state': 'done', 'readTps': 14.0, 'writeTps': 2.9},
+              ]),
+            }
+            ..['steps'] = [
+              {'id': 'without', 'state': 'done'},
+              {'id': 'with', 'state': 'done'},
+              {'id': 'restore', 'state': 'done'},
+            ],
+        );
       case ('POST', '/api/setup/engine/speed-test'):
         final e = (b['engine'] as Map).cast<String, dynamic>();
         await json(

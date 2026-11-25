@@ -34775,6 +34775,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Business numbers and bots: connect them, read the conversations, answer what the agent passes on.'**
   String get scHub;
+
+  /// No description provided for @moJob_improvement_test.
+  ///
+  /// In en, this message translates to:
+  /// **'Measuring {model}'**
+  String moJob_improvement_test(String model);
+
+  /// No description provided for @moJob_step_restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Putting the engine back as it was'**
+  String get moJob_step_restore;
+
+  /// No description provided for @moJob_step_with.
+  ///
+  /// In en, this message translates to:
+  /// **'With the improvement'**
+  String get moJob_step_with;
+
+  /// No description provided for @moJob_step_without.
+  ///
+  /// In en, this message translates to:
+  /// **'Without the improvement'**
+  String get moJob_step_without;
+
+  /// No description provided for @moLmImprAskText.
+  ///
+  /// In en, this message translates to:
+  /// **'It takes a long time and a lot of compute: the model is loaded more than once (minutes, even tens of minutes for a big one) and meanwhile the local model does not answer the agents. It may show no gain, or even a loss. At the end the engine goes back as it was.'**
+  String get moLmImprAskText;
+
+  /// No description provided for @moLmImprAskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure {name} on this computer?'**
+  String moLmImprAskTitle(String name);
+
+  /// No description provided for @moLmImprAskYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the measurement'**
+  String get moLmImprAskYes;
+
+  /// No description provided for @moLmImprHelp_noRepack.
+  ///
+  /// In en, this message translates to:
+  /// **'llama.cpp normally re-arranges the model\'s weights for the processor when it loads them. For writing one token at a time this was slower on an Intel i5-12500H: with No Repack 3.21 tokens/s instead of 2.88 (+11%), while reading the message stayed the same. On other processors it may give nothing, or be slower.'**
+  String get moLmImprHelp_noRepack;
+
+  /// No description provided for @moLmImprIntegratedOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'only the integrated graphics'**
+  String get moLmImprIntegratedOnly;
+
+  /// No description provided for @moLmImprMeasure.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure on this computer'**
+  String get moLmImprMeasure;
+
+  /// No description provided for @moLmImprMeasured.
+  ///
+  /// In en, this message translates to:
+  /// **'Measured on this computer: reading {rb} → {ra}, writing {wb} → {wa} tokens/s.'**
+  String moLmImprMeasured(String ra, String rb, String wa, String wb);
+
+  /// No description provided for @moLmImprSub_bigChunks.
+  ///
+  /// In en, this message translates to:
+  /// **'the message is read in big blocks'**
+  String get moLmImprSub_bigChunks;
+
+  /// No description provided for @moLmImprSub_noRepack.
+  ///
+  /// In en, this message translates to:
+  /// **'the weights as they are in the file, without re-arranging them'**
+  String get moLmImprSub_noRepack;
+
+  /// No description provided for @moLmImprSub_prefetch.
+  ///
+  /// In en, this message translates to:
+  /// **'the next layer\'s experts arrive ahead of time'**
+  String get moLmImprSub_prefetch;
+
+  /// No description provided for @moLmImprSub_speculative.
+  ///
+  /// In en, this message translates to:
+  /// **'more tokens at each pass'**
+  String get moLmImprSub_speculative;
+
+  /// No description provided for @moLmImprTestDone.
+  ///
+  /// In en, this message translates to:
+  /// **'The engine is back as it was. The result stays on the card.'**
+  String get moLmImprTestDone;
+
+  /// No description provided for @moLmImprTestRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading (tokens/s)'**
+  String get moLmImprTestRead;
+
+  /// No description provided for @moLmImprTestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Measuring {name}'**
+  String moLmImprTestTitle(String name);
+
+  /// No description provided for @moLmImprTestWay.
+  ///
+  /// In en, this message translates to:
+  /// **'Way'**
+  String get moLmImprTestWay;
+
+  /// No description provided for @moLmImprTestWrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Writing (tokens/s)'**
+  String get moLmImprTestWrite;
+
+  /// No description provided for @moLmImprTested.
+  ///
+  /// In en, this message translates to:
+  /// **'Tried by us on this model'**
+  String get moLmImprTested;
+
+  /// No description provided for @moLmImprTestedRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading from {before} to {after} tokens/s ({pct}).'**
+  String moLmImprTestedRead(String after, String before, String pct);
+
+  /// No description provided for @moLmImprTestedWrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Writing from {before} to {after} tokens/s ({pct}).'**
+  String moLmImprTestedWrite(String after, String before, String pct);
+
+  /// No description provided for @moLmImprTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Improvements'**
+  String get moLmImprTitle;
+
+  /// No description provided for @moLmImprWarn.
+  ///
+  /// In en, this message translates to:
+  /// **'They are turned on by hand, one by one. To know whether they pay off here you can measure them: every measurement takes a lot of time and a lot of compute (the model is loaded more than once, even tens of minutes for a big one; meanwhile the local model does not answer the agents) and it may give no gain at all or even make things worse.'**
+  String get moLmImprWarn;
+
+  /// No description provided for @moLmImprWhy_missingEngine.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: the changed engine is not available (this version of Rasgeth was released without it, or there is no network).'**
+  String get moLmImprWhy_missingEngine;
+
+  /// No description provided for @moLmImprWhy_needDeepField.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: it needs Deep Field, which is off. Turn it on in the computer\'s box.'**
+  String get moLmImprWhy_needDeepField;
+
+  /// No description provided for @moLmImprWhy_needGpu.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: it needs a graphics card with its own memory. This computer has only the integrated graphics.'**
+  String get moLmImprWhy_needGpu;
+
+  /// No description provided for @moLmImprWhy_needMoe.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: it only works with mixture-of-experts models, and this one is not.'**
+  String get moLmImprWhy_needMoe;
+
+  /// No description provided for @moLmImprWhy_needNvidia.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: it needs an NVIDIA graphics card. This computer has {gpu}.'**
+  String moLmImprWhy_needNvidia(String gpu);
+
+  /// No description provided for @moLmImprWith.
+  ///
+  /// In en, this message translates to:
+  /// **'With it'**
+  String get moLmImprWith;
+
+  /// No description provided for @moLmImprWithout.
+  ///
+  /// In en, this message translates to:
+  /// **'Without it'**
+  String get moLmImprWithout;
+
+  /// No description provided for @moLmImpr_bigChunks.
+  ///
+  /// In en, this message translates to:
+  /// **'Big Chunks'**
+  String get moLmImpr_bigChunks;
+
+  /// No description provided for @moLmImpr_noRepack.
+  ///
+  /// In en, this message translates to:
+  /// **'No Repack'**
+  String get moLmImpr_noRepack;
+
+  /// No description provided for @moLmImpr_prefetch.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefetch'**
+  String get moLmImpr_prefetch;
+
+  /// No description provided for @moLmImpr_speculative.
+  ///
+  /// In en, this message translates to:
+  /// **'Speculative Decoding'**
+  String get moLmImpr_speculative;
+
+  /// No description provided for @moSysDeepFieldWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasgeth\'s SSD streaming'**
+  String get moSysDeepFieldWhat;
+
+  /// No description provided for @moLmMoePrefetchHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Runs a version of llama.cpp changed by Rasgeth: while the graphics card computes one layer, the experts of the next one are already on their way to it, and the model is loaded in RAM when it fits. With mixture-of-experts models long messages are read up to 1.7 times faster (measured on an RTX 4080 Super). The first start downloads that engine (about {size}), kept next to the official one. NVIDIA cards on Windows only.'**
+  String moLmMoePrefetchHelp(String size);
+
+  /// No description provided for @moLmMoePrefetchHelpDocker.
+  ///
+  /// In en, this message translates to:
+  /// **'Runs a version of llama.cpp changed by Rasgeth: while the graphics card computes one layer, the experts of the next one are already on their way to it, and the model is loaded in RAM when it fits. With mixture-of-experts models long messages are read up to 1.7 times faster (measured on an RTX 4080 Super). The first start downloads that engine\'s image (about {size}), kept next to the usual one. NVIDIA cards only, through Docker\'s NVIDIA runtime.'**
+  String moLmMoePrefetchHelpDocker(String size);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

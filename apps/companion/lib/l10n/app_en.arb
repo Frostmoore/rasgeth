@@ -13877,5 +13877,128 @@
   "scErr_unreachable": "The platform cannot be reached from here. Check the internet connection.",
   "scErr_webhook_failed": "The platform did not accept the address. Check remote access and try again.",
   "scErr_failed": "It did not work.",
-  "scHub": "Business numbers and bots: connect them, read the conversations, answer what the agent passes on."
+  "scHub": "Business numbers and bots: connect them, read the conversations, answer what the agent passes on.",
+  "moJob_improvement_test": "Measuring {model}",
+  "@moJob_improvement_test": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "moJob_step_restore": "Putting the engine back as it was",
+  "moJob_step_with": "With the improvement",
+  "moJob_step_without": "Without the improvement",
+  "moLmImprAskText": "It takes a long time and a lot of compute: the model is loaded more than once (minutes, even tens of minutes for a big one) and meanwhile the local model does not answer the agents. It may show no gain, or even a loss. At the end the engine goes back as it was.",
+  "moLmImprAskTitle": "Measure {name} on this computer?",
+  "@moLmImprAskTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmImprAskYes": "Start the measurement",
+  "moLmImprHelp_noRepack": "llama.cpp normally re-arranges the model's weights for the processor when it loads them. For writing one token at a time this was slower on an Intel i5-12500H: with No Repack 3.21 tokens/s instead of 2.88 (+11%), while reading the message stayed the same. On other processors it may give nothing, or be slower.",
+  "moLmImprIntegratedOnly": "only the integrated graphics",
+  "moLmImprMeasure": "Measure on this computer",
+  "moLmImprMeasured": "Measured on this computer: reading {rb} → {ra}, writing {wb} → {wa} tokens/s.",
+  "@moLmImprMeasured": {
+    "placeholders": {
+      "ra": {
+        "type": "String"
+      },
+      "rb": {
+        "type": "String"
+      },
+      "wa": {
+        "type": "String"
+      },
+      "wb": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmImprSub_bigChunks": "the message is read in big blocks",
+  "moLmImprSub_noRepack": "the weights as they are in the file, without re-arranging them",
+  "moLmImprSub_prefetch": "the next layer's experts arrive ahead of time",
+  "moLmImprSub_speculative": "more tokens at each pass",
+  "moLmImprTestDone": "The engine is back as it was. The result stays on the card.",
+  "moLmImprTestRead": "Reading (tokens/s)",
+  "moLmImprTestTitle": "Measuring {name}",
+  "@moLmImprTestTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmImprTestWay": "Way",
+  "moLmImprTestWrite": "Writing (tokens/s)",
+  "moLmImprTested": "Tried by us on this model",
+  "moLmImprTestedRead": "Reading from {before} to {after} tokens/s ({pct}).",
+  "@moLmImprTestedRead": {
+    "placeholders": {
+      "after": {
+        "type": "String"
+      },
+      "before": {
+        "type": "String"
+      },
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmImprTestedWrite": "Writing from {before} to {after} tokens/s ({pct}).",
+  "@moLmImprTestedWrite": {
+    "placeholders": {
+      "after": {
+        "type": "String"
+      },
+      "before": {
+        "type": "String"
+      },
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmImprTitle": "Improvements",
+  "moLmImprWarn": "They are turned on by hand, one by one. To know whether they pay off here you can measure them: every measurement takes a lot of time and a lot of compute (the model is loaded more than once, even tens of minutes for a big one; meanwhile the local model does not answer the agents) and it may give no gain at all or even make things worse.",
+  "moLmImprWhy_missingEngine": "Off: the changed engine is not available (this version of Rasgeth was released without it, or there is no network).",
+  "moLmImprWhy_needDeepField": "Off: it needs Deep Field, which is off. Turn it on in the computer's box.",
+  "moLmImprWhy_needGpu": "Off: it needs a graphics card with its own memory. This computer has only the integrated graphics.",
+  "moLmImprWhy_needMoe": "Off: it only works with mixture-of-experts models, and this one is not.",
+  "moLmImprWhy_needNvidia": "Off: it needs an NVIDIA graphics card. This computer has {gpu}.",
+  "@moLmImprWhy_needNvidia": {
+    "placeholders": {
+      "gpu": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmImprWith": "With it",
+  "moLmImprWithout": "Without it",
+  "moLmImpr_bigChunks": "Big Chunks",
+  "moLmImpr_noRepack": "No Repack",
+  "moLmImpr_prefetch": "Prefetch",
+  "moLmImpr_speculative": "Speculative Decoding",
+  "moSysDeepFieldWhat": "Rasgeth's SSD streaming",
+  "moLmMoePrefetchHelp": "Runs a version of llama.cpp changed by Rasgeth: while the graphics card computes one layer, the experts of the next one are already on their way to it, and the model is loaded in RAM when it fits. With mixture-of-experts models long messages are read up to 1.7 times faster (measured on an RTX 4080 Super). The first start downloads that engine (about {size}), kept next to the official one. NVIDIA cards on Windows only.",
+  "@moLmMoePrefetchHelp": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmMoePrefetchHelpDocker": "Runs a version of llama.cpp changed by Rasgeth: while the graphics card computes one layer, the experts of the next one are already on their way to it, and the model is loaded in RAM when it fits. With mixture-of-experts models long messages are read up to 1.7 times faster (measured on an RTX 4080 Super). The first start downloads that engine's image (about {size}), kept next to the usual one. NVIDIA cards only, through Docker's NVIDIA runtime.",
+  "@moLmMoePrefetchHelpDocker": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  }
 }

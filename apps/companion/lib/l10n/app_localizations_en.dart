@@ -20114,4 +20114,147 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get scHub =>
       'Business numbers and bots: connect them, read the conversations, answer what the agent passes on.';
+
+  @override
+  String moJob_improvement_test(String model) {
+    return 'Measuring $model';
+  }
+
+  @override
+  String get moJob_step_restore => 'Putting the engine back as it was';
+
+  @override
+  String get moJob_step_with => 'With the improvement';
+
+  @override
+  String get moJob_step_without => 'Without the improvement';
+
+  @override
+  String get moLmImprAskText =>
+      'It takes a long time and a lot of compute: the model is loaded more than once (minutes, even tens of minutes for a big one) and meanwhile the local model does not answer the agents. It may show no gain, or even a loss. At the end the engine goes back as it was.';
+
+  @override
+  String moLmImprAskTitle(String name) {
+    return 'Measure $name on this computer?';
+  }
+
+  @override
+  String get moLmImprAskYes => 'Start the measurement';
+
+  @override
+  String get moLmImprHelp_noRepack =>
+      'llama.cpp normally re-arranges the model\'s weights for the processor when it loads them. For writing one token at a time this was slower on an Intel i5-12500H: with No Repack 3.21 tokens/s instead of 2.88 (+11%), while reading the message stayed the same. On other processors it may give nothing, or be slower.';
+
+  @override
+  String get moLmImprIntegratedOnly => 'only the integrated graphics';
+
+  @override
+  String get moLmImprMeasure => 'Measure on this computer';
+
+  @override
+  String moLmImprMeasured(String ra, String rb, String wa, String wb) {
+    return 'Measured on this computer: reading $rb → $ra, writing $wb → $wa tokens/s.';
+  }
+
+  @override
+  String get moLmImprSub_bigChunks => 'the message is read in big blocks';
+
+  @override
+  String get moLmImprSub_noRepack =>
+      'the weights as they are in the file, without re-arranging them';
+
+  @override
+  String get moLmImprSub_prefetch => 'the next layer\'s experts arrive ahead of time';
+
+  @override
+  String get moLmImprSub_speculative => 'more tokens at each pass';
+
+  @override
+  String get moLmImprTestDone => 'The engine is back as it was. The result stays on the card.';
+
+  @override
+  String get moLmImprTestRead => 'Reading (tokens/s)';
+
+  @override
+  String moLmImprTestTitle(String name) {
+    return 'Measuring $name';
+  }
+
+  @override
+  String get moLmImprTestWay => 'Way';
+
+  @override
+  String get moLmImprTestWrite => 'Writing (tokens/s)';
+
+  @override
+  String get moLmImprTested => 'Tried by us on this model';
+
+  @override
+  String moLmImprTestedRead(String after, String before, String pct) {
+    return 'Reading from $before to $after tokens/s ($pct).';
+  }
+
+  @override
+  String moLmImprTestedWrite(String after, String before, String pct) {
+    return 'Writing from $before to $after tokens/s ($pct).';
+  }
+
+  @override
+  String get moLmImprTitle => 'Improvements';
+
+  @override
+  String get moLmImprWarn =>
+      'They are turned on by hand, one by one. To know whether they pay off here you can measure them: every measurement takes a lot of time and a lot of compute (the model is loaded more than once, even tens of minutes for a big one; meanwhile the local model does not answer the agents) and it may give no gain at all or even make things worse.';
+
+  @override
+  String get moLmImprWhy_missingEngine =>
+      'Off: the changed engine is not available (this version of Rasgeth was released without it, or there is no network).';
+
+  @override
+  String get moLmImprWhy_needDeepField =>
+      'Off: it needs Deep Field, which is off. Turn it on in the computer\'s box.';
+
+  @override
+  String get moLmImprWhy_needGpu =>
+      'Off: it needs a graphics card with its own memory. This computer has only the integrated graphics.';
+
+  @override
+  String get moLmImprWhy_needMoe =>
+      'Off: it only works with mixture-of-experts models, and this one is not.';
+
+  @override
+  String moLmImprWhy_needNvidia(String gpu) {
+    return 'Off: it needs an NVIDIA graphics card. This computer has $gpu.';
+  }
+
+  @override
+  String get moLmImprWith => 'With it';
+
+  @override
+  String get moLmImprWithout => 'Without it';
+
+  @override
+  String get moLmImpr_bigChunks => 'Big Chunks';
+
+  @override
+  String get moLmImpr_noRepack => 'No Repack';
+
+  @override
+  String get moLmImpr_prefetch => 'Prefetch';
+
+  @override
+  String get moLmImpr_speculative => 'Speculative Decoding';
+
+  @override
+  String get moSysDeepFieldWhat => 'Rasgeth\'s SSD streaming';
+
+  @override
+  String moLmMoePrefetchHelp(String size) {
+    return 'Runs a version of llama.cpp changed by Rasgeth: while the graphics card computes one layer, the experts of the next one are already on their way to it, and the model is loaded in RAM when it fits. With mixture-of-experts models long messages are read up to 1.7 times faster (measured on an RTX 4080 Super). The first start downloads that engine (about $size), kept next to the official one. NVIDIA cards on Windows only.';
+  }
+
+  @override
+  String moLmMoePrefetchHelpDocker(String size) {
+    return 'Runs a version of llama.cpp changed by Rasgeth: while the graphics card computes one layer, the experts of the next one are already on their way to it, and the model is loaded in RAM when it fits. With mixture-of-experts models long messages are read up to 1.7 times faster (measured on an RTX 4080 Super). The first start downloads that engine\'s image (about $size), kept next to the usual one. NVIDIA cards only, through Docker\'s NVIDIA runtime.';
+  }
 }

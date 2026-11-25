@@ -74,6 +74,22 @@ class ModelsSetup {
       if (g is Map) g.cast<String, dynamic>(),
   ];
 
+  // ---- the improvements the engine runs with (p3.12.6) ----
+  bool get engineStream => engine?['stream'] == true;
+  bool get engineBigChunks => engine?['bigChunks'] == true;
+  bool get engineMoePrefetch => engine?['moePrefetch'] == true;
+  bool get engineNoRepack => engine?['noRepack'] == true;
+
+  /// `none`, `draft` or `ngram`: what speculative decoding the engine runs with.
+  String get engineSpeculative => _s(engine?['speculative']) ?? 'none';
+
+  /// What the person measured here, one per model file and improvement.
+  List<ImprovementTest> get improvementTests => [
+    for (final t
+        in config['improvementTests'] is List ? config['improvementTests'] as List : const [])
+      if (t is Map) ImprovementTest(t.cast<String, dynamic>()),
+  ];
+
   /// The speed measured for a file when it ran and was tuned.
   double? measuredTps(String file) {
     final e = engine;
@@ -122,6 +138,65 @@ class GgufChoice {
   final String quality;
 }
 
+/// The ids of the four improvements, in the order the server sends them (`IMPROVEMENT_IDS`).
+const improvementIds = ['prefetch', 'bigChunks', 'speculative', 'noRepack'];
+
+/// What can be turned on for a model here, with the reason when not (`Improvement`).
+class Improvement {
+  Improvement(Map<String, dynamic> j)
+    : id = '${j['id'] ?? ''}',
+      available = j['available'] == true,
+      reason = _s(j['reason']),
+      gpu = _s(j['gpu']),
+      draft = j['draft'] == true;
+
+  final String id;
+  final bool available;
+
+  /// needNvidia | needGpu | needMoe | needDeepField | missingEngine.
+  final String? reason;
+
+  /// The best card with its own memory (only with `needNvidia`).
+  final String? gpu;
+  final bool draft;
+}
+
+/// Tokens a second before and after.
+class SpeedPair {
+  SpeedPair(Map<String, dynamic> j) : before = _n(j['before']), after = _n(j['after']);
+
+  final double before;
+  final double after;
+}
+
+/// What we measured ourselves for a model (`TestedResult`).
+class TestedResult {
+  TestedResult(Map<String, dynamic> j)
+    : improvement = '${j['improvement'] ?? ''}',
+      hardware = '${j['hardware'] ?? ''}',
+      read = j['read'] is Map ? SpeedPair(_m(j['read'])) : null,
+      write = j['write'] is Map ? SpeedPair(_m(j['write'])) : null;
+
+  final String improvement;
+  final String hardware;
+  final SpeedPair? read;
+  final SpeedPair? write;
+}
+
+/// What the person measured on this computer (`config.improvementTests`).
+class ImprovementTest {
+  ImprovementTest(Map<String, dynamic> j)
+    : model = '${j['model'] ?? ''}',
+      improvement = '${j['improvement'] ?? ''}',
+      read = SpeedPair(_m(j['read'])),
+      write = SpeedPair(_m(j['write']));
+
+  final String model;
+  final String improvement;
+  final SpeedPair read;
+  final SpeedPair write;
+}
+
 /// A suggested local model (`LocalModelChoice`).
 class LocalChoice {
   LocalChoice(Map<String, dynamic> j)
@@ -134,7 +209,17 @@ class LocalChoice {
       file = j['file'] is Map ? GgufChoice(_m(j['file'])) : null,
       smallestGb = j['smallestGb'] is num ? (j['smallestGb'] as num).toDouble() : null,
       unavailable = j['unavailable'] == true,
-      beyondMemory = j['beyondMemory'] == true;
+      beyondMemory = j['beyondMemory'] == true,
+      draftFile = j['draftFile'] is Map ? GgufChoice(_m(j['draftFile'])) : null,
+      draftRepo = _s(_m(j['draft'])['repo']),
+      improvements = [
+        for (final i in j['improvements'] is List ? j['improvements'] as List : const [])
+          if (i is Map) Improvement(i.cast<String, dynamic>()),
+      ],
+      tested = [
+        for (final i in j['tested'] is List ? j['tested'] as List : const [])
+          if (i is Map) TestedResult(i.cast<String, dynamic>()),
+      ];
 
   final String id;
   final String name;
@@ -146,6 +231,16 @@ class LocalChoice {
   final double? smallestGb;
   final bool unavailable;
   final bool beyondMemory;
+
+  /// The small model for speculative decoding, when the family has one, and its repository.
+  final GgufChoice? draftFile;
+  final String? draftRepo;
+
+  /// Empty with an older server (then only No Repack and Speculative Decoding stay on offer).
+  final List<Improvement> improvements;
+  final List<TestedResult> tested;
+
+  Improvement? improvement(String id) => improvements.where((i) => i.id == id).firstOrNull;
 }
 
 /// A file of the models folder: ready, or a download paused halfway.
@@ -216,8 +311,13 @@ extension ModelsApi on RedGiantClient {
   Future<void> setupModels(Map<String, Object?> b) => callJson('PUT', '/api/setup/models', b);
 
   /// `GET /api/setup/local-models?variant=…`: the suggestions and the folder's files.
-  Future<({List<LocalChoice> models, List<LocalFile> files})> localModels(String variant) async {
-    final j = objectOf(await getJson('/api/setup/local-models', {'variant': variant}));
+  Future<({List<LocalChoice> models, List<LocalFile> files})> localModels(
+    String variant, {
+    bool stream = false,
+  }) async {
+    final j = objectOf(
+      await getJson('/api/setup/local-models', {'variant': variant, if (stream) 'stream': '1'}),
+    );
     return (
       models: [
         for (final m in j['models'] is List ? j['models'] as List : const [])
@@ -267,6 +367,77 @@ extension ModelsApi on RedGiantClient {
     ),
   );
 
+  /// `POST /api/setup/engine/improvement-test`: what one improvement gains here (a job).
+  Future<LmJob> improvementTest(Map<String, Object?> engine, String improvement) async => LmJob(
+    objectOf(
+      await callJson('POST', '/api/setup/engine/improvement-test', {
+        'engine': engine,
+        'improvement': improvement,
+      }),
+    ),
+  );
+
   /// `GET /api/jobs/:id`.
   Future<LmJob> lmJob(String id) async => LmJob(objectOf(await getJson('/api/jobs/${_id(id)}')));
+}
+
+/// What the card's improvements switch on for one start (p3.12.6): the activation's body.
+class EngineChoices {
+  const EngineChoices({
+    this.bigChunks = false,
+    this.prefetch = false,
+    this.noRepack = false,
+    this.speculative = 'none',
+  });
+
+  final bool bigChunks;
+  final bool prefetch;
+  final bool noRepack;
+
+  /// none | draft | ngram.
+  final String speculative;
+
+  EngineChoices copy({bool? bigChunks, bool? prefetch, bool? noRepack, String? speculative}) =>
+      EngineChoices(
+        bigChunks: bigChunks ?? this.bigChunks,
+        prefetch: prefetch ?? this.prefetch,
+        noRepack: noRepack ?? this.noRepack,
+        speculative: speculative ?? this.speculative,
+      );
+
+  /// The choices the engine runs with now.
+  factory EngineChoices.running(ModelsSetup s) => EngineChoices(
+    bigChunks: s.engineBigChunks,
+    prefetch: s.engineMoePrefetch,
+    noRepack: s.engineNoRepack,
+    speculative: s.engineSpeculative,
+  );
+
+  /// The body of `PUT /api/setup/engine` (and of the improvement test): only what is on; Big
+  /// Chunks and Prefetch only with Deep Field (`stream`); the small model by its file [draftModel].
+  Map<String, Object?> body(
+    String variant,
+    String model, {
+    bool stream = false,
+    String? draftModel,
+  }) => {
+    'variant': variant,
+    'model': model,
+    if (stream) 'stream': true,
+    if (stream && bigChunks) 'bigChunks': true,
+    if (stream && prefetch) 'moePrefetch': true,
+    if (noRepack) 'noRepack': true,
+    if (speculative == 'ngram') 'speculative': 'ngram',
+    if (speculative == 'draft' && draftModel != null) ...{
+      'speculative': 'draft',
+      'draftModel': draftModel,
+    },
+  };
+
+  /// Whether it is what the engine runs with now (so the start button is not needed).
+  bool sameAs(ModelsSetup s, {required bool stream}) =>
+      (stream && bigChunks) == s.engineBigChunks &&
+      (stream && prefetch) == s.engineMoePrefetch &&
+      noRepack == s.engineNoRepack &&
+      speculative == s.engineSpeculative;
 }
