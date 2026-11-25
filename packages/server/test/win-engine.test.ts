@@ -118,6 +118,26 @@ describe("the engine on Windows itself", () => {
     expect(await asked(undefined)).not.toContain("--no-repack");
   });
 
+  it("passes the model's MTP flags in the request's args, which the launcher accepts (p3.12.6)", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "rg-win-"));
+    const l = launcher(dir, [{ state: "ready", port: 8091 }]);
+    await new WinEngine({ dir, host: "h", pollMs: 10 }).start(
+      "m.gguf",
+      undefined,
+      undefined,
+      false,
+      {
+        speculative: "mtp",
+      },
+    );
+    l.close();
+    const args = l.seen.at(-1)?.args ?? "";
+    expect(args).toContain("--spec-type draft-mtp --spec-draft-n-max 2");
+    // The Windows launcher lets through only plain words (SafeArgs).
+    expect(args).toMatch(/^[A-Za-z0-9 _.=-]*$/);
+    expect(l.seen.at(-1)?.draft).toBeUndefined();
+  });
+
   it("says why it failed, from the launcher's code or the engine's log", async () => {
     const dir = await mkdtemp(join(tmpdir(), "rg-win-"));
     const failing = async (status: Omit<WinEngineStatus, "id">) => {

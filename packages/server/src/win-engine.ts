@@ -21,7 +21,7 @@ import { noRepackArgs, speculativeArgs } from "./stream.js";
 import { launcherProgress } from "./updates.js";
 
 /** llama.cpp's release the launcher downloads (`llama-<build>-bin-win-vulkan-x64.zip`). */
-export const WIN_ENGINE_BUILD = "b12034";
+export const WIN_ENGINE_BUILD = "b12679";
 
 export interface WinEngineRequest {
   id: string;
@@ -97,7 +97,7 @@ export class WinEngine {
     plan?: { ctx: number; args: string[]; fit: boolean },
     preload = false,
     spec: {
-      speculative?: "draft" | "ngram" | undefined;
+      speculative?: "draft" | "ngram" | "mtp" | undefined;
       draft?: string | undefined;
       noRepack?: boolean | undefined;
     } = {},
@@ -119,7 +119,9 @@ export class WinEngine {
         ...(plan?.args ?? []),
         "--kv-unified-per-slot",
         String(plan?.ctx ?? 65536),
-        ...(spec.speculative === "ngram" ? speculativeArgs("ngram", undefined) : []),
+        ...(spec.speculative === "ngram" || spec.speculative === "mtp"
+          ? speculativeArgs(spec.speculative, undefined)
+          : []),
         // The launcher passes plain flags through (SafeArgs), the Mac's too.
         ...noRepackArgs(spec.noRepack),
       ].join(" "),
@@ -254,7 +256,7 @@ export class WinEngine {
     plan?: { ctx: number; args: string[]; fit: boolean },
     preload = false,
     spec: {
-      speculative?: "draft" | "ngram" | undefined;
+      speculative?: "draft" | "ngram" | "mtp" | undefined;
       draft?: string | undefined;
       noRepack?: boolean | undefined;
     } = {},

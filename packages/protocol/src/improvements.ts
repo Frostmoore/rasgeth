@@ -15,7 +15,7 @@ export type ImprovementReason =
 
 /** What the rule needs to know: the model, the computer, and what is switched on. */
 export interface ImprovementInput {
-  model: Pick<LocalModel, "totalB" | "activeB" | "draft">;
+  model: Pick<LocalModel, "totalB" | "activeB" | "draft" | "mtp">;
   /** The computer's graphics cards, as the setup describes them. */
   gpus: { name: string; vendor: string; integrated: boolean }[];
   /** Deep Field (the SSD streaming) is on. */
@@ -36,6 +36,8 @@ export interface Improvement {
   gpu?: string;
   /** Speculative decoding only: the model's family has a small model for the `draft` way. */
   draft?: boolean;
+  /** Speculative decoding only: the model has MTP heads of its own, the `mtp` way (no second model). */
+  mtp?: boolean;
 }
 
 /** A mixture of experts: few of its parameters work on each token. */
@@ -46,6 +48,8 @@ export function isMoe(m: Pick<LocalModel, "totalB" | "activeB">): boolean {
 /** What we measured ourselves for a model: numbers in tokens a second, before and after. */
 export interface TestedResult {
   improvement: ImprovementId;
+  /** Speculative decoding only: the way it was measured. */
+  mode?: "draft" | "ngram" | "mtp";
   /** The computer it was measured on, in words («Intel i5-12500H»). */
   hardware: string;
   /** Reading a message. */
@@ -81,7 +85,12 @@ export function improvementsFor(input: ImprovementInput): Improvement[] {
   return [
     prefetch(),
     bigChunks(),
-    { id: "speculative", available: true, draft: Boolean(input.model.draft) },
+    {
+      id: "speculative",
+      available: true,
+      draft: Boolean(input.model.draft),
+      mtp: Boolean(input.model.mtp),
+    },
     { id: "noRepack", available: true },
   ];
 }

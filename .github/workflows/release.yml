@@ -58,7 +58,7 @@ env:
   npm_config_fetch_retry_maxtimeout: "120000"
   pnpm_config_fetch_retries: "5"
   # The patched engines (G32.2): what goes into their fingerprint.
-  LLAMA_BUILD: b12034
+  LLAMA_BUILD: b12679
   CUDA_VERSION: 12.8.1
   # Turing to Blackwell; 89 (RTX 40) is the card it was measured on. Each "-real" is machine
   # code for that family only; 120 also carries PTX for newer cards.
@@ -1083,7 +1083,7 @@ jobs:
           echo "win_fp=$win_fp" >> "$GITHUB_OUTPUT"
           echo "linux_fp=$linux_fp" >> "$GITHUB_OUTPUT"
 
-  # llama.cpp with Rasgeth's patches for Windows and NVIDIA cards (G32.2): b12034 plus
+  # llama.cpp with Rasgeth's patches for Windows and NVIDIA cards (G32.2): b12679 plus
   # engine/llama-patches (apply.ps1), CUDA 12.8 from NVIDIA's redistributable archives (no
   # installer), MSVC and Ninja (engine/build-win.ps1). The zip carries llama-server.exe with its
   # DLLs and CUDA's own (cudart, cuBLAS) and is attached to the release; Rasgeth downloads it
@@ -1212,7 +1212,7 @@ jobs:
           generate_release_notes: true
 
   # The same patched llama.cpp for the engines in Docker (Linux, NVIDIA runtime), G32.2:
-  # redgiant2-engine:cuda-prefetch, built from source (docker/engine-prefetch.Dockerfile: b12034 +
+  # redgiant2-engine:cuda-prefetch, built from source (docker/engine-prefetch.Dockerfile: b12679 +
   # apply.sh, CUDA 12.8). Its own image, not the `cuda` one: that one stays llama.cpp's official
   # build (no compilation in every release, always llama.cpp's latest), and only those who turn the
   # option on download this one. Built only for a new fingerprint (~80 minutes), also tagged

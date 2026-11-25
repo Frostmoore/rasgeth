@@ -211,14 +211,14 @@ export function noRepackArgs(on: boolean | undefined): string[] {
 }
 
 /**
- * Speculative decoding's flags (2026-11-04, checked in llama.cpp b12034's arguments): a small
+ * Speculative decoding's flags (2026-11-04, checked in llama.cpp b12679's arguments): a small
  * model of the same family, all in the card, proposes up to 8 tokens, only those it is at least
  * 75 % sure of; or the proposals come from the text already written (n-grams), with no second
- * model. Measured on an RTX 4080 Super with Qwen3 14B and Qwen3 0.6B: code rewritten 59 -> 155
+ * model; or the model's own MTP heads propose them (`mtp`). Measured on an RTX 4080 Super with Qwen3 14B and Qwen3 0.6B: code rewritten 59 -> 155
  * tokens a second; new prose 61 -> 56 (without the 75 % it fell to 42).
  */
 export function speculativeArgs(
-  speculative: "draft" | "ngram" | undefined,
+  speculative: "draft" | "ngram" | "mtp" | undefined,
   draftPath: string | undefined,
 ): string[] {
   if (speculative === "draft" && draftPath)
@@ -235,5 +235,8 @@ export function speculativeArgs(
       "0.75",
     ];
   if (speculative === "ngram") return ["--spec-type", "ngram-mod"];
+  // The model's own MTP heads propose the next tokens, no second model (llama.cpp b12679).
+  // Two drafts was the best on Qwen3.8 27B (1: 4.05, 2: 4.10, 3: 3.7 tokens a second).
+  if (speculative === "mtp") return ["--spec-type", "draft-mtp", "--spec-draft-n-max", "2"];
   return [];
 }

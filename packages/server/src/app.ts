@@ -2728,7 +2728,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     /** The next layer's experts copied ahead, patched llama.cpp on Windows (G32.2, experimental). */
     moePrefetch: z.boolean().optional(),
     /** Speculative decoding (2026-11-04): a small model of the family, or the text written. */
-    speculative: z.enum(["draft", "ngram"]).optional(),
+    speculative: z.enum(["draft", "ngram", "mtp"]).optional(),
     draftModel: z.string().min(1).optional(),
     /** No Repack (p3.12.6): the weights as they are in the file (`--no-repack`). */
     noRepack: z.boolean().optional(),
@@ -4381,9 +4381,9 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
         z.object({
           engine: Engine,
           modes: z
-            .array(z.enum(["none", "draft", "ngram"]))
+            .array(z.enum(["none", "draft", "ngram", "mtp"]))
             .min(1)
-            .max(3),
+            .max(4),
         }),
       );
       return (setup as SetupService).testSpeed(b.engine, b.modes);

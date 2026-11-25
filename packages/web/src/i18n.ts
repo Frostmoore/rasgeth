@@ -2038,6 +2038,7 @@ const en = {
   lmSpeedMode_none: "Model alone",
   lmSpeedMode_draft: "With the small model",
   lmSpeedMode_ngram: "N-grams",
+  lmSpeedMode_mtp: "With the model's MTP",
   lmSpeedTestDone:
     "The engine is back as it was. Choose the way above and start the model again to use it.",
   job_speed_test: "Measuring {model}",
@@ -2092,6 +2093,10 @@ const en = {
   lmSpecNone: "Off",
   lmSpecDraft: "With a small model of the family",
   lmSpecNgram: "From the text already written",
+  lmSpecMtp: "The model's MTP",
+  lmSpecMtpHelp:
+    "The model proposes the next tokens itself, with the MTP heads it was trained with, and checks them all in one pass: no second model and no extra memory. Measured on Qwen3.8 27B on an Intel i5-12500H: from 2.98 to 3.88 tokens/s.",
+  lmImprTestedMtp: "With the model's MTP.",
   lmSpecDraftHelp:
     "{name} ({size}) proposes up to 8 tokens; it stays all in the card with its own context, so the big model gets a little less room there. It only works with a model of the same family (same vocabulary): {product} picks it.",
   lmSpecDraftReady: "small model ready",
@@ -10685,6 +10690,7 @@ const it: Record<Key, string> = {
   lmSpeedMode_none: "Modello da solo",
   lmSpeedMode_draft: "Con il modello piccolo",
   lmSpeedMode_ngram: "N-gram",
+  lmSpeedMode_mtp: "Con l'MTP del modello",
   lmSpeedTestDone:
     "Il motore è tornato com'era. Scegli il modo qui sopra e riavvia il modello per usarlo.",
   job_speed_test: "Misuro {model}",
@@ -10740,6 +10746,10 @@ const it: Record<Key, string> = {
   lmSpecNone: "Spenta",
   lmSpecDraft: "Con un modello piccolo della famiglia",
   lmSpecNgram: "Dal testo già scritto",
+  lmSpecMtp: "MTP del modello",
+  lmSpecMtpHelp:
+    "Il modello propone da solo i token successivi, con le teste MTP con cui è stato addestrato, e li controlla tutti in un passaggio: nessun secondo modello e nessuna memoria in più. Misurato su Qwen3.8 27B su un Intel i5-12500H: da 2,98 a 3,88 token/s.",
+  lmImprTestedMtp: "Con l'MTP del modello.",
   lmSpecDraftHelp:
     "{name} ({size}) propone fino a 8 token; sta tutto nella scheda con il suo contesto, quindi al modello grande resta un po' meno posto lì. Funziona solo con un modello della stessa famiglia (stesso vocabolario): lo sceglie {product}.",
   lmSpecDraftReady: "modello piccolo pronto",

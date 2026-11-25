@@ -81,6 +81,15 @@ describe("what can be turned on (p3.12.6)", () => {
     expect(run({ model: dense }, "speculative")?.draft).toBe(false);
   });
 
+  it("says whether the model has MTP heads of its own", () => {
+    expect(run({ model: { ...dense, mtp: true } }, "speculative")?.mtp).toBe(true);
+    expect(run({ model: dense }, "speculative")?.mtp).toBe(false);
+  });
+
+  it("marks MTP only on models whose GGUF header says so", () => {
+    expect(LOCAL_MODELS.filter((m) => m.mtp).map((m) => m.id)).toEqual(["qwen3.8-27b"]);
+  });
+
   it("keeps only what we really measured in the catalogue", () => {
     const tested = LOCAL_MODELS.flatMap((m) => (m.tested ?? []).map((t) => ({ id: m.id, ...t })));
     expect(tested).toEqual([
@@ -89,6 +98,13 @@ describe("what can be turned on (p3.12.6)", () => {
         improvement: "noRepack",
         hardware: "Intel i5-12500H",
         write: { before: 2.88, after: 3.21 },
+      },
+      {
+        id: "qwen3.8-27b",
+        improvement: "speculative",
+        mode: "mtp",
+        hardware: "Intel i5-12500H",
+        write: { before: 2.98, after: 3.88 },
       },
     ]);
   });

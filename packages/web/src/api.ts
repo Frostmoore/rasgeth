@@ -219,7 +219,7 @@ export interface SetupState {
       /** Turned off by the person: kept, not loaded (2026-11-04). */
       off?: boolean;
       /** Speculative decoding (2026-11-04). */
-      speculative?: "draft" | "ngram";
+      speculative?: "draft" | "ngram" | "mtp";
       draftModel?: string;
       /** No Repack (p3.12.6): the weights as they are in the file. */
       noRepack?: boolean;
@@ -1234,7 +1234,7 @@ export class Api {
       bigChunks?: boolean;
       /** «Next layer ahead» (G32.2). */
       moePrefetch?: boolean;
-      speculative?: "draft" | "ngram";
+      speculative?: "draft" | "ngram" | "mtp";
       draftModel?: string;
       /** No Repack (p3.12.6). */
       noRepack?: boolean;
@@ -1638,7 +1638,7 @@ export class Api {
       stream?: boolean;
       draftModel?: string;
     },
-    modes: ("none" | "draft" | "ngram")[],
+    modes: ("none" | "draft" | "ngram" | "mtp")[],
   ) => this.call<Job>("POST", "/api/setup/engine/speed-test", { engine, modes });
   /** Measures one improvement here (p3.12.6): a job; the result goes to `config.improvementTests`. */
   improvementTest = (
@@ -1649,7 +1649,7 @@ export class Api {
       bigChunks?: boolean;
       moePrefetch?: boolean;
       noRepack?: boolean;
-      speculative?: "draft" | "ngram";
+      speculative?: "draft" | "ngram" | "mtp";
       draftModel?: string;
     },
     improvement: ImprovementTest["improvement"],

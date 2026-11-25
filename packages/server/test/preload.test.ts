@@ -100,6 +100,12 @@ describe("speculative decoding (2026-11-04)", () => {
     ]);
     expect(speculativeArgs("draft", undefined)).toEqual([]);
     expect(speculativeArgs("ngram", undefined)).toEqual(["--spec-type", "ngram-mod"]);
+    expect(speculativeArgs("mtp", undefined)).toEqual([
+      "--spec-type",
+      "draft-mtp",
+      "--spec-draft-n-max",
+      "2",
+    ]);
     expect(speculativeArgs(undefined, "/models/x.gguf")).toEqual([]);
     const { noRepackArgs } = await import("../src/stream.js");
     expect(noRepackArgs(true)).toEqual(["--no-repack"]);

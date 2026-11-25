@@ -204,7 +204,7 @@ export function fastestTrial<T extends { state: string; turnS?: number }>(
 
 /** One configuration tried by a speed test (2026-11-04): how fast it wrote each kind of text. */
 export interface SpeedTrial {
-  /** `none`, `draft`, `ngram` (speculative decoding); later the sparsity presets. */
+  /** `none`, `draft`, `ngram`, `mtp` (speculative decoding); later the sparsity presets. */
   mode: string;
   state: "waiting" | "running" | "done" | "failed" | "skipped";
   /** Tokens a second writing new prose, and rewriting a piece of code. */
@@ -297,9 +297,10 @@ export interface EngineConfig {
   /**
    * Speculative decoding (2026-11-04, an option for power users): `draft` a small model of the
    * same family (`draftModel`, a file in the models folder) proposes tokens the big one checks
-   * in one pass; `ngram` the proposals come from the text already written.
+   * in one pass; `ngram` the proposals come from the text already written; `mtp` the model's own MTP heads
+   * propose them (no second model).
    */
-  speculative?: "draft" | "ngram" | undefined;
+  speculative?: "draft" | "ngram" | "mtp" | undefined;
   draftModel?: string | undefined;
   /**
    * No Repack (p3.12.6, off by default): llama-server gets `--no-repack`, the weights stay as they
@@ -1891,7 +1892,8 @@ export class SetupService {
             const { plan: _plan, off: _off, ...base } = runningMode && before ? before : e;
             const cfg: EngineConfig = {
               ...base,
-              speculative: mode === "draft" ? "draft" : mode === "ngram" ? "ngram" : undefined,
+              speculative:
+                mode === "draft" || mode === "ngram" || mode === "mtp" ? mode : undefined,
               draftModel: mode === "draft" ? e.draftModel : undefined,
             };
             if (mode === "draft" && !e.draftModel) {
