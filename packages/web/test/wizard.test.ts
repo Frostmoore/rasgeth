@@ -4,11 +4,10 @@ import type { SetupState } from "../src/api.js";
 import { localModelName } from "../src/format.js";
 import { lang } from "../src/i18n.js";
 import {
-  bigChunksShown,
   diskTiles,
+  gainText,
   MOE_PREFETCH_IMAGE_SIZE,
   MOE_PREFETCH_SIZE,
-  moePrefetchSwitch,
   moePrefetchTexts,
   PRESETS,
   presetOf,
@@ -188,84 +187,18 @@ describe("the wizard's steps (2026-11-06)", () => {
 
 describe("the options next to SSD stream (G32.1)", () => {
   const nvidia = [{ name: "RTX 4080 Super", vramGb: 16, vendor: "nvidia", integrated: false }];
-  it("big chunks only with SSD stream on and an engine for a card of its own", () => {
-    expect(bigChunksShown(hw(), "windows", true)).toBe(true);
-    expect(bigChunksShown(hw(), "cuda", true)).toBe(true);
-    expect(bigChunksShown(hw(), "windows", false)).toBe(false);
-    expect(bigChunksShown(hw(), "cpu", true)).toBe(false);
-    const igpu = hw({ suggestion: { engine: "vulkan", maxModelGb: 8, kind: "igpu", vramGb: 0 } });
-    expect(bigChunksShown(igpu, "vulkan", true)).toBe(false);
-  });
-
-  it("«next layer ahead» (G32.2): Windows, an NVIDIA card, the native engine, SSD stream on", () => {
-    const win = hw({ onWindows: true, windowsEngine: true, gpus: nvidia } as Partial<
-      SetupState["hardware"]
-    >);
-    const at = (h: SetupState["hardware"], m: SetupState["moePrefetch"]) => ({
-      hardware: h,
-      moePrefetch: m,
-    });
-    expect(moePrefetchSwitch(at(win, "available"), "windows", true)).toBe("available");
-    // A version released without the binaries: shown, saying so.
-    expect(moePrefetchSwitch(at(win, "missing"), "windows", true)).toBe("missing");
-    expect(moePrefetchSwitch(at(win, "available"), "windows", false)).toBeNull();
-    // Only RedGiant's own engine on Windows runs the patched build (not the Docker ones).
-    expect(moePrefetchSwitch(at(win, "available"), "cuda", true)).toBeNull();
-    // The server did not say (an older one, or nothing to do).
-    expect(moePrefetchSwitch(at(win, null), "windows", true)).toBeNull();
-    expect(moePrefetchSwitch({ hardware: win }, "windows", true)).toBeNull();
-    const amd = hw({
-      onWindows: true,
-      gpus: [{ name: "RX 7900", vramGb: 24, vendor: "amd", integrated: false }],
-    } as Partial<SetupState["hardware"]>);
-    expect(moePrefetchSwitch(at(amd, "available"), "windows", true)).toBeNull();
-    const mac = hw({
-      os: "darwin",
-      onWindows: false,
-      windowsEngine: false,
-      gpus: nvidia,
-    } as Partial<SetupState["hardware"]>);
-    expect(moePrefetchSwitch(at(mac, "available"), "windows", true)).toBeNull();
-  });
-
-  it("the «next layer ahead» switch in Docker on Linux: CUDA engine, NVIDIA runtime, the image (G32.2)", () => {
-    const linux = hw({
-      os: "linux",
-      onWindows: false,
-      windowsEngine: false,
-      dockerGpu: true,
-      gpus: nvidia,
-    } as Partial<SetupState["hardware"]>);
-    const at = (
-      h: SetupState["hardware"],
-      image: SetupState["moePrefetchImage"],
-      zip: SetupState["moePrefetch"] = null,
-    ) => ({ hardware: h, moePrefetch: zip, moePrefetchImage: image });
-    expect(moePrefetchSwitch(at(linux, "available"), "cuda", true)).toBe("available");
-    expect(moePrefetchSwitch(at(linux, "missing"), "cuda", true)).toBe("missing");
-    expect(moePrefetchSwitch(at(linux, "available"), "cuda", false)).toBeNull();
-    // Vulkan and the CPU never; nor the Windows engine with only the image there.
-    expect(moePrefetchSwitch(at(linux, "available"), "vulkan", true)).toBeNull();
-    expect(moePrefetchSwitch(at(linux, "available"), "cpu", true)).toBeNull();
-    expect(moePrefetchSwitch(at(linux, "available"), "windows", true)).toBeNull();
-    expect(moePrefetchSwitch(at(linux, null), "cuda", true)).toBeNull();
-    expect(moePrefetchSwitch({ hardware: linux }, "cuda", true)).toBeNull();
-    // Without Docker's NVIDIA runtime the card is not handed to the engine.
-    const noRuntime = { ...linux, dockerGpu: false };
-    expect(moePrefetchSwitch(at(noRuntime, "available"), "cuda", true)).toBeNull();
-    const amd = {
-      ...linux,
-      gpus: [{ name: "RX 7900", vramGb: 24, vendor: "amd", integrated: false }],
-    } as SetupState["hardware"];
-    expect(moePrefetchSwitch(at(amd, "available"), "cuda", true)).toBeNull();
-    const mac = { ...linux, os: "darwin" };
-    expect(moePrefetchSwitch(at(mac, "available", "available"), "cuda", true)).toBeNull();
-    expect(moePrefetchSwitch(at(mac, "available", "available"), "windows", true)).toBeNull();
-    // Each engine says what it downloads.
+  it("each engine says what its patched build downloads", () => {
     expect(moePrefetchTexts("cuda").help).toContain(MOE_PREFETCH_IMAGE_SIZE);
     expect(moePrefetchTexts("cuda").help).toContain("Docker");
     expect(moePrefetchTexts("windows").help).toContain(MOE_PREFETCH_SIZE);
     expect(moePrefetchTexts("cuda").missing).not.toBe(moePrefetchTexts("windows").missing);
+  });
+
+  it("says a gain as a percentage (p3.12.6)", () => {
+    expect(gainText(2.88, 3.21)).toBe("+11%");
+    expect(gainText(10, 9)).toBe("-10%");
+    expect(gainText(5, 5)).toBe("0%");
+    expect(gainText(0, 5)).toBe("");
   });
 
   it("NVIDIA's Sysmem Fallback advice: Windows, an NVIDIA card, SSD stream on, until closed", () => {

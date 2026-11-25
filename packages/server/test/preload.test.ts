@@ -101,6 +101,10 @@ describe("speculative decoding (2026-11-04)", () => {
     expect(speculativeArgs("draft", undefined)).toEqual([]);
     expect(speculativeArgs("ngram", undefined)).toEqual(["--spec-type", "ngram-mod"]);
     expect(speculativeArgs(undefined, "/models/x.gguf")).toEqual([]);
+    const { noRepackArgs } = await import("../src/stream.js");
+    expect(noRepackArgs(true)).toEqual(["--no-repack"]);
+    expect(noRepackArgs(false)).toEqual([]);
+    expect(noRepackArgs(undefined)).toEqual([]);
   });
 
   it("leaves the small model its room in the card", () => {

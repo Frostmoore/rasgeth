@@ -18,6 +18,7 @@ import {
   Jobs,
   localModelChoices,
   modelsFolder,
+  prefetchEngineFor,
   qualityOf,
   quantOf,
   type SetupHooks,
@@ -504,6 +505,95 @@ describe("the setup wizard", () => {
     expect(seen).toEqual(["ngram", "none"]);
     expect(done?.steps.find((x) => x.id === "restore")?.state).toBe("skipped");
     expect(calls.at(-1)).toBe("engine:cuda:big.gguf");
+  });
+
+  it("measures one improvement without and with it, keeps the result and puts the engine back (p3.12.6)", async () => {
+    const { calls, hooks } = await setup();
+    const api = (s as Server).api;
+    const seen: (boolean | undefined)[] = [];
+    const engine = hooks.engine.bind(hooks);
+    hooks.engine = async (cfg, h) => {
+      seen.push(cfg ? Boolean(cfg.noRepack) : undefined);
+      return engine(cfg, h);
+    };
+    s?.core.providers.register(new FakeProvider(() => ({ text: "OK" }), { id: "local" }));
+    const started = await api<Job>("PUT", "/api/setup/engine", {
+      engine: { variant: "cuda", model: "big.gguf" },
+    });
+    await s?.core.jobs.settled(started.body.id);
+    seen.length = 0;
+    const job = await api<Job>("POST", "/api/setup/engine/improvement-test", {
+      engine: { variant: "cuda", model: "big.gguf" },
+      improvement: "noRepack",
+    });
+    // Running without it: the way the engine runs goes last, nothing is loaded again at the end.
+    expect(job.body.steps.map((x) => x.id)).toEqual(["with", "without", "restore"]);
+    const done = await s?.core.jobs.settled(job.body.id);
+    expect(done?.state).toBe("done");
+    expect(seen).toEqual([true, false]);
+    expect(done?.steps.find((x) => x.id === "restore")?.state).toBe("skipped");
+    expect(calls.at(-1)).toBe("engine:cuda:big.gguf");
+    const state = (await api<SetupState>("GET", "/api/setup")).body;
+    const tests = state.config.improvementTests ?? [];
+    expect(tests).toHaveLength(1);
+    expect(tests[0]).toMatchObject({ model: "big.gguf", improvement: "noRepack" });
+    expect(typeof tests[0]?.read.before).toBe("number");
+    expect(typeof tests[0]?.write.after).toBe("number");
+    expect(JSON.parse(done?.vars.result ?? "{}").improvement).toBe("noRepack");
+    // Measured again: the result is replaced, not added.
+    const again = await api<Job>("POST", "/api/setup/engine/improvement-test", {
+      engine: { variant: "cuda", model: "big.gguf" },
+      improvement: "noRepack",
+    });
+    await s?.core.jobs.settled(again.body.id);
+    expect(
+      ((await api<SetupState>("GET", "/api/setup")).body.config.improvementTests ?? []).length,
+    ).toBe(1);
+    // The engine's choices still say noRepack off, as before the test.
+    expect(state.config.engine?.noRepack).toBeUndefined();
+  });
+
+  it("asks for Deep Field before measuring Prefetch or Big Chunks (p3.12.6)", async () => {
+    await setup();
+    const api = (s as Server).api;
+    for (const improvement of ["prefetch", "bigChunks"]) {
+      const res = await api<{ error?: string }>("POST", "/api/setup/engine/improvement-test", {
+        engine: { variant: "cuda", model: "big.gguf" },
+        improvement,
+      });
+      expect(res.status).toBeGreaterThanOrEqual(400);
+    }
+  });
+
+  it("starts the engine with No Repack as asked and shows it in the state (p3.12.6)", async () => {
+    const { hooks } = await setup();
+    const api = (s as Server).api;
+    const asked: (boolean | undefined)[] = [];
+    const engine = hooks.engine.bind(hooks);
+    hooks.engine = async (cfg, h) => {
+      asked.push(cfg?.noRepack);
+      return engine(cfg, h);
+    };
+    s?.core.providers.register(new FakeProvider(() => ({ text: "OK" }), { id: "local" }));
+    const job = await api<Job>("PUT", "/api/setup/engine", {
+      engine: { variant: "cuda", model: "big.gguf", noRepack: true },
+    });
+    await s?.core.jobs.settled(job.body.id);
+    expect(asked).toContain(true);
+    expect((await api<SetupState>("GET", "/api/setup")).body.config.engine?.noRepack).toBe(true);
+    // The same choice again is nothing to do; another one is a new start.
+    const same = await api<Job>("PUT", "/api/setup/engine", {
+      engine: { variant: "cuda", model: "big.gguf", noRepack: true },
+    });
+    expect(
+      (await s?.core.jobs.settled(same.body.id))?.steps.every((x) => x.state === "skipped"),
+    ).toBe(true);
+    asked.length = 0;
+    const off = await api<Job>("PUT", "/api/setup/engine", {
+      engine: { variant: "cuda", model: "big.gguf" },
+    });
+    await s?.core.jobs.settled(off.body.id);
+    expect(asked.length).toBeGreaterThan(0);
   });
 
   it("streams a mixture of experts from the SSD, tuning the card's split by measuring (2026-11-03)", async () => {
@@ -1273,6 +1363,47 @@ describe("Hugging Face models", () => {
     });
     const full = await localModelChoices(hf, 12.8, { diskFreeGb: 20 });
     expect(full.find((m) => m.id === "qwen3.8-27b")).toMatchObject({ file: null });
+    // Improvements (p3.12.6): what can be turned on for each model here, and what we measured.
+    const ok = await localModelChoices(hf, 12.8, undefined, new Set(), {
+      gpus: [{ name: "RTX 4080", vendor: "nvidia", integrated: false }],
+      deepField: false,
+      prefetchEngine: "available",
+    });
+    const qwen = ok.find((m) => m.id === "qwen3.8-27b");
+    expect(qwen?.improvements?.map((x) => [x.id, x.available, x.reason])).toEqual([
+      ["prefetch", false, "needMoe"],
+      ["bigChunks", false, "needMoe"],
+      ["speculative", true, undefined],
+      ["noRepack", true, undefined],
+    ]);
+    expect(qwen?.tested?.[0]).toMatchObject({ improvement: "noRepack", write: { after: 3.21 } });
+    // Unreachable Hugging Face: the card still says what is possible.
+    expect(
+      ok.find((m) => m.id === "gemma-4-e4b")?.improvements?.find((x) => x.id === "noRepack")
+        ?.available,
+    ).toBe(true);
+    const moeOn = await localModelChoices(hf, 12.8, undefined, new Set(), {
+      gpus: [{ name: "RTX 4080", vendor: "nvidia", integrated: false }],
+      deepField: true,
+      prefetchEngine: "available",
+    });
+    expect(moeOn.find((m) => m.id === "qwen3.6-35b-a3b")?.improvements?.[0]).toMatchObject({
+      id: "prefetch",
+      available: true,
+    });
+    // Without a context nothing is said (older callers).
+    expect(list[0]?.improvements).toBeUndefined();
+  });
+
+  it("tells which engine Prefetch would use (p3.12.6)", () => {
+    const ready = { moePrefetch: "available", moePrefetchImage: "missing" } as const;
+    const win = { os: "win32", dockerGpu: false, onWindows: true };
+    expect(prefetchEngineFor("windows", win, ready)).toBe("available");
+    expect(prefetchEngineFor("windows", { ...win, onWindows: false }, ready)).toBeNull();
+    expect(prefetchEngineFor("cuda", { os: "linux", dockerGpu: true }, ready)).toBe("missing");
+    expect(prefetchEngineFor("cuda", { os: "linux", dockerGpu: false }, ready)).toBeNull();
+    expect(prefetchEngineFor("vulkan", { os: "linux", dockerGpu: true }, ready)).toBeNull();
+    expect(prefetchEngineFor("windows", { ...win, os: "darwin" }, ready)).toBeNull();
   });
 
   it("explains why the engine did not start", () => {

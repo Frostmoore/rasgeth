@@ -118,7 +118,7 @@ import { HuggingFace } from "./hf.js";
 import { importRoutes } from "./import-routes.js";
 import { knowledgeRoutes } from "./knowledge/routes.js";
 import { lanHsts, lanRedirect } from "./lan-https.js";
-import { localModelChoices } from "./local-models.js";
+import { localModelChoices, prefetchEngineFor } from "./local-models.js";
 import { LoginError } from "./login.js";
 import { MachineError, type MachinePatch } from "./machines.js";
 import { MagicNotFoundError, MagicStateError } from "./magic.js";
@@ -2730,6 +2730,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     /** Speculative decoding (2026-11-04): a small model of the family, or the text written. */
     speculative: z.enum(["draft", "ngram"]).optional(),
     draftModel: z.string().min(1).optional(),
+    /** No Repack (p3.12.6): the weights as they are in the file (`--no-repack`). */
+    noRepack: z.boolean().optional(),
   });
   app.get("/api/setup", (c) => wizard(c, () => (setup as SetupService).state()));
   app.put("/api/setup/models", (c) =>
@@ -4387,6 +4389,17 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       return (setup as SetupService).testSpeed(b.engine, b.modes);
     }),
   );
+  // One improvement measured on this computer (p3.12.6): the model without it and with it, a
+  // long message read and 128 tokens written each time; the engine goes back as it was.
+  app.post("/api/setup/engine/improvement-test", (c) =>
+    wizard(c, async () => {
+      const b = await parsed(
+        c,
+        z.object({ engine: Engine, improvement: z.enum(["prefetch", "bigChunks", "noRepack"]) }),
+      );
+      return (setup as SetupService).testImprovement(b.engine, b.improvement);
+    }),
+  );
   app.put("/api/setup/engine", (c) =>
     wizard(c, async () => {
       const e = (await parsed(c, z.object({ engine: Engine.nullable() }))).engine;
@@ -4548,7 +4561,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     wizard(c, async () => {
       const folder = modelsFor(c.req.query("variant"));
       if (!folder) return { models: [], files: [] };
-      const hw = (await (setup as SetupService).state()).hardware;
+      const state = await (setup as SetupService).state();
+      const hw = state.hardware;
       // SSD stream (2026-11-03): a model may be as big as RAM and card together; what does not
       // fit there is read from the SSD, slower but possible.
       const stream = c.req.query("stream") === "1";
@@ -4567,7 +4581,18 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       const files = await folder.local();
       const have = new Set(files.filter((f) => !f.partial).map((f) => f.file));
       return {
-        models: await localModelChoices(folder, budget, stream ? { diskFreeGb } : undefined, have),
+        models: await localModelChoices(
+          folder,
+          budget,
+          stream ? { diskFreeGb } : undefined,
+          have,
+          // What can be turned on for each model here (p3.12.6): Deep Field as the page asks.
+          {
+            gpus: hw.gpus,
+            deepField: stream,
+            prefetchEngine: prefetchEngineFor(c.req.query("variant"), hw, state),
+          },
+        ),
         files,
         budgetGb: budget,
         ...(stream && { diskFreeGb: Math.round(diskFreeGb * 10) / 10 }),

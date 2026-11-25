@@ -257,43 +257,15 @@ export function diskTiles(hw: SetupState["hardware"], variant: string): DiskTile
   });
 }
 
-/** The usual folder for the models on a disk. */
-/**
- * Whether the bigger reading passes' switch makes sense (G32.1): SSD stream on, and an engine for
- * a card of its own (a card sharing the computer's memory, or none, gains nothing from them).
- */
-export function bigChunksShown(
-  hw: SetupState["hardware"],
-  variant: string,
-  streaming: boolean,
-): boolean {
-  return streaming && variant !== "cpu" && hw.suggestion.kind !== "igpu";
+/** «+11%», or «-4%»: how much faster (or slower) a speed became (p3.12.6). */
+export function gainText(before: number, after: number): string {
+  if (!(before > 0)) return "";
+  const pct = Math.round((after / before - 1) * 100);
+  return `${pct > 0 ? "+" : ""}${pct}%`;
 }
 
 /** The patched engine's download (G32.2), as the release's zip measured. */
 export const MOE_PREFETCH_SIZE = "700 MB";
-
-/**
- * The «next layer ahead» switch (G32.2): with SSD stream on and an NVIDIA card of its own, either
- * RedGiant's engine on Windows (the server saying whether this version has the patched binaries)
- * or the `cuda` engine in Docker on Linux (whether the patched image is there). "missing": shown,
- * saying so, and off. null: not shown (never on a Mac, never with Vulkan or the CPU).
- */
-export function moePrefetchSwitch(
-  s: Pick<SetupState, "hardware" | "moePrefetch" | "moePrefetchImage">,
-  variant: string,
-  streaming: boolean,
-): "available" | "missing" | null {
-  const hw = s.hardware;
-  if (!streaming || hw.os === "darwin") return null;
-  if (!hw.gpus.some((g) => g.vendor === "nvidia" && !g.integrated)) return null;
-  if (variant === "windows") {
-    if (!s.moePrefetch || !(hw.onWindows ?? hw.windowsEngine)) return null;
-    return s.moePrefetch;
-  }
-  if (variant === "cuda") return (hw.dockerGpu && s.moePrefetchImage) || null;
-  return null;
-}
 
 /** The patched image for Docker (Linux), as the registry measured it. */
 export const MOE_PREFETCH_IMAGE_SIZE = "2.5 GB";
@@ -327,6 +299,7 @@ export function sysmemAdviceDue(
   return hw.gpus.some((g) => g.vendor === "nvidia" && !g.integrated);
 }
 
+/** The usual folder for the models on a disk. */
 export const defaultModelsFolder = (drive: string) => `${drive}:\\Rasgeth\\models`;
 
 /** One square of the closing summary: what was set up, and the step that changes it. */

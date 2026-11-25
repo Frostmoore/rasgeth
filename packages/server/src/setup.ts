@@ -213,6 +213,30 @@ export interface SpeedTrial {
   error?: string;
 }
 
+/** The improvements `testImprovement` can measure (speculative decoding has its own test). */
+export const MEASURABLE_IMPROVEMENTS = ["prefetch", "bigChunks", "noRepack"] as const;
+export type MeasurableImprovement = (typeof MEASURABLE_IMPROVEMENTS)[number];
+
+/** Tokens a second before and after, reading a long message and writing 128 tokens. */
+export interface ImprovementTest {
+  /** The model file. */
+  model: string;
+  improvement: MeasurableImprovement;
+  /** When it was measured (ISO). */
+  at: string;
+  read: { before: number; after: number };
+  write: { before: number; after: number };
+}
+
+/** One way (without or with the improvement) tried by an improvement test. */
+export interface ImprovementTrial {
+  mode: "without" | "with";
+  state: "waiting" | "running" | "done" | "failed" | "skipped";
+  readTps?: number;
+  writeTps?: number;
+  error?: string;
+}
+
 /** The two texts of a speed test: new prose, and code rewritten (where proposals hit most). */
 const SPEED_PROSE = "Explain how a refrigerator works to a curious teenager, in about 120 words.";
 const SPEED_CODE = `Rewrite this Python function exactly, renaming 'items' to 'products' everywhere and changing nothing else.
@@ -278,6 +302,11 @@ export interface EngineConfig {
   speculative?: "draft" | "ngram" | undefined;
   draftModel?: string | undefined;
   /**
+   * No Repack (p3.12.6, off by default): llama-server gets `--no-repack`, the weights stay as they
+   * are in the file instead of being re-arranged for the processor. It may give nothing, or be slower.
+   */
+  noRepack?: boolean | undefined;
+  /**
    * Turned off by the person (2026-11-04): kept with its tuning, but not started when RedGiant
    * opens and using no memory until it is turned on again.
    */
@@ -326,6 +355,11 @@ export interface SetupConfig {
    */
   mediaNative?: boolean;
   engine?: EngineConfig;
+  /**
+   * What the person measured on this computer for an improvement of the local model (p3.12.6):
+   * the last result for each model file and improvement.
+   */
+  improvementTests?: ImprovementTest[];
   retentionDays?: number;
   /** The user read that a personal subscription may not be allowed in third-party tools (RD23). */
   subscriptionAck?: boolean;
@@ -1559,6 +1593,7 @@ export class SetupService {
           Boolean(now.stream) === Boolean(e.stream) &&
           Boolean(now.bigChunks) === Boolean(e.bigChunks) &&
           Boolean(now.moePrefetch) === Boolean(e.moePrefetch) &&
+          Boolean(now.noRepack) === Boolean(e.noRepack) &&
           now.speculative === e.speculative &&
           now.draftModel === e.draftModel &&
           // Another tuning picked from the table (2026-11-05) is a new start.
@@ -1897,6 +1932,139 @@ export class SetupService {
     );
   }
 
+  /**
+   * Measures one improvement on this computer (p3.12.6): the engine is started without it and
+   * then with it, each time reading a long message (about 3,000 tokens) and writing 128 tokens;
+   * the tokens a second of each are kept for the model's card, and the engine goes back to how
+   * it was. A lot of time and compute: the model is loaded more than once.
+   */
+  testImprovement(e: EngineConfig, improvement: MeasurableImprovement): Job {
+    this.checkEngine(e);
+    if (!MEASURABLE_IMPROVEMENTS.includes(improvement))
+      throw new SetupError("This improvement has no test of its own");
+    if ((improvement === "prefetch" || improvement === "bigChunks") && !e.stream)
+      throw new SetupError("This improvement needs Deep Field");
+    const before = this.config.engine;
+    const sameModel = Boolean(before && before.model === e.model && before.variant === e.variant);
+    const running = sameModel && !before?.off ? before : undefined;
+    // The card's choices with the running engine's own tuning (no new tuning for a test).
+    const { plan: _plan, off: _off, trials: _trials, ...card } = e;
+    const base: EngineConfig = {
+      ...card,
+      ...(sameModel && before?.tuning && { tuning: before.tuning }),
+    };
+    // `prefetch` is `moePrefetch` in the engine's configuration.
+    const field = improvement === "prefetch" ? "moePrefetch" : improvement;
+    const flag = (on: boolean): EngineConfig => ({ ...base, [field]: on || undefined });
+    // The way the engine runs now goes last: the test then ends with the engine as it was.
+    const runsOn = running ? Boolean(running[field]) : undefined;
+    const order: ("without" | "with")[] =
+      runsOn === false ? ["with", "without"] : ["without", "with"];
+    const same = (a: EngineConfig, b: EngineConfig) =>
+      a.variant === b.variant &&
+      a.model === b.model &&
+      Boolean(a.stream) === Boolean(b.stream) &&
+      Boolean(a.bigChunks) === Boolean(b.bigChunks) &&
+      Boolean(a.moePrefetch) === Boolean(b.moePrefetch) &&
+      Boolean(a.noRepack) === Boolean(b.noRepack) &&
+      a.speculative === b.speculative &&
+      a.draftModel === b.draftModel &&
+      JSON.stringify(a.tuning ?? null) === JSON.stringify(b.tuning ?? null);
+    return this.o.core.jobs.start(
+      this.o.ownerId,
+      "improvement_test",
+      [...order, "restore"],
+      async (h) => {
+        const trials: ImprovementTrial[] = order.map((mode) => ({ mode, state: "waiting" }));
+        const show = () => h.info({ trials: JSON.stringify(trials) });
+        show();
+        let endedAsBefore = false;
+        try {
+          for (const [i, mode] of order.entries()) {
+            const trial = trials[i] as ImprovementTrial;
+            if (h.signal.aborted) throw new Error("cancelled");
+            h.step(mode);
+            trial.state = "running";
+            show();
+            try {
+              let cfg = flag(mode === "with");
+              let read = 3000;
+              if (improvement === "bigChunks" && mode === "with") {
+                // The bigger passes the card has room for: the tuned one, else the largest.
+                const first = await this.o.hooks.engine({
+                  ...cfg,
+                  tuning: { moeCacheShare: 0, ...cfg.tuning, batch: MOE_BATCH },
+                });
+                const long = batchTrials(first || undefined);
+                const batch = cfg.tuning?.batch ?? long.batches.at(-1);
+                if (batch === undefined) {
+                  trial.state = "skipped";
+                  show();
+                  continue;
+                }
+                cfg = { ...cfg, tuning: { moeCacheShare: 0, ...cfg.tuning, batch } };
+                read = long.read ?? read;
+              }
+              await this.o.hooks.engine(cfg);
+              await this.waitLocal(h);
+              // One short answer first: the first one after a start pays for the warm-up.
+              await this.speedOf(e.model, "Name three rivers in Europe.", 16);
+              const got = await this.benchLocal(e.model, read, 128);
+              trial.readTps = got.prefillTps;
+              trial.writeTps = got.genTps;
+              trial.state = "done";
+              h.progress(i + 1, order.length);
+              endedAsBefore = !!before && !before.off && same(cfg, before);
+            } catch (err) {
+              trial.state = "failed";
+              trial.error = (err as Error).message.slice(0, 200);
+              endedAsBefore = false;
+            }
+            show();
+          }
+          const [a, b] = trials as [ImprovementTrial, ImprovementTrial];
+          const off = order[0] === "without" ? a : b;
+          const on = order[0] === "without" ? b : a;
+          if (
+            off.state === "done" &&
+            on.state === "done" &&
+            off.readTps !== undefined &&
+            off.writeTps !== undefined &&
+            on.readTps !== undefined &&
+            on.writeTps !== undefined &&
+            !h.signal.aborted
+          ) {
+            const result: ImprovementTest = {
+              model: e.model,
+              improvement,
+              at: new Date().toISOString(),
+              read: { before: off.readTps, after: on.readTps },
+              write: { before: off.writeTps, after: on.writeTps },
+            };
+            this.config.improvementTests = [
+              ...(this.config.improvementTests ?? []).filter(
+                (x) => !(x.model === e.model && x.improvement === improvement),
+              ),
+              result,
+            ];
+            await this.save();
+            h.info({ result: JSON.stringify(result) });
+          }
+        } finally {
+          // The engine as it was, whatever happened (nothing to do when the last try was it).
+          const last = trials.at(-1);
+          if (endedAsBefore && last?.state === "done" && !h.signal.aborted) h.skip("restore");
+          else {
+            h.step("restore");
+            await this.o.hooks.engine(before && !before.off ? before : null).catch(() => {});
+            if (before && !before.off) await this.waitLocal(h).catch(() => {});
+          }
+        }
+      },
+      { model: e.model, improvement },
+    );
+  }
+
   /** Tokens a second the local engine writes for one request (the engine's own count). */
   private async speedOf(model: string, text: string, maxTokens: number): Promise<number> {
     const p = this.o.core.providers.get("local");
@@ -1917,6 +2085,8 @@ export class SetupService {
     model: string,
     /** About how many tokens to read (G32.1, the bigger passes' long message); default ~2,000. */
     read?: number,
+    /** Tokens to write (the improvements' test: 128); default 64, in three sentences. */
+    write?: number,
   ): Promise<{ genTps: number; prefillTps: number }> {
     const p = this.o.core.providers.get("local");
     // The sentence is about 11 tokens: a few fewer than asked, never more than the context.
@@ -1930,10 +2100,15 @@ export class SetupService {
         messages: [
           {
             role: "user",
-            parts: [{ type: "text", text: `${text}\nSay in three sentences what this text is.` }],
+            parts: [
+              {
+                type: "text",
+                text: `${text}\n${write ? "Describe at length what this text is." : "Say in three sentences what this text is."}`,
+              },
+            ],
           },
         ],
-        maxTokens: 64,
+        maxTokens: write ?? 64,
       }),
     );
     const fresh = Math.max(0, c.usage.inputTokens - c.usage.cachedReadTokens);

@@ -1,3 +1,5 @@
+import type { TestedResult } from "./improvements.js";
+
 /**
  * Models suggested for this computer (G24.3), from the smallest to the largest: well known,
  * good with RedGiant's tools, from publishers who keep their files tidy. The wizard picks the
@@ -23,6 +25,8 @@ export interface LocalModel {
    * this quantisation in the repository.
    */
   draft?: { repo: string; quant: string };
+  /** What we measured ourselves with an improvement on this model (p3.12.6). */
+  tested?: TestedResult[];
 }
 
 export const LOCAL_MODELS: readonly LocalModel[] = [
@@ -135,6 +139,15 @@ export const LOCAL_MODELS: readonly LocalModel[] = [
     totalB: 27,
     activeB: 27,
     scores: { smart: 5, code: 4, tools: 5, languages: 3 },
+    // Measured by us (p3.12.6): llama.cpp re-arranges the weights for the processor; writing one
+    // token at a time was faster without it on this computer, reading the message unchanged.
+    tested: [
+      {
+        improvement: "noRepack",
+        hardware: "Intel i5-12500H",
+        write: { before: 2.88, after: 3.21 },
+      },
+    ],
   },
   {
     id: "gemma-4-31b",

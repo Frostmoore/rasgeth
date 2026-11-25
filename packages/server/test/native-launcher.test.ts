@@ -99,6 +99,8 @@ describe("the local engine on a Mac (2026-11-05)", () => {
     expect(args.slice(-2)).toEqual(["--kv-unified-per-slot", "8192"]);
     // A draft model is a plain file name in models/, nothing else.
     expect(args).not.toContain("-md");
+    // No Repack (p3.12.6) is a plain flag: the launcher's rule lets it through.
+    expect(safeArgs("--kv-unified-per-slot 8192 --no-repack")).toContain("--no-repack");
   });
 
   it("reads what macOS can hand out from vm_stat", () => {

@@ -4841,7 +4841,18 @@ const running = await serve(core, new TokenAuth({ [token]: "local" }), {
   host: process.env.DEMO_HOST ?? "0.0.0.0",
   webDir: web,
   setup,
-  hf: new HuggingFace(join(dir, "models")),
+  // DEMO_FAKE_HF=1: Hugging Face's file lists made up (offline, for the local models' cards).
+  hf: new HuggingFace(
+    join(dir, "models"),
+    process.env.DEMO_FAKE_HF
+      ? async (url) =>
+          Response.json(
+            String(url).includes("Qwen3.8-27B") || String(url).includes("Qwen3.6-35B")
+              ? [{ path: "model-Q4_K_M.gguf", size: 5 * 1024 ** 3 }]
+              : [],
+          )
+      : undefined,
+  ),
   // As main.ts: the setup channel hands the app a device token (G40.1, G40.3).
   issueDeviceToken: (ownerId, device) => core.devices.create(ownerId, device),
   ...(setupNetwork && { setupNetwork }),

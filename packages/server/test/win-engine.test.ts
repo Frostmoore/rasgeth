@@ -104,6 +104,20 @@ describe("the engine on Windows itself", () => {
     });
   });
 
+  it("passes --no-repack in the request's args only when it is on (p3.12.6)", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "rg-win-"));
+    const asked = async (noRepack: boolean | undefined) => {
+      const l = launcher(dir, [{ state: "ready", port: 8091 }]);
+      const engine = new WinEngine({ dir, host: "h", pollMs: 10 });
+      await engine.start("m.gguf", undefined, undefined, false, { noRepack });
+      l.close();
+      return l.seen.at(-1)?.args ?? "";
+    };
+    expect(await asked(true)).toContain("--no-repack");
+    expect(await asked(false)).not.toContain("--no-repack");
+    expect(await asked(undefined)).not.toContain("--no-repack");
+  });
+
   it("says why it failed, from the launcher's code or the engine's log", async () => {
     const dir = await mkdtemp(join(tmpdir(), "rg-win-"));
     const failing = async (status: Omit<WinEngineStatus, "id">) => {

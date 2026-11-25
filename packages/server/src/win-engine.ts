@@ -17,7 +17,7 @@ import { PRODUCT_NAME } from "@redgiant/protocol";
 import { debugLog } from "./debug-log.js";
 import { engineError } from "./engine-errors.js";
 import { JobFailure, type JobHandle } from "./jobs.js";
-import { speculativeArgs } from "./stream.js";
+import { noRepackArgs, speculativeArgs } from "./stream.js";
 import { launcherProgress } from "./updates.js";
 
 /** llama.cpp's release the launcher downloads (`llama-<build>-bin-win-vulkan-x64.zip`). */
@@ -96,7 +96,11 @@ export class WinEngine {
     model: string | null,
     plan?: { ctx: number; args: string[]; fit: boolean },
     preload = false,
-    spec: { speculative?: "draft" | "ngram" | undefined; draft?: string | undefined } = {},
+    spec: {
+      speculative?: "draft" | "ngram" | undefined;
+      draft?: string | undefined;
+      noRepack?: boolean | undefined;
+    } = {},
     flavor: "cuda" | "vulkan" = "vulkan",
     template?: string,
     prefetchRelease?: string,
@@ -116,6 +120,8 @@ export class WinEngine {
         "--kv-unified-per-slot",
         String(plan?.ctx ?? 65536),
         ...(spec.speculative === "ngram" ? speculativeArgs("ngram", undefined) : []),
+        // The launcher passes plain flags through (SafeArgs), the Mac's too.
+        ...noRepackArgs(spec.noRepack),
       ].join(" "),
       // Always fitted by llama.cpp to the card's free memory (no --n-gpu-layers 999).
       fit: "1" as const,
@@ -247,7 +253,11 @@ export class WinEngine {
     h?: JobHandle,
     plan?: { ctx: number; args: string[]; fit: boolean },
     preload = false,
-    spec: { speculative?: "draft" | "ngram" | undefined; draft?: string | undefined } = {},
+    spec: {
+      speculative?: "draft" | "ngram" | undefined;
+      draft?: string | undefined;
+      noRepack?: boolean | undefined;
+    } = {},
     flavor: "cuda" | "vulkan" = "vulkan",
     template?: string,
     prefetchRelease?: string,

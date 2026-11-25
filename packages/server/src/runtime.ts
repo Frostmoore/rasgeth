@@ -51,7 +51,14 @@ import { modelGb, modelParts, preloadFiles } from "./preload.js";
 import { startRemote, stopRemote } from "./remote.js";
 import { LocalSearxng } from "./searxng-local.js";
 import type { EngineConfig, SetupHooks } from "./setup.js";
-import { bigBatches, type EnginePlan, NORMAL_CTX, speculativeArgs, streamPlan } from "./stream.js";
+import {
+  bigBatches,
+  type EnginePlan,
+  NORMAL_CTX,
+  noRepackArgs,
+  speculativeArgs,
+  streamPlan,
+} from "./stream.js";
 import type { WinEngine } from "./win-engine.js";
 
 export interface RuntimeOptions {
@@ -510,6 +517,7 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
         bigChunks: cfg.bigChunks ?? false,
         moePrefetch: cfg.moePrefetch ? (prefetch ?? prefetchImg ?? "no binaries") : false,
         speculative: cfg.speculative ?? null,
+        noRepack: cfg.noRepack ?? false,
         draftModel: cfg.draftModel ?? null,
         tuning: cfg.tuning ?? null,
         plan: plan ?? null,
@@ -538,7 +546,7 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
             h,
             plan,
             pre.fits,
-            { speculative: cfg.speculative, draft: cfg.draftModel },
+            { speculative: cfg.speculative, draft: cfg.draftModel, noRepack: cfg.noRepack },
             flavor,
             template,
             prefetch,
@@ -616,6 +624,7 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
             ...(plan ? ["-c", String(plan.ctx), ...plan.args] : []),
             // Speculative decoding, when the person turned it on (2026-11-04).
             ...speculativeArgs(cfg.speculative, cfg.draftModel && `/models/${cfg.draftModel}`),
+            ...noRepackArgs(cfg.noRepack),
             ...(template ? ["--chat-template-file", `/models/.redgiant/${template}`] : []),
             // One pool shared by the slots, and each conversation may use all of it: without
             // this llama.cpp gives each slot a quarter (16k of 65k, seen 2026-11-04).

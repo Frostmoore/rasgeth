@@ -1,6 +1,12 @@
 // The suggested local models for this computer (G24.3): for each one, the best file that fits
 // (`suggest`), its quality in words, or why none fits.
-import { LOCAL_MODELS, type LocalModel } from "@redgiant/protocol";
+import {
+  type Improvement,
+  type ImprovementInput,
+  improvementsFor,
+  LOCAL_MODELS,
+  type LocalModel,
+} from "@redgiant/protocol";
 import { betterNearby, type GgufFile, HuggingFace, offered, qualityOf, suggest } from "./hf.js";
 
 /**
@@ -31,6 +37,32 @@ export interface LocalModelChoice extends LocalModel {
   versions?: (GgufFile & { quality: "high" | "good" | "reduced" })[];
   /** The small model's file for speculative decoding, when the family has one. */
   draftFile?: GgufFile;
+  /**
+   * What can be turned on for this model on this computer, with the reason when not (p3.12.6):
+   * `improvementsFor`. What we measured ourselves is `tested` (from the catalogue).
+   */
+  improvements?: Improvement[];
+}
+
+/** What the page knows about the computer and the engine, for each model's improvements. */
+export type ImprovementContext = Pick<ImprovementInput, "gpus" | "deepField" | "prefetchEngine">;
+
+/**
+ * The patched engine of Prefetch for the engine chosen: on Windows the release's zip, in Docker
+ * the `cuda` image; null where it does not apply (a Mac, Vulkan, the processor).
+ */
+export function prefetchEngineFor(
+  variant: string | undefined,
+  hw: { os: string; dockerGpu: boolean; onWindows?: boolean; windowsEngine?: boolean },
+  state: {
+    moePrefetch: "available" | "missing" | null;
+    moePrefetchImage: "available" | "missing" | null;
+  },
+): "available" | "missing" | null {
+  if (hw.os === "darwin") return null;
+  if (variant === "windows") return hw.onWindows || hw.windowsEngine ? state.moePrefetch : null;
+  if (variant === "cuda") return (hw.dockerGpu && state.moePrefetchImage) || null;
+  return null;
 }
 
 export async function localModelChoices(
@@ -40,7 +72,11 @@ export async function localModelChoices(
   stream?: { diskFreeGb: number },
   /** The files already in the models folder: a model downloaded shows the file it has (2026-11-04). */
   have: ReadonlySet<string> = new Set(),
+  /** The computer, for each model's improvements (p3.12.6). */
+  improve?: ImprovementContext,
 ): Promise<LocalModelChoice[]> {
+  const improvements = (m: LocalModel) =>
+    improve ? { improvements: improvementsFor({ ...improve, model: m }) } : {};
   return Promise.all(
     LOCAL_MODELS.map(async (m) => {
       try {
@@ -69,10 +105,11 @@ export async function localModelChoices(
           smallestGb: smallest?.sizeGb ?? null,
           versions: files.filter(offered).map((f) => ({ ...f, quality: qualityAmong(f, files) })),
           ...(draftFile && { draftFile }),
+          ...improvements(m),
           ...((beyond || (file && file.sizeGb > budgetGb)) && { beyondMemory: true }),
         };
       } catch {
-        return { ...m, file: null, smallestGb: null, unavailable: true };
+        return { ...m, file: null, smallestGb: null, unavailable: true, ...improvements(m) };
       }
     }),
   );

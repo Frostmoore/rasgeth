@@ -1,9 +1,22 @@
 // "A model on this computer" (G24.3): what this computer can run, the suggested models as
 // cards (what each is good at, its size and quality, whether it fits), downloads with a real
 // progress bar that can be paused, and starting the engine with its steps and plain errors.
-import { estimatedSpeed, type Job } from "@redgiant/protocol";
+import {
+  estimatedSpeed,
+  type Improvement,
+  type ImprovementId,
+  type Job,
+  type TestedResult,
+} from "@redgiant/protocol";
+import type { ComponentChildren } from "preact";
 import { useEffect, useState } from "preact/hooks";
-import type { EngineVariant, LocalFile, LocalModelChoice, SetupState } from "../api.js";
+import type {
+  EngineVariant,
+  ImprovementTest,
+  LocalFile,
+  LocalModelChoice,
+  SetupState,
+} from "../api.js";
 import { bytes } from "../format.js";
 import { t, tOptional } from "../i18n.js";
 import {
@@ -12,20 +25,21 @@ import {
   IconDownload,
   IconFolder,
   IconGpu,
+  IconLock,
   IconPlay,
   IconRam,
   IconSearch,
+  IconStar,
   IconTrash,
 } from "../icons.js";
 import { closeSysmemAdvice, getApi, sysmemAdviceClosed } from "../state.js";
 import { SysTitle, sysName } from "../systems.js";
 import {
-  bigChunksShown,
   type DiskTile,
   defaultModelsFolder,
   diskTiles,
+  gainText,
   gbText,
-  moePrefetchSwitch,
   moePrefetchTexts,
   num,
   sysmemAdviceDue,
@@ -473,6 +487,22 @@ function DownloadedModels({
   );
 }
 
+/** The improvements a start carries (p3.12.6): the card's switches, the first two only with Deep Field. */
+export interface EngineChoices {
+  bigChunks?: boolean | undefined;
+  moePrefetch?: boolean | undefined;
+  noRepack?: boolean | undefined;
+}
+
+/** What goes with the activation for the card's choices: only what is on. */
+export function choicesPayload(stream: boolean | undefined, c?: EngineChoices) {
+  return {
+    ...(stream && c?.bigChunks && { bigChunks: true }),
+    ...(stream && c?.moePrefetch && { moePrefetch: true }),
+    ...(c?.noRepack && { noRepack: true }),
+  };
+}
+
 /** What can be done with one model file: download, pause, go on, start, use, delete. */
 function FileActions({
   repo,
@@ -483,8 +513,7 @@ function FileActions({
   active,
   variant,
   stream,
-  bigChunks,
-  moePrefetch,
+  improve,
   speculative,
   off,
   onChange,
@@ -498,10 +527,8 @@ function FileActions({
   variant: EngineVariant;
   /** Start it with SSD stream (2026-11-03). */
   stream?: boolean;
-  /** With SSD stream, bigger reading passes (G32.1, experimental). */
-  bigChunks?: boolean;
-  /** With SSD stream, the next layer copied ahead (G32.2, experimental). */
-  moePrefetch?: boolean;
+  /** The card's improvements chosen for the start (p3.12.6). */
+  improve?: EngineChoices | undefined;
   /** Start it with speculative decoding (2026-11-04). */
   speculative?: { speculative: "draft" | "ngram"; draftModel?: string } | undefined;
   /** The model in use, turned off by the person (2026-11-04). */
@@ -583,8 +610,7 @@ function FileActions({
                   variant,
                   model: name,
                   stream,
-                  ...(stream && bigChunks && { bigChunks }),
-                  ...(stream && moePrefetch && { moePrefetch }),
+                  ...choicesPayload(stream, improve),
                   ...speculative,
                   tuning: {
                     moeCacheShare: x.share,
@@ -640,8 +666,7 @@ function FileActions({
                       variant,
                       model: name,
                       stream,
-                      ...(stream && bigChunks && { bigChunks }),
-                      ...(stream && moePrefetch && { moePrefetch }),
+                      ...choicesPayload(stream, improve),
                       ...speculative,
                     }),
                   )
@@ -702,8 +727,6 @@ function HfSearch({
   active,
   variant,
   stream,
-  bigChunks,
-  moePrefetch,
   onChange,
 }: {
   jobs: Job[];
@@ -711,8 +734,6 @@ function HfSearch({
   active: string | undefined;
   variant: EngineVariant;
   stream: boolean;
-  bigChunks?: boolean;
-  moePrefetch?: boolean;
   onChange: () => void;
 }) {
   const [q, setQ] = useState("");
@@ -779,8 +800,6 @@ function HfSearch({
                 active={active === target(f.file)}
                 variant={variant}
                 stream={stream}
-                bigChunks={bigChunks}
-                moePrefetch={moePrefetch}
                 onChange={onChange}
               />
             </li>
@@ -816,8 +835,8 @@ function cardState(
 }
 
 /**
- * Speculative decoding, an option for those who want it (2026-11-04): what it does, when it
- * helps, and the small model to download when the family has one.
+ * Speculative decoding's choices, inside its card of «Improvements» (2026-11-04, p3.12.6): none,
+ * the small model (downloaded when the family has one) or the text already written, and the test.
  */
 function Speculation({
   m,
@@ -849,9 +868,7 @@ function Speculation({
   const dl = draft ? latest(jobs, "model_download", name) : undefined;
   const p = dl?.state === "running" ? dl.steps[0]?.progress : undefined;
   return (
-    <div class="gspec">
-      <span class="ui-label">{t("lmSpecTitle")}</span>
-      <p class="ui-help">{t("lmSpecHelp")}</p>
+    <div class="gspec-body">
       <div class="gspec-options">
         <Pick small on={mode === "none"} onChange={() => setMode("none")}>
           {t("lmSpecNone")}
@@ -909,6 +926,169 @@ function Speculation({
       )}
       {error && <p class="notice error">{error}</p>}
     </div>
+  );
+}
+
+/** Why an improvement is off, in words (p3.12.6): the first rule of `improvementsFor` not met. */
+export function whyText(i: Improvement): string {
+  switch (i.reason) {
+    case "needNvidia":
+      return t("lmImprWhy_needNvidia", { gpu: i.gpu ?? t("lmImprIntegratedOnly") });
+    case "needGpu":
+      return t("lmImprWhy_needGpu");
+    case "needMoe":
+      return t("lmImprWhy_needMoe");
+    case "needDeepField":
+      return t("lmImprWhy_needDeepField");
+    case "missingEngine":
+      return t("lmImprWhy_missingEngine");
+    default:
+      return "";
+  }
+}
+
+/** What we measured ourselves, in a sentence: «Scrittura da 2,88 a 3,21 token/s (+11%). Intel i5-12500H.» */
+export function testedText(r: TestedResult): string {
+  const speeds = (x: { before: number; after: number }) => ({
+    before: num(x.before, 2),
+    after: num(x.after, 2),
+    pct: gainText(x.before, x.after),
+  });
+  return [
+    r.write && t("lmImprTestedWrite", speeds(r.write)),
+    r.read && t("lmImprTestedRead", speeds(r.read)),
+    `${r.hardware}.`,
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/**
+ * One improvement of the model's card (p3.12.6): its name and what it does, its switch, the help,
+ * why it is locked when it is, what we measured ourselves (gold) and what the person measured here.
+ */
+export function ImprovementCard({
+  id,
+  available,
+  why,
+  on,
+  onChange,
+  help,
+  tested,
+  measured,
+  onMeasure,
+  children,
+}: {
+  id: ImprovementId;
+  available: boolean;
+  why?: string | undefined;
+  /** The switch; none for the one made of choices (speculative decoding). */
+  on?: boolean | undefined;
+  onChange?: ((on: boolean) => void) | undefined;
+  help: string;
+  tested?: TestedResult | undefined;
+  measured?: ImprovementTest | undefined;
+  onMeasure?: (() => void) | undefined;
+  children?: ComponentChildren;
+}) {
+  const title = t(`lmImpr_${id}`);
+  return (
+    <div
+      class={`impr-card${available ? "" : " off"}${tested ? " gold" : ""}`}
+      data-improvement={id}
+    >
+      <div class="impr-head">
+        <div>
+          <h4>{title}</h4>
+          <span class="impr-sub">{t(`lmImprSub_${id}`)}</span>
+        </div>
+        {on !== undefined && (
+          <Switch
+            small
+            on={available && on}
+            label={title}
+            disabled={!available}
+            onChange={(v) => onChange?.(v)}
+          />
+        )}
+      </div>
+      <p class="ui-help">{help}</p>
+      {!available && why && (
+        <p class="impr-lock">
+          <IconLock size={14} /> <span>{why}</span>
+        </p>
+      )}
+      {tested && (
+        <p class="impr-star">
+          <IconStar size={14} /> <b>{t("lmImprTested")}</b> <span>{testedText(tested)}</span>
+        </p>
+      )}
+      {available && children}
+      {measured && (
+        <p class="ui-help impr-measured">
+          {t("lmImprMeasured", {
+            rb: num(measured.read.before, 1),
+            ra: num(measured.read.after, 1),
+            wb: num(measured.write.before, 2),
+            wa: num(measured.write.after, 2),
+          })}
+        </p>
+      )}
+      {available && onMeasure && (
+        <button type="button" class="impr-measure" onClick={onMeasure}>
+          {t("lmImprMeasure")}
+        </button>
+      )}
+    </div>
+  );
+}
+
+/** The measurement of one improvement running: its steps, and both ways' speeds. */
+function ImprovementRun({
+  jobId,
+  name,
+  onClose,
+}: {
+  jobId: string;
+  name: string;
+  onClose: () => void;
+}) {
+  const job = useJob(jobId);
+  let trials: { mode: "without" | "with"; state: string; readTps?: number; writeTps?: number }[] =
+    [];
+  try {
+    trials = job?.vars.trials ? JSON.parse(job.vars.trials) : [];
+  } catch {
+    trials = [];
+  }
+  const shown = [...trials].sort((a, b) =>
+    a.mode === "without" ? -1 : b.mode === "without" ? 1 : 0,
+  );
+  return (
+    <Modal title={t("lmImprTestTitle", { name })} onClose={onClose}>
+      {job && <JobView job={job} cancellable />}
+      {shown.length > 0 && (
+        <table class="lm-trials-table">
+          <thead>
+            <tr>
+              <th>{t("lmImprTestWay")}</th>
+              <th>{t("lmImprTestRead")}</th>
+              <th>{t("lmImprTestWrite")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {shown.map((x) => (
+              <tr key={x.mode}>
+                <td>{t(x.mode === "with" ? "lmImprWith" : "lmImprWithout")}</td>
+                <td>{x.readTps !== undefined ? num(x.readTps, 1) : "–"}</td>
+                <td>{x.writeTps !== undefined ? num(x.writeTps, 1) : "–"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      {job?.state === "done" && <p class="ui-help">{t("lmImprTestDone")}</p>}
+    </Modal>
   );
 }
 
@@ -1032,8 +1212,6 @@ function ModelPanel({
   active,
   variant,
   stream,
-  bigChunks,
-  moePrefetch,
   onChange,
 }: {
   m: LocalModelChoice;
@@ -1044,8 +1222,6 @@ function ModelPanel({
   active: string | undefined;
   variant: EngineVariant;
   stream: boolean;
-  bigChunks?: boolean;
-  moePrefetch?: boolean;
   onChange: () => void;
 }) {
   const [pick, setPick] = useState(m.file?.file);
@@ -1067,7 +1243,69 @@ function ModelPanel({
       : spec === "draft" && draftReady && draftName
         ? { speculative: "draft" as const, draftModel: draftName }
         : undefined;
-  const sameSpec = (chosenSpec?.speculative ?? "none") === running;
+  // The improvements (p3.12.6): what runs now for this model, and what the person switched on.
+  const eng = s.config.engine;
+  const [flags, setFlags] = useState({
+    prefetch: inUse && eng?.moePrefetch === true,
+    bigChunks: inUse && eng?.bigChunks === true,
+    noRepack: inUse && eng?.noRepack === true,
+  });
+  const [run, setRun] = useState<string>();
+  const [improveError, setImproveError] = useState<string>();
+  const improvement = (id: ImprovementId) => m.improvements?.find((x) => x.id === id);
+  // Older servers say nothing: only the two that never depend on the computer are left on.
+  const can = (id: ImprovementId) =>
+    improvement(id)?.available ?? (id === "speculative" || id === "noRepack");
+  const choices: EngineChoices = {
+    bigChunks: can("bigChunks") && flags.bigChunks,
+    moePrefetch: can("prefetch") && flags.prefetch,
+    noRepack: flags.noRepack,
+  };
+  const sameChoices =
+    !inUse ||
+    (Boolean(stream && choices.bigChunks) === Boolean(eng?.bigChunks) &&
+      Boolean(stream && choices.moePrefetch) === Boolean(eng?.moePrefetch) &&
+      Boolean(choices.noRepack) === Boolean(eng?.noRepack));
+  const sameSpec = (chosenSpec?.speculative ?? "none") === running && sameChoices;
+  const downloaded = !!name && files.some((f) => f.file === name && !f.partial);
+  const measure = async (id: "prefetch" | "bigChunks" | "noRepack") => {
+    setImproveError(undefined);
+    const yes = await askConfirm(t("lmImprAskTitle", { name: m.name }), {
+      text: t("lmImprAskText"),
+      yes: t("lmImprAskYes"),
+    });
+    if (!yes) return;
+    try {
+      const job = await getApi().improvementTest(
+        { variant, model: name, stream, ...choicesPayload(stream, choices), ...chosenSpec },
+        id,
+      );
+      setRun(job.id);
+    } catch (e) {
+      setImproveError(explain(e));
+    }
+  };
+  const card = (
+    id: "prefetch" | "bigChunks" | "noRepack",
+    flag: keyof typeof flags,
+    help: string,
+  ) => {
+    const imp = improvement(id);
+    const test = s.config.improvementTests?.find((x) => x.model === name && x.improvement === id);
+    return (
+      <ImprovementCard
+        id={id}
+        available={can(id)}
+        why={imp && !imp.available ? whyText(imp) : undefined}
+        on={flags[flag]}
+        onChange={(v) => setFlags((f) => ({ ...f, [flag]: v }))}
+        help={help}
+        tested={m.tested?.find((x) => x.improvement === id)}
+        measured={test}
+        onMeasure={downloaded ? () => void measure(id) : undefined}
+      />
+    );
+  };
   const memory = tiers.filter((x) => x.kind !== "ssd").reduce((n, x) => n + x.gb, 0);
   const room = tiers.reduce((n, x) => n + x.gb, 0);
   return (
@@ -1142,17 +1380,42 @@ function ModelPanel({
               />
             </label>
           )}
-          <Speculation
-            m={m}
-            model={files.some((f) => f.file === name && !f.partial) ? name : undefined}
-            stream={stream}
-            mode={spec}
-            setMode={setSpec}
-            files={files}
-            jobs={jobs}
-            variant={variant}
-            onChange={onChange}
-          />
+          <div class="impr">
+            <span class="ui-label">{t("lmImprTitle")}</span>
+            <p class="notice warn">{t("lmImprWarn")}</p>
+            {card("prefetch", "prefetch", moePrefetchTexts(variant).help)}
+            {card("bigChunks", "bigChunks", t("lmBigChunksHelp"))}
+            <ImprovementCard
+              id="speculative"
+              available={can("speculative")}
+              help={t("lmSpecHelp")}
+              tested={m.tested?.find((x) => x.improvement === "speculative")}
+            >
+              <Speculation
+                m={m}
+                model={downloaded ? name : undefined}
+                stream={stream}
+                mode={spec}
+                setMode={setSpec}
+                files={files}
+                jobs={jobs}
+                variant={variant}
+                onChange={onChange}
+              />
+            </ImprovementCard>
+            {card("noRepack", "noRepack", t("lmImprHelp_noRepack"))}
+            {improveError && <p class="notice error">{improveError}</p>}
+            {run && (
+              <ImprovementRun
+                jobId={run}
+                name={m.name}
+                onClose={() => {
+                  setRun(undefined);
+                  onChange();
+                }}
+              />
+            )}
+          </div>
           <FileActions
             repo={m.repo}
             file={file.file}
@@ -1162,8 +1425,7 @@ function ModelPanel({
             active={inUse && sameSpec}
             variant={variant}
             stream={stream}
-            bigChunks={bigChunks}
-            moePrefetch={moePrefetch}
+            improve={choices}
             speculative={chosenSpec}
             off={inUse && s.config.engine?.off === true}
             onChange={onChange}
@@ -1206,68 +1468,6 @@ function planText(plan: StreamPlan): string {
   });
 }
 
-/** An experimental switch under SSD stream (G32.1, G32.2): its name, the badge, what it does. */
-export function ExpSwitch({
-  title,
-  help,
-  on,
-  disabled = false,
-  note,
-  onChange,
-}: {
-  title: string;
-  help: string;
-  on: boolean;
-  disabled?: boolean;
-  /** Why it cannot be turned on, when it cannot. */
-  note?: string | undefined;
-  onChange: (on: boolean) => void;
-}) {
-  return (
-    <div class="wz-big">
-      <div class="wz-tog">
-        <h4>
-          {title}
-          <span class="exp-badge">{t("lmExperimental")}</span>
-        </h4>
-        <Switch small on={on && !disabled} label={title} disabled={disabled} onChange={onChange} />
-      </div>
-      <p class="dim">{help}</p>
-      {note && <p class="notice">{note}</p>}
-    </div>
-  );
-}
-
-/**
- * «Next layer ahead» (G32.2), next to SSD stream: llama.cpp with RedGiant's patch, experimental and
- * off by default. Where this version has no patched binaries it says so and cannot be turned on.
- */
-export function MoePrefetchSwitch({
-  state,
-  on,
-  onChange,
-  variant = "windows",
-}: {
-  state: "available" | "missing";
-  on: boolean;
-  onChange: (on: boolean) => void;
-  /** The engine: the Windows zip or, with `cuda`, the patched image in Docker. */
-  variant?: EngineVariant;
-}) {
-  const missing = state === "missing";
-  const texts = moePrefetchTexts(variant);
-  return (
-    <ExpSwitch
-      title={t("lmMoePrefetch")}
-      help={texts.help}
-      on={on}
-      disabled={missing}
-      note={missing ? texts.missing : undefined}
-      onChange={onChange}
-    />
-  );
-}
-
 /**
  * The wizard's computer (2026-11-06, the person's prototype): the card and the RAM on the left,
  * the SSD stream switch inside the same box on the right.
@@ -1278,8 +1478,6 @@ function WzMachine({
   on,
   available,
   onChange,
-  big,
-  prefetch,
   room,
   plan,
 }: {
@@ -1295,12 +1493,6 @@ function WzMachine({
   room?: { tiers: Tier[]; activeGb: number; diskFreeGb: number | undefined } | undefined;
   /** Settings only: what the last start with SSD stream decided. */
   plan?: StreamPlan | undefined;
-  /** The bigger passes' switch (G32.1), when SSD stream is on with a card. */
-  big?: { on: boolean; onChange: (on: boolean) => void } | undefined;
-  /** «Next layer ahead» (G32.2): Windows, an NVIDIA card, SSD stream on. */
-  prefetch?:
-    | { state: "available" | "missing"; on: boolean; onChange: (on: boolean) => void }
-    | undefined;
 }) {
   const [info, setInfo] = useState(false);
   const hw = s.hardware;
@@ -1375,15 +1567,6 @@ function WzMachine({
         <button type="button" class="wz-link inl" onClick={() => setInfo(true)}>
           {t("wzHowItWorks")}
         </button>
-        {big && (
-          <ExpSwitch
-            title={t("lmBigChunks")}
-            help={t("lmBigChunksHelp")}
-            on={big.on}
-            onChange={big.onChange}
-          />
-        )}
-        {prefetch && <MoePrefetchSwitch {...prefetch} variant={variant} />}
         {plan && <p class="dim">{planText(plan)}</p>}
         <div class="sys-line">
           <h3>
@@ -1585,8 +1768,6 @@ export function LocalModels({
   );
   const [error, setError] = useState<string>();
   const [stream, setStream] = useState(s.config.engine?.stream ?? false);
-  const [bigChunks, setBigChunks] = useState(s.config.engine?.bigChunks ?? false);
-  const [moePrefetch, setMoePrefetch] = useState(s.config.engine?.moePrefetch ?? false);
   /** The card whose panel is open: a model's id, `file:` and a file, or `hf`. */
   const [open, setOpen] = useState<string | null>(null);
   /** On a phone the wizard shows one group at a time. */
@@ -1631,12 +1812,7 @@ export function LocalModels({
   const active = s.config.engine?.model;
   const best = data && recommended(data.models, s.hardware);
   const streaming = stream && canStream.ok;
-  // The options next to SSD stream (G32.1): bigger passes and NVIDIA's advice on Windows.
-  const showBig = bigChunksShown(s.hardware, variant, streaming);
-  const bigOn = showBig && bigChunks;
-  // «Next layer ahead» (G32.2): Windows and NVIDIA, only where the patched binaries exist.
-  const prefetchState = moePrefetchSwitch(s, variant, streaming);
-  const prefetchOn = prefetchState === "available" && moePrefetch;
+  // NVIDIA's advice on Windows (G32.1). The improvements are in each model's card (p3.12.6).
   const sysmem = sysmemAdviceDue(s.hardware, variant, streaming, sysmemAdviceClosed.value);
   const tiers = roomTiers(s.hardware, streaming ? data?.diskFreeGb : undefined);
   const files = data?.files ?? [];
@@ -1670,8 +1846,6 @@ export function LocalModels({
             active={active}
             variant={variant}
             stream={streaming}
-            bigChunks={bigOn}
-            moePrefetch={prefetchOn}
             onChange={changed}
           />
         ),
@@ -1691,8 +1865,6 @@ export function LocalModels({
                 active={active === openFile.file}
                 variant={variant}
                 stream={streaming}
-                bigChunks={bigOn}
-                moePrefetch={prefetchOn}
                 onChange={changed}
               />
             </>
@@ -1729,8 +1901,6 @@ export function LocalModels({
                     active={active}
                     variant={variant}
                     stream={streaming}
-                    bigChunks={bigOn}
-                    moePrefetch={prefetchOn}
                     onChange={changed}
                   />
                 </>
@@ -1819,12 +1989,6 @@ export function LocalModels({
             : { tiers, activeGb, diskFreeGb: streaming ? data?.diskFreeGb : undefined }
         }
         plan={!wizard && streaming && s.config.engine?.stream ? s.config.engine.plan : undefined}
-        big={showBig ? { on: bigChunks, onChange: setBigChunks } : undefined}
-        prefetch={
-          prefetchState
-            ? { state: prefetchState, on: moePrefetch, onChange: setMoePrefetch }
-            : undefined
-        }
       />
       {sysmem && <SysmemAdvice />}
       {s.locked.engine && <p class="notice">{t("wzLocked")}</p>}

@@ -24,6 +24,7 @@ import {
   type ImportApply,
   type ImportPreview,
   type ImportRecord,
+  type Improvement,
   type IosBridgePlan,
   type Job,
   type KnowledgeAgentCollection,
@@ -204,6 +205,8 @@ export interface SetupState {
     /** «Use the model's own tool when it has one» (2026-11-19): false when switched off. */
     mediaNative?: boolean;
     subscriptions?: { claude?: boolean; chatgpt?: boolean };
+    /** What was measured on this computer for each improvement of the local model (p3.12.6). */
+    improvementTests?: ImprovementTest[];
     engine?: {
       variant: EngineVariant;
       model: string;
@@ -218,6 +221,8 @@ export interface SetupState {
       /** Speculative decoding (2026-11-04). */
       speculative?: "draft" | "ngram";
       draftModel?: string;
+      /** No Repack (p3.12.6): the weights as they are in the file. */
+      noRepack?: boolean;
       /** The tuning's tries (2026-11-05): the kept one's speed is the model's measured speed. */
       trials?: { genTps?: number; chosen?: boolean }[];
       /** What the last start decided (SSD stream). */
@@ -348,6 +353,17 @@ export interface LocalModelChoice extends LocalModel {
   versions?: (GgufFile & { quality: "high" | "good" | "reduced" })[];
   /** The small model's file for speculative decoding, when the family has one. */
   draftFile?: GgufFile;
+  /** What can be turned on for this model here, with the reason when not (p3.12.6). */
+  improvements?: Improvement[];
+}
+
+/** One improvement measured on this computer (p3.12.6): tokens a second before and after. */
+export interface ImprovementTest {
+  model: string;
+  improvement: "prefetch" | "bigChunks" | "noRepack";
+  at: string;
+  read: { before: number; after: number };
+  write: { before: number; after: number };
 }
 
 /** A file of the models folder: ready, or a download paused halfway. */
@@ -1220,6 +1236,8 @@ export class Api {
       moePrefetch?: boolean;
       speculative?: "draft" | "ngram";
       draftModel?: string;
+      /** No Repack (p3.12.6). */
+      noRepack?: boolean;
       /** A row of the tuning table picked by the person (2026-11-05). */
       tuning?: { moeCacheShare: number; opOffload: boolean; batch?: number };
     } | null,
@@ -1622,6 +1640,20 @@ export class Api {
     },
     modes: ("none" | "draft" | "ngram")[],
   ) => this.call<Job>("POST", "/api/setup/engine/speed-test", { engine, modes });
+  /** Measures one improvement here (p3.12.6): a job; the result goes to `config.improvementTests`. */
+  improvementTest = (
+    engine: {
+      variant: EngineVariant;
+      model: string;
+      stream?: boolean;
+      bigChunks?: boolean;
+      moePrefetch?: boolean;
+      noRepack?: boolean;
+      speculative?: "draft" | "ngram";
+      draftModel?: string;
+    },
+    improvement: ImprovementTest["improvement"],
+  ) => this.call<Job>("POST", "/api/setup/engine/improvement-test", { engine, improvement });
   cancelJob = (id: string) => this.call("POST", `/api/jobs/${encodeURIComponent(id)}/cancel`);
   platform = () => this.call<PlatformInfo>("GET", "/api/platform");
   platformChanges = () => this.call<PlatformChange[]>("GET", "/api/platform/changes");

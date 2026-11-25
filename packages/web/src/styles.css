@@ -18,6 +18,9 @@
   --warn: #c99a14;
   /* The yellow as text (on a panel or on --warn-soft): 4.5:1 or more in both themes (WCAG AA). */
   --warn-text: #7a5600;
+  /* The gold of what we tried ourselves (p3.12.6): border and soft background. */
+  --gold: #b8860b;
+  --gold-soft: #fbf3d9;
   --err: #d23d3d;
   /* The mascots' lightness (G40.2): body, outline, light parts. */
   --mL: 0.62;
@@ -49,6 +52,8 @@ html[data-theme="dark"] {
   --user: #33211f;
   --code: #0d1016;
   --warn-text: #e0b23a;
+  --gold: #d4a72c;
+  --gold-soft: #2e2711;
   --critical: #c8242c;
   --critical-ink: #ffffff;
   --critical-soft: #2a1214;
@@ -73,6 +78,8 @@ html[data-theme="dark"] {
     --user: #33211f;
     --code: #0d1016;
     --warn-text: #e0b23a;
+    --gold: #d4a72c;
+    --gold-soft: #2e2711;
     --critical: #c8242c;
     --critical-ink: #ffffff;
     --critical-soft: #2a1214;
@@ -9233,6 +9240,77 @@ button.pick-tile.on {
 }
 .gversions select {
   width: 100%;
+}
+.gspec-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* The model's «Improvements» (p3.12.6): one card each; dimmed and locked when the computer or the
+   model cannot use it; gold where we tried it ourselves on this model. */
+.impr {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.impr-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.impr-card.off {
+  opacity: 0.6;
+  background: var(--panel-2);
+}
+.impr-card.gold {
+  border-color: var(--gold);
+  background: linear-gradient(var(--gold-soft), var(--gold-soft)), var(--panel);
+  box-shadow: 0 0 0 1px var(--gold);
+}
+.impr-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.impr-head h4 {
+  margin: 0;
+}
+.impr-sub {
+  color: var(--dim);
+  font-size: 13px;
+}
+.impr-lock,
+.impr-star {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+}
+.impr-lock {
+  color: var(--dim);
+}
+.impr-star {
+  color: var(--text);
+}
+.impr-star svg {
+  color: var(--gold);
+  flex: none;
+  margin-top: 2px;
+}
+.impr-lock svg {
+  flex: none;
+  margin-top: 2px;
+}
+.impr-measure {
+  align-self: flex-start;
 }
 .gspec {
   display: flex;
