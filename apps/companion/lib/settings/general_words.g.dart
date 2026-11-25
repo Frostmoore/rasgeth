@@ -4,10 +4,12 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.12.4';
+const newsVersion = '3.12.6';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.12.6', 'news3126Improvements', 'news3126ImprovementsText'),
+  NewsRow('3.12.6', 'news3126Mtp', 'news3126MtpText'),
   NewsRow('3.12.4', 'news3124Secretary', 'news3124SecretaryText'),
   NewsRow('3.12.4', 'news3124Models', 'news3124ModelsText'),
   NewsRow('3.12.4', 'news3124Math', 'news3124MathText'),
@@ -464,6 +466,10 @@ const generalWords = <String, Map<String, String>>{
     'news3124ModelsText': 'Un solo selettore ovunque: i modelli divisi per come si pagano (abbonamento, chiave API, motore locale, server tuo), i più nuovi in cima, una ricerca e quello in uso in evidenza.',
     'news3124Secretary': 'Un segretario che risponde alle persone',
     'news3124SecretaryText': 'Collega un numero WhatsApp Business o un bot Telegram e il segretario sui messaggi risponde ai tuoi clienti e contatti, entro quello che gli hai detto. Il resto arriva a te con una risposta pronta da mandare con un tocco; appuntamenti, impegni e prezzi nuovi aspettano sempre il tuo sì. Una guida passo passo collega WhatsApp Business, controllando ogni passo.',
+    'news3126Improvements': 'Miglioramenti per ogni modello locale',
+    'news3126ImprovementsText': 'La scheda di ogni modello locale ha ora i Miglioramenti: Prefetch, Big Chunks, Speculative Decoding e il nuovo No Repack, ognuno da accendere a mano. Puoi misurarli sul tuo computer (ci vuole un po\' e possono non guadagnare niente); quelli provati da noi su quel modello hanno il bordo d\'oro, e quelli che il tuo hardware non può usare dicono perché. Deep Field, lo streaming dall\'SSD di Rasgeth, ha il suo interruttore anche nell\'app.',
+    'news3126Mtp': 'MTP: il modello si prepara da solo le parole dopo',
+    'news3126MtpText': 'I modelli con le teste MTP, come Qwen 3.8 27B, propongono da soli i token successivi e li controllano tutti in un passaggio: nessun secondo modello, nessuna memoria in più. Su un mini PC scrive circa il 30% più in fretta. Il motore locale passa a un llama.cpp più nuovo.',
     'news321Linux': 'Strato dopo in anticipo anche su Linux',
     'news321LinuxText': 'L\'interruttore sperimentale «Strato dopo in anticipo» di SSD stream ora funziona anche su Linux con una scheda NVIDIA, con un\'immagine del motore tutta sua scaricata solo quando lo accendi.',
     'news321Settings': 'Le Impostazioni nello stile della configurazione',
@@ -839,6 +845,10 @@ const generalWords = <String, Map<String, String>>{
     'news3124ModelsText': 'One picker everywhere: models grouped by how they are paid (subscription, API key, local engine, your own server), the newest first, a search box and the one in use lit.',
     'news3124Secretary': 'A secretary that answers people',
     'news3124SecretaryText': 'Connect a WhatsApp Business number or a Telegram bot and the message secretary answers your customers and contacts, within what you told it. Anything else reaches you with a ready reply to send in one tap; appointments, commitments and new prices always wait for your yes. A step-by-step guide connects WhatsApp Business, checking each step.',
+    'news3126Improvements': 'Improvements for each local model',
+    'news3126ImprovementsText': 'The card of every local model now has Improvements: Prefetch, Big Chunks, Speculative Decoding and the new No Repack, each turned on by hand. You can measure each one on your computer (it takes a while and may gain nothing); the ones we tested on that model have a gold border, and the ones your hardware cannot use say why. Deep Field, Rasgeth\'s SSD streaming, has its switch in the app too.',
+    'news3126Mtp': 'MTP: the model drafts its own next words',
+    'news3126MtpText': 'Models with MTP heads, such as Qwen 3.8 27B, can propose the next tokens themselves and check them all in one pass: no second model, no extra memory. On a mini PC it writes about 30% faster. The local engine is updated to a newer llama.cpp.',
     'news321Linux': 'Next layer ahead on Linux too',
     'news321LinuxText': 'The experimental «Next layer ahead» switch of SSD stream now works on Linux with an NVIDIA card too, with an engine image of its own downloaded only when you turn it on.',
     'news321Settings': 'Settings in the setup\'s style',

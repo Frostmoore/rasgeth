@@ -420,6 +420,9 @@ Rasgeth is in pre-alpha. What comes next, in order:
 - **3.12.4 — A secretary that answers people**: the message secretary answers contacts on Telegram and WhatsApp
   Business within what it was told, with a step-by-step guide to connect WhatsApp Business; one clear model picker;
   math formulas in the answers.
+- **3.12.6 — Improvements and MTP**: every local model's card has its improvements (Prefetch, Big Chunks,
+  Speculative Decoding, No Repack), measurable on your computer, gold where we tested them; MTP for the models that
+  draft their own next tokens.
 - **4.0 — Alpha**: documentation, security and privacy pages, and a stability round on everything.
 - **Then** the beta (community, documentation site) and the production release.
 

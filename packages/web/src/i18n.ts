@@ -2581,6 +2581,12 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news3126Improvements: "Improvements for each local model",
+  news3126ImprovementsText:
+    "The card of every local model now has Improvements: Prefetch, Big Chunks, Speculative Decoding and the new No Repack, each turned on by hand. You can measure each one on your computer (it takes a while and may gain nothing); the ones we tested on that model have a gold border, and the ones your hardware cannot use say why. Deep Field, Rasgeth's SSD streaming, has its switch in the app too.",
+  news3126Mtp: "MTP: the model drafts its own next words",
+  news3126MtpText:
+    "Models with MTP heads, such as Qwen 3.8 27B, can propose the next tokens themselves and check them all in one pass: no second model, no extra memory. On a mini PC it writes about 30% faster. The local engine is updated to a newer llama.cpp.",
   news3124Secretary: "A secretary that answers people",
   news3124SecretaryText:
     "Connect a WhatsApp Business number or a Telegram bot and the message secretary answers your customers and contacts, within what you told it. Anything else reaches you with a ready reply to send in one tap; appointments, commitments and new prices always wait for your yes. A step-by-step guide connects WhatsApp Business, checking each step.",
@@ -11244,6 +11250,12 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news3126Improvements: "Miglioramenti per ogni modello locale",
+  news3126ImprovementsText:
+    "La scheda di ogni modello locale ha ora i Miglioramenti: Prefetch, Big Chunks, Speculative Decoding e il nuovo No Repack, ognuno da accendere a mano. Puoi misurarli sul tuo computer (ci vuole un po' e possono non guadagnare niente); quelli provati da noi su quel modello hanno il bordo d'oro, e quelli che il tuo hardware non può usare dicono perché. Deep Field, lo streaming dall'SSD di Rasgeth, ha il suo interruttore anche nell'app.",
+  news3126Mtp: "MTP: il modello si prepara da solo le parole dopo",
+  news3126MtpText:
+    "I modelli con le teste MTP, come Qwen 3.8 27B, propongono da soli i token successivi e li controllano tutti in un passaggio: nessun secondo modello, nessuna memoria in più. Su un mini PC scrive circa il 30% più in fretta. Il motore locale passa a un llama.cpp più nuovo.",
   news3124Secretary: "Un segretario che risponde alle persone",
   news3124SecretaryText:
     "Collega un numero WhatsApp Business o un bot Telegram e il segretario sui messaggi risponde ai tuoi clienti e contatti, entro quello che gli hai detto. Il resto arriva a te con una risposta pronta da mandare con un tocco; appuntamenti, impegni e prezzi nuovi aspettano sempre il tuo sì. Una guida passo passo collega WhatsApp Business, controllando ogni passo.",
