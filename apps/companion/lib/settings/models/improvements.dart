@@ -46,6 +46,7 @@ String improvementWhy(AppLocalizations l, Improvement i) => switch (i.reason) {
 String improvementTested(AppLocalizations l, TestedResult r, String lang) {
   String n(double v) => speedNum(v, 2, lang);
   return [
+    if (r.mode == 'mtp') l.moLmImprTestedMtp,
     if (r.write != null)
       l.moLmImprTestedWrite(
         n(r.write!.after),
@@ -408,7 +409,7 @@ class ImprovementsSection extends StatefulWidget {
   final Listenable bump;
 
   /// The speed test's button (it lives in the speculative card).
-  final Widget Function(bool downloaded, String? draftName) speedTest;
+  final Widget Function(bool downloaded, String? draftName, bool mtp) speedTest;
   final bool poll;
   final Future<void> Function() onChange;
 
@@ -515,6 +516,7 @@ class _ImprovementsSectionState extends State<ImprovementsSection> {
         : jobs.where((j) => j.kind == 'model_download' && j.vars['model'] == _draftName).lastOrNull;
     final p = dl?.state == 'running' ? dl!.steps.firstOrNull : null;
     final mode = widget.choices.speculative;
+    final mtp = m.improvement('speculative')?.mtp ?? false;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -525,6 +527,7 @@ class _ImprovementsSectionState extends State<ImprovementsSection> {
               ('none', l.moLmSpecNone),
               if (draft != null) ('draft', l.moLmSpecDraft),
               ('ngram', l.moLmSpecNgram),
+              if (mtp) ('mtp', l.moLmSpecMtp),
             ],
             value: [mode],
             keyOf: (v) => 'impr-spec-$v',
@@ -576,11 +579,19 @@ class _ImprovementsSectionState extends State<ImprovementsSection> {
               style: TextStyle(color: c.dim, fontSize: 12.5, height: 1.35),
             ),
           ),
+        if (mode == 'mtp' && mtp)
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Text(
+              l.moLmSpecMtpHelp,
+              style: TextStyle(color: c.dim, fontSize: 12.5, height: 1.35),
+            ),
+          ),
         Padding(
           padding: const EdgeInsets.only(top: 8),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: widget.speedTest(_downloaded, _draftReady ? _draftName : null),
+            child: widget.speedTest(_downloaded, _draftReady ? _draftName : null, mtp),
           ),
         ),
       ],

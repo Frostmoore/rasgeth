@@ -115,6 +115,35 @@ class FakeModels {
       },
       'smallestGb': 50.0,
     },
+    {
+      'id': 'qwen3.8-27b',
+      'name': 'Qwen3.8 27B',
+      'repo': 'unsloth/Qwen3.8-27B-GGUF',
+      'totalB': 27,
+      'activeB': 27,
+      'scores': {'smart': 5, 'code': 4, 'tools': 5, 'languages': 3},
+      'file': {
+        'file': 'Qwen3.8-27B-Q4_K_M.gguf',
+        'sizeGb': 16.5,
+        'quant': 'Q4_K_M',
+        'quality': 'good',
+      },
+      'smallestGb': 12.0,
+      'improvements': [
+        {'id': 'prefetch', 'available': false, 'reason': 'needMoe'},
+        {'id': 'bigChunks', 'available': false, 'reason': 'needMoe'},
+        {'id': 'speculative', 'available': true, 'draft': false, 'mtp': true},
+        {'id': 'noRepack', 'available': true},
+      ],
+      'tested': [
+        {
+          'improvement': 'speculative',
+          'mode': 'mtp',
+          'hardware': 'Intel i5-12500H',
+          'write': {'before': 2.98, 'after': 3.88},
+        },
+      ],
+    },
   ];
 
   Json _sub(bool on, String? email) => {

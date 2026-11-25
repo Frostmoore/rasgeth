@@ -20315,4 +20315,17 @@ class AppLocalizationsIt extends AppLocalizations {
   String moLmMoePrefetchHelpDocker(String size) {
     return 'Usa una versione di llama.cpp modificata da Rasgeth: mentre la scheda video calcola uno strato, gli esperti di quello dopo le stanno già arrivando, e il modello è caricato nella RAM quando ci sta. Con i modelli a esperti i messaggi lunghi si leggono fino a 1,7 volte più in fretta (misurato con una RTX 4080 Super). Al primo avvio scarica l\'immagine di quel motore (circa $size), tenuta accanto a quella solita. Solo schede NVIDIA, con il runtime NVIDIA di Docker.';
   }
+
+  @override
+  String get moLmImprTestedMtp => 'Con l\'MTP del modello.';
+
+  @override
+  String get moLmSpecMtp => 'MTP del modello';
+
+  @override
+  String get moLmSpecMtpHelp =>
+      'Il modello propone da solo i token successivi, con le teste MTP con cui è stato addestrato, e li controlla tutti in un passaggio: nessun secondo modello e nessuna memoria in più. Misurato su Qwen3.8 27B su un Intel i5-12500H: da 2,98 a 3,88 token/s.';
+
+  @override
+  String get moLmSpeedMode_mtp => 'Con l\'MTP del modello';
 }

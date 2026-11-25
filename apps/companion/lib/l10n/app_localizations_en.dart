@@ -20257,4 +20257,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String moLmMoePrefetchHelpDocker(String size) {
     return 'Runs a version of llama.cpp changed by Rasgeth: while the graphics card computes one layer, the experts of the next one are already on their way to it, and the model is loaded in RAM when it fits. With mixture-of-experts models long messages are read up to 1.7 times faster (measured on an RTX 4080 Super). The first start downloads that engine\'s image (about $size), kept next to the usual one. NVIDIA cards only, through Docker\'s NVIDIA runtime.';
   }
+
+  @override
+  String get moLmImprTestedMtp => 'With the model\'s MTP.';
+
+  @override
+  String get moLmSpecMtp => 'The model\'s MTP';
+
+  @override
+  String get moLmSpecMtpHelp =>
+      'The model proposes the next tokens itself, with the MTP heads it was trained with, and checks them all in one pass: no second model and no extra memory. Measured on Qwen3.8 27B on an Intel i5-12500H: from 2.98 to 3.88 tokens/s.';
+
+  @override
+  String get moLmSpeedMode_mtp => 'With the model\'s MTP';
 }

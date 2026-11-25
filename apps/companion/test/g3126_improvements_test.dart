@@ -46,6 +46,11 @@ void main() {
       'draftModel': 'small.gguf',
     });
     expect(const EngineChoices().body('cpu', 'm.gguf'), {'variant': 'cpu', 'model': 'm.gguf'});
+    expect(const EngineChoices(speculative: 'mtp').body('cpu', 'm.gguf'), {
+      'variant': 'cpu',
+      'model': 'm.gguf',
+      'speculative': 'mtp',
+    });
   });
 
   test('the gain in words', () {
@@ -118,6 +123,9 @@ void main() {
         expect(find.byKey(Key('impr-$id')), findsOneWidget, reason: id);
       }
       expect(find.text('Speculative Decoding'), findsOneWidget);
+      // No MTP heads in this model: the choice is not offered.
+      expect(find.byKey(const Key('impr-spec-ngram')), findsOneWidget);
+      expect(find.byKey(const Key('impr-spec-mtp')), findsNothing);
       // Locked: the reason in words, and a dimmed card.
       expect(find.byKey(const Key('impr-lock-prefetch')), findsOneWidget);
       expect(find.textContaining('serve Deep Field'), findsNWidgets(2));
@@ -177,6 +185,30 @@ void main() {
       expect(find.text('Con'), findsOneWidget);
       expect(find.text('2,9'), findsOneWidget);
       expect(find.text('3,3'), findsOneWidget);
+      await done(tester);
+    });
+
+    testWidgets('the MTP choice only where the model has it, its gold line, the activation', (
+      tester,
+    ) async {
+      fm.files.add({'file': 'Qwen3.8-27B-Q4_K_M.gguf', 'bytes': 16500000000, 'partial': false});
+      fm.files.add({'file': 'Qwen3-30B-A3B-Q4_K_M.gguf', 'bytes': 18500000000, 'partial': false});
+      await open(tester);
+      await tap(tester, 'lm-tab-slow');
+      await tap(tester, 'lm-card-qwen3.8-27b');
+      expect(find.byKey(const Key('impr-spec-mtp')), findsOneWidget);
+      expect(
+        find.textContaining(
+          "Con l'MTP del modello. Scrittura da 2,98 a 3,88 token/s (+30%). Intel i5-12500H.",
+        ),
+        findsOneWidget,
+      );
+      await tap(tester, 'impr-spec-mtp');
+      expect(find.textContaining('nessun secondo modello'), findsOneWidget);
+      await tap(tester, 'lm-start');
+      expect(fm.bodies['PUT /api/setup/engine'], {
+        'engine': {'variant': 'cuda', 'model': 'Qwen3.8-27B-Q4_K_M.gguf', 'speculative': 'mtp'},
+      });
       await done(tester);
     });
 

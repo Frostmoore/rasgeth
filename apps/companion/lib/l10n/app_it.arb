@@ -5848,5 +5848,9 @@
   "moLmImpr_speculative": "Speculative Decoding",
   "moSysDeepFieldWhat": "lo streaming dall'SSD di Rasgeth",
   "moLmMoePrefetchHelp": "Usa una versione di llama.cpp modificata da Rasgeth: mentre la scheda video calcola uno strato, gli esperti di quello dopo le stanno già arrivando, e il modello è caricato nella RAM quando ci sta. Con i modelli a esperti i messaggi lunghi si leggono fino a 1,7 volte più in fretta (misurato con una RTX 4080 Super). Al primo avvio scarica quel motore (circa {size}), tenuto accanto a quello ufficiale. Solo schede NVIDIA su Windows.",
-  "moLmMoePrefetchHelpDocker": "Usa una versione di llama.cpp modificata da Rasgeth: mentre la scheda video calcola uno strato, gli esperti di quello dopo le stanno già arrivando, e il modello è caricato nella RAM quando ci sta. Con i modelli a esperti i messaggi lunghi si leggono fino a 1,7 volte più in fretta (misurato con una RTX 4080 Super). Al primo avvio scarica l'immagine di quel motore (circa {size}), tenuta accanto a quella solita. Solo schede NVIDIA, con il runtime NVIDIA di Docker."
+  "moLmMoePrefetchHelpDocker": "Usa una versione di llama.cpp modificata da Rasgeth: mentre la scheda video calcola uno strato, gli esperti di quello dopo le stanno già arrivando, e il modello è caricato nella RAM quando ci sta. Con i modelli a esperti i messaggi lunghi si leggono fino a 1,7 volte più in fretta (misurato con una RTX 4080 Super). Al primo avvio scarica l'immagine di quel motore (circa {size}), tenuta accanto a quella solita. Solo schede NVIDIA, con il runtime NVIDIA di Docker.",
+  "moLmImprTestedMtp": "Con l'MTP del modello.",
+  "moLmSpecMtp": "MTP del modello",
+  "moLmSpecMtpHelp": "Il modello propone da solo i token successivi, con le teste MTP con cui è stato addestrato, e li controlla tutti in un passaggio: nessun secondo modello e nessuna memoria in più. Misurato su Qwen3.8 27B su un Intel i5-12500H: da 2,98 a 3,88 token/s.",
+  "moLmSpeedMode_mtp": "Con l'MTP del modello"
 }

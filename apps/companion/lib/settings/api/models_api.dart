@@ -206,7 +206,8 @@ class Improvement {
       available = j['available'] == true,
       reason = _s(j['reason']),
       gpu = _s(j['gpu']),
-      draft = j['draft'] == true;
+      draft = j['draft'] == true,
+      mtp = j['mtp'] == true;
 
   final String id;
   final bool available;
@@ -217,6 +218,9 @@ class Improvement {
   /// The best card with its own memory (only with `needNvidia`).
   final String? gpu;
   final bool draft;
+
+  /// Speculative decoding only: the model has MTP heads of its own (the `mtp` way).
+  final bool mtp;
 }
 
 /// Tokens a second before and after.
@@ -231,11 +235,15 @@ class SpeedPair {
 class TestedResult {
   TestedResult(Map<String, dynamic> j)
     : improvement = '${j['improvement'] ?? ''}',
+      mode = _s(j['mode']),
       hardware = '${j['hardware'] ?? ''}',
       read = j['read'] is Map ? SpeedPair(_m(j['read'])) : null,
       write = j['write'] is Map ? SpeedPair(_m(j['write'])) : null;
 
   final String improvement;
+
+  /// Speculative decoding only: the way it was measured (draft | ngram | mtp).
+  final String? mode;
   final String hardware;
   final SpeedPair? read;
   final SpeedPair? write;
@@ -452,7 +460,7 @@ class EngineChoices {
   final bool prefetch;
   final bool noRepack;
 
-  /// none | draft | ngram.
+  /// none | draft | ngram | mtp.
   final String speculative;
 
   EngineChoices copy({bool? bigChunks, bool? prefetch, bool? noRepack, String? speculative}) =>
@@ -486,6 +494,7 @@ class EngineChoices {
     if (stream && prefetch) 'moePrefetch': true,
     if (noRepack) 'noRepack': true,
     if (speculative == 'ngram') 'speculative': 'ngram',
+    if (speculative == 'mtp') 'speculative': 'mtp',
     if (speculative == 'draft' && draftModel != null) ...{
       'speculative': 'draft',
       'draftModel': draftModel,

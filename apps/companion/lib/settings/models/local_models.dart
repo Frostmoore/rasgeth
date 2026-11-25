@@ -687,7 +687,7 @@ class _ModelPanelState extends State<_ModelPanel> {
             bump: _bump,
             poll: widget.poll,
             onChange: widget.onChange,
-            speedTest: (downloaded, draft) => downloaded
+            speedTest: (downloaded, draft, mtp) => downloaded
                 ? OutlinedButton(
                     key: const Key('lm-speed-test'),
                     onPressed: () => kbWindow<void>(
@@ -700,6 +700,7 @@ class _ModelPanelState extends State<_ModelPanel> {
                         model: _name,
                         stream: widget.stream,
                         draftModel: draft,
+                        mtp: mtp,
                         poll: widget.poll,
                         onClose: close,
                       ),
@@ -1100,6 +1101,7 @@ class _SpeedTest extends StatefulWidget {
     required this.model,
     this.stream = false,
     this.draftModel,
+    this.mtp = false,
     required this.poll,
     required this.onClose,
   });
@@ -1108,6 +1110,9 @@ class _SpeedTest extends StatefulWidget {
   final String model;
   final bool stream;
   final String? draftModel;
+
+  /// The model has MTP heads of its own: measure that way too.
+  final bool mtp;
   final bool poll;
   final void Function([void]) onClose;
 
@@ -1132,12 +1137,15 @@ class _SpeedTestState extends State<_SpeedTest> {
     if (c == null) return;
     setState(() => _error = null);
     try {
-      final j = await c.speedTest({
-        'variant': widget.variant,
-        'model': widget.model,
-        if (widget.stream) 'stream': true,
-        'draftModel': ?widget.draftModel,
-      }, widget.draftModel != null ? const ['none', 'draft', 'ngram'] : const ['none', 'ngram']);
+      final j = await c.speedTest(
+        {
+          'variant': widget.variant,
+          'model': widget.model,
+          if (widget.stream) 'stream': true,
+          'draftModel': ?widget.draftModel,
+        },
+        ['none', if (widget.draftModel != null) 'draft', 'ngram', if (widget.mtp) 'mtp'],
+      );
       setState(() => _job = j);
       if (widget.poll) {
         _timer = Timer.periodic(const Duration(seconds: 1), (_) async {
@@ -1177,6 +1185,7 @@ class _SpeedTestState extends State<_SpeedTest> {
     String mode(String m) => switch (m) {
       'draft' => l.moLmSpeedMode_draft,
       'ngram' => l.moLmSpeedMode_ngram,
+      'mtp' => l.moLmSpeedMode_mtp,
       _ => l.moLmSpeedMode_none,
     };
     return Column(
