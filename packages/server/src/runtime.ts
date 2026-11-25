@@ -496,6 +496,18 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
         o.providers.remove("local");
         return;
       }
+      // MTP needs the model's own MTP heads: a model without them starts without it (the page offers
+      // MTP only for models that have them; a file chosen by hand may not).
+      if (cfg.speculative === "mtp") {
+        const dir = cfg.variant === "windows" ? e.windows?.modelsDir : e.modelsDir;
+        const meta = await readLocalGgufMeta(join(dir ?? "/models", cfg.model)).catch(
+          () => undefined,
+        );
+        if (!meta?.mtpLayers) {
+          debugLog.write("engine", "no MTP heads: started without MTP", { model: cfg.model });
+          cfg = { ...cfg, speculative: undefined };
+        }
+      }
       // «Next layer ahead» (G32.2): the patched build of this version's release, when there.
       const prefetch =
         cfg.moePrefetch && cfg.stream && cfg.variant === "windows"

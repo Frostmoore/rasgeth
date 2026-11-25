@@ -17,6 +17,8 @@ export interface GgufMeta {
   kvBytesPerToken: number;
   /** The words the model knows, when the header says (`<arch>.vocab_size`; 0 when it does not). */
   vocabSize?: number;
+  /** Its MTP heads (`<arch>.nextn_predict_layers`), when it has some: what MTP decoding needs. */
+  mtpLayers?: number;
 }
 
 /** Reads `length` bytes at `offset` (fewer at the end of the file). */
@@ -165,6 +167,7 @@ export async function readGgufMeta(read: ReadAt): Promise<GgufMeta> {
     expertsUsed: num("expert_used_count"),
     kvBytesPerToken: Math.round(layers * kvHeads * (keyLen + valueLen) * 2),
     ...(num("vocab_size") > 0 && { vocabSize: num("vocab_size") }),
+    ...(num("nextn_predict_layers") > 0 && { mtpLayers: num("nextn_predict_layers") }),
   };
 }
 

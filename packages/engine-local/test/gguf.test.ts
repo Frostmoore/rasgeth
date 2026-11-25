@@ -76,6 +76,28 @@ describe("GGUF header (2026-11-03)", () => {
     });
   });
 
+  it("a model with MTP heads says how many (3.12.6: MTP decoding needs them)", async () => {
+    const meta = await readGgufMeta(
+      reader(
+        gguf([
+          ["general.architecture", 8, "qwen35"],
+          ["qwen35.block_count", 4, 65],
+          ["qwen35.nextn_predict_layers", 4, 1],
+        ]),
+      ),
+    );
+    expect(meta.mtpLayers).toBe(1);
+    const plain = await readGgufMeta(
+      reader(
+        gguf([
+          ["general.architecture", 8, "qwen3"],
+          ["qwen3.block_count", 4, 40],
+        ]),
+      ),
+    );
+    expect(plain.mtpLayers).toBeUndefined();
+  });
+
   it("a dense model has no experts; a file that is not GGUF is refused", async () => {
     const meta = await readGgufMeta(
       reader(
