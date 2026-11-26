@@ -16,6 +16,7 @@ import {
 } from "@redgiant/protocol";
 import type { ComponentChildren } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
+import type { ArtifactInfo } from "../api.js";
 import { usd } from "../format.js";
 import { lang, setLang, t } from "../i18n.js";
 import {
@@ -42,6 +43,7 @@ import { renderAnswer, renderStreamingMarkdown } from "../markdown.js";
 import { agentMascotState } from "../mascot-state.js";
 import {
   activeSide,
+  activeTab,
   agents,
   archivedCount,
   archivedTopics,
@@ -53,6 +55,7 @@ import {
   type CanvasTarget,
   type ChatItem,
   chatAgentId,
+  closeTab,
   conversationCost,
   documentItems,
   getApi,
@@ -66,6 +69,7 @@ import {
   moveExchange,
   nudgeInvite,
   nudgeSettings,
+  openBoard,
   openCanvas,
   openChat,
   openNudge,
@@ -90,6 +94,7 @@ import {
   simpleTyping,
   stageFront,
   TOPIC_STATE_WORDS,
+  tabs,
   topics,
   topicsLoaded,
   topicsTrouble,
@@ -159,6 +164,37 @@ function CanvasSheet() {
   );
 }
 
+const Variants = lazy<{ sessionId: string; proposalId: string }>(() =>
+  import("./Variants.js").then((m) => m.Variants),
+);
+
+/**
+ * A board in the simple interface (3.12.9): no tabs here, so the board a card opens shows over
+ * the whole screen, as the Canvas does; going back closes its tab.
+ */
+function BoardSheet() {
+  const tab = tabs.value.find((x) => x.id === activeTab.value);
+  if (!tab || tab.type !== "tavola") return null;
+  return (
+    <div class="smp-canvas" role="dialog" aria-label={tab.title}>
+      <header class="smp-canvas-bar">
+        <button
+          type="button"
+          class="smp-icon smp-back"
+          aria-label={t("smpBack")}
+          onClick={() => closeTab(tab.id)}
+        >
+          <IconChevronLeft size={22} />
+        </button>
+        <h2>{tab.title}</h2>
+      </header>
+      <div class="smp-canvas-body">
+        <Variants sessionId={tab.sessionId} proposalId={tab.proposalId} />
+      </div>
+    </div>
+  );
+}
+
 export function SimpleApp() {
   useEffect(() => {
     void refreshTopics().catch(() => {});
@@ -167,6 +203,7 @@ export function SimpleApp() {
   return (
     <div class="smp">
       <CanvasSheet />
+      <BoardSheet />
       {lastError.value && (
         <div class="smp-error" role="alert">
           <span>{lastError.value}</span>
@@ -179,6 +216,7 @@ export function SimpleApp() {
       {s.kind === "topic" && <TopicScreen key={s.id} id={s.id} title={s.title} />}
       {s.kind === "chat" && <TopicScreen key={s.id} id={s.id} title={s.title} chat />}
       {s.kind === "archive" && <ArchiveScreen />}
+      {s.kind === "artifacts" && <ArtifactsScreen />}
       {s.kind === "requests" && <RequestsScreen />}
       {s.kind === "settings" && <SettingsScreen />}
     </div>
@@ -447,6 +485,13 @@ function Today() {
               onClick={() => (simpleScreen.value = { kind: "archive" })}
             >
               <IconArchive size={15} /> {t("smpArchive", { n: String(archivedCount.value) })}
+            </button>
+            <button
+              type="button"
+              class="smp-link"
+              onClick={() => (simpleScreen.value = { kind: "artifacts" })}
+            >
+              <IconCanvas size={15} /> {t("smpArtifacts")}
             </button>
           </div>
         )}
@@ -946,6 +991,26 @@ function DocItem({
     }
     case "file":
       return <FileCard item={item} />;
+    // A board (3.12.9): the full interface's card; the board opens over the screen (BoardSheet).
+    case "variants":
+      return (
+        <button
+          type="button"
+          class="canvas-card"
+          title={t("boardOpen")}
+          onClick={() => openBoard(item.sessionId, item.proposalId, item.title)}
+        >
+          <IconCanvas size={16} />
+          <span>
+            <strong>{item.title}</strong>
+            <span class="dim">
+              {item.chosen === null
+                ? t("boardWaiting", { n: String(item.count) })
+                : t("boardDone", { n: String(item.chosen) })}
+            </span>
+          </span>
+        </button>
+      );
     default:
       return null;
   }
@@ -1190,6 +1255,51 @@ function ArchiveScreen() {
                     {x.summary && <span class="smp-row-sub">{x.summary}</span>}
                   </span>
                   <span class="smp-row-val">{dayText(x.lastAt)}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The small apps agents made (3.12.9, the user: «gli artefatti ... ci devono essere»): each one
+ * opens over the screen in the Canvas (CanvasSheet). Only their names and when they changed: the
+ * full interface's Settings › Artifacts keeps the rest (grants, export, import).
+ */
+function ArtifactsScreen() {
+  const [list, setList] = useState<ArtifactInfo[]>();
+  useEffect(() => {
+    void getApi()
+      .artifacts()
+      .then(setList, () => setList([]));
+  }, []);
+  return (
+    <div class="smp-screen smp-artifacts">
+      <div class="smp-wrap">
+        <TopBar title={t("smpArtifactsTitle")} />
+        <div class="smp-set">
+          <p class="smp-lead">{t("smpArtifactsLead")}</p>
+          {list === undefined ? (
+            <p class="smp-empty">{t("smpLoading")}</p>
+          ) : list.length === 0 ? (
+            <p class="smp-empty">{t("smpArtifactsEmpty")}</p>
+          ) : (
+            <div class="smp-grp">
+              {list.map((a) => (
+                <button
+                  type="button"
+                  key={`${a.scope}:${a.path}`}
+                  class="smp-row"
+                  onClick={() => openCanvas(a.name, { kind: "file", scope: a.scope, path: a.path })}
+                >
+                  <span>
+                    <b>{a.name}</b>
+                  </span>
+                  <span class="smp-row-val">{dayText(a.modifiedAt)}</span>
                 </button>
               ))}
             </div>

@@ -5854,5 +5854,9 @@
   "moLmSpecMtpHelp": "Il modello propone da solo i token successivi, con le teste MTP con cui è stato addestrato, e li controlla tutti in un passaggio: nessun secondo modello e nessuna memoria in più. Misurato su Qwen3.8 27B su un Intel i5-12500H: da 2,98 a 3,88 token/s.",
   "moLmSpeedMode_mtp": "Con l'MTP del modello",
   "qwWorking": "Sta lavorando",
-  "qwTool": "Usa {tool}"
+  "qwTool": "Usa {tool}",
+  "smpArtifacts": "Artefatti",
+  "smpArtifactsTitle": "Artefatti",
+  "smpArtifactsLead": "Le piccole app fatte per te: un calcolatore, un gioco, una tabella da compilare. Toccane una per aprirla.",
+  "smpArtifactsEmpty": "Ancora nessuno. Chiedi una piccola app da tenere e riusare, e la troverai qui."
 }

@@ -9,6 +9,7 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import '../api/artifacts.dart' show ArtifactInfo;
 import '../api/attachments.dart';
 import '../api/conversation.dart';
 import '../api/image_shrink.dart' show prepareAttachment;
@@ -32,9 +33,10 @@ import '../ui/icons.dart';
 import '../ui/markdown.dart';
 import '../ui/model_sheet.dart' show ChoiceRow;
 import '../canvas/canvas_shell.dart' show showInCanvas;
+import '../screens/board_screen.dart' show openBoard;
 import '../screens/canvas_screen.dart' show openCanvas;
 import '../ui/artifact_frame_view.dart' show WidgetCard;
-import '../ui/chat/chat_parts.dart' show CanvasLine;
+import '../ui/chat/chat_parts.dart' show CanvasLine, VariantsCard;
 import '../ui/found_widgets.dart';
 import '../ui/product_cards.dart';
 import '../ui/rg_menu.dart';
@@ -765,6 +767,27 @@ class _TodayScreenState extends State<TodayScreen> {
                                     icon: RgIcon(RgIcons.archive, size: 16, color: c.accent2),
                                     label: Text(
                                       l.smpArchive('${s.archivedCount}'),
+                                      style: TextStyle(color: c.accent2, fontSize: 14.5),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            // The small apps agents made (3.12.9), as the page's «Oggi».
+                            if (!chat)
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(12, 0, 20, 24),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: TextButton.icon(
+                                    key: const Key('simple-artifacts'),
+                                    onPressed: () => Navigator.of(context).push(
+                                      MaterialPageRoute<void>(
+                                        builder: (_) => const SimpleArtifactsScreen(),
+                                      ),
+                                    ),
+                                    icon: RgIcon(RgIcons.canvas, size: 16, color: c.accent2),
+                                    label: Text(
+                                      l.smpArtifacts,
                                       style: TextStyle(color: c.accent2, fontSize: 14.5),
                                     ),
                                   ),
@@ -1655,6 +1678,21 @@ class _DocItem extends StatelessWidget {
             ],
           ),
         );
+      // A board of variants (3.12.9): the full interface's card; the board opens on its screen.
+      case final VariantsItem v:
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: VariantsCard(
+            key: Key('variants-${v.proposalId}'),
+            item: v,
+            onOpen: () => openBoard(
+              context,
+              sessionId: v.sessionId,
+              proposalId: v.proposalId,
+              title: v.title,
+            ),
+          ),
+        );
       default:
         return const SizedBox.shrink();
     }
@@ -2338,6 +2376,100 @@ class _SimpleSettingsScreenState extends State<SimpleSettingsScreen> {
 }
 
 /// The archive: topics that rested, found with words; one tap takes one back.
+/// The small apps agents made (3.12.9, the page's `ArtifactsScreen`): their names and when they
+/// changed; each opens in the Canvas. Settings › Artifacts of the full interface keeps the rest.
+class SimpleArtifactsScreen extends StatefulWidget {
+  const SimpleArtifactsScreen({super.key});
+
+  @override
+  State<SimpleArtifactsScreen> createState() => _SimpleArtifactsScreenState();
+}
+
+class _SimpleArtifactsScreenState extends State<SimpleArtifactsScreen> {
+  List<ArtifactInfo>? _list;
+
+  @override
+  void initState() {
+    super.initState();
+    final c = AppScope.read(context).client;
+    if (c == null) {
+      _list = const [];
+      return;
+    }
+    unawaited(
+      c.artifacts().then(
+        (list) => mounted ? setState(() => _list = list) : null,
+        onError: (Object _) => mounted ? setState(() => _list = const []) : null,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final lang = Localizations.localeOf(context).languageCode;
+    final list = _list;
+    return Scaffold(
+      key: const Key('simple-artifacts-screen'),
+      body: DecoratedBox(
+        decoration: _wash(context),
+        child: SafeArea(
+          child: _Column(
+            child: Column(
+              children: [
+                _Top(title: l.smpArtifactsTitle),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(4, 4, 4, 12),
+                        child: Text(
+                          l.smpArtifactsLead,
+                          style: TextStyle(color: c.dim, fontSize: 15, height: 1.45),
+                        ),
+                      ),
+                      if (list == null || list.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Text(
+                            list == null ? l.smpLoading : l.smpArtifactsEmpty,
+                            style: TextStyle(color: c.dim, fontSize: 15),
+                          ),
+                        )
+                      else
+                        _Group(
+                          children: [
+                            for (final a in list)
+                              _Row(
+                                key: Key('artifact-${a.scope}-${a.path}'),
+                                title: a.name,
+                                trailing: Text(
+                                  _day(a.modifiedAt, lang),
+                                  style: TextStyle(color: c.dim, fontSize: 13.5),
+                                ),
+                                onTap: () => openCanvas(
+                                  context,
+                                  scope: a.scope,
+                                  path: a.path,
+                                  title: a.name,
+                                ),
+                              ),
+                          ],
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class SimpleArchiveScreen extends StatefulWidget {
   const SimpleArchiveScreen({super.key});
 

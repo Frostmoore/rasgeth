@@ -2939,6 +2939,8 @@ export type SimpleScreen =
   | { kind: "topic"; id: string; title: string }
   /** The archived topics, with their search. */
   | { kind: "archive" }
+  /** The small apps agents made, to open again in the Canvas (3.12.9). */
+  | { kind: "artifacts" }
   /** Requests and questions that belong to no topic (an automation's). */
   | { kind: "requests" }
   /** A conversation with the Chat (Satellite, 3.12.1), read as a document like a topic. */
@@ -3052,6 +3054,9 @@ const DOCUMENT_KINDS = new Set<ChatItem["kind"]>([
   "file",
   "widget",
   "canvas",
+  // A board of variants to choose from (3.12.9, the user: «il canvas, i widget, gli artefatti e
+  // le tavole ci devono essere»).
+  "variants",
   "routed",
   "moved",
 ]);

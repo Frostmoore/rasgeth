@@ -81,6 +81,32 @@ void main() {
     ]);
   });
 
+  test('3.12.9: a board of variants stays in the document (boards are for the person)', () {
+    RgEvent ev(int seq, String type, Map<String, dynamic> payload) => RgEvent.fromJson({
+      'id': 'e$seq',
+      'seq': seq,
+      'ts': '',
+      'sessionId': 's1',
+      'type': type,
+      'payload': payload,
+    });
+    final items = buildItems([
+      ev(1, 'message.user', {'text': 'Fammi tre proposte per il logo'}),
+      ev(2, 'variants.proposed', {
+        'proposalId': 'pr1',
+        'title': 'Tre loghi',
+        'variants': [
+          {'html': '<p>1</p>'},
+          {'html': '<p>2</p>'},
+          {'html': '<p>3</p>'},
+        ],
+      }),
+    ]);
+    final doc = documentItems(items);
+    expect(doc.map((i) => i.kind).toList(), ['user', 'variants']);
+    expect((doc[1] as VariantsItem).title, 'Tre loghi');
+  });
+
   group('in the app', () {
     late FakeRedGiant server;
     late FakeTopics topics;
@@ -403,6 +429,39 @@ void main() {
       await tap(tester, find.byKey(const Key('archived-t_bills')));
       expect(topics.calls, contains('POST /api/god/topics/t_bills/restore'));
       expect(find.byType(TopicScreen), findsOneWidget);
+      await done(tester);
+    });
+
+    testWidgets('3.12.9: «Artefatti» from «Oggi»: the small apps, each opened in the Canvas', (
+      tester,
+    ) async {
+      server.extraJson['GET /api/artifacts'] = [
+        {
+          'scope': 'platform',
+          'place': 'platform',
+          'projectId': null,
+          'path': 'artefatti/calcolatore.html',
+          'file': 'calcolatore.html',
+          'name': 'Calcolatore del mutuo',
+          'header': true,
+          'version': 1,
+          'libs': <String>[],
+          'wants': <String>[],
+          'granted': <String>[],
+          'grants': <Object>[],
+          'hasData': false,
+          'from': null,
+          'size': 100,
+          'modifiedAt': '2026-11-22T09:05:00.000Z',
+          'readOnly': false,
+          'pendingRun': false,
+        },
+      ];
+      await open(tester);
+      await tap(tester, find.byKey(const Key('simple-artifacts')));
+      expect(find.byKey(const Key('simple-artifacts-screen')), findsOneWidget);
+      expect(find.text('Artefatti'), findsWidgets);
+      expect(find.text('Calcolatore del mutuo'), findsOneWidget);
       await done(tester);
     });
 

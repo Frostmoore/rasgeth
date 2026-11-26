@@ -280,9 +280,63 @@ describe("the simple interface's rules (pure)", () => {
     expect(doc[0]).toMatchObject({ text: "E per il ritorno?" });
     expect(doc[2]).toMatchObject({ toSessionId: "t_gift", seq: 3, throughSeq: 6 });
   });
+
+  it("keeps a board of variants in the document (3.12.9: boards are for the person, not technical)", () => {
+    const items = state.buildItems([
+      ev(1, "message.user", { text: "Fammi tre proposte per il logo" }),
+      ev(2, "variants.proposed", {
+        proposalId: "pr1",
+        title: "Tre loghi",
+        variants: [{ html: "<p>1</p>" }, { html: "<p>2</p>" }, { html: "<p>3</p>" }],
+      }),
+    ]);
+    const doc = state.documentItems(items);
+    expect(doc.map((i) => i.kind)).toEqual(["user", "variants"]);
+    expect(doc[1]).toMatchObject({ title: "Tre loghi", count: 3, chosen: null });
+  });
 });
 
 describe("«Oggi»", () => {
+  it("has the artifacts: the small apps, each opened over the screen in the Canvas (3.12.9)", async () => {
+    fake.impl.artifacts = () => [
+      {
+        scope: "platform",
+        place: "platform",
+        projectId: null,
+        path: "artefatti/calcolatore.html",
+        file: "calcolatore.html",
+        name: "Calcolatore del mutuo",
+        header: true,
+        version: 1,
+        libs: [],
+        wants: [],
+        granted: [],
+        grants: [],
+        hasData: false,
+        from: null,
+        size: 100,
+        modifiedAt: iso(5),
+        readOnly: false,
+        pendingRun: false,
+      },
+    ];
+    const r = render(<SimpleApp />);
+    await waitFor(() => expect(r.getByText("Vacanza in Sardegna")).toBeTruthy());
+    fireEvent.click(r.getByText("Artefatti"));
+    await waitFor(() => expect(r.getByText("Calcolatore del mutuo")).toBeTruthy());
+    expect(r.getByRole("heading", { name: "Artefatti" })).toBeTruthy();
+    fireEvent.click(r.getByText("Calcolatore del mutuo"));
+    await waitFor(() =>
+      expect(r.container.querySelector(".smp-canvas h2")?.textContent).toBe(
+        "Calcolatore del mutuo",
+      ),
+    );
+    // Left as found: no canvas open, back on «Oggi».
+    state.sideViews.value = [];
+    state.activeSide.value = null;
+    state.simpleScreen.value = { kind: "today" };
+  });
+
   it("greets the person, offers the big box and shows the topics with their state in words", async () => {
     const r = render(<SimpleApp />);
     await waitFor(() => expect(r.getByText("Vacanza in Sardegna")).toBeTruthy());

@@ -8113,6 +8113,11 @@ const en = {
   smpNewTopicName: "What should it be called? (you can leave it empty)",
   smpSearchHint: "Search in your topics",
   smpInArchive: "IN THE ARCHIVE",
+  smpArtifacts: "Artifacts",
+  smpArtifactsTitle: "Artifacts",
+  smpArtifactsLead:
+    "The small apps made for you: a calculator, a game, a table to fill in. Tap one to open it.",
+  smpArtifactsEmpty: "None yet. Ask for a small app to keep and use again, and it will be here.",
   smpArchiveTitle: "Archive",
   smpArchiveLead: "Topics left untouched for a few days rest here. Tap one to take it back.",
   smpNothingFound: "Nothing found with these words.",
@@ -8639,6 +8644,12 @@ const it: Record<Key, string> = {
   smpNewTopicName: "Come lo chiamiamo? (puoi lasciarlo vuoto)",
   smpSearchHint: "Cerca nei tuoi argomenti",
   smpInArchive: "IN ARCHIVIO",
+  smpArtifacts: "Artefatti",
+  smpArtifactsTitle: "Artefatti",
+  smpArtifactsLead:
+    "Le piccole app fatte per te: un calcolatore, un gioco, una tabella da compilare. Toccane una per aprirla.",
+  smpArtifactsEmpty:
+    "Ancora nessuno. Chiedi una piccola app da tenere e riusare, e la troverai qui.",
   smpArchiveTitle: "Archivio",
   smpArchiveLead:
     "Qui riposano gli argomenti fermi da qualche giorno. Toccane uno per riprenderlo.",

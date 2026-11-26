@@ -14017,5 +14017,9 @@
         "type": "String"
       }
     }
-  }
+  },
+  "smpArtifacts": "Artifacts",
+  "smpArtifactsTitle": "Artifacts",
+  "smpArtifactsLead": "The small apps made for you: a calculator, a game, a table to fill in. Tap one to open it.",
+  "smpArtifactsEmpty": "None yet. Ask for a small app to keep and use again, and it will be here."
 }

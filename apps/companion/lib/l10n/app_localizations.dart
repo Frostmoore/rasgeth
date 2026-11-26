@@ -35045,6 +35045,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Using {tool}'**
   String qwTool(String tool);
+
+  /// No description provided for @smpArtifacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Artifacts'**
+  String get smpArtifacts;
+
+  /// No description provided for @smpArtifactsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Artifacts'**
+  String get smpArtifactsTitle;
+
+  /// No description provided for @smpArtifactsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The small apps made for you: a calculator, a game, a table to fill in. Tap one to open it.'**
+  String get smpArtifactsLead;
+
+  /// No description provided for @smpArtifactsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'None yet. Ask for a small app to keep and use again, and it will be here.'**
+  String get smpArtifactsEmpty;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

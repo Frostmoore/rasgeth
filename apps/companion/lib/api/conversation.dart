@@ -1348,7 +1348,9 @@ List<ChatItem> documentItems(List<ChatItem> items) {
         FoundItem() ||
         FileItem() ||
         CanvasItem() ||
-        WidgetItem() => !gone(seqOf(i)),
+        WidgetItem() ||
+        // A board of variants (3.12.9, the user: boards are for the person, not technical).
+        VariantsItem() => !gone(seqOf(i)),
         _ => false,
       })
         i,

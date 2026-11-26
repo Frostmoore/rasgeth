@@ -20278,4 +20278,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String qwTool(String tool) {
     return 'Using $tool';
   }
+
+  @override
+  String get smpArtifacts => 'Artifacts';
+
+  @override
+  String get smpArtifactsTitle => 'Artifacts';
+
+  @override
+  String get smpArtifactsLead =>
+      'The small apps made for you: a calculator, a game, a table to fill in. Tap one to open it.';
+
+  @override
+  String get smpArtifactsEmpty =>
+      'None yet. Ask for a small app to keep and use again, and it will be here.';
 }
