@@ -631,6 +631,10 @@ class _SubagentViewState extends State<SubagentView> {
           for (final item in items) ChatItemView(item: item, actions: actions),
           if (status == 'running' && call != null)
             TurnProgress(call: call, now: app.live.now, still: app.reduceMotion),
+          // 3.12.8: nothing else shows the sub-agent at work.
+          if (status == 'running')
+            if (quietWork(view, items) case final q?)
+              QuietWork(since: q.since, tool: q.tool, now: app.live.now, still: app.reduceMotion),
           if (tab.summary != null && status != 'running')
             _Notice(
               key: const Key('sub-ended'),

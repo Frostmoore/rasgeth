@@ -58,6 +58,7 @@ import {
   pendingJump,
   projects,
   questions,
+  quietWork,
   refresh,
   refreshRooms,
   removalOf,
@@ -107,7 +108,7 @@ import { RemovedNotice, StoppedNotice } from "./RemovedAgents.js";
 import { SaveMessage, saveDraft } from "./Saved.js";
 import { ToolRequestCard } from "./ToolRequestCard.js";
 import { QueuedNotice } from "./TurnLine.js";
-import { TurnProgress } from "./TurnProgress.js";
+import { QuietWork, TurnProgress } from "./TurnProgress.js";
 import { FileIcon } from "./viewers/FileIcon.js";
 
 const time = (iso: string) =>
@@ -1414,6 +1415,13 @@ function SubagentView({
           {status === "running" && v.call && !externalAgent(tab.childAgentId) && (
             <TurnProgress call={v.call} />
           )}
+          {(() => {
+            const q =
+              status === "running" && !externalAgent(tab.childAgentId)
+                ? quietWork(v, items.value)
+                : undefined;
+            return q && <QuietWork since={q.since} tool={q.tool} />;
+          })()}
           {(v.thinking || v.text) && (
             <div class="bubble assistant streaming">
               {v.text ? (
@@ -1619,6 +1627,16 @@ function MainChat({ sessionId, agentId }: { sessionId: string; agentId: string }
             !generating &&
             !questions.value.some((q) => q.sessionId === sessionId) &&
             !externalAgent(agentId) && <TurnProgress call={v.call} />}
+          {/* Nothing else shows the agent at work (3.12.8): the quiet line. */}
+          {(() => {
+            const q =
+              !generating &&
+              !questions.value.some((x) => x.sessionId === sessionId) &&
+              !externalAgent(agentId)
+                ? quietWork(v, items.value)
+                : undefined;
+            return q && <QuietWork since={q.since} tool={q.tool} />;
+          })()}
           {(v.thinking || v.text) && (
             <div class="bubble assistant streaming">
               {/* The reasoning as it comes (2026-11-05), folded away once the answer starts. */}

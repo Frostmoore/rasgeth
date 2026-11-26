@@ -35033,6 +35033,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'With the model\'s MTP'**
   String get moLmSpeedMode_mtp;
+
+  /// The agent works and nothing else on screen shows it (3.12.8).
+  ///
+  /// In en, this message translates to:
+  /// **'Working'**
+  String get qwWorking;
+
+  /// The tool under way when its card shows nothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Using {tool}'**
+  String qwTool(String tool);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

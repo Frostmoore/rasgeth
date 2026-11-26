@@ -682,6 +682,32 @@ export interface SessionView {
 }
 
 /**
+ * The agent is at work and nothing on screen says so (3.12.8, the person's report: «God lavora ma non appare nulla che
+ * mostri che sta lavorando»): no model request under way, no answer streaming, no summary, and no tool card of its own
+ * still turning. Then a quiet line says it works, since when, and the tool under way when its card shows nothing.
+ * Anything else that shows activity (a question, a picture being made) is checked by the caller.
+ */
+export function quietWork(
+  v: SessionView,
+  items: ChatItem[],
+): { since: number; tool?: string } | undefined {
+  if (v.state !== "running" || v.call || v.compacting || v.drawing || v.thinking || v.text)
+    return undefined;
+  const last = items[items.length - 1];
+  if (last?.kind === "tool" && !last.result) return undefined;
+  const lastEvent = v.events[v.events.length - 1];
+  const since = lastEvent ? Date.parse(lastEvent.ts) : Date.now();
+  const done = new Set(
+    v.events.flatMap((e) => (e.type === "tool.result" && e.payload ? [e.payload.callId] : [])),
+  );
+  const open = [...v.events]
+    .reverse()
+    .find((e) => e.type === "tool.call" && e.payload && !done.has(e.payload.callId));
+  const tool = open?.type === "tool.call" ? open.payload?.tool : undefined;
+  return { since: Number.isFinite(since) ? since : Date.now(), ...(tool && { tool }) };
+}
+
+/**
  * One model request seen live: when it started, how far the prompt was read (local engines
  * report it), when the first word came and how much has been written since.
  */

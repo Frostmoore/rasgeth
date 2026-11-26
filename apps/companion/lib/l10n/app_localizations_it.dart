@@ -20328,4 +20328,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get moLmSpeedMode_mtp => 'Con l\'MTP del modello';
+
+  @override
+  String get qwWorking => 'Sta lavorando';
+
+  @override
+  String qwTool(String tool) {
+    return 'Usa $tool';
+  }
 }

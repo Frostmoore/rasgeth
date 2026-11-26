@@ -85,3 +85,26 @@ export function TurnProgress({ call }: { call: ModelCall }) {
     </div>
   );
 }
+
+/**
+ * The agent works and nothing else on screen shows it (3.12.8): a line with the time since its last step and, when a
+ * tool without a card of its own is under way, which one.
+ */
+export function QuietWork({ since, tool }: { since: number; tool?: string | undefined }) {
+  const [, tick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => tick((x) => x + 1), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div class="turn-progress quiet-work" role="status">
+      <div class="turn-progress-head">
+        <strong>{tool ? t("qwTool", { tool }) : t("qwWorking")}</strong>
+        <span class="dim">{secs(Math.max(0, Date.now() - since))}</span>
+      </div>
+      <div class="ui-bar busy">
+        <span />
+      </div>
+    </div>
+  );
+}

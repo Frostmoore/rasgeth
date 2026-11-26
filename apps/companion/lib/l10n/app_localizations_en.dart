@@ -20270,4 +20270,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get moLmSpeedMode_mtp => 'With the model\'s MTP';
+
+  @override
+  String get qwWorking => 'Working';
+
+  @override
+  String qwTool(String tool) {
+    return 'Using $tool';
+  }
 }

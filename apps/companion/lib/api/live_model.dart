@@ -56,6 +56,32 @@ class QueuedMessage {
   final String match;
 }
 
+/// The agent is at work and nothing on screen says so (3.12.8, the page's `quietWork`): no model call under way, no
+/// answer streaming, no summary, no picture being made and no tool card of its own still turning. Then a quiet line
+/// says it works, since its last step, and the tool under way when its card shows nothing. Questions and pictures made
+/// by the model itself are checked by the caller.
+({DateTime since, String? tool})? quietWork(SessionView v, List<ChatItem> items) {
+  if (!v.running || v.call != null || v.compacting || v.drawing != null) return null;
+  if (v.liveText.isNotEmpty || v.liveThinking.isNotEmpty) return null;
+  final last = items.isEmpty ? null : items.last;
+  if (last is ToolItem && last.ok == null && !last.lost) return null;
+  final lastEvent = v.events.isEmpty ? null : v.events.last;
+  final since = DateTime.tryParse(lastEvent?.ts ?? '') ?? DateTime.now();
+  final done = {
+    for (final e in v.events)
+      if (e.type == 'tool.result' && e.payload?['callId'] is String) e.payload!['callId'] as String,
+  };
+  String? tool;
+  for (final e in v.events.reversed) {
+    final id = e.payload?['callId'];
+    if (e.type == 'tool.call' && id is String && !done.contains(id)) {
+      tool = e.payload?['tool'] as String?;
+      break;
+    }
+  }
+  return (since: since, tool: tool);
+}
+
 /// A followed conversation: its stored events, what is streaming, whether it runs.
 class SessionView extends ChangeNotifier {
   SessionView(this.sessionId, {DateTime Function()? now}) : _now = now ?? DateTime.now;

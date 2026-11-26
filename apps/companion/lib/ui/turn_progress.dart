@@ -240,3 +240,88 @@ class _BarState extends State<_Bar> with SingleTickerProviderStateMixin {
     );
   }
 }
+
+/// The agent works and nothing else on screen shows it (3.12.8, the page's `QuietWork`): the time since its last step
+/// and, when a tool without a card of its own is under way, which one.
+class QuietWork extends StatefulWidget {
+  const QuietWork({
+    super.key,
+    required this.since,
+    this.tool,
+    this.now = DateTime.now,
+    this.still = false,
+  });
+
+  final DateTime since;
+  final String? tool;
+  final DateTime Function() now;
+  final bool still;
+
+  @override
+  State<QuietWork> createState() => _QuietWorkState();
+}
+
+class _QuietWorkState extends State<QuietWork> {
+  Timer? _tick;
+
+  @override
+  void initState() {
+    super.initState();
+    _tick = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _tick?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final ms = widget.now().difference(widget.since).inMilliseconds.clamp(0, 1 << 62);
+    final tool = widget.tool;
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 520),
+        child: Semantics(
+          liveRegion: true,
+          container: true,
+          child: Container(
+            key: const Key('quiet-work'),
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: c.panel,
+              border: Border.all(color: c.line),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        tool == null ? l.qwWorking : l.qwTool(tool),
+                        style: TextStyle(color: c.text, fontSize: 13, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(tpSecs(ms), style: TextStyle(color: c.dim, fontSize: 13)),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                _Bar(done: null, still: widget.still),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

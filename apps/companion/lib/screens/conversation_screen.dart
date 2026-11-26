@@ -982,7 +982,8 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
                   embedded: widget.embedded,
                   agent: agent,
                   state: state,
-                  running: view.running,
+                  // 3.12.8: the stop is next to the composer; the header keeps one only when there is none.
+                  running: view.running && _readOnly,
                   onStop: _stop,
                   actions: widget.headerActions,
                   files: _filesButton(context, agent),
@@ -1043,6 +1044,17 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
                                 generatingNow(view.events) == null &&
                                 !app.live.questions.any((q) => q.sessionId == widget.sessionId))
                               TurnProgress(call: call, now: app.live.now, still: still),
+                            // 3.12.8: nothing else on screen shows the agent at work.
+                            if (live == null &&
+                                generatingNow(view.events) == null &&
+                                !app.live.questions.any((q) => q.sessionId == widget.sessionId))
+                              if (quietWork(view, view.items) case final q?)
+                                QuietWork(
+                                  since: q.since,
+                                  tool: q.tool,
+                                  now: app.live.now,
+                                  still: still,
+                                ),
                             // G42.2: generate_image's picture as it forms (`image.progress`).
                             if (view.drawing case final d?)
                               DrawingCard(percent: d.percent, preview: d.preview)

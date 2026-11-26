@@ -14004,5 +14004,18 @@
   "moLmImprTestedMtp": "With the model's MTP.",
   "moLmSpecMtp": "The model's MTP",
   "moLmSpecMtpHelp": "The model proposes the next tokens itself, with the MTP heads it was trained with, and checks them all in one pass: no second model and no extra memory. Measured on Qwen3.8 27B on an Intel i5-12500H: from 2.98 to 3.88 tokens/s.",
-  "moLmSpeedMode_mtp": "With the model's MTP"
+  "moLmSpeedMode_mtp": "With the model's MTP",
+  "qwWorking": "Working",
+  "qwTool": "Using {tool}",
+  "@qwWorking": {
+    "description": "The agent works and nothing else on screen shows it (3.12.8)."
+  },
+  "@qwTool": {
+    "description": "The tool under way when its card shows nothing.",
+    "placeholders": {
+      "tool": {
+        "type": "String"
+      }
+    }
+  }
 }
