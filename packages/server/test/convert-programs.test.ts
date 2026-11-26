@@ -20,7 +20,7 @@ import {
   type Runner,
   scribusAsset,
 } from "../src/convert-programs.js";
-import { Jobs } from "../src/jobs.js";
+import { JobFailure, Jobs } from "../src/jobs.js";
 
 const ctx = { ownerId: "me", projectId: null, agentId: "a", sessionId: "s" } as never;
 const text = (r: unknown) => (typeof r === "string" ? r : (r as { content: string }).content);
@@ -127,6 +127,76 @@ describe("what to download", () => {
     expect(ran[1]?.args.slice(0, 2)).toEqual(["x", "-y"]);
     expect(ran[1]?.args.at(-1)).toBe(join(data, "tools/scribus/package.exe"));
     expect(win).toMatch(/Scribus\.exe$/);
+  });
+
+  it("takes LibreOffice from The Document Foundation's packages when the AppImage's site fails (3.12.8)", async () => {
+    // 2026-11-26: appimages.libreitalia.org's certificate expired and every Linux preview failed
+    // with «fetch failed».
+    const expired = () =>
+      Object.assign(new TypeError("fetch failed"), {
+        cause: Object.assign(new Error("certificate has expired"), { code: "CERT_HAS_EXPIRED" }),
+      });
+    const fetched: string[] = [];
+    const fakeFetch = (async (url: string) => {
+      fetched.push(String(url));
+      if (String(url).includes("libreitalia")) throw expired();
+      if (String(url).endsWith("/stable/"))
+        return new Response('<a href="26.2.7/">26.2.7/</a> <a href="26.8.3/">26.8.3/</a>');
+      return new Response(new Uint8Array(500).fill(1), { headers: { "content-length": "500" } });
+    }) as typeof fetch;
+    const ran: { file: string; args: string[] }[] = [];
+    const run: Runner = async (file, args) => {
+      ran.push({ file, args });
+      if (file === "tar") {
+        const to = args[args.indexOf("-C") + 1] as string;
+        await mkdir(join(to, "LibreOffice_26.8.3.1_Linux_x86-64_deb", "DEBS"), { recursive: true });
+        for (const n of ["libreoffice26.8-core.deb", "libreoffice26.8-writer.deb"])
+          await writeFile(join(to, "LibreOffice_26.8.3.1_Linux_x86-64_deb", "DEBS", n), "");
+      }
+      if (file === "dpkg-deb" && args[1]?.endsWith("core.deb")) {
+        const program = join(args[2] as string, "opt", "libreoffice26.8", "program");
+        await mkdir(program, { recursive: true });
+        await writeFile(join(program, "soffice"), "");
+      }
+      return { stdout: "", stderr: "", exitCode: 0 };
+    };
+    const data = join(root, "data");
+    const exe = await downloadProgram(
+      "libreoffice",
+      data,
+      () => {},
+      new AbortController().signal,
+      () => {},
+      { fetch: fakeFetch, run, platform: "linux", arch: "x64" },
+    );
+    expect(fetched.at(-1)).toBe(
+      "https://download.documentfoundation.org/libreoffice/stable/26.8.3/deb/x86_64/LibreOffice_26.8.3_Linux_x86-64_deb.tar.gz",
+    );
+    expect(ran.filter((r) => r.file === "dpkg-deb").map((r) => r.args[0])).toEqual(["-x", "-x"]);
+    expect(exe).toBe(join(data, "tools/libreoffice/app/opt/libreoffice26.8/program/soffice"));
+    expect(existsSync(join(data, "tools/libreoffice/debs"))).toBe(false);
+    expect(existsSync(join(data, "tools/libreoffice/package.tar.gz"))).toBe(false);
+    expect(findProgram("libreoffice", data, { PATH: "" }, "linux")).toBe(exe);
+
+    // Both ways fail: a code the page explains, and each site with its cause for whoever helps.
+    const down = (async (url: string) => {
+      if (String(url).includes("libreitalia")) throw expired();
+      if (String(url).endsWith("/stable/")) return new Response('<a href="26.8.3/">26.8.3/</a>');
+      return new Response("", { status: 503 });
+    }) as typeof fetch;
+    const err = await downloadProgram(
+      "libreoffice",
+      join(root, "data2"),
+      () => {},
+      new AbortController().signal,
+      () => {},
+      { fetch: down, run, platform: "linux", arch: "x64" },
+    ).catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(JobFailure);
+    expect((err as JobFailure).code).toBe("libreoffice_download");
+    expect((err as Error).message).toBe(
+      "Could not download LibreOffice: appimages.libreitalia.org: CERT_HAS_EXPIRED; download.documentfoundation.org answered 503",
+    );
   });
 
   it("downloads Blender as its portable build: tar.xz, zip, DMG", async () => {

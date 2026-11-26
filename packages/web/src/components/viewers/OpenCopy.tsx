@@ -82,11 +82,23 @@ function JobLine({ job }: { job?: Job | undefined }) {
 }
 
 /** A failed job in plain words, with the details for whoever helps. */
-function Failed({ text, detail, retry }: { text: string; detail?: string; retry: () => void }) {
+function Failed({
+  text,
+  explain,
+  detail,
+  retry,
+}: {
+  text: string;
+  /** The cause in plain words, when the server named it (`job_error_<code>`). */
+  explain?: string | undefined;
+  detail?: string;
+  retry: () => void;
+}) {
   return (
     <div class="vw-empty vw-open-card">
       <IconAlert size={26} />
       <strong>{text}</strong>
+      {explain && <p class="vw-open-explain">{explain}</p>}
       {detail && <p class="dim vw-open-detail">{detail}</p>}
       <button type="button" class="vw-btn" onClick={retry}>
         <IconRefresh size={16} />
@@ -100,7 +112,7 @@ type Paged =
   | { at: "asking" }
   | { at: "waiting"; job: string }
   | { at: "ready"; url: string; size: number }
-  | { at: "failed"; message: string }
+  | { at: "failed"; message: string; code?: string | undefined }
   /** LibreOffice cannot come to this computer: the simple reading, said plainly. */
   | { at: "simple" };
 
@@ -115,14 +127,14 @@ export function PagedView({ scope, path, name, url, onKind, at }: FileProps) {
     const blob = await getApi().filePreview(scope, path);
     setState({ at: "ready", url: URL.createObjectURL(blob), size: blob.size });
   };
-  const fail = async (message: string) => {
+  const fail = async (message: string, code?: string) => {
     // Not here and not downloadable here: the only case for the simple reading.
     const formats = await getApi()
       .fileFormats()
       .catch(() => undefined);
     const lo = formats?.programs.find((x) => x.id === "libreoffice");
     if (lo && !lo.here && !lo.canDownload) setState({ at: "simple" });
-    else setState({ at: "failed", message });
+    else setState({ at: "failed", message, code });
   };
   useEffect(() => {
     let live = true;
@@ -146,7 +158,7 @@ export function PagedView({ scope, path, name, url, onKind, at }: FileProps) {
     if (state.at !== "waiting" || !job || job.state === "running") return;
     if (job.state === "done")
       void fetchPdf().catch((e: unknown) => setState({ at: "failed", message: String(e) }));
-    else void fail(job.error?.message ?? t("uiFailedGeneric"));
+    else void fail(job.error?.message ?? t("uiFailedGeneric"), job.error?.code);
   }, [job?.state]);
   useEffect(
     () => () => (state.at === "ready" ? URL.revokeObjectURL(state.url) : undefined),
@@ -183,6 +195,7 @@ export function PagedView({ scope, path, name, url, onKind, at }: FileProps) {
     body = (
       <Failed
         text={t("vwPagedFailed")}
+        explain={state.code && tOptional(`job_error_${state.code}`)}
         detail={state.message}
         retry={() => setAttempt((n) => n + 1)}
       />

@@ -53,7 +53,7 @@ they do not need.**
 - **Network access goes through the egress proxy**, which holds the credential routes and the policy.
 - **Extensions never install themselves.** An agent's proposal is tested in a throwaway sandbox and waits for the
   person. Only the person's own extensions install directly once their tests pass; by the person's choice an agent's
-  *skill* (instructions only) can install once tested, never a tool that runs code.
+  _skill_ (instructions only) can install once tested, never a tool that runs code.
 - **Webhook bodies are data, never instructions**: an automation started by a webhook reads the body as content.
 - **Platform changes** (Rasgeth changing itself) keep what was there before and can be undone; code changes go
   through a separate copy, tests and a trial run with a clean environment, without secrets.
@@ -71,6 +71,6 @@ they do not need.**
 ## Reporting a vulnerability
 
 Please report security problems privately: open a private security advisory on the project's GitHub repository
-(*Security › Report a vulnerability*). Do not open a public issue for a vulnerability.
+(_Security › Report a vulnerability_). Do not open a public issue for a vulnerability.
 
 <!-- TO CONFIRM before publishing: private vulnerability reporting enabled on GitHub, or another address. -->

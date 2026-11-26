@@ -5,7 +5,8 @@
 // scaricherà la prima volta e via».
 //   - LibreOffice (MPL-2.0): Office, Apple iWork, Visio, Publisher, CorelDRAW → OpenDocument;
 //     PDF → ODG/SVG; ODG → PDF. Linux AppImage (unpacked with --appimage-extract, no FUSE),
-//     Windows MSI (administrative install: files only, no registry), macOS DMG (the app copied).
+//     or, when its site fails (2026-11-26: its certificate expired), The Document Foundation's own
+//     .deb packages unpacked with dpkg-deb (nothing installed); Windows MSI (administrative install: files only, no registry), macOS DMG (the app copied).
 //   - Scribus (GPL-2.0-or-later): InDesign IDML → Scribus .sla + PDF, with its own IDML importer.
 //     Linux AppImage (everything inside, even its libc: it only needs a display, Xvfb on a
 //     server, and one font); Windows NSIS installer, unpacked by 7-Zip (LGPL, 1.9 MB, itself
@@ -21,13 +22,13 @@
 
 import { execFile, spawn } from "node:child_process";
 import { createWriteStream, existsSync, readdirSync, readFileSync, realpathSync } from "node:fs";
-import { chmod, mkdir, rename, rm, writeFile } from "node:fs/promises";
+import { chmod, mkdir, readdir, rename, rm, writeFile } from "node:fs/promises";
 import { delimiter, dirname, join, posix, relative, win32 } from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { agentEnv, shareProgramDir } from "@redgiant/tools";
 import { ensureFfmpeg, ensureFfprobe, ffmpegBuild, findFfmpeg } from "./ffmpeg.js";
-import type { JobHandle, Jobs } from "./jobs.js";
+import { JobFailure, type JobHandle, type Jobs } from "./jobs.js";
 import { installOfficeLaunchers } from "./lo-agents.js";
 
 export type ProgramId = "libreoffice" | "scribus" | "blender" | "ghostscript" | "ffmpeg";
@@ -304,7 +305,7 @@ export function findXvfbRun(
 
 // ---------------------------------------------------------------- What to download
 
-export type PackageKind = "appimage" | "msi" | "dmg" | "nsis" | "tarxz" | "zip";
+export type PackageKind = "appimage" | "debtar" | "msi" | "dmg" | "nsis" | "tarxz" | "zip";
 
 export interface ProgramAsset {
   url: string;
@@ -343,6 +344,21 @@ export function libreOfficeAsset(
     };
   }
   return undefined;
+}
+
+/**
+ * LibreOffice's second way onto Linux: The Document Foundation's .deb packages for a version
+ * (a tar.gz of debs, unpacked with dpkg-deb, nothing installed), when the AppImage's site fails.
+ */
+export function libreOfficeDebAsset(
+  version: string,
+  arch: string = process.arch,
+): ProgramAsset | undefined {
+  if (arch !== "x64" || !version) return undefined;
+  return {
+    url: `${TDF()}/${version}/deb/x86_64/LibreOffice_${version}_Linux_x86-64_deb.tar.gz`,
+    kind: "debtar",
+  };
 }
 
 /** Scribus's stable release (checked 2026-11-07 on SourceForge: AppImage 133 MB, Windows x64 125 MB, DMG 181-186 MB). */
@@ -422,8 +438,14 @@ export async function downloadFile(
   signal: AbortSignal,
   fetchFn: typeof fetch = fetch,
 ): Promise<void> {
-  const r = await fetchFn(url, { signal });
-  if (!r.ok || !r.body) throw new Error(`${new URL(url).host} answered ${r.status}`);
+  const host = new URL(url).host;
+  const r = await fetchFn(url, { signal }).catch((err: unknown) => {
+    if (signal.aborted) throw err;
+    // «fetch failed» says nothing: the site and the cause (CERT_HAS_EXPIRED, ENOTFOUND…).
+    const e = err as Error & { cause?: { code?: string; message?: string } };
+    throw new Error(`${host}: ${e.cause?.code ?? e.cause?.message ?? e.message}`);
+  });
+  if (!r.ok || !r.body) throw new Error(`${host} answered ${r.status}`);
   const total = Number(r.headers.get("content-length")) || null;
   const part = `${file}.part`;
   let done = 0;
@@ -528,6 +550,21 @@ async function unpack(
     case "tarxz":
       check(await run("tar", ["-xJf", pkg, "-C", dir], long), "Unpacking the archive");
       return;
+    case "debtar": {
+      // LibreOffice_<v>_Linux_x86-64_deb/DEBS/*.deb, each unpacked into app/ (opt/libreoffice…).
+      const debs = join(dir, "debs");
+      await mkdir(debs, { recursive: true });
+      check(await run("tar", ["-xzf", pkg, "-C", debs], long), "Unpacking the archive");
+      const files = (await readdir(debs, { recursive: true })).filter((f) => f.endsWith(".deb"));
+      if (files.length === 0) throw new Error("The archive held no .deb packages");
+      for (const f of files.sort())
+        check(
+          await run("dpkg-deb", ["-x", join(debs, f), join(dir, "app")], long),
+          `Unpacking ${f}`,
+        );
+      await rm(debs, { recursive: true, force: true });
+      return;
+    }
     case "zip":
       // Windows 10 and later carry bsdtar, which reads zip.
       check(await run("tar", ["-xf", pkg, "-C", dir], long), "Unpacking the zip");
@@ -606,11 +643,35 @@ export async function downloadProgram(
   const dir = programDir(dataDir, id);
   await rm(dir, { recursive: true, force: true });
   await mkdir(dir, { recursive: true });
-  const pkg = join(
-    dir,
-    `package.${asset.kind === "tarxz" ? "tar.xz" : asset.kind === "nsis" ? "exe" : asset.kind}`,
-  );
-  await downloadFile(asset.url, pkg, progress, signal, f);
+  const pkgOf = (a: ProgramAsset) =>
+    join(
+      dir,
+      `package.${a.kind === "tarxz" ? "tar.xz" : a.kind === "debtar" ? "tar.gz" : a.kind === "nsis" ? "exe" : a.kind}`,
+    );
+  let pkg = pkgOf(asset);
+  try {
+    await downloadFile(asset.url, pkg, progress, signal, f);
+  } catch (err) {
+    if (signal.aborted) throw err;
+    // LibreOffice on Linux has a second way: The Document Foundation's own packages.
+    const second =
+      id === "libreoffice" && platform === "linux" && !process.env.REDGIANT_LIBREOFFICE_APPIMAGE
+        ? await libreOfficeFallback(f, signal, arch).catch(() => undefined)
+        : undefined;
+    const why = [(err as Error).message];
+    if (second) {
+      asset = second;
+      pkg = pkgOf(asset);
+      try {
+        await downloadFile(asset.url, pkg, progress, signal, f);
+      } catch (err2) {
+        if (signal.aborted) throw err2;
+        why.push((err2 as Error).message);
+        throw new JobFailure(`${id}_download`, `Could not download ${p.name}: ${why.join("; ")}`);
+      }
+    } else
+      throw new JobFailure(`${id}_download`, `Could not download ${p.name}: ${why.join("; ")}`);
+  }
   unpacking();
   await unpack(asset, pkg, dir, dataDir, signal, d);
   await rm(pkg, { force: true });
@@ -619,6 +680,18 @@ export async function downloadProgram(
     throw new Error(`${p.name} was unpacked but its program was not found`);
   await writeFile(join(dir, MARK[id]), relative(dir, exe));
   return exe;
+}
+
+/** The Document Foundation's packages of its newest stable LibreOffice, for Linux. */
+async function libreOfficeFallback(
+  f: typeof fetch,
+  signal: AbortSignal,
+  arch: string,
+): Promise<ProgramAsset | undefined> {
+  const version =
+    process.env.REDGIANT_LIBREOFFICE_VERSION ??
+    newestVersion(await (await f(`${TDF()}/`, { signal })).text());
+  return version ? libreOfficeDebAsset(version, arch) : undefined;
 }
 
 /** LibreOffice for this computer (see downloadProgram). */
@@ -792,8 +865,10 @@ export class Programs {
         },
       );
       const end = await this.o.jobs.settled(job.id, 500);
-      if (end?.state !== "done")
-        throw new Error(end?.error?.message ?? `${PROGRAMS[id].name} did not download`);
+      if (end?.state !== "done") {
+        const message = end?.error?.message ?? `${PROGRAMS[id].name} did not download`;
+        throw end?.error?.code ? new JobFailure(end.error.code, message) : new Error(message);
+      }
       return exe;
     })()
       .then((exe) => {

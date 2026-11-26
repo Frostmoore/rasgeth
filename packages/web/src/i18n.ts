@@ -1676,6 +1676,8 @@ const en = {
   job_step_searxng_image: "Downloading SearXNG (only once)",
   job_step_searxng_start: "Starting it",
   job_step_searxng_check: "Checking that it answers",
+  job_error_libreoffice_download:
+    "LibreOffice, which lays documents out as on paper, could not be downloaded: its sites did not answer or their certificate is not valid. Try again later; the details below say why. Meanwhile the download button gives you the original file.",
   job_error_searxng_silent: "The search engine did not answer: try again in a minute.",
   chatsBefore: "Earlier chats",
   searchWho:
@@ -10370,6 +10372,8 @@ const it: Record<Key, string> = {
   job_step_searxng_image: "Scarico SearXNG (una volta sola)",
   job_step_searxng_start: "Lo avvio",
   job_step_searxng_check: "Controllo che risponda",
+  job_error_libreoffice_download:
+    "Non sono riuscito a scaricare LibreOffice, che impagina i documenti come su carta: i suoi siti non rispondono o il loro certificato non è valido. Riprova più tardi; sotto c'è il perché. Intanto il pulsante per scaricare ti dà il file originale.",
   job_error_searxng_silent: "Il motore di ricerca non ha risposto: riprova tra un minuto.",
   chatsBefore: "Chat di prima",
   searchWho:

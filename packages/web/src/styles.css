@@ -13887,6 +13887,11 @@ button.vw-archive-row:hover {
 .vw-open-box .ui-progress {
   width: 100%;
 }
+.vw-open-explain {
+  max-width: 34em;
+  margin: 0;
+  line-height: 1.5;
+}
 .vw-open-detail {
   font-size: 12px;
   max-height: 6em;

@@ -5,7 +5,7 @@
 
 ## The idea
 
-You talk to **God**, one assistant, from the browser, the RGCompanion app or your chats. Behind it there is a
+You talk to **God**, one assistant, from the browser, the Rasgeth app or your chats. Behind it there is a
 team: every project has its **orchestrator**, which hands work to **agents** and their **sub-agents**. You see
 every conversation and every step, and the important decisions come back to you.
 
@@ -14,7 +14,7 @@ every conversation and every step, and the important decisions come back to you.
 1. **Connect a model.** Settings › Models and subscriptions: a subscription, an API key, or a **local model**
    that runs on your computer. Keys go into the keychain; agents never see them.
 2. **Talk to God.** Ask in plain words: God answers, or opens a project and gives the work to its team.
-3. **Open a project** with a folder of yours, or bring the ones you already have (see *Importing*).
+3. **Open a project** with a folder of yours, or bring the ones you already have (see _Importing_).
 
 ## The page
 
