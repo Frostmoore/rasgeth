@@ -111,8 +111,32 @@ class SessionView extends ChangeNotifier {
 
   void _newCall() => call = ModelCall(_now());
 
-  List<ChatItem> get items =>
-      buildItems(events, liveText: liveText, liveThinking: liveThinking, sessionId: sessionId);
+  /// Bumped whenever [events] change in place (a new history, «Cancella per sempre»).
+  int _version = 0;
+  Object? _storedKey;
+  List<ChatItem> _stored = const [];
+
+  /// The stored history's items, built again only when the events change (3.12.8: built from
+  /// every event three times for each piece of streamed text, scrolling stuttered while an
+  /// agent wrote). The same item objects come back until then, so their bubbles are kept.
+  List<ChatItem> get storedItems {
+    final key = (_version, events.length, events.isEmpty ? -1 : events.last.seq);
+    if (key != _storedKey) {
+      _stored = List.unmodifiable(buildItems(events, sessionId: sessionId));
+      _storedKey = key;
+    }
+    return _stored;
+  }
+
+  /// The history, then the answer being written (as `buildItems` with the live text).
+  List<ChatItem> get items {
+    final stored = storedItems;
+    if (liveText.isEmpty && liveThinking.isEmpty) return stored;
+    return [...stored, AssistantItem(text: liveText, thinking: liveThinking, ts: '', live: true)];
+  }
+
+  /// [events] were changed in place: the items are built again.
+  void eventsChanged() => _version++;
 
   /// Messages waiting in line (sent while it works).
   final List<QueuedMessage> queued = [];
@@ -161,6 +185,7 @@ class SessionView extends ChangeNotifier {
         events[i] = RgEvent(seq: e.seq, ts: e.ts, type: e.type, sessionId: e.sessionId);
       }
     }
+    eventsChanged();
     notifyListeners();
   }
 }
@@ -558,7 +583,10 @@ class LiveModel extends ChangeNotifier {
       case 'session.history':
         if (sid == null) break;
         final v = view(sid);
-        if (m['incremental'] != true) v.events.clear();
+        if (m['incremental'] != true) {
+          v.events.clear();
+          v.eventsChanged();
+        }
         // As the page: a history (after a reconnection too) ends a picture forming.
         v.drawing = null;
         for (final e in (m['events'] as List? ?? const []).whereType<Map<String, dynamic>>()) {
@@ -593,6 +621,8 @@ class LiveModel extends ChangeNotifier {
         final v = view(sid);
         final text = m['text'] is String ? m['text'] as String : '';
         final c = v.call ?? ModelCall(now());
+        final wasThinking = v.thinking;
+        final wasWriting = c.writing;
         c.firstToken ??= now();
         c.chars += text.length;
         c.writing = m['kind'] == 'thinking' ? 'thinking' : 'text';
@@ -603,6 +633,9 @@ class LiveModel extends ChangeNotifier {
           v.liveText += text;
         }
         v.changed();
+        // 3.12.8: a piece of text is news for its conversation only (it listens to its view);
+        // the rest of the app (mascots, lists) hears when what the agent does changes.
+        if (v.thinking == wasThinking && c.writing == wasWriting) return;
       case 'prefill':
         if (sid == null) break;
         final v = view(sid);

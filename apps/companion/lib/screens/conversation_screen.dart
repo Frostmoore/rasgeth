@@ -204,6 +204,11 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
   PassageJump? _pending;
   PassageJump? _lit;
   int? _flash;
+
+  /// The bubbles of stored messages, kept while their items and the actions stay the same
+  /// (3.12.8): streamed text rebuilds only the answer being written, not every bubble on screen.
+  Expando<Widget> _bubbles = Expando();
+  Object? _bubblesFor;
   Timer? _litTimer;
   bool _sending = false;
   String? _note;
@@ -1107,6 +1112,11 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
                             showCanvas: (title, target) => _showCanvas(title, target, force: true),
                           );
                           final liveAt = stored.length + extras.length;
+                          final bubblesFor = (_lit, _flash, agent, agent?.compactAt, _readOnly);
+                          if (bubblesFor != _bubblesFor) {
+                            _bubbles = Expando();
+                            _bubblesFor = bubblesFor;
+                          }
                           // 3.10.4: follows the newest text only while the person lets it.
                           return FollowingList(
                             listKey: const Key('conversation-items'),
@@ -1132,7 +1142,7 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
                               }
                               final item = at < stored.length ? stored[at] : live!;
                               final seq = item is AssistantItem ? item.seq : null;
-                              return Padding(
+                              Widget bubble() => Padding(
                                 key: seq != null
                                     ? _keys.putIfAbsent(seq, GlobalKey.new)
                                     : item is WidgetItem
@@ -1141,6 +1151,10 @@ class _ConversationScreenState extends State<ConversationScreen> with _Conversat
                                 padding: const EdgeInsets.only(bottom: 10),
                                 child: ChatItemView(item: item, actions: actions),
                               );
+                              // Questions read the open requests without listening: built each time.
+                              final keep =
+                                  item != live && (item is UserItem || item is AssistantItem);
+                              return keep ? (_bubbles[item] ??= bubble()) : bubble();
                             },
                           );
                         },
