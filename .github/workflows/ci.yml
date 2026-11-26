@@ -314,8 +314,9 @@ jobs:
     needs: [plan, companion, reuse-packages]
     if: ${{ !cancelled() && needs.plan.outputs.run == 'true' && needs.reuse-packages.outputs.ok != 'true' && (needs.companion.result == 'success' || needs.companion.result == 'skipped') }}
     runs-on: ${{ matrix.os }}
-    # A hung installer or launcher must fail the run, not hold it for hours.
-    timeout-minutes: 30
+    # A hung installer or launcher must fail the run, not hold it for hours. 45, not 30: Windows'
+    # install and build alone took 20-22 minutes in 3.12.6-3.12.8 and 3.12.8 ran out twice.
+    timeout-minutes: 45
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
