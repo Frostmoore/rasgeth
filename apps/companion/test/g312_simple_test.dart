@@ -20,6 +20,7 @@ import 'package:rgcompanion/app_state.dart';
 import 'package:rgcompanion/api/topics.dart';
 import 'package:rgcompanion/l10n/app_localizations.dart';
 import 'package:rgcompanion/mascot/mascot_view.dart' show withoutSign;
+import 'package:rgcompanion/screens/conversation_screen.dart' show ChatFileCard;
 import 'package:rgcompanion/simple/simple_giant.dart';
 import 'package:rgcompanion/simple/simple_model.dart';
 import 'package:rgcompanion/simple/simple_shell.dart';
@@ -332,6 +333,32 @@ void main() {
       expect(find.byType(CanvasLine, skipOffstage: false), findsOneWidget);
       await done(tester);
     });
+
+    testWidgets(
+      '3.12.9: a file the agent sent opens in the Canvas or downloads, as the full view',
+      (tester) async {
+        server.store('t_trip', 'file.sent', {
+          'scope': 'platform',
+          'path': 'preventivo.docx',
+          'name': 'preventivo.docx',
+          'mime': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'size': 20480,
+        });
+        await open(tester);
+        await tap(tester, find.byKey(const Key('topic-t_trip')));
+        await _settle(tester, 3);
+        expect(find.byType(ChatFileCard, skipOffstage: false), findsOneWidget);
+        expect(
+          find.byKey(const Key('file-open-preventivo.docx'), skipOffstage: false),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(const Key('file-download-preventivo.docx'), skipOffstage: false),
+          findsOneWidget,
+        );
+        await done(tester);
+      },
+    );
 
     testWidgets('3.12.2: the box has «Allega» with chips to remove, and «Ferma» while it works', (
       tester,

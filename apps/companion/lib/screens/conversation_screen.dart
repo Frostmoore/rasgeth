@@ -1863,7 +1863,7 @@ class ChatItemView extends StatelessWidget {
                     : null,
               ),
       FileItem(:final scope, :final path, :final name, :final caption, :final size, :final mime) =>
-        _FileCard(
+        ChatFileCard(
           path: path,
           title: name,
           subtitle: [?caption, formatBytes(size)].join(' · '),
@@ -2508,8 +2508,9 @@ class _AssistantViewState extends State<AssistantView> {
   }
 }
 
-class _FileCard extends StatelessWidget {
-  const _FileCard({
+class ChatFileCard extends StatelessWidget {
+  const ChatFileCard({
+    super.key,
     required this.path,
     required this.title,
     required this.subtitle,

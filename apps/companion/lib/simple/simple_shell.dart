@@ -34,9 +34,12 @@ import '../ui/markdown.dart';
 import '../ui/model_sheet.dart' show ChoiceRow;
 import '../canvas/canvas_shell.dart' show showInCanvas;
 import '../screens/board_screen.dart' show openBoard;
+import '../screens/conversation_screen.dart' show ChatFileCard, formatBytes, isChatPicture;
 import '../screens/canvas_screen.dart' show openCanvas;
 import '../ui/artifact_frame_view.dart' show WidgetCard;
+import '../ui/chat/chat_image.dart' show ChatImagePreview;
 import '../ui/chat/chat_parts.dart' show CanvasLine, VariantsCard;
+import '../ui/chat/file_download.dart' show saveChatFile;
 import '../ui/found_widgets.dart';
 import '../ui/product_cards.dart';
 import '../ui/rg_menu.dart';
@@ -1665,17 +1668,40 @@ class _DocItem extends StatelessWidget {
             ),
           ),
         );
-      case FileItem(:final name):
+      // A file the agent sent (3.12.9, the user: «se l'agente mi manda un file lo devo poter vedere
+      // nel canvas o scaricare»): the full interface's card, «Apri» and «Scarica».
+      case FileItem(
+        :final scope,
+        :final path,
+        :final name,
+        :final caption,
+        :final size,
+        :final mime,
+      ):
         return Padding(
           padding: const EdgeInsets.only(bottom: 10),
-          child: Row(
-            children: [
-              RgIcon(RgIcons.file, size: 16, color: c.dim),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(name, style: TextStyle(color: c.text)),
-              ),
-            ],
+          child: ChatFileCard(
+            path: path,
+            title: name,
+            subtitle: [?caption, formatBytes(size)].join(' · '),
+            preview: isChatPicture(mime, name)
+                ? ChatImagePreview(
+                    scope: scope,
+                    path: path,
+                    alt: caption ?? name,
+                    onOpen: () => openCanvas(
+                      context,
+                      scope: scope,
+                      path: path,
+                      title: name,
+                      sessionId: topicId,
+                    ),
+                  )
+                : null,
+            onOpen: () =>
+                openCanvas(context, scope: scope, path: path, title: name, sessionId: topicId),
+            onDownload: () =>
+                unawaited(saveChatFile(context, scope: scope, path: path, name: name, size: size)),
           ),
         );
       // A board of variants (3.12.9): the full interface's card; the board opens on its screen.
