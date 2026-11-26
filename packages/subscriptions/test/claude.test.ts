@@ -2,7 +2,7 @@ import { mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { EngineTurn } from "@redgiant/agent";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   type ClaudeSdk,
   ClaudeSubscriptionProvider,
@@ -317,31 +317,34 @@ describe("Claude on a subscription", () => {
     };
     const [one, two] = await Promise.all([p.limits(), p.limits()]);
     expect(one).toEqual(two);
-    await new Promise((r) => setTimeout(r, 20));
+    // The reading runs in the background: waited for, not timed (20 ms were not enough on GitHub's macOS, 3.12.7).
+    await vi.waitFor(() => expect(p.readAt()).toBe("2026-11-20T17:03:00.000Z"));
     expect(runs).toHaveLength(2);
-    expect(p.readAt()).toBe("2026-11-20T17:03:00.000Z");
     expect((await p.limits()).find((w) => w.id === "7d")?.usedPct).toBe(3);
     // A reading that gives nothing keeps the old figures, and is tried again only after the pause.
     clock += 2 * 60_000 + 1;
     answer = { rate_limits_available: false, rate_limits: null };
     await p.limits();
-    await new Promise((r) => setTimeout(r, 20));
-    expect(runs).toHaveLength(3);
+    await vi.waitFor(() => expect(runs).toHaveLength(3));
+    // ...and its engine run closed: the reading is over (a new look meanwhile would join it, not start another).
+    await vi.waitFor(() => expect(runs[2]?.aborted()).toBe(true));
     expect(p.readAt()).toBe("2026-11-20T17:03:00.000Z");
     clock += 60_000;
     await p.limits();
     expect(runs).toHaveLength(3);
     clock += 61_000;
     await p.limits();
-    expect(runs).toHaveLength(4);
+    await vi.waitFor(() => expect(runs).toHaveLength(4));
+    await vi.waitFor(() => expect(runs[3]?.aborted()).toBe(true));
     answer = recorded;
     clock = Date.parse("2026-11-20T17:10:00Z");
     await p.limits();
-    await new Promise((r) => setTimeout(r, 20));
+    await vi.waitFor(() => expect(p.readAt()).toBe("2026-11-20T17:10:00.000Z"));
     await p.limits();
-    // A restart shows the kept windows at once, before any reading answers.
-    await new Promise((r) => setTimeout(r, 20));
-    expect(JSON.parse(await readFile(file, "utf8")).windows).toEqual(read);
+    // A restart shows the kept windows at once, before any reading answers: once they are written.
+    await vi.waitFor(async () =>
+      expect(JSON.parse(await readFile(file, "utf8")).windows).toEqual(read),
+    );
     answer = new Promise(() => {});
     const again = make();
     expect(await again.limits()).toEqual(read);
