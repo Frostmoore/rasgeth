@@ -1364,8 +1364,12 @@ export class Api {
   unlinkVaultBrowser = (id: string) =>
     this.call("DELETE", `/api/vault-browsers/${encodeURIComponent(id)}`);
   // Import from other agents (G36.7).
-  importScan = (places: { home?: boolean; projects?: boolean; folder?: string }) =>
-    this.call<ImportPreview>("POST", "/api/import/scan", places);
+  importScan = (places: {
+    home?: boolean;
+    projects?: boolean;
+    claudeProjects?: boolean;
+    folder?: string;
+  }) => this.call<ImportPreview>("POST", "/api/import/scan", places);
   importUpload = () => this.call<{ id: string }>("POST", "/api/import/upload");
   importPreview = (id: string) =>
     this.call<ImportPreview>("POST", `/api/import/upload/${encodeURIComponent(id)}/preview`);

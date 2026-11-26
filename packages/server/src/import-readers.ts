@@ -23,6 +23,7 @@ import type { ImportItem, ImportNote, ImportSource } from "@redgiant/protocol";
 import { PRODUCT_NAME } from "@redgiant/protocol";
 import { parse as parseToml } from "smol-toml";
 import { parse as parseYaml } from "yaml";
+import type { FoundProject } from "./import-projects.js";
 
 /** One file found: its path as the person reads it (always with `/`), read on demand. */
 export interface FoundFile {
@@ -62,6 +63,7 @@ export type Candidate = Omit<ImportItem, "id" | "on" | "exists"> &
     | { kind: "skill"; data: SkillDraft }
     | { kind: "mcp"; data: McpDraft }
     | { kind: "conversation"; data: ImportedConversation }
+    | { kind: "project"; data: FoundProject }
   );
 
 export interface ImportedConversation {

@@ -10,10 +10,11 @@
 // Names already taken are never overwritten silently (skip, replace with the old one kept, or keep
 // both). Every import is recorded and can be taken back.
 
+import { execFile } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { mkdir, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
+import { cp, mkdir, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
-import { dirname, join, normalize, sep } from "node:path";
+import { basename, dirname, join, normalize, sep } from "node:path";
 import { loadSkills } from "@redgiant/extensions";
 import {
   hideSecrets,
@@ -28,6 +29,7 @@ import { complete, streamWithFallback } from "@redgiant/providers";
 import { unzip } from "fflate";
 import { BadRequestError, type RedGiantCore } from "./core.js";
 import { readChatExports } from "./import-chats.js";
+import { type FoundProject, findClaudeProjects, isSecretFile } from "./import-projects.js";
 import {
   type Candidate,
   type FoundFile,
@@ -49,6 +51,8 @@ export interface ImporterOptions {
   dir: string;
   home?: () => string;
   instructions?: InstructionsStore;
+  /** What a clone of the person's repositories needs (Gitea, GitHub): used as a header, never written. */
+  gitAccess?: () => { gitea?: { url: string; token: string }; github?: { token: string } };
 }
 
 type Undo =
@@ -57,7 +61,8 @@ type Undo =
   | { kind: "skill"; dir: string; backup?: string }
   | { kind: "mcp"; name: string }
   | { kind: "memory"; memoryId: string }
-  | { kind: "conversation"; sessionId: string };
+  | { kind: "conversation"; sessionId: string }
+  | { kind: "project"; projectId: string };
 
 interface Held {
   ownerId: string;
@@ -175,9 +180,14 @@ export class Importer {
       home?: boolean | undefined;
       projects?: boolean | undefined;
       folder?: string | undefined;
+      claudeProjects?: boolean | undefined;
     },
   ): Promise<ImportPreview> {
     const found: FoundFile[] = [];
+    // Claude Code's projects, as whole projects (alpha 4.0): their files are read here, not walked.
+    const projects = places.claudeProjects
+      ? await findClaudeProjects((this.o.home ?? homedir)())
+      : [];
     const scope = new Map<string, "home" | "project">();
     if (places.home) {
       const home = (this.o.home ?? homedir)();
@@ -203,7 +213,7 @@ export class Importer {
     }
     for (const [i, f] of found.entries())
       if (i >= before && i < projectsEnd) scope.set(f.path, "project");
-    return this.preview(ownerId, found, scope);
+    return this.preview(ownerId, found, scope, projects);
   }
 
   /** A folder for one batch of picked files. */
@@ -285,13 +295,14 @@ export class Importer {
     ownerId: string,
     found: FoundFile[],
     scope: Map<string, "home" | "project">,
+    projects: FoundProject[] = [],
   ): Promise<ImportPreview> {
     this.sweep();
     const chats = await readChatExports(found);
     const agents = await readAgentFiles(found.filter((f) => !chats.used.has(f.path)));
-    const ORDER = ["instructions", "skill", "mcp", "memory", "conversation"];
+    const ORDER = ["project", "instructions", "skill", "mcp", "memory", "conversation"];
     // Kind by kind, as the page lists them (stable inside each kind).
-    const all = [...agents.candidates, ...chats.candidates].sort(
+    const all = [...projects.map(projectCandidate), ...agents.candidates, ...chats.candidates].sort(
       (a, b) => ORDER.indexOf(a.kind) - ORDER.indexOf(b.kind),
     );
     // What RedGiant has now, to say what is there already.
@@ -303,6 +314,7 @@ export class Importer {
     const servers = await this.core.listMcp(ownerId).catch(() => []);
     const memories = await this.core.sharedMemory.entries(ownerId);
     const imported = await this.core.importedOriginals(ownerId);
+    const have = projects.length ? await this.core.projects.list(ownerId).catch(() => []) : [];
     const items = new Map<string, Candidate & { id: string }>();
     const shown: ImportItem[] = [];
     for (const [i, c] of all.entries()) {
@@ -326,6 +338,10 @@ export class Importer {
       } else if (c.kind === "mcp") {
         const s = servers.find((x) => x.name === c.data.name);
         if (s) exists = sameJson(s.transport, c.data.transport) ? "same" : "taken";
+      } else if (c.kind === "project") {
+        // Already a project here (same folder, or the same name): off, the person decides.
+        if (have.some((p) => p.path === c.data.path || p.name === c.data.name)) exists = "taken";
+        if (c.data.out || notes.some((n) => n.code === "not-a-project")) on = false;
       } else if (c.kind === "conversation") {
         if (c.data.originalId && imported.has(c.data.originalId)) exists = "same";
       }
@@ -429,6 +445,8 @@ export class Importer {
           done.push(await this.skill(ownerId, item, choice.conflict ?? "skip", importId, undo));
         } else if (item.kind === "mcp") {
           done.push(await this.mcp(ownerId, item, choice, undo));
+        } else if (item.kind === "project") {
+          done.push(await this.project(ownerId, item, choice, importId, undo));
         } else if (item.kind === "conversation") {
           let agentId = choice.agentId;
           if (agentId) {
@@ -675,6 +693,9 @@ export class Importer {
           });
         } else if (u.kind === "conversation") {
           await this.core.removeImportedConversation(ownerId, u.sessionId);
+        } else if (u.kind === "project") {
+          // Nothing is deleted (archived projects): the project is archived, its folder stays.
+          await this.core.archiveProject(ownerId, u.projectId, "import");
         }
       } catch (err) {
         problems.push((err as Error).message.slice(0, 200));
@@ -686,6 +707,131 @@ export class Importer {
       [id, ownerId, JSON.stringify(problems)],
     );
     return (await this.get(ownerId, id)) as ImportRecord;
+  }
+
+  // ---- whole projects (alpha 4.0) -------------------------------------------------------------
+
+  /**
+   * One project of Claude Code's: the project (its folder left where it is, copied without secrets and
+   * generated folders, or cloned from its repository), its orchestrator with the project's instructions and
+   * the lines to adapt, and its notes and Claude's memory of it in the project's Knowledge.
+   */
+  private async project(
+    ownerId: string,
+    item: Candidate & { id: string; kind: "project" },
+    choice: ImportApply["choices"][number],
+    importId: string,
+    undo: Undo[],
+  ): Promise<ImportDone> {
+    const p = item.data;
+    const modes = item.project?.modes ?? [];
+    const mode = choice.mode ?? modes[0];
+    const base = { itemId: item.id, kind: item.kind, name: item.name };
+    if (!mode || !modes.includes(mode))
+      return { ...base, ok: false, error: "This project cannot come in that way" };
+    const project =
+      mode === "adopt"
+        ? await this.core.projects.create(ownerId, p.name, p.path)
+        : await this.core.projects.createFilled(ownerId, p.name, (dir) =>
+            mode === "copy" ? copyProject(p.path, dir) : this.clone(p.remote ?? "", dir),
+          );
+    undo.push({ kind: "project", projectId: project.id });
+    const notes: string[] = [];
+    // Its orchestrator, with the project's instructions and the lines tied to the computer it came from.
+    const god = this.core.registry
+      .list({ ownerId, activeOnly: true })
+      .find((a) => a.kind === "god");
+    if (god) {
+      const orchestrator = await this.core.registry.create(
+        { type: "human", ownerId },
+        {
+          kind: "orchestrator",
+          parentId: god.id,
+          projectId: project.id,
+          name: `${p.name} orchestrator`,
+        },
+      );
+      const block = projectInstructions(p);
+      if (block) {
+        const now = (await this.core.promptOf(orchestrator)).text;
+        await this.core.setPrompt(orchestrator, `${now.trimEnd()}\n\n${block}`);
+      }
+    } else notes.push("no God to put an orchestrator under");
+    // Its notes and Claude's memory of it, in the project's Knowledge.
+    if ((choice.knowledge ?? true) && this.core.knowledge && (p.notes.length || p.memory.length)) {
+      try {
+        const kb = this.core.knowledge;
+        const collection = await kb.createCollection(
+          ownerId,
+          { name: `${p.name} (Claude Code)`, scope: { kind: "project", projectId: project.id } },
+          "import",
+        );
+        if (p.notes.length)
+          await kb.addSource(
+            ownerId,
+            collection.id,
+            { kind: "workspace", scope: `project:${project.id}`, path: "memory" },
+            "import",
+          );
+        if (p.memory.length) {
+          // Outside the project's folder (it may be the person's own repository): kept with the imports.
+          const dir = join(this.o.dir, importId, project.id, "claude-memory");
+          await mkdir(dir, { recursive: true });
+          for (const m of p.memory) await writeFile(join(dir, basename(m.file)), m.text);
+          await kb.addSource(ownerId, collection.id, { kind: "folder", path: dir }, "import");
+        }
+      } catch (err) {
+        notes.push(`Knowledge: ${(err as Error).message.slice(0, 120)}`);
+      }
+    }
+    if (p.secrets.length) notes.push(`${p.secrets.length} secret files left out`);
+    return { ...base, ok: true, ref: project.id, ...(notes.length && { note: notes.join("; ") }) };
+  }
+
+  /** `git clone` of a project's repository, with the person's Gitea or GitHub access when it is theirs. */
+  private async clone(remote: string, dir: string): Promise<void> {
+    if (!/^https?:\/\//.test(remote))
+      throw new BadRequestError("Only http(s) repositories can be cloned here");
+    const access = this.o.gitAccess?.() ?? {};
+    const host = new URL(remote).host;
+    const header =
+      access.gitea && new URL(access.gitea.url).host === host
+        ? `Authorization: token ${access.gitea.token}`
+        : access.github && host === "github.com"
+          ? `Authorization: Basic ${Buffer.from(`x-access-token:${access.github.token}`).toString("base64")}`
+          : undefined;
+    // The token goes through git's environment configuration, not the arguments (anyone sees those in ps).
+    const env = {
+      ...process.env,
+      GIT_TERMINAL_PROMPT: "0",
+      ...(header && {
+        GIT_CONFIG_COUNT: "1",
+        GIT_CONFIG_KEY_0: "http.extraHeader",
+        GIT_CONFIG_VALUE_0: header,
+      }),
+    };
+    const args = ["clone", "--quiet", remote, dir];
+    await new Promise<void>((ok, no) =>
+      execFile(
+        "git",
+        args,
+        { env, timeout: 30 * 60_000, maxBuffer: 1 << 20 },
+        (err, _out, stderr) => {
+          if (!err) return ok();
+          // The header (a token) is in the arguments, never in what is said back.
+          const why = String(stderr || err.message)
+            .replaceAll(header ?? "\u0000", "…")
+            .slice(0, 300);
+          no(
+            new BadRequestError(
+              /auth|403|401|could not read Username/i.test(why)
+                ? "The repository asks for access: connect its Gitea or GitHub in Settings, or bring the project as a copy"
+                : `git clone: ${why}`,
+            ),
+          );
+        },
+      ),
+    );
   }
 
   // ---- memories from imported chats ------------------------------------------------------------
@@ -835,4 +981,80 @@ function sameJson(a: unknown, b: unknown): boolean {
           )
         : v;
   return JSON.stringify(norm(a)) === JSON.stringify(norm(b));
+}
+
+// ---- whole projects (alpha 4.0) ----------------------------------------------------------------
+
+/** A project found in Claude Code's files, as an item of the preview. */
+function projectCandidate(p: FoundProject): Candidate {
+  const notes: ImportItem["notes"] = [];
+  if (p.out === "worktree") notes.push({ code: "worktree" });
+  if (p.out === "missing") notes.push({ code: "missing-folder" });
+  if (!p.out && !p.git && p.instructions.length === 0) notes.push({ code: "not-a-project" });
+  if (p.secrets.length) notes.push({ code: "secrets-out", arg: String(p.secrets.length) });
+  if (p.machine.length) notes.push({ code: "machine-lines", arg: String(p.machine.length) });
+  if (!p.out && !p.remote) notes.push({ code: "no-remote" });
+  const modes: ("adopt" | "copy" | "clone")[] = p.out
+    ? []
+    : ["adopt", "copy", ...(p.remote ? (["clone"] as const) : [])];
+  const first = p.instructions[0]?.text.split(/\r?\n/).find((l) => l.trim()) ?? "";
+  return {
+    kind: "project",
+    source: "claude-code",
+    from: p.path,
+    name: p.name,
+    preview: first.slice(0, 200),
+    notes,
+    project: {
+      path: p.path,
+      ...(p.remote && { remote: p.remote }),
+      git: p.git,
+      instructions: p.instructions.map((i) => i.file),
+      notes: p.notes.length,
+      memory: p.memory.length,
+      conversations: p.conversations,
+      secrets: p.secrets,
+      machine: p.machine,
+      bytes: p.bytes,
+      modes,
+    },
+    data: p,
+  };
+}
+
+/** The orchestrator's instructions from a project's files, with the lines tied to the computer it came from. */
+export function projectInstructions(p: FoundProject): string | undefined {
+  if (p.instructions.length === 0) return undefined;
+  const parts = p.instructions.map((i) => `### ${i.file}\n${i.text.trim()}`);
+  const machine = p.machine.length
+    ? [
+        "",
+        "### Lines tied to the computer this project came from",
+        "These lines speak of folders, hosts or addresses of the computer the project was imported from. Before relying on them, check with the person what they are here and propose the changes to these instructions.",
+        ...p.machine.map((m) => `- ${m.file}:${m.line} — ${m.text}`),
+      ]
+    : [];
+  return [`## From Claude Code (${p.path})`, ...parts, ...machine]
+    .join("\n")
+    .slice(0, INSTRUCTIONS_MAX);
+}
+
+/** A copy of a project's folder: its history kept, without secrets and generated folders. */
+const COPY_SKIP = new Set([
+  "node_modules",
+  ".venv",
+  "venv",
+  "__pycache__",
+  ".next",
+  ".turbo",
+  ".cache",
+]);
+async function copyProject(from: string, to: string): Promise<void> {
+  await cp(from, to, {
+    recursive: true,
+    filter: (src) => {
+      const name = basename(src);
+      return !COPY_SKIP.has(name) && !isSecretFile(name);
+    },
+  });
 }

@@ -16,7 +16,14 @@ export const IMPORT_SOURCES = [
 ] as const;
 export type ImportSource = (typeof IMPORT_SOURCES)[number];
 
-export const IMPORT_KINDS = ["instructions", "skill", "mcp", "memory", "conversation"] as const;
+export const IMPORT_KINDS = [
+  "project",
+  "instructions",
+  "skill",
+  "mcp",
+  "memory",
+  "conversation",
+] as const;
 export type ImportKind = (typeof IMPORT_KINDS)[number];
 
 /**
@@ -54,6 +61,18 @@ export const IMPORT_NOTES = [
   "no-attachments",
   /** Only the branch the person last saw (ChatGPT keeps every edit as a branch). */
   "branch",
+  /** A project (alpha 4.0): a `git worktree`, a working copy of another project. */
+  "worktree",
+  /** A project whose folder is not there any more. */
+  "missing-folder",
+  /** A folder with no instructions and no repository: maybe not a project. */
+  "not-a-project",
+  /** Secret files (`arg`: how many) stay out: in the keychain if they are needed. */
+  "secrets-out",
+  /** Lines tied to this machine (`arg`: how many): its orchestrator will offer to adapt them. */
+  "machine-lines",
+  /** No repository address: it can be left where it is or copied, not cloned. */
+  "no-remote",
 ] as const;
 export type ImportNoteCode = (typeof IMPORT_NOTES)[number];
 export interface ImportNote {
@@ -85,6 +104,24 @@ export interface ImportItem {
     held: string[];
   };
   conversation?: { messages: number; createdAt?: string; updatedAt?: string; model?: string };
+  /** A whole project (alpha 4.0): what an import would bring, and the ways it can come. */
+  project?: {
+    path: string;
+    remote?: string;
+    git: boolean;
+    /** Instructions files found (CLAUDE.md, CLAUDE.local.md…): its orchestrator's instructions. */
+    instructions: string[];
+    /** Markdown files in its `memory/` (roadmap, plans, decisions). */
+    notes: number;
+    /** Claude's own memory of it. */
+    memory: number;
+    conversations: number;
+    secrets: string[];
+    machine: { file: string; line: number; text: string; why: string }[];
+    bytes: number;
+    /** Left where it is (Rasgeth on the same computer), copied, or cloned from `remote`. */
+    modes: ("adopt" | "copy" | "clone")[];
+  };
   /** What RedGiant already has: `same` = nothing to add; `taken` = the name is in use. */
   exists?: "same" | "taken";
   /** Chosen at first: off for what is already there or what needs a look. */
@@ -117,6 +154,12 @@ export const ImportChoice = z.object({
   agentId: z.string().min(1).optional(),
   /** An MCP server's missing keys, typed in the window (kept with the server, never shown). */
   secrets: z.record(z.string(), z.string().max(4000)).optional(),
+  /** A project: left where it is, copied, or cloned from its repository. */
+  mode: z.enum(["adopt", "copy", "clone"]).optional(),
+  /** A project: its notes and Claude's memory of it into the project's Knowledge (default yes). */
+  knowledge: z.boolean().optional(),
+  /** A project: its Claude Code conversations as its orchestrator's (default no). */
+  conversations: z.boolean().optional(),
 });
 export type ImportChoice = z.infer<typeof ImportChoice>;
 

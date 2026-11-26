@@ -863,6 +863,18 @@ function chatLabel(platform: string): string {
 export class SetupService {
   private config: SetupConfig = { completed: false };
   private secrets: Secrets = {};
+
+  /**
+   * What a clone of the person's repositories needs (alpha 4.0, importing whole projects): the Gitea's address
+   * and token and the GitHub token, used by the server only, as an HTTP header for git, never written anywhere.
+   */
+  gitAccess(): { gitea?: { url: string; token: string }; github?: { token: string } } {
+    const url = this.config.git?.gitea?.publicUrl;
+    return {
+      ...(url && this.secrets.giteaToken && { gitea: { url, token: this.secrets.giteaToken } }),
+      ...(this.secrets.githubToken && { github: { token: this.secrets.githubToken } }),
+    };
+  }
   private retention: NodeJS.Timeout | undefined;
 
   constructor(

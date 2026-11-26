@@ -550,3 +550,73 @@ describe.skipIf(!process.env.RG_IMPORT_SAMPLES)("samples", () => {
     await writeFile(join(dir, "claude-export.zip"), claudeZip());
   });
 });
+
+describe("whole projects from Claude Code (alpha 4.0)", () => {
+  it("previews a project, copies it without secrets, gives its orchestrator the instructions, takes it back", async () => {
+    const { s } = await server(() => ({ text: "ok" }));
+    const home = await mkdtemp(join(tmpdir(), "rg-import-projects-"));
+    cleanup.push(() => rm(home, { recursive: true, force: true }));
+    const site = join(home, "code", "site");
+    const { mkdir } = await import("node:fs/promises");
+    await mkdir(join(site, ".git"), { recursive: true });
+    await writeFile(join(site, ".git", "config"), "[core]\n\tbare = false\n");
+    await writeFile(join(site, ".git", "HEAD"), "ref: refs/heads/main\n");
+    await writeFile(join(site, "CLAUDE.md"), "# Site\nDeploy with `ssh web1`.\nTests: npm test.\n");
+    await writeFile(join(site, "index.html"), "<p>hi</p>");
+    await writeFile(join(site, ".env"), "API_KEY=secret\n");
+    await mkdir(join(site, "node_modules", "x"), { recursive: true });
+    await writeFile(join(site, "node_modules", "x", "i.js"), "x");
+    await mkdir(join(site, "memory"));
+    await writeFile(join(site, "memory", "roadmap.md"), "# Roadmap\n- step one\n");
+    await writeFile(join(home, ".claude.json"), JSON.stringify({ projects: { [site]: {} } }));
+
+    const importer = new Importer(s.core, { dir: join(s.dir, "imports"), home: () => home });
+    const pv = await importer.scan("me", { claudeProjects: true });
+    const item = pv.items.find((i) => i.kind === "project" && i.name === "site");
+    expect(item).toMatchObject({
+      on: true,
+      project: {
+        git: true,
+        instructions: ["CLAUDE.md"],
+        notes: 1,
+        secrets: [".env"],
+        modes: ["adopt", "copy"],
+      },
+    });
+    expect(item?.notes.map((n) => n.code).sort()).toEqual([
+      "machine-lines",
+      "no-remote",
+      "secrets-out",
+    ]);
+
+    const rec = await finish(
+      s,
+      importer.apply("me", {
+        id: pv.id,
+        choices: [{ id: item?.id ?? "", on: true, mode: "copy" }],
+      }),
+    );
+    const done = rec.done[0];
+    expect(done).toMatchObject({ kind: "project", ok: true });
+    const project = await s.core.projects.get("me", done?.ref ?? "");
+    expect(project?.path).not.toBe(site);
+    // Copied: the files and the history, not the secret nor node_modules.
+    expect(await readFile(join(project?.path ?? "", "index.html"), "utf8")).toBe("<p>hi</p>");
+    expect(await stat(join(project?.path ?? "", ".git", "HEAD")).then(() => true)).toBe(true);
+    expect(await stat(join(project?.path ?? "", ".env")).catch(() => null)).toBeNull();
+    expect(await stat(join(project?.path ?? "", "node_modules")).catch(() => null)).toBeNull();
+    // Its orchestrator, with the project's instructions and the line tied to the old computer.
+    const orchestrator = s.core.registry
+      .list({ ownerId: "me", projectId: project?.id ?? "" })
+      .find((a) => a.kind === "orchestrator");
+    const prompt = orchestrator ? (await s.core.promptOf(orchestrator)).text : "";
+    expect(prompt).toContain("Tests: npm test.");
+    expect(prompt).toContain("Lines tied to the computer this project came from");
+    expect(prompt).toContain("CLAUDE.md:2");
+
+    // Taken back: archived, nothing deleted.
+    await importer.undo("me", rec.id);
+    expect((await s.core.projects.get("me", project?.id ?? ""))?.archivedAt).toBeTruthy();
+    expect(await readFile(join(project?.path ?? "", "index.html"), "utf8")).toBe("<p>hi</p>");
+  });
+});

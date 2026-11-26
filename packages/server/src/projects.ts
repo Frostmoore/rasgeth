@@ -1,4 +1,4 @@
-import { mkdir, realpath, stat } from "node:fs/promises";
+import { mkdir, realpath, rm, stat } from "node:fs/promises";
 import { homedir } from "node:os";
 import { dirname, join, posix, win32 } from "node:path";
 import type { SqlClient } from "@redgiant/events";
@@ -288,6 +288,46 @@ export class ProjectStore {
   }
   private changed(ownerId: string): void {
     for (const f of this.changeListeners) f(ownerId);
+  }
+
+  /**
+   * A new project whose folder is filled before it is used (alpha 4.0, importing whole projects): its usual
+   * folder under the workspaces, `fill` copies or clones into it, then the repository found there is kept (one
+   * is made only when there is none). No repository is made on GitHub or Gitea for it: a clone has its origin.
+   * When `fill` fails nothing stays: no project, no folder.
+   */
+  async createFilled(
+    ownerId: string,
+    name: string,
+    fill: (dir: string) => Promise<void>,
+  ): Promise<Project> {
+    const id = slug(name);
+    if (!id) throw new ProjectError("The project name needs letters or digits");
+    const path = join(this.workspacesDir, slug(ownerId) || "owner", id);
+    if (await stat(path).catch(() => undefined))
+      throw new ProjectError(`A folder for "${id}" is already there`);
+    try {
+      await this.db.query(
+        "INSERT INTO rg_projects (id, owner_id, name, path) VALUES ($1, $2, $3, $4)",
+        [id, ownerId, name, path],
+      );
+    } catch (err) {
+      if (/unique|duplicate/i.test(String(err)))
+        throw new ProjectError(`A project "${id}" already exists`);
+      throw err;
+    }
+    try {
+      await mkdir(dirname(path), { recursive: true });
+      await fill(path);
+    } catch (err) {
+      await this.db.query("DELETE FROM rg_projects WHERE owner_id = $1 AND id = $2", [ownerId, id]);
+      await rm(path, { recursive: true, force: true });
+      throw err;
+    }
+    const repo = await initProjectRepo(path, this.runGit);
+    const project = (await this.get(ownerId, id)) as Project;
+    this.changed(ownerId);
+    return withRepo(project, repo);
   }
 
   /**

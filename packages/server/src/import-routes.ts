@@ -20,6 +20,8 @@ const Scan = z.object({
   home: z.boolean().optional(),
   projects: z.boolean().optional(),
   folder: z.string().max(1000).optional(),
+  /** Claude Code's projects on this computer, as whole projects (alpha 4.0). */
+  claudeProjects: z.boolean().optional(),
 });
 
 // biome-ignore lint/suspicious/noExplicitAny: the app's own Env, kept private in app.ts
@@ -36,6 +38,7 @@ export function importRoutes<E extends { Variables: any }>(
         get: () => setup.instructionsText(),
         set: (text: string) => setup.saveInstructions(text),
       },
+      gitAccess: () => setup.gitAccess(),
     }),
   });
   const body = async <T extends z.ZodType>(c: Context<E>, schema: T): Promise<z.infer<T>> => {

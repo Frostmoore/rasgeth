@@ -41,8 +41,9 @@ const SOURCE: Record<ImportSource, string> = {
   chatgpt: "ChatGPT",
   claude: "Claude",
 };
-const KINDS: ImportKind[] = ["instructions", "skill", "mcp", "memory", "conversation"];
+const KINDS: ImportKind[] = ["project", "instructions", "skill", "mcp", "memory", "conversation"];
 const KIND_ICON: Record<ImportKind, JSX.Element> = {
+  project: <IconFolder size={18} />,
   instructions: <IconUser size={18} />,
   skill: <IconBook size={18} />,
   mcp: <IconServer size={18} />,
@@ -66,6 +67,43 @@ const when = (iso?: string) => (iso ? new Date(iso).toLocaleDateString(lang.valu
 
 /** The person's choice for one item, kept apart from what the server found. */
 type Choice = Omit<ImportChoice, "id">;
+
+/** What a project would bring: its repository, instructions, notes, memory, and the lines to adapt. */
+function ProjectFacts({ p }: { p: NonNullable<ImportItem["project"]> }) {
+  return (
+    <div class="imp-project">
+      <small>
+        {p.remote
+          ? `${t("impProjRemote")}: ${p.remote}`
+          : p.git
+            ? t("impProjGitLocal")
+            : t("impProjNoGit")}
+      </small>
+      <small>
+        {t("impProjFacts", {
+          instructions: p.instructions.length
+            ? p.instructions.join(", ")
+            : t("impProjNoInstructions"),
+          notes: String(p.notes),
+          memory: String(p.memory),
+          conversations: String(p.conversations),
+          size: `${Math.max(1, Math.round(p.bytes / 1e6))} MB`,
+        })}
+      </small>
+      {p.secrets.length > 0 && (
+        <small class="imp-hint">
+          <IconKey size={14} /> {t("impProjSecrets", { files: p.secrets.slice(0, 6).join(", ") })}
+        </small>
+      )}
+      {p.machine.length > 0 && (
+        <details class="imp-preview">
+          <summary>{t("impProjMachine", { n: String(p.machine.length) })}</summary>
+          <pre>{p.machine.map((m) => `${m.file}:${m.line}  ${m.text}`).join("\n")}</pre>
+        </details>
+      )}
+    </div>
+  );
+}
 
 /** One thing found: its switch, where it comes from and, when on, what is still to choose. */
 function ItemRow({
@@ -99,6 +137,7 @@ function ItemRow({
         )}
         <Switch on={choice.on} label={item.name} onChange={(on) => set({ ...choice, on })} />
       </div>
+      {item.project && <ProjectFacts p={item.project} />}
       {item.kind !== "memory" && item.preview && (
         <details class="imp-preview">
           <summary>{t("impShow")}</summary>
@@ -119,6 +158,31 @@ function ItemRow({
       )}
       {choice.on && (
         <div class="imp-item-more">
+          {item.project && item.project.modes.length > 0 && (
+            <>
+              <Seg
+                label={t("impProjMode")}
+                value={choice.mode ?? item.project.modes[0] ?? "copy"}
+                options={item.project.modes.map(
+                  (m) => [m, t(`impProjMode_${m}` as "impProjMode_copy")] as const,
+                )}
+                onChange={(mode) => set({ ...choice, mode })}
+              />
+              <p class="ui-help">
+                {t(
+                  `impProjModeHelp_${choice.mode ?? item.project.modes[0] ?? "copy"}` as "impProjModeHelp_copy",
+                )}
+              </p>
+              {(item.project.notes > 0 || item.project.memory > 0) && (
+                <SwitchRow
+                  title={t("impProjKnowledge")}
+                  help={t("impProjKnowledgeHelp")}
+                  on={choice.knowledge ?? true}
+                  onChange={(knowledge) => set({ ...choice, knowledge })}
+                />
+              )}
+            </>
+          )}
           {item.kind === "instructions" && (
             <Field label={t("impForWhom")}>
               <DropChoice
@@ -503,12 +567,18 @@ function ScanWindow({
 }) {
   const [home, setHome] = useState(true);
   const [projects, setProjects] = useState(true);
+  const [claudeProjects, setClaudeProjects] = useState(true);
   const [folder, setFolder] = useState("");
   const [busy, setBusy] = useState(false);
   const scan = async () => {
     setBusy(true);
     const p = await attempt(() =>
-      getApi().importScan({ home, projects, ...(folder.trim() && { folder: folder.trim() }) }),
+      getApi().importScan({
+        home,
+        projects,
+        claudeProjects,
+        ...(folder.trim() && { folder: folder.trim() }),
+      }),
     );
     setBusy(false);
     if (p) onPreview(p);
@@ -525,7 +595,7 @@ function ScanWindow({
           <button
             type="button"
             class="wz-btn primary"
-            disabled={busy || (!home && !projects && !folder.trim())}
+            disabled={busy || (!home && !projects && !claudeProjects && !folder.trim())}
             onClick={() => void scan()}
           >
             <IconSearch size={18} /> {busy ? t("impLooking") : t("impScanGo")}
@@ -539,6 +609,12 @@ function ScanWindow({
         help={t("impScanHomeHelp")}
         on={home}
         onChange={setHome}
+      />
+      <SwitchRow
+        title={t("impScanClaude")}
+        help={t("impScanClaudeHelp")}
+        on={claudeProjects}
+        onChange={setClaudeProjects}
       />
       <SwitchRow
         title={t("impScanProjects")}

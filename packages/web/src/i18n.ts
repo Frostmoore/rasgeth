@@ -98,6 +98,38 @@ const en = {
   impKind_mcp: "Services",
   impKind_memory: "Memories",
   impKind_conversation: "Conversations",
+  impKind_project: "Whole projects",
+  impScanClaude: "My Claude Code projects",
+  impScanClaudeHelp:
+    "Each project Claude Code knows on this computer, as a whole project: its folder or repository, its instructions for its orchestrator, its notes and Claude's memory of it. Nothing changes before you choose.",
+  impProjMode: "How it comes",
+  impProjMode_adopt: "Leave it where it is",
+  impProjMode_copy: "Copy it",
+  impProjMode_clone: "Clone its repository",
+  impProjModeHelp_adopt:
+    "{product} works in the folder where it is now, with its files and history: for {product} on this same computer.",
+  impProjModeHelp_copy:
+    "A copy among {product}'s projects, history included; secret files and generated folders (node_modules…) stay out.",
+  impProjModeHelp_clone:
+    "A fresh clone from its repository, with the access you connected (Gitea, GitHub): the way when {product} runs on another computer.",
+  impProjKnowledge: "Notes and memory in the project's Knowledge",
+  impProjKnowledgeHelp:
+    "Its memory/ notes (roadmap, plans, decisions) and Claude's memory of it, searchable by the project's agents.",
+  impProjRemote: "Repository",
+  impProjGitLocal: "Repository on this computer only",
+  impProjNoGit: "No repository",
+  impProjNoInstructions: "no instructions",
+  impProjFacts:
+    "Instructions: {instructions} · notes {notes} · memory {memory} · conversations {conversations} · {size}",
+  impProjSecrets: "Stay out (secrets): {files}",
+  impProjMachine: "{n} lines tied to this computer: its orchestrator will offer to adapt them",
+  impNote_worktree: "A working copy of another project (git worktree): left out.",
+  "impNote_missing-folder": "Its folder is not there any more.",
+  "impNote_not-a-project": "No instructions and no repository: maybe not a project.",
+  "impNote_secrets-out": "{arg} secret files stay out: put what is needed in the keychain.",
+  "impNote_machine-lines":
+    "{arg} lines speak of this computer: its orchestrator will offer to adapt them.",
+  "impNote_no-remote": "No repository address: it can stay where it is or be copied, not cloned.",
   impMessages: "{n} messages",
   impSame: "already here",
   impTaken: "name in use",
@@ -8735,6 +8767,41 @@ const it: Record<Key, string> = {
   impKind_mcp: "Servizi",
   impKind_memory: "Ricordi",
   impKind_conversation: "Conversazioni",
+  impKind_project: "Progetti interi",
+  impScanClaude: "I miei progetti di Claude Code",
+  impScanClaudeHelp:
+    "Ogni progetto che Claude Code conosce su questo computer, come progetto intero: la cartella o il repository, le istruzioni per il suo orchestratore, le note e la memoria di Claude. Niente cambia prima che tu scelga.",
+  impProjMode: "Come arriva",
+  impProjMode_adopt: "Lascialo dov'è",
+  impProjMode_copy: "Copialo",
+  impProjMode_clone: "Clona il repository",
+  impProjModeHelp_adopt:
+    "{product} lavora nella cartella dove sta ora, con i suoi file e la sua storia: per {product} sullo stesso computer.",
+  impProjModeHelp_copy:
+    "Una copia fra i progetti di {product}, storia compresa; i file segreti e le cartelle generate (node_modules…) restano fuori.",
+  impProjModeHelp_clone:
+    "Un clone nuovo dal suo repository, con l'accesso che hai collegato (Gitea, GitHub): la strada quando {product} gira su un altro computer.",
+  impProjKnowledge: "Note e memoria nella Conoscenza del progetto",
+  impProjKnowledgeHelp:
+    "Le note di memory/ (roadmap, piani, decisioni) e la memoria di Claude, consultabili dagli agenti del progetto.",
+  impProjRemote: "Repository",
+  impProjGitLocal: "Repository solo su questo computer",
+  impProjNoGit: "Nessun repository",
+  impProjNoInstructions: "nessuna istruzione",
+  impProjFacts:
+    "Istruzioni: {instructions} · note {notes} · memoria {memory} · conversazioni {conversations} · {size}",
+  impProjSecrets: "Restano fuori (segreti): {files}",
+  impProjMachine:
+    "{n} righe legate a questo computer: il suo orchestratore proporrà come adattarle",
+  impNote_worktree: "Una copia di lavoro di un altro progetto (git worktree): resta fuori.",
+  "impNote_missing-folder": "La sua cartella non c'è più.",
+  "impNote_not-a-project": "Nessuna istruzione e nessun repository: forse non è un progetto.",
+  "impNote_secrets-out":
+    "{arg} file segreti restano fuori: metti nel Portachiavi quello che serve.",
+  "impNote_machine-lines":
+    "{arg} righe parlano di questo computer: il suo orchestratore proporrà come adattarle.",
+  "impNote_no-remote":
+    "Nessun indirizzo del repository: può restare dov'è o essere copiato, non clonato.",
   impMessages: "{n} messaggi",
   impSame: "c'è già",
   impTaken: "nome già usato",
