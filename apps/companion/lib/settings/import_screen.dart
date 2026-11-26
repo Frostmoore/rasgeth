@@ -17,6 +17,7 @@ import '../setup/wizard/wizard_screen.dart' show wzWord;
 import '../theme/colors.dart';
 import '../ui/icons.dart';
 import '../ui/settings_kit.dart';
+import 'automations/automation_kit.dart' show AutoChips;
 import 'rules_kit.dart';
 
 /// Files from this device: names and bytes (the system's chooser; a test gives its own).
@@ -39,17 +40,19 @@ const importSources = <String, String>{
   'chatgpt': 'ChatGPT',
   'claude': 'Claude',
 };
-const importKinds = ['instructions', 'skill', 'mcp', 'memory', 'conversation'];
+const importKinds = ['project', 'instructions', 'skill', 'mcp', 'memory', 'conversation'];
 
 extension ImportApi on RedGiantClient {
   Future<Map<String, dynamic>> importScan({
     bool home = true,
     bool projects = true,
+    bool claudeProjects = true,
     String? folder,
   }) async => objectOf(
     await callJson('POST', '/api/import/scan', {
       'home': home,
       'projects': projects,
+      'claudeProjects': claudeProjects,
       if (folder != null && folder.trim().isNotEmpty) 'folder': folder.trim(),
     }),
   );
@@ -98,6 +101,11 @@ class _ImportScreenState extends State<ImportScreen> {
   String? _error;
   bool _home = true;
   bool _projects = true;
+  bool _claude = true;
+
+  /// A project's way in (alpha 4.0): adopt, copy or clone, and whether its notes go to the Knowledge.
+  final _mode = <String, String>{};
+  final _knowledge = <String, bool>{};
   final _folder = TextEditingController();
   bool _scanning = false;
 
@@ -145,7 +153,14 @@ class _ImportScreenState extends State<ImportScreen> {
   Future<void> _scan() => _try(() async {
     setState(() => _working = w('impLooking'));
     try {
-      _show(await _c.importScan(home: _home, projects: _projects, folder: _folder.text));
+      _show(
+        await _c.importScan(
+          home: _home,
+          projects: _projects,
+          claudeProjects: _claude,
+          folder: _folder.text,
+        ),
+      );
     } finally {
       if (mounted) setState(() => _working = null);
     }
@@ -170,7 +185,15 @@ class _ImportScreenState extends State<ImportScreen> {
     final p = _preview!;
     final choices = [
       for (final i in (p['items'] as List).whereType<Map<dynamic, dynamic>>())
-        if (_on['${i['id']}'] == true) {'id': '${i['id']}', 'on': true},
+        if (_on['${i['id']}'] == true)
+          {
+            'id': '${i['id']}',
+            'on': true,
+            if (i['kind'] == 'project') ...{
+              'mode': _mode['${i['id']}'] ?? _modes(i).firstOrNull,
+              'knowledge': _knowledge['${i['id']}'] ?? true,
+            },
+          },
     ];
     setState(() => _working = w('impDo', {'n': '${choices.length}'}));
     try {
@@ -340,6 +363,13 @@ class _ImportScreenState extends State<ImportScreen> {
       ),
       _switch('imp-scan-home', w('impScanHome'), w('impScanHomeHelp'), _home, (v) => _home = v),
       _switch(
+        'imp-scan-claude',
+        w('impScanClaude'),
+        w('impScanClaudeHelp'),
+        _claude,
+        (v) => _claude = v,
+      ),
+      _switch(
         'imp-scan-projects',
         w('impScanProjects'),
         w('impScanProjectsHelp'),
@@ -371,7 +401,8 @@ class _ImportScreenState extends State<ImportScreen> {
                 FilledButton(
                   key: const Key('imp-scan-go'),
                   onPressed:
-                      _working != null || (!_home && !_projects && _folder.text.trim().isEmpty)
+                      _working != null ||
+                          (!_home && !_projects && !_claude && _folder.text.trim().isEmpty)
                       ? null
                       : () => unawaited(_scan()),
                   child: Text(w('impScanGo')),
@@ -417,6 +448,75 @@ class _ImportScreenState extends State<ImportScreen> {
           ),
         ),
       );
+
+  List<String> _modes(Map<dynamic, dynamic> i) => [
+    for (final m in ((i['project'] as Map<dynamic, dynamic>?)?['modes'] as List? ?? const [])) '$m',
+  ];
+
+  /// A whole project (alpha 4.0): what it would bring and, when chosen, how it comes (as the page's).
+  List<Widget> _projectParts(Map<dynamic, dynamic> i, Map<dynamic, dynamic> pr, RgColors c) {
+    final id = '${i['id']}';
+    final dim = TextStyle(color: c.dim, fontSize: 12);
+    final remote = pr['remote'];
+    final secrets = (pr['secrets'] as List? ?? const []).map((x) => '$x').toList();
+    final machine = (pr['machine'] as List? ?? const [])
+        .whereType<Map<dynamic, dynamic>>()
+        .toList();
+    final modes = _modes(i);
+    final mode = _mode[id] ?? modes.firstOrNull;
+    final instructions = (pr['instructions'] as List? ?? const []).map((x) => '$x').toList();
+    return [
+      Text(
+        remote != null
+            ? '${w('impProjRemote')}: $remote'
+            : pr['git'] == true
+            ? w('impProjGitLocal')
+            : w('impProjNoGit'),
+        style: dim,
+      ),
+      Text(
+        w('impProjFacts', {
+          'instructions': instructions.isEmpty
+              ? w('impProjNoInstructions')
+              : instructions.join(', '),
+          'notes': '${pr['notes'] ?? 0}',
+          'memory': '${pr['memory'] ?? 0}',
+          'conversations': '${pr['conversations'] ?? 0}',
+          'size': '${((pr['bytes'] as num? ?? 0) / 1e6).round().clamp(1, 1 << 30)} MB',
+        }),
+        style: dim,
+      ),
+      if (secrets.isNotEmpty)
+        Text(w('impProjSecrets', {'files': secrets.take(6).join(', ')}), style: dim),
+      if (machine.isNotEmpty) Text(w('impProjMachine', {'n': '${machine.length}'}), style: dim),
+      if ((_on[id] ?? false) && modes.isNotEmpty) ...[
+        AutoChips<String>(
+          key: Key('imp-mode-$id'),
+          options: [for (final m in modes) (m, w('impProjMode_$m'))],
+          value: [?mode],
+          keyOf: (m) => 'imp-mode-$id-$m',
+          onChanged: (v) {
+            if (v.isNotEmpty) setState(() => _mode[id] = v.first);
+          },
+        ),
+        if (mode != null) Text(w('impProjModeHelp_$mode'), style: dim),
+        if ((pr['notes'] as num? ?? 0) > 0 || (pr['memory'] as num? ?? 0) > 0)
+          InkWell(
+            key: Key('imp-knowledge-$id'),
+            onTap: () => setState(() => _knowledge[id] = !(_knowledge[id] ?? true)),
+            child: Row(
+              spacing: 8,
+              children: [
+                Expanded(
+                  child: Text(w('impProjKnowledge'), style: TextStyle(color: c.text)),
+                ),
+                RgSwitch(on: _knowledge[id] ?? true),
+              ],
+            ),
+          ),
+      ],
+    ];
+  }
 
   String _note(Map<dynamic, dynamic> n) {
     final key = 'impNote_${n['code']}';
@@ -479,6 +579,8 @@ class _ImportScreenState extends State<ImportScreen> {
                                   in (i['notes'] as List? ?? const [])
                                       .whereType<Map<dynamic, dynamic>>())
                                 Text(_note(n), style: TextStyle(color: c.warnText, fontSize: 12)),
+                              if (i['project'] case final Map<dynamic, dynamic> pr)
+                                ..._projectParts(i, pr, c),
                             ],
                           ),
                         ),

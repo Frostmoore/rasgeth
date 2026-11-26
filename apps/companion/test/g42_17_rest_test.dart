@@ -173,6 +173,27 @@ void main() {
     await done(tester);
   });
 
+  testWidgets('import (alpha 4.0): a whole project from Claude Code, cloned, with its facts', (
+    tester,
+  ) async {
+    await start(tester, size: const Size(390, 3000));
+    await push(tester, const ImportScreen(panel: false, poll: Duration(milliseconds: 10)));
+    await tap(tester, 'imp-way-scan');
+    await tap(tester, 'imp-scan-go');
+    expect(fake.saved, contains('scan claude projects'));
+    expect(find.text('site'), findsOneWidget);
+    expect(find.textContaining('Repository: https://git.home.lan/ana/site.git'), findsOneWidget);
+    expect(find.textContaining('Restano fuori (segreti): .env'), findsOneWidget);
+    // Chosen, then «Clone its repository».
+    await tap(tester, 'imp-item-itp');
+    await tap(tester, 'imp-mode-itp-clone');
+    await tap(tester, 'imp-do');
+    final project = fake.applied!.firstWhere((c) => c['id'] == 'itp');
+    expect(project['mode'], 'clone');
+    expect(project['knowledge'], true);
+    await done(tester);
+  });
+
   testWidgets('external agents: the list, a ready command tried and added, a secret refused', (
     tester,
   ) async {

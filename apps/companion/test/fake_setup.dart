@@ -168,6 +168,7 @@ class FakeSetup {
     r['POST /api/import/scan'] = (q) async {
       final b = await body(q);
       saved.add('scan home=${b['home']} projects=${b['projects']}');
+      if (b['claudeProjects'] == true) saved.add('scan claude projects');
       return ok(q, preview);
     };
     r['POST /api/import/apply'] = (q) async {
@@ -273,6 +274,33 @@ class FakeSetup {
       {'from': '~/.claude/settings.json', 'what': 'hooks'},
     ],
     'items': [
+      {
+        'id': 'itp',
+        'kind': 'project',
+        'source': 'claude-code',
+        'from': '/home/ana/code/site',
+        'name': 'site',
+        'preview': '# Site',
+        'on': false,
+        'notes': [
+          {'code': 'secrets-out', 'arg': '1'},
+        ],
+        'project': {
+          'path': '/home/ana/code/site',
+          'remote': 'https://git.home.lan/ana/site.git',
+          'git': true,
+          'instructions': ['CLAUDE.md'],
+          'notes': 3,
+          'memory': 2,
+          'conversations': 4,
+          'secrets': ['.env'],
+          'machine': [
+            {'file': 'CLAUDE.md', 'line': 2, 'text': 'Deploy with ssh web1.', 'why': 'ssh'},
+          ],
+          'bytes': 5000000,
+          'modes': ['adopt', 'copy', 'clone'],
+        },
+      },
       {
         'id': 'it1',
         'kind': 'instructions',
