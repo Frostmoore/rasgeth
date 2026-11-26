@@ -4,10 +4,12 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.12.6';
+const newsVersion = '3.12.8';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.12.8', 'news3128Projects', 'news3128ProjectsText'),
+  NewsRow('3.12.8', 'news3128Working', 'news3128WorkingText'),
   NewsRow('3.12.6', 'news3126Improvements', 'news3126ImprovementsText'),
   NewsRow('3.12.6', 'news3126Mtp', 'news3126MtpText'),
   NewsRow('3.12.4', 'news3124Secretary', 'news3124SecretaryText'),
@@ -470,6 +472,10 @@ const generalWords = <String, Map<String, String>>{
     'news3126ImprovementsText': 'La scheda di ogni modello locale ha ora i Miglioramenti: Prefetch, Big Chunks, Speculative Decoding e il nuovo No Repack, ognuno da accendere a mano. Puoi misurarli sul tuo computer (ci vuole un po\' e possono non guadagnare niente); quelli provati da noi su quel modello hanno il bordo d\'oro, e quelli che il tuo hardware non può usare dicono perché. Deep Field, lo streaming dall\'SSD di Rasgeth, ha il suo interruttore anche nell\'app.',
     'news3126Mtp': 'MTP: il modello si prepara da solo le parole dopo',
     'news3126MtpText': 'I modelli con le teste MTP, come Qwen 3.8 27B, propongono da soli i token successivi e li controllano tutti in un passaggio: nessun secondo modello, nessuna memoria in più. Su un mini PC scrive circa il 30% più in fretta. Il motore locale passa a un llama.cpp più nuovo.',
+    'news3128Projects': 'Porta i tuoi progetti di Claude Code',
+    'news3128ProjectsText': 'Impostazioni › Importa ora trova i progetti che Claude Code conosce su questo computer, oppure li clona da un indirizzo di repository che incolli. Ognuno arriva intero: la cartella lasciata dov\'è, copiata o clonata; il suo CLAUDE.md come istruzioni dell\'orchestratore; le note e la memoria di Claude nella Conoscenza. I file segreti restano fuori, e le righe legate al vecchio computer sono segnate perché l\'orchestratore le adatti con te. Ogni importazione si annulla.',
+    'news3128Working': 'Vedi sempre quando un agente lavora',
+    'news3128WorkingText': 'Mentre un agente lavora senza scrivere (legge, aspetta uno strumento), una riga in fondo alla conversazione lo dice, con i secondi e lo strumento che usa. Nell\'app la conversazione scorre fluida mentre l\'agente scrive, e il pulsante per fermarlo è uno solo. Le anteprime impaginate dei documenti tornano a funzionare su Linux quando il sito solito di LibreOffice non risponde.',
     'news321Linux': 'Strato dopo in anticipo anche su Linux',
     'news321LinuxText': 'L\'interruttore sperimentale «Strato dopo in anticipo» di SSD stream ora funziona anche su Linux con una scheda NVIDIA, con un\'immagine del motore tutta sua scaricata solo quando lo accendi.',
     'news321Settings': 'Le Impostazioni nello stile della configurazione',
@@ -849,6 +855,10 @@ const generalWords = <String, Map<String, String>>{
     'news3126ImprovementsText': 'The card of every local model now has Improvements: Prefetch, Big Chunks, Speculative Decoding and the new No Repack, each turned on by hand. You can measure each one on your computer (it takes a while and may gain nothing); the ones we tested on that model have a gold border, and the ones your hardware cannot use say why. Deep Field, Rasgeth\'s SSD streaming, has its switch in the app too.',
     'news3126Mtp': 'MTP: the model drafts its own next words',
     'news3126MtpText': 'Models with MTP heads, such as Qwen 3.8 27B, can propose the next tokens themselves and check them all in one pass: no second model, no extra memory. On a mini PC it writes about 30% faster. The local engine is updated to a newer llama.cpp.',
+    'news3128Projects': 'Bring your Claude Code projects',
+    'news3128ProjectsText': 'Settings › Import now finds the projects Claude Code knows on this computer, or clones them from a repository address you paste. Each comes whole: its folder left where it is, copied or cloned; its CLAUDE.md as the orchestrator\'s instructions; its notes and Claude\'s memory in the Knowledge. Secret files stay out, and the lines tied to the old computer are marked for the orchestrator to adapt with you. Every import can be undone.',
+    'news3128Working': 'You always see when an agent works',
+    'news3128WorkingText': 'While an agent works without writing (reading, waiting for a tool), a line at the bottom of the conversation says so, with the seconds and the tool it uses. In the app the conversation scrolls smoothly while an agent writes, and the stop button is only one. Paged previews of documents work again on Linux when LibreOffice\'s usual site fails.',
     'news321Linux': 'Next layer ahead on Linux too',
     'news321LinuxText': 'The experimental «Next layer ahead» switch of SSD stream now works on Linux with an NVIDIA card too, with an engine image of its own downloaded only when you turn it on.',
     'news321Settings': 'Settings in the setup\'s style',

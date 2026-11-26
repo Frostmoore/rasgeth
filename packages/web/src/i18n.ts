@@ -2620,6 +2620,12 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news3128Projects: "Bring your Claude Code projects",
+  news3128ProjectsText:
+    "Settings › Import now finds the projects Claude Code knows on this computer, or clones them from a repository address you paste. Each comes whole: its folder left where it is, copied or cloned; its CLAUDE.md as the orchestrator's instructions; its notes and Claude's memory in the Knowledge. Secret files stay out, and the lines tied to the old computer are marked for the orchestrator to adapt with you. Every import can be undone.",
+  news3128Working: "You always see when an agent works",
+  news3128WorkingText:
+    "While an agent works without writing (reading, waiting for a tool), a line at the bottom of the conversation says so, with the seconds and the tool it uses. In the app the conversation scrolls smoothly while an agent writes, and the stop button is only one. Paged previews of documents work again on Linux when LibreOffice's usual site fails.",
   news3126Improvements: "Improvements for each local model",
   news3126ImprovementsText:
     "The card of every local model now has Improvements: Prefetch, Big Chunks, Speculative Decoding and the new No Repack, each turned on by hand. You can measure each one on your computer (it takes a while and may gain nothing); the ones we tested on that model have a gold border, and the ones your hardware cannot use say why. Deep Field, Rasgeth's SSD streaming, has its switch in the app too.",
@@ -11331,6 +11337,12 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news3128Projects: "Porta i tuoi progetti di Claude Code",
+  news3128ProjectsText:
+    "Impostazioni › Importa ora trova i progetti che Claude Code conosce su questo computer, oppure li clona da un indirizzo di repository che incolli. Ognuno arriva intero: la cartella lasciata dov'è, copiata o clonata; il suo CLAUDE.md come istruzioni dell'orchestratore; le note e la memoria di Claude nella Conoscenza. I file segreti restano fuori, e le righe legate al vecchio computer sono segnate perché l'orchestratore le adatti con te. Ogni importazione si annulla.",
+  news3128Working: "Vedi sempre quando un agente lavora",
+  news3128WorkingText:
+    "Mentre un agente lavora senza scrivere (legge, aspetta uno strumento), una riga in fondo alla conversazione lo dice, con i secondi e lo strumento che usa. Nell'app la conversazione scorre fluida mentre l'agente scrive, e il pulsante per fermarlo è uno solo. Le anteprime impaginate dei documenti tornano a funzionare su Linux quando il sito solito di LibreOffice non risponde.",
   news3126Improvements: "Miglioramenti per ogni modello locale",
   news3126ImprovementsText:
     "La scheda di ogni modello locale ha ora i Miglioramenti: Prefetch, Big Chunks, Speculative Decoding e il nuovo No Repack, ognuno da accendere a mano. Puoi misurarli sul tuo computer (ci vuole un po' e possono non guadagnare niente); quelli provati da noi su quel modello hanno il bordo d'oro, e quelli che il tuo hardware non può usare dicono perché. Deep Field, lo streaming dall'SSD di Rasgeth, ha il suo interruttore anche nell'app.",

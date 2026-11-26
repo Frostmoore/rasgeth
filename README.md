@@ -423,6 +423,9 @@ Rasgeth is in pre-alpha. What comes next, in order:
 - **3.12.6 — Improvements and MTP**: every local model's card has its improvements (Prefetch, Big Chunks,
   Speculative Decoding, No Repack), measurable on your computer, gold where we tested them; MTP for the models that
   draft their own next tokens.
+- **3.12.8 — Projects from Claude Code**: whole projects imported from Claude Code or cloned from their repository,
+  instructions, notes and memory included; a line that always shows an agent at work; security, privacy and usage
+  drafts.
 - **4.0 — Alpha**: documentation, security and privacy pages, and a stability round on everything.
 - **Then** the beta (community, documentation site) and the production release.
 
