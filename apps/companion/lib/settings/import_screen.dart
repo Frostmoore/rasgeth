@@ -47,12 +47,14 @@ extension ImportApi on RedGiantClient {
     bool home = true,
     bool projects = true,
     bool claudeProjects = true,
+    List<String> repos = const [],
     String? folder,
   }) async => objectOf(
     await callJson('POST', '/api/import/scan', {
       'home': home,
       'projects': projects,
       'claudeProjects': claudeProjects,
+      if (repos.isNotEmpty) 'repos': repos,
       if (folder != null && folder.trim().isNotEmpty) 'folder': folder.trim(),
     }),
   );
@@ -107,7 +109,14 @@ class _ImportScreenState extends State<ImportScreen> {
   final _mode = <String, String>{};
   final _knowledge = <String, bool>{};
   final _folder = TextEditingController();
+  final _repos = TextEditingController();
   bool _scanning = false;
+
+  /// The repository addresses typed, one per line (alpha 4.0).
+  List<String> get _repoList => [
+    for (final x in _repos.text.split(RegExp(r'\s+')))
+      if (RegExp(r'^https?://').hasMatch(x.trim())) x.trim(),
+  ];
 
   RedGiantClient get _c => app.client!;
   String w(String k, [Map<String, String> v = const {}]) => wzWord(context, k, v);
@@ -121,6 +130,7 @@ class _ImportScreenState extends State<ImportScreen> {
   @override
   void dispose() {
     _folder.dispose();
+    _repos.dispose();
     super.dispose();
   }
 
@@ -158,6 +168,7 @@ class _ImportScreenState extends State<ImportScreen> {
           home: _home,
           projects: _projects,
           claudeProjects: _claude,
+          repos: _repoList,
           folder: _folder.text,
         ),
       );
@@ -379,6 +390,22 @@ class _ImportScreenState extends State<ImportScreen> {
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
         child: TextField(
+          key: const Key('imp-scan-repos'),
+          controller: _repos,
+          minLines: 1,
+          maxLines: 4,
+          decoration: InputDecoration(
+            labelText: w('impScanRepos'),
+            helperText: w('impScanReposHelp'),
+            helperMaxLines: 4,
+            hintText: 'https://git.example.org/ana/site.git',
+          ),
+          onChanged: (_) => setState(() {}),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+        child: TextField(
           key: const Key('imp-scan-folder'),
           controller: _folder,
           decoration: InputDecoration(
@@ -402,7 +429,11 @@ class _ImportScreenState extends State<ImportScreen> {
                   key: const Key('imp-scan-go'),
                   onPressed:
                       _working != null ||
-                          (!_home && !_projects && !_claude && _folder.text.trim().isEmpty)
+                          (!_home &&
+                              !_projects &&
+                              !_claude &&
+                              _folder.text.trim().isEmpty &&
+                              _repoList.isEmpty)
                       ? null
                       : () => unawaited(_scan()),
                   child: Text(w('impScanGo')),

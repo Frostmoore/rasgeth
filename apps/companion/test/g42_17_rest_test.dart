@@ -179,8 +179,14 @@ void main() {
     await start(tester, size: const Size(390, 3000));
     await push(tester, const ImportScreen(panel: false, poll: Duration(milliseconds: 10)));
     await tap(tester, 'imp-way-scan');
+    await tester.enterText(
+      find.byKey(const Key('imp-scan-repos')),
+      'https://git.home.lan/ana/site.git\nnot-an-address',
+    );
+    await tester.pump();
     await tap(tester, 'imp-scan-go');
     expect(fake.saved, contains('scan claude projects'));
+    expect(fake.saved, contains('scan repos https://git.home.lan/ana/site.git'));
     expect(find.text('site'), findsOneWidget);
     expect(find.textContaining('Repository: https://git.home.lan/ana/site.git'), findsOneWidget);
     expect(find.textContaining('Restano fuori (segreti): .env'), findsOneWidget);

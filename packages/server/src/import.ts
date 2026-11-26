@@ -29,7 +29,12 @@ import { complete, streamWithFallback } from "@redgiant/providers";
 import { unzip } from "fflate";
 import { BadRequestError, type RedGiantCore } from "./core.js";
 import { readChatExports } from "./import-chats.js";
-import { type FoundProject, findClaudeProjects, isSecretFile } from "./import-projects.js";
+import {
+  type FoundProject,
+  findClaudeProjects,
+  isSecretFile,
+  readProject,
+} from "./import-projects.js";
 import {
   type Candidate,
   type FoundFile,
@@ -181,6 +186,8 @@ export class Importer {
       projects?: boolean | undefined;
       folder?: string | undefined;
       claudeProjects?: boolean | undefined;
+      /** Repository addresses (Gitea, GitHub…): each read from a light clone, as a whole project. */
+      repos?: string[] | undefined;
     },
   ): Promise<ImportPreview> {
     const found: FoundFile[] = [];
@@ -188,6 +195,7 @@ export class Importer {
     const projects = places.claudeProjects
       ? await findClaudeProjects((this.o.home ?? homedir)())
       : [];
+    for (const url of places.repos ?? []) projects.push(await this.fromRepo(url.trim()));
     const scope = new Map<string, "home" | "project">();
     if (places.home) {
       const home = (this.o.home ?? homedir)();
@@ -788,8 +796,24 @@ export class Importer {
     return { ...base, ok: true, ref: project.id, ...(notes.length && { note: notes.join("; ") }) };
   }
 
+  /**
+   * A project from a repository address (alpha 4.0: Officina's projects to Rasgeth on another computer): a light
+   * clone of its last state in a folder of its own, read as Claude Code's projects are, then removed.
+   */
+  private async fromRepo(url: string): Promise<FoundProject> {
+    const dir = join(this.o.dir, `repo_${randomUUID().slice(0, 12)}`);
+    try {
+      await this.clone(url, dir, true);
+      const name = basename(new URL(url).pathname).replace(/\.git$/i, "") || "project";
+      const p = await readProject(dir, join(dir, ".no-claude"));
+      return { ...p, name, path: url, remote: url, fromRepo: true };
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  }
+
   /** `git clone` of a project's repository, with the person's Gitea or GitHub access when it is theirs. */
-  private async clone(remote: string, dir: string): Promise<void> {
+  private async clone(remote: string, dir: string, light = false): Promise<void> {
     if (!/^https?:\/\//.test(remote))
       throw new BadRequestError("Only http(s) repositories can be cloned here");
     const access = this.o.gitAccess?.() ?? {};
@@ -810,7 +834,7 @@ export class Importer {
         GIT_CONFIG_VALUE_0: header,
       }),
     };
-    const args = ["clone", "--quiet", remote, dir];
+    const args = ["clone", "--quiet", ...(light ? ["--depth", "1"] : []), remote, dir];
     await new Promise<void>((ok, no) =>
       execFile(
         "git",
@@ -996,7 +1020,9 @@ function projectCandidate(p: FoundProject): Candidate {
   if (!p.out && !p.remote) notes.push({ code: "no-remote" });
   const modes: ("adopt" | "copy" | "clone")[] = p.out
     ? []
-    : ["adopt", "copy", ...(p.remote ? (["clone"] as const) : [])];
+    : p.fromRepo
+      ? ["clone"]
+      : ["adopt", "copy", ...(p.remote ? (["clone"] as const) : [])];
   const first = p.instructions[0]?.text.split(/\r?\n/).find((l) => l.trim()) ?? "";
   return {
     kind: "project",

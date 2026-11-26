@@ -22,6 +22,8 @@ const Scan = z.object({
   folder: z.string().max(1000).optional(),
   /** Claude Code's projects on this computer, as whole projects (alpha 4.0). */
   claudeProjects: z.boolean().optional(),
+  /** Repository addresses to bring in as whole projects (alpha 4.0). */
+  repos: z.array(z.string().url().max(500)).max(50).optional(),
 });
 
 // biome-ignore lint/suspicious/noExplicitAny: the app's own Env, kept private in app.ts

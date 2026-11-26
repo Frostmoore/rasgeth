@@ -1368,6 +1368,7 @@ export class Api {
     home?: boolean;
     projects?: boolean;
     claudeProjects?: boolean;
+    repos?: string[];
     folder?: string;
   }) => this.call<ImportPreview>("POST", "/api/import/scan", places);
   importUpload = () => this.call<{ id: string }>("POST", "/api/import/upload");

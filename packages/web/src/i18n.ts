@@ -100,6 +100,9 @@ const en = {
   impKind_conversation: "Conversations",
   impKind_project: "Whole projects",
   impScanClaude: "My Claude Code projects",
+  impScanRepos: "Projects from their repository",
+  impScanReposHelp:
+    "Addresses of repositories (Gitea, GitHub), one per line: each project is read from a clone and comes as a whole project, with the access you connected. The way when {product} runs on another computer.",
   impScanClaudeHelp:
     "Each project Claude Code knows on this computer, as a whole project: its folder or repository, its instructions for its orchestrator, its notes and Claude's memory of it. Nothing changes before you choose.",
   impProjMode: "How it comes",
@@ -8769,6 +8772,9 @@ const it: Record<Key, string> = {
   impKind_conversation: "Conversazioni",
   impKind_project: "Progetti interi",
   impScanClaude: "I miei progetti di Claude Code",
+  impScanRepos: "Progetti dal loro repository",
+  impScanReposHelp:
+    "Indirizzi dei repository (Gitea, GitHub), uno per riga: ogni progetto si legge da un clone e arriva come progetto intero, con l'accesso che hai collegato. La strada quando {product} gira su un altro computer.",
   impScanClaudeHelp:
     "Ogni progetto che Claude Code conosce su questo computer, come progetto intero: la cartella o il repository, le istruzioni per il suo orchestratore, le note e la memoria di Claude. Niente cambia prima che tu scelga.",
   impProjMode: "Come arriva",

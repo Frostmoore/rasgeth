@@ -169,6 +169,7 @@ class FakeSetup {
       final b = await body(q);
       saved.add('scan home=${b['home']} projects=${b['projects']}');
       if (b['claudeProjects'] == true) saved.add('scan claude projects');
+      if (b['repos'] is List) saved.add('scan repos ${(b['repos'] as List).join(' ')}');
       return ok(q, preview);
     };
     r['POST /api/import/apply'] = (q) async {

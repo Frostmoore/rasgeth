@@ -568,6 +568,11 @@ function ScanWindow({
   const [home, setHome] = useState(true);
   const [projects, setProjects] = useState(true);
   const [claudeProjects, setClaudeProjects] = useState(true);
+  const [repos, setRepos] = useState("");
+  const repoList = repos
+    .split(/\s+/)
+    .map((x) => x.trim())
+    .filter((x) => /^https?:\/\//.test(x));
   const [folder, setFolder] = useState("");
   const [busy, setBusy] = useState(false);
   const scan = async () => {
@@ -577,6 +582,7 @@ function ScanWindow({
         home,
         projects,
         claudeProjects,
+        ...(repoList.length > 0 && { repos: repoList }),
         ...(folder.trim() && { folder: folder.trim() }),
       }),
     );
@@ -595,7 +601,10 @@ function ScanWindow({
           <button
             type="button"
             class="wz-btn primary"
-            disabled={busy || (!home && !projects && !claudeProjects && !folder.trim())}
+            disabled={
+              busy ||
+              (!home && !projects && !claudeProjects && !folder.trim() && repoList.length === 0)
+            }
             onClick={() => void scan()}
           >
             <IconSearch size={18} /> {busy ? t("impLooking") : t("impScanGo")}
@@ -622,6 +631,15 @@ function ScanWindow({
         on={projects}
         onChange={setProjects}
       />
+      <Field label={t("impScanRepos")} help={t("impScanReposHelp")}>
+        <textarea
+          class="wz-field"
+          rows={2}
+          value={repos}
+          placeholder="https://git.example.org/ana/site.git"
+          onInput={(e) => setRepos((e.target as HTMLTextAreaElement).value)}
+        />
+      </Field>
       <Field label={t("impScanFolder")} help={t("impScanFolderHelp")}>
         <input
           class="wz-field"

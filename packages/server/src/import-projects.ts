@@ -76,6 +76,8 @@ export interface FoundProject {
   path: string;
   /** Not there any more, or a worktree of another project: left out, with the reason. */
   out?: "missing" | "worktree";
+  /** Read from a clone of a repository address the person gave: it can only come as a clone. */
+  fromRepo?: boolean;
   remote?: string;
   git: boolean;
   instructions: { file: string; text: string }[];
