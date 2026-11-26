@@ -1137,3 +1137,14 @@ footer a:hover {
   cursor: default;
   pointer-events: none;
 }
+
+/* Security and privacy pages: plain lists of short statements. */
+.doc-list {
+  max-width: 72ch;
+  margin: 0;
+  padding-left: 1.2em;
+}
+.doc-list li {
+  margin: 0.55em 0;
+  line-height: 1.55;
+}

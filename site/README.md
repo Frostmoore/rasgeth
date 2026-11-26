@@ -1,14 +1,15 @@
 # Rasgeth's website
 
 A small static site for **https://rasgeth.it** (the old address, `https://smpdigital.it/redgiant/`, is
-to send visitors there): the home page (`index.html`) and the downloads (`download.html`). Plain HTML, CSS and a little JavaScript, outside pnpm and Biome; every
+to send visitors there): the home page (`index.html`), the downloads (`download.html`) and the security and privacy pages (`security.html`, `privacy.html`). Plain HTML, CSS and a little JavaScript, outside pnpm and Biome; every
 path is relative, so it works from any folder of any host. Nothing is loaded from elsewhere (no
 fonts, scripts or trackers from a CDN); the only outside requests are GitHub's public API, made by
 the visitor's browser.
 
 ```
 site/
-  index.html, download.html   the pages; every text twice, lang="it" and lang="en"
+  index.html, download.html, the pages; every text twice, lang="it" and lang="en"
+  security.html, privacy.html
   assets/
     config.js                 every release file name the buttons link (one place to change)
     boot.js                   language (saved, or the browser's) and theme, before the page draws

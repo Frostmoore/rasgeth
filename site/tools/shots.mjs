@@ -41,7 +41,7 @@ const devices = {
   desktop: { viewport: { width: 1366, height: 860 }, deviceScaleFactor: 1 },
   phone: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
 };
-for (const page of ["index", "download"]) {
+for (const page of ["index", "download", "security", "privacy"]) {
   for (const [device, opts] of Object.entries(devices)) {
     for (const theme of ["light", "dark"]) {
       for (const lang of ["it", "en"]) {

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en" data-theme="system">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title data-it="Sicurezza · Rasgeth" data-en="Security · Rasgeth">Security · Rasgeth</title>
+<meta name="description" data-i18n data-content-it="Come Rasgeth protegge le tue chiavi, i tuoi file e le tue decisioni." data-content-en="How Rasgeth protects your keys, your files and your decisions." content="How Rasgeth protects your keys, your files and your decisions." />
+<meta name="theme-color" content="#04081f" />
+<link rel="canonical" href="https://rasgeth.it/security.html" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Rasgeth" />
+<meta property="og:url" content="https://rasgeth.it/security.html" />
+<meta property="og:title" content="Security · Rasgeth" />
+<meta property="og:description" content="How Rasgeth protects your keys, your files and your decisions." />
+<meta property="og:image" content="https://rasgeth.it/assets/img/share.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Rasgeth: a crowned star smiling among its small stars, the agents" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="color-scheme" content="light dark" />
+<meta name="referrer" content="no-referrer" />
+<link rel="icon" href="assets/img/favicon.png" type="image/png" />
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+<script src="assets/boot.js"></script>
+<link rel="stylesheet" href="assets/site.css" />
+</head>
+<body>
+<a class="skip" href="#main"><span lang="it">Vai al contenuto</span><span lang="en">Skip to content</span></a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="assets/img/logo.png" alt="" width="32" height="32" /><span>Rasgeth</span></a>
+    <nav class="nav" data-i18n data-aria-label-it="Principale" data-aria-label-en="Main" aria-label="Main">
+      <a class="hide-s" href="index.html#highlights"><span lang="it">Funzioni</span><span lang="en">Features</span></a>
+      <a href="download.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-download" /></svg>Download</a>
+      <a href="https://github.com/Frostmoore/rasgeth" data-i18n data-aria-label-it="Rasgeth su GitHub" data-aria-label-en="Rasgeth on GitHub" aria-label="Rasgeth on GitHub"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#b-github" /></svg><span class="hide-s">GitHub</span></a>
+    </nav>
+    <div class="prefs">
+      <div class="seg" role="group" data-i18n data-aria-label-it="Lingua" data-aria-label-en="Language" aria-label="Language">
+        <button type="button" data-set-lang="it" aria-pressed="false" data-i18n data-title-it="Italiano" data-title-en="Italiano" title="Italiano">IT</button>
+        <button type="button" data-set-lang="en" aria-pressed="false" data-i18n data-title-it="English" data-title-en="English" title="English">EN</button>
+      </div>
+      <div class="seg" role="group" data-i18n data-aria-label-it="Tema" data-aria-label-en="Theme" aria-label="Theme">
+        <button type="button" data-set-theme="system" aria-pressed="true" data-i18n data-title-it="Tema del sistema" data-title-en="System theme" data-aria-label-it="Tema del sistema" data-aria-label-en="System theme" aria-label="System theme"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-monitor" /></svg></button>
+        <button type="button" data-set-theme="light" aria-pressed="false" data-i18n data-title-it="Tema chiaro" data-title-en="Light theme" data-aria-label-it="Tema chiaro" data-aria-label-en="Light theme" aria-label="Light theme"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-sun" /></svg></button>
+        <button type="button" data-set-theme="dark" aria-pressed="false" data-i18n data-title-it="Tema scuro" data-title-en="Dark theme" data-aria-label-it="Tema scuro" data-aria-label-en="Dark theme" aria-label="Dark theme"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-moon" /></svg></button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <div class="page-head wrap">
+    <h1><span lang="it">Sicurezza</span><span lang="en">Security</span></h1>
+    <p class="lead"><span lang="it">Rasgeth fa lavorare agenti che leggono e scrivono file, eseguono comandi, navigano, mandano messaggi e spendono sui modelli. La regola è una: <strong>le cose che contano le decidi tu, e gli agenti non tengono mai quello che non serve loro.</strong></span><span lang="en">Rasgeth runs agents that read and write files, run commands, browse, send messages and spend on models. The rule is one: <strong>you decide what matters, and agents never hold what they do not need.</strong></span></p>
+  </div>
+
+  <section class="dl-group wrap" id="decide" aria-labelledby="h-decide">
+    <h2 id="h-decide"><span class="badge"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-shield" /></svg></span><span lang="it">Chi decide</span><span lang="en">Who decides</span></h2>
+    <ul class="doc-list">
+      <li><span lang="it"><strong>Ogni agente lavora nel suo perimetro.</strong> God, Demi-God, orchestratori, agenti e sotto-agenti vedono e cambiano solo quello che il loro posto permette.</span><span lang="en"><strong>Every agent works inside its scope.</strong> God, Demi-God, orchestrators, agents and sub-agents see and change only what their place allows.</span></li>
+      <li><span lang="it"><strong>Una richiesta non diventa mai un sì per sbaglio.</strong> Se qualcosa si rompe o il tempo scade, la risposta è no. L'unico sì che non dai tu è quello del tuo classificatore, se scegli «non chiedermi niente»: una decisione con il suo perché scritto nel registro.</span><span lang="en"><strong>A request never becomes a yes by accident.</strong> If something fails or the time runs out, the answer is no. The only yes you do not give yourself is your classifier's, if you choose «don't ask me anything»: a decision with its reason written in the log.</span></li>
+      <li><span lang="it"><strong>Event Horizon: le richieste davvero pericolose arrivano sempre a te</strong>, qualunque siano le regole e i modi, sulla pagina e in tutte le chat collegate; se il tempo scade è no. Sono: le cartelle di sistema e dei programmi, il registro, i servizi e gli utenti; le cancellazioni che niente riporta indietro; una password, una chiave o un token che esce; i pagamenti con soldi veri; spegnere le protezioni di Rasgeth.</span><span lang="en"><strong>Event Horizon: the truly dangerous requests always reach you</strong>, whatever the rules and modes, on the page and in every linked chat; if the time runs out it is a no. They are: system and program folders, the registry, services and users; deletions nothing brings back; a password, key or token leaving; payments with real money; switching off Rasgeth's own protections.</span></li>
+      <li><span lang="it"><strong>I progetti archiviati si leggono e basta</strong>: niente turni, automazioni ferme, nessuna modifica finché non li ripristini. Non si cancella niente.</span><span lang="en"><strong>Archived projects are read only</strong>: no turns, automations paused, no changes until you restore them. Nothing is deleted.</span></li>
+    </ul>
+  </section>
+
+  <section class="dl-group wrap" id="keys" aria-labelledby="h-keys">
+    <h2 id="h-keys"><span class="badge"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-key" /></svg></span><span lang="it">Chiavi e credenziali</span><span lang="en">Keys and credentials</span></h2>
+    <ul class="doc-list">
+      <li><span lang="it"><strong>Il Portachiavi</strong> tiene ogni chiave: modelli, chat, caselle di posta, accessi MCP, GitHub e Gitea. È un file cifrato con AES-256-GCM nella cartella dei dati di Rasgeth, mai dentro un progetto o un repository. La chiave principale la protegge il sistema dove può (DPAPI su Windows, il Portachiavi del Mac), altrimenti un file leggibile solo dal suo proprietario.</span><span lang="en"><strong>The keychain</strong> keeps every key: models, chats, mailboxes, MCP sign-ins, GitHub and Gitea. It is a file encrypted with AES-256-GCM in Rasgeth's data folder, never inside a project or a repository. The system protects its master key where it can (DPAPI on Windows, the Mac's Keychain), otherwise a file only its owner can read.</span></li>
+      <li><span lang="it"><strong>Gli agenti non vedono mai un valore.</strong> Nominano la credenziale e Rasgeth la mette sulla richiesta mentre esce, solo verso i siti che hai permesso; se una risposta la ripete, torna nascosta.</span><span lang="en"><strong>Agents never see a value.</strong> They name the credential and Rasgeth adds it to the request on its way out, only towards the sites you allowed; if an answer repeats it, it comes back hidden.</span></li>
+      <li><span lang="it"><strong>Ogni uso resta scritto</strong> (chi, quando, verso dove), e per ogni credenziale scegli chi la può usare e se chiederti ogni volta, una volta per conversazione o mai.</span><span lang="en"><strong>Every use is written down</strong> (who, when, where to), and for each credential you choose who may use it and whether to ask you every time, once per conversation or never.</span></li>
+      <li><span lang="it"><strong>Nessun segreto nei registri né nelle sandbox</strong>: i valori vengono oscurati, e le sandbox non ricevono credenziali nel loro ambiente.</span><span lang="en"><strong>No secrets in logs or sandboxes</strong>: values are blanked out, and sandboxes get no credentials in their environment.</span></li>
+    </ul>
+  </section>
+
+  <section class="dl-group wrap" id="work" aria-labelledby="h-work">
+    <h2 id="h-work"><span class="badge"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-box" /></svg></span><span lang="it">Il lavoro degli agenti</span><span lang="en">Agents' work</span></h2>
+    <ul class="doc-list">
+      <li><span lang="it"><strong>I comandi girano nei container</strong>, non direttamente sul tuo computer; il traffico verso fuori passa da un proxy che tiene le credenziali e le regole.</span><span lang="en"><strong>Commands run in containers</strong>, not directly on your computer; outgoing traffic goes through a proxy that holds the credentials and the rules.</span></li>
+      <li><span lang="it"><strong>Le estensioni non si installano da sole.</strong> Quella proposta da un agente si prova in una sandbox usa e getta e aspetta te.</span><span lang="en"><strong>Extensions never install themselves.</strong> One proposed by an agent is tested in a throwaway sandbox and waits for you.</span></li>
+      <li><span lang="it"><strong>Quello che arriva da un webhook è un dato, mai un ordine.</strong></span><span lang="en"><strong>What arrives from a webhook is data, never an order.</strong></span></li>
+    </ul>
+  </section>
+
+  <section class="dl-group wrap" id="updates" aria-labelledby="h-updates">
+    <h2 id="h-updates"><span class="badge"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-lock" /></svg></span><span lang="it">Aggiornamenti, backup, importazioni</span><span lang="en">Updates, backups, imports</span></h2>
+    <ul class="doc-list">
+      <li><span lang="it"><strong>Ogni versione è firmata.</strong> Senza una firma valida della chiave degli aggiornamenti di Rasgeth, un aggiornamento non conta come obbligatorio né come incompatibile.</span><span lang="en"><strong>Every release is signed.</strong> Without a valid signature of Rasgeth's update key, an update does not count as mandatory or breaking.</span></li>
+      <li><span lang="it"><strong>I backup non portano chiavi né accessi</strong>, a meno che tu non scelga di includere il Portachiavi, sigillato con una frase tua.</span><span lang="en"><strong>Backups carry no keys and no sign-ins</strong>, unless you choose to include the keychain, sealed with a passphrase of yours.</span></li>
+      <li><span lang="it"><strong>Le importazioni non copiano segreti</strong>: i file <code>.env</code>, le chiavi private e i certificati restano fuori, e l'anteprima lo dice.</span><span lang="en"><strong>Imports never copy secrets</strong>: <code>.env</code> files, private keys and certificates stay out, and the preview says so.</span></li>
+    </ul>
+  </section>
+
+  <section class="dl-group wrap" id="report" aria-labelledby="h-report">
+    <h2 id="h-report"><span class="badge"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-chat" /></svg></span><span lang="it">Segnalare un problema di sicurezza</span><span lang="en">Reporting a security problem</span></h2>
+    <p><span lang="it">Scrivici in privato, non in una issue pubblica: dal repository su GitHub, <em>Security › Report a vulnerability</em>.</span><span lang="en">Tell us privately, not in a public issue: on the GitHub repository, <em>Security › Report a vulnerability</em>.</span></p>
+    <a class="btn" href="https://github.com/Frostmoore/rasgeth/blob/main/docs/SECURITY.md"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#i-book" /></svg><span lang="it">Tutti i dettagli</span><span lang="en">All the details</span></a>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span><span lang="it">Rasgeth è open source, licenza MIT. Questo sito non usa cookie né tracciamenti.</span><span lang="en">Rasgeth is open source, MIT license. This site uses no cookies and no tracking.</span></span>
+    <nav data-i18n data-aria-label-it="Collegamenti" data-aria-label-en="Links" aria-label="Links">
+      <a href="download.html">Download</a>
+      <a href="https://github.com/Frostmoore/rasgeth/blob/main/docs/INSTALL.md"><span lang="it">Documentazione</span><span lang="en">Documentation</span></a>
+      <a href="https://github.com/Frostmoore/rasgeth/releases"><span lang="it">Versioni</span><span lang="en">Releases</span></a>
+      <a href="https://github.com/Frostmoore/rasgeth">GitHub</a>
+      <a href="security.html"><span lang="it">Sicurezza</span><span lang="en">Security</span></a>
+      <a href="privacy.html">Privacy</a>
+      <a href="mailto:info@rasgeth.it"><span lang="it">Contatti</span><span lang="en">Contact</span></a>
+    </nav>
+  </div>
+</footer>
+<div id="live" class="sr" aria-live="polite"></div>
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>
