@@ -74,6 +74,7 @@ export * from "./setup-network.js";
 export * from "./shell-summary.js";
 export * from "./shell-words.js";
 export * from "./skill-updates.js";
+export * from "./tested-improvements.js";
 export * from "./tools.js";
 export * from "./topics.js";
 export * from "./vault.js";

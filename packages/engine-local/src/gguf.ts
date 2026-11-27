@@ -116,7 +116,13 @@ async function value(c: Cursor, type: number): Promise<unknown> {
     case 9: {
       const inner = await c.u32();
       const n = await c.u64();
-      // Lists are skipped (a model's own ones are short; the tokenizer's are not read at all).
+      // Short lists of whole numbers are read (per-layer head counts, 2026-11-27); the rest are skipped (the
+      // tokenizer's are not read at all).
+      if ((inner === 4 || inner === 5) && n <= 1024) {
+        const out: number[] = [];
+        for (let i = 0; i < n; i++) out.push(inner === 5 ? (await c.u32()) | 0 : await c.u32());
+        return out;
+      }
       if (inner === 8) for (let i = 0; i < n; i++) await c.skip(await c.u64());
       else await c.skip(n * (SIZES[inner] ?? 0));
       return undefined;
@@ -152,11 +158,27 @@ export async function readGgufMeta(read: ReadAt): Promise<GgufMeta> {
     return typeof v === "number" ? v : 0;
   };
   const layers = num("block_count");
-  const heads = num("attention.head_count");
-  const kvHeads = num("attention.head_count_kv") || heads;
+  // A count may be one number for every layer or a list with one per layer (Inkling 2, 2026-11-27: read as 0, the
+  // context looked free and Deep Field asked for a million tokens).
+  const perLayer = (k: string): number[] => {
+    const v = kv.get(`${arch}.${k}`);
+    if (Array.isArray(v)) return v.map((x) => (typeof x === "number" ? x : 0));
+    return Array.from({ length: layers }, () => (typeof v === "number" ? v : 0));
+  };
+  const headsBy = perLayer("attention.head_count");
+  const kvHeadsBy = perLayer("attention.head_count_kv").map((n, i) => n || headsBy[i] || 0);
+  const heads = Math.max(0, ...headsBy);
   const embed = num("embedding_length");
   const keyLen = num("attention.key_length") || (heads ? embed / heads : 0);
   const valueLen = num("attention.value_length") || keyLen;
+  // Looped models run layers [start, end) `count` times, each pass with its own keys and values.
+  const loops = num("loop.count");
+  const from = num("loop.start");
+  const to = num("loop.end");
+  const passes = (i: number) => (loops > 1 && i >= from && i < to ? loops : 1);
+  const kvPerToken = kvHeadsBy
+    .slice(0, layers || kvHeadsBy.length)
+    .reduce((sum, n, i) => sum + n * (keyLen + valueLen) * 2 * passes(i), 0);
   const name = kv.get("general.name");
   return {
     architecture: arch,
@@ -165,7 +187,7 @@ export async function readGgufMeta(read: ReadAt): Promise<GgufMeta> {
     contextLength: num("context_length"),
     experts: num("expert_count"),
     expertsUsed: num("expert_used_count"),
-    kvBytesPerToken: Math.round(layers * kvHeads * (keyLen + valueLen) * 2),
+    kvBytesPerToken: Math.round(kvPerToken),
     ...(num("vocab_size") > 0 && { vocabSize: num("vocab_size") }),
     ...(num("nextn_predict_layers") > 0 && { mtpLayers: num("nextn_predict_layers") }),
   };

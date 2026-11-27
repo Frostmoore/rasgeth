@@ -30,7 +30,7 @@ function gguf(kv: [string, number, unknown][]): Uint8Array {
     else if (type === 8) str(v as string);
     else if (type === 9) {
       u32(4);
-      u64(3);
+      u64((v as number[]).length);
       for (const x of v as number[]) u32(x);
     }
   }
@@ -74,6 +74,29 @@ describe("GGUF header (2026-11-03)", () => {
       // 48 layers × 4 KV heads × (128 + 128) × 2 bytes
       kvBytesPerToken: 98304,
     });
+  });
+
+  it("counts heads given layer by layer and the layers a looped model runs again (Inkling 2, 2026-11-27)", async () => {
+    // Read as 0 before: the context looked free and Deep Field asked for a million tokens.
+    const header = gguf([
+      ["general.architecture", 8, "inkling2_loop"],
+      ["inkling2_loop.block_count", 4, 24],
+      ["inkling2_loop.context_length", 4, 1048576],
+      ["inkling2_loop.embedding_length", 4, 2304],
+      ["inkling2_loop.attention.head_count", 9, Array(24).fill(24)],
+      ["inkling2_loop.attention.head_count_kv", 9, Array(24).fill(8)],
+      ["inkling2_loop.attention.key_length", 4, 128],
+      ["inkling2_loop.attention.value_length", 4, 128],
+      ["inkling2_loop.expert_count", 4, 128],
+      ["inkling2_loop.expert_used_count", 4, 8],
+      ["inkling2_loop.loop.count", 4, 3],
+      ["inkling2_loop.loop.start", 4, 6],
+      ["inkling2_loop.loop.end", 4, 18],
+    ]);
+    const meta = await readGgufMeta(async (o, n) => header.subarray(o, o + n));
+    // 24 layers, 12 of them three times: 48 passes of 8 heads x (128 + 128) x 2 bytes, as llama.cpp's KV buffer.
+    expect(meta.kvBytesPerToken).toBe(48 * 8 * (128 + 128) * 2);
+    expect(meta.kvBytesPerToken).toBe(196608);
   });
 
   it("a model with MTP heads says how many (3.12.6: MTP decoding needs them)", async () => {

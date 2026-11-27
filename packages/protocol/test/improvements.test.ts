@@ -93,6 +93,14 @@ describe("what can be turned on (p3.12.6)", () => {
   it("keeps only what we really measured in the catalogue", () => {
     const tested = LOCAL_MODELS.flatMap((m) => (m.tested ?? []).map((t) => ({ id: m.id, ...t })));
     expect(tested).toEqual([
+      // tested-improvements.ts: Inkling 2 Mini on Rig (2026-11-27).
+      {
+        id: "inkling-2-mini",
+        improvement: "speculative",
+        mode: "ngram",
+        hardware: "NVIDIA RTX 4080 SUPER",
+        write: { before: 9.4, after: 12.7 },
+      },
       {
         id: "qwen3.8-27b",
         improvement: "noRepack",

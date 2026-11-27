@@ -1,4 +1,5 @@
 import type { TestedResult } from "./improvements.js";
+import { testedFor } from "./tested-improvements.js";
 
 /**
  * Models suggested for this computer (G24.3), from the smallest to the largest: well known,
@@ -138,6 +139,7 @@ export const LOCAL_MODELS: readonly LocalModel[] = [
     totalB: 26,
     activeB: 3.4,
     scores: { smart: 4, code: 4, tools: 4, languages: 4 },
+    tested: testedFor("inkling-2-mini"),
   },
   {
     id: "glm-4.7-flash",
@@ -173,22 +175,8 @@ export const LOCAL_MODELS: readonly LocalModel[] = [
     scores: { smart: 5, code: 4, tools: 5, languages: 3 },
     // Header checked 2026-11-25: `qwen35.nextn_predict_layers = 1`.
     mtp: true,
-    // Measured by us (p3.12.6): llama.cpp re-arranges the weights for the processor; writing one
-    // token at a time was faster without it on this computer, reading the message unchanged.
-    tested: [
-      {
-        improvement: "noRepack",
-        hardware: "Intel i5-12500H",
-        write: { before: 2.88, after: 3.21 },
-      },
-      // The model's own MTP heads, 2 drafts, 128 tokens, 54 W (measured on Coder).
-      {
-        improvement: "speculative",
-        mode: "mtp",
-        hardware: "Intel i5-12500H",
-        write: { before: 2.98, after: 3.88 },
-      },
-    ],
+    // What we measured ourselves: tested-improvements.ts.
+    tested: testedFor("qwen3.8-27b"),
   },
   {
     id: "gemma-4-31b",
