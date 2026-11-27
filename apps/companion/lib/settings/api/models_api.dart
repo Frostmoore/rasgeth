@@ -113,6 +113,14 @@ class ModelsSetup {
   int? get engineCtx => engine?['ctx'] is num ? (engine!['ctx'] as num).toInt() : null;
   String? get engineRecommended => _s(engine?['recommended']);
 
+  /// Processor threads for writing and for reading the message (3.12.10); 0 is the engine's own choice.
+  int get engineThreads => engine?['threads'] is num ? (engine!['threads'] as num).toInt() : 0;
+  int get engineThreadsBatch =>
+      engine?['threadsBatch'] is num ? (engine!['threadsBatch'] as num).toInt() : 0;
+
+  /// The processor's threads (`hardware.cores`), at least 1.
+  int get cores => hardware['cores'] is num ? (hardware['cores'] as num).toInt().clamp(1, 1024) : 1;
+
   /// `none`, `draft` or `ngram`: what speculative decoding the engine runs with.
   String get engineSpeculative => _s(engine?['speculative']) ?? 'none';
 
@@ -258,8 +266,12 @@ class RecommendedEngine {
   RecommendedEngine(Map<String, dynamic> j)
     : ubatch = j['ubatch'] is num ? (j['ubatch'] as num).toInt() : null,
       ctx = j['ctx'] is num ? (j['ctx'] as num).toInt() : null,
+      passes = j['passes'] is List ? (j['passes'] as List).length : 0,
       hardware = '${j['hardware'] ?? ''}',
       write = SpeedPair(_m(j['write']));
+
+  /// How many steps of reading passes there are by context (`passes`); more than none means they get shorter.
+  final int passes;
 
   /// Tokens of a reading pass, and the context it keeps.
   final int? ubatch;
@@ -501,6 +513,8 @@ class EngineChoices {
     this.speculative = 'none',
     this.ctx,
     this.recommended,
+    this.threads = 0,
+    this.threadsBatch = 0,
   });
 
   final bool bigChunks;
@@ -516,6 +530,10 @@ class EngineChoices {
   /// The engine we recommend for this catalog model, turned on (3.12.10): its id.
   final String? recommended;
 
+  /// Processor threads for writing and for reading the message (3.12.10); 0 is automatic, never sent.
+  final int threads;
+  final int threadsBatch;
+
   EngineChoices copy({
     bool? bigChunks,
     bool? prefetch,
@@ -524,6 +542,8 @@ class EngineChoices {
     int? ctx,
     String? recommended,
     bool noRecommended = false,
+    int? threads,
+    int? threadsBatch,
   }) => EngineChoices(
     bigChunks: bigChunks ?? this.bigChunks,
     prefetch: prefetch ?? this.prefetch,
@@ -531,6 +551,8 @@ class EngineChoices {
     speculative: speculative ?? this.speculative,
     ctx: ctx ?? this.ctx,
     recommended: noRecommended ? null : (recommended ?? this.recommended),
+    threads: threads ?? this.threads,
+    threadsBatch: threadsBatch ?? this.threadsBatch,
   );
 
   /// The choices the engine runs with now.
@@ -541,6 +563,8 @@ class EngineChoices {
     speculative: s.engineSpeculative,
     ctx: s.engineCtx,
     recommended: s.engineRecommended,
+    threads: s.engineThreads,
+    threadsBatch: s.engineThreadsBatch,
   );
 
   /// The body of `PUT /api/setup/engine` (and of the improvement test): only what is on; Big
@@ -559,6 +583,8 @@ class EngineChoices {
     if (noRepack) 'noRepack': true,
     if (!stream && ctx != null) 'ctx': ctx,
     if (recommended != null) 'recommended': recommended,
+    if (threads > 0) 'threads': threads,
+    if (threadsBatch > 0) 'threadsBatch': threadsBatch,
     if (speculative == 'ngram') 'speculative': 'ngram',
     if (speculative == 'mtp') 'speculative': 'mtp',
     if (speculative == 'draft' && draftModel != null) ...{
@@ -574,5 +600,7 @@ class EngineChoices {
       noRepack == s.engineNoRepack &&
       (stream || (ctx ?? 65536) == (s.engineCtx ?? 65536)) &&
       recommended == s.engineRecommended &&
+      threads == s.engineThreads &&
+      threadsBatch == s.engineThreadsBatch &&
       speculative == s.engineSpeculative;
 }

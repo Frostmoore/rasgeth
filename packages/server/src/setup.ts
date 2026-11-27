@@ -318,6 +318,12 @@ export interface EngineConfig {
    */
   recommended?: string | undefined;
   /**
+   * Processor threads chosen on the model's card (3.12.10): for writing (`-t`) and for reading the message (`-tb`).
+   * Unset: llama.cpp's own choice.
+   */
+  threads?: number | undefined;
+  threadsBatch?: number | undefined;
+  /**
    * Turned off by the person (2026-11-04): kept with its tuning, but not started when RedGiant
    * opens and using no memory until it is turned on again.
    */
@@ -1619,6 +1625,8 @@ export class SetupService {
           Boolean(now.noRepack) === Boolean(e.noRepack) &&
           now.ctx === e.ctx &&
           now.recommended === e.recommended &&
+          now.threads === e.threads &&
+          now.threadsBatch === e.threadsBatch &&
           now.speculative === e.speculative &&
           now.draftModel === e.draftModel &&
           // Another tuning picked from the table (2026-11-05) is a new start.
@@ -1995,6 +2003,8 @@ export class SetupService {
       Boolean(a.noRepack) === Boolean(b.noRepack) &&
       a.ctx === b.ctx &&
       a.recommended === b.recommended &&
+      a.threads === b.threads &&
+      a.threadsBatch === b.threadsBatch &&
       a.speculative === b.speculative &&
       a.draftModel === b.draftModel &&
       JSON.stringify(a.tuning ?? null) === JSON.stringify(b.tuning ?? null);

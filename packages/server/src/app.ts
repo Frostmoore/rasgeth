@@ -56,6 +56,7 @@ import {
   SEARCH_PROVIDER_IDS,
   SecretaryChannel,
   TelegramBotInput,
+  ubatchFor,
   WhatsAppBusinessInput,
   withRequestWords,
 } from "@redgiant/protocol";
@@ -2741,6 +2742,9 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       .string()
       .regex(/^[a-z0-9.-]+$/)
       .optional(),
+    /** Processor threads chosen on the model's card (3.12.10): writing and reading. */
+    threads: z.number().int().min(1).max(512).optional(),
+    threadsBatch: z.number().int().min(1).max(512).optional(),
   });
   app.get("/api/setup", (c) => wizard(c, () => (setup as SetupService).state()));
   app.put("/api/setup/models", (c) =>
@@ -4587,10 +4591,11 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       const listed = (await folder.files(repo).catch(() => [])).find((f) => f.file === file);
       const fileGb = listed?.sizeGb ?? (here ? here.size / 1024 ** 3 : 0);
       const hw = (await (setup as SetupService).state()).hardware;
-      const rec = c.req.query("recommended");
+      const id = c.req.query("recommended");
+      const rec = id ? recommendedFor(id) : undefined;
       return contextChoice(meta, fileGb, hw.suggestion, {
         windows: c.req.query("variant") === "windows",
-        ubatch: rec ? recommendedFor(rec)?.ubatch : undefined,
+        ubatch: rec ? (ctx: number) => ubatchFor(rec, ctx) ?? 512 : undefined,
       });
     }),
   );

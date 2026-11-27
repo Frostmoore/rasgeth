@@ -121,7 +121,7 @@ describe("GGUF header (2026-11-03)", () => {
     ]);
     const m = await readGgufMeta(async (o, n) => inkling.subarray(o, o + n));
     // Layers 5, 11, 17, 23 see everything; 11 and 17 run three times: 8 passes x 4096 bytes.
-    expect(m).toMatchObject({ kvGrowBytesPerToken: 32768, slidingWindow: 1024, pairBytes: 216 });
+    expect(m).toMatchObject({ kvGrowBytesPerToken: 32768, slidingWindow: 1024, pairBytes: 144 });
     // Qwen 3.5+: only every fourth layer has attention (measured header: 20480 bytes a token).
     const qwen = gguf([
       ["general.architecture", 8, "qwen35moe"],

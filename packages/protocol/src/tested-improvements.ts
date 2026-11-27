@@ -44,8 +44,13 @@ export const TESTED_IMPROVEMENTS: Readonly<Record<string, readonly TestedResult[
  * ours reach the engine: the page names the model, the server takes the settings from here.
  */
 export interface RecommendedEngine {
-  /** Tokens of a reading pass (`-ub`). */
+  /** Tokens of a reading pass (`-ub`) at the recommended context. */
   ubatch?: number;
+  /**
+   * The reading pass by the context booked, shortest context first (3.12.10): the pass for the first `upTo` at least
+   * as long as the context (the last beyond). For attention whose scratch grows with pass x context, longer contexts need shorter passes.
+   */
+  passes?: readonly { upTo: number; ubatch: number }[];
   /** The context to keep (tokens): the longest that keeps everything in the card where it was measured. */
   ctx?: number;
   /** The computer it was measured on, in words. */
@@ -56,19 +61,30 @@ export interface RecommendedEngine {
 
 export const RECOMMENDED_ENGINES: Readonly<Record<string, RecommendedEngine>> = {
   // Inkling 2 Mini UD-IQ3_XXS on Rig, 2026-11-27 (plan_contesto.md): its attention's scratch grows with the reading
-  // pass times the context; 256-token passes and 32 768 tokens keep it all in a 16 GB card. A rewritten file
-  // 9.4 -> 47.6 t/s, a long text 7.5 -> 49.7, the second turn of a conversation from the cache in 0.3 s.
+  // pass times the context, so the pass halves as the context doubles. A rewritten file at 65 536 tokens and
+  // 128-token passes 9.4 -> 40.8 t/s (32 768 and 256: 47.6; 131 072 and 64: 38.2), the second turn of a
+  // conversation from the cache in 0.4 s.
   "inkling-2-mini": {
-    ubatch: 256,
-    ctx: 32768,
+    ubatch: 128,
+    ctx: 65536,
+    passes: [
+      { upTo: 32768, ubatch: 256 },
+      { upTo: 65536, ubatch: 128 },
+      { upTo: 1048576, ubatch: 64 },
+    ],
     hardware: "NVIDIA RTX 4080 SUPER",
-    write: { before: 9.4, after: 47.6 },
+    write: { before: 9.4, after: 40.8 },
   },
 };
 
 /** The engine we recommend for a model, when we measured one. */
 export function recommendedFor(id: string): RecommendedEngine | undefined {
   return RECOMMENDED_ENGINES[id];
+}
+
+/** The reading pass of a recommended engine for `ctx` tokens of context: by its passes, else its one pass. */
+export function ubatchFor(rec: RecommendedEngine, ctx: number): number | undefined {
+  return (rec.passes?.find((p) => ctx <= p.upTo) ?? rec.passes?.at(-1))?.ubatch ?? rec.ubatch;
 }
 
 /** What we measured for a model, the improvements that helped (empty when none or not tried). */

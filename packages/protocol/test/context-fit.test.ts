@@ -11,7 +11,7 @@ const inkling = (o: Partial<ContextFitInput>): ContextFitInput => ({
   kvBytesPerToken: 196608,
   kvGrowBytesPerToken: 32768,
   slidingWindow: 1024,
-  pairBytes: 216,
+  pairBytes: 144,
   swaFull: true,
   kvBits: 16,
   ubatch: 512,
@@ -39,6 +39,20 @@ describe("context in the card (3.12.10)", () => {
       true,
       "50 t/s",
     ],
+    [
+      "65k, no --swa-full, q8, -ub 128, margin 2.5",
+      { swaFull: false, kvBits: 8 as const, ubatch: 128, marginGb: 2.5 },
+      65536,
+      true,
+      "44 t/s",
+    ],
+    [
+      "65k, no --swa-full, q8, -ub 64, margin 2.5",
+      { swaFull: false, kvBits: 8 as const, ubatch: 64, marginGb: 2.5 },
+      65536,
+      true,
+      "47 t/s",
+    ],
   ] as const)("%s at %i tokens: fits %s (%s)", (_w, o, ctx, fits) => {
     const i = inkling(o);
     expect(contextNeedGb(i, ctx) <= i.vramGb - i.marginGb).toBe(fits);
@@ -56,5 +70,15 @@ describe("context in the card (3.12.10)", () => {
     expect(contextInCard(inkling({ fileGb: 2, vramGb: 48, pairBytes: undefined }), 32768)).toBe(
       32768,
     );
+  });
+
+  it("with the pass shrinking as the context grows (Inkling's recommended engine) 64k fits, 128k does not", () => {
+    const passes = (ctx: number) => (ctx <= 32768 ? 256 : ctx <= 65536 ? 128 : 64);
+    const n = contextInCard(
+      inkling({ swaFull: false, kvBits: 8, ubatch: passes, marginGb: 2.5 }),
+      1048576,
+    );
+    expect(n).toBeGreaterThanOrEqual(65536);
+    expect(n).toBeLessThan(131072);
   });
 });

@@ -12042,6 +12042,11 @@ class AppLocalizationsIt extends AppLocalizations {
   String get moLmPreloadSpeed => 'Modello letto dal disco';
 
   @override
+  String moLmRecPasses(String n) {
+    return 'Legge a blocchi di $n token, più corti se il contesto è più lungo.';
+  }
+
+  @override
   String get moLmRecommended => 'consigliato';
 
   @override
@@ -12215,6 +12220,20 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get moLmThisPc => 'Questo computer';
+
+  @override
+  String get moLmThreadsAuto => 'automatico';
+
+  @override
+  String moLmThreadsHelp(String n) {
+    return 'Contano soprattutto quando il modello gira sul processore. Automatico: li sceglie il motore. Questo processore ne ha $n. Con core veloci ed efficienti insieme, di solito scrive meglio con i soli core veloci e legge meglio con tutti.';
+  }
+
+  @override
+  String get moLmThreadsRead => 'Thread del processore per leggere il messaggio';
+
+  @override
+  String get moLmThreadsWrite => 'Thread del processore per scrivere';
 
   @override
   String moLmTokensPerSec(String n) {

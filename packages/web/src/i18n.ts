@@ -2095,9 +2095,15 @@ const en = {
     "Without a graphics card of its own the context only takes more RAM: a longer one keeps longer conversations and documents.",
   lmCtxTooBig:
     "The model alone does not fit in the card: part of it runs on the processor whatever the context.",
+  lmThreadsWrite: "Processor threads for writing",
+  lmThreadsRead: "Processor threads for reading the message",
+  lmThreadsAuto: "automatic",
+  lmThreadsHelp:
+    "They count most when the model runs on the processor. Automatic: the engine chooses. This processor has {n}. With fast and efficient cores mixed, writing is often best with the fast cores only and reading with all of them.",
   lmRecTitle: "Recommended settings",
   lmRecSub: "Our engine for this model",
   lmRecPass: "Reading in passes of {n} tokens.",
+  lmRecPasses: "Reading in passes of {n} tokens, shorter with a longer context.",
   lmRecCtx: "Context {ctx}, all in the card.",
   lmImprTitle: "Improvements",
   lmImprWarn:
@@ -10828,9 +10834,15 @@ const it: Record<Key, string> = {
     "Senza una scheda grafica sua il contesto occupa solo più RAM: più è lungo, più lunghe le conversazioni e i documenti che tiene.",
   lmCtxTooBig:
     "Il modello da solo non sta nella scheda: una parte va sul processore qualunque sia il contesto.",
+  lmThreadsWrite: "Thread del processore per scrivere",
+  lmThreadsRead: "Thread del processore per leggere il messaggio",
+  lmThreadsAuto: "automatico",
+  lmThreadsHelp:
+    "Contano soprattutto quando il modello gira sul processore. Automatico: li sceglie il motore. Questo processore ne ha {n}. Con core veloci ed efficienti insieme, di solito scrive meglio con i soli core veloci e legge meglio con tutti.",
   lmRecTitle: "Impostazioni consigliate",
   lmRecSub: "Il nostro motore per questo modello",
   lmRecPass: "Legge a blocchi di {n} token.",
+  lmRecPasses: "Legge a blocchi di {n} token, più corti se il contesto è più lungo.",
   lmRecCtx: "Contesto {ctx}, tutto nella scheda.",
   lmImprTitle: "Miglioramenti",
   lmImprWarn:

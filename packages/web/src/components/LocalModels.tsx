@@ -497,6 +497,9 @@ export interface EngineChoices {
   ctx?: number | undefined;
   /** The engine we recommend for this catalog model, turned on (3.12.10): its id. */
   recommended?: string | undefined;
+  /** Processor threads for writing and for reading (3.12.10); unset: the engine's own choice. */
+  threads?: number | undefined;
+  threadsBatch?: number | undefined;
 }
 
 /** What goes with the activation for the card's choices: only what is on. */
@@ -507,6 +510,8 @@ export function choicesPayload(stream: boolean | undefined, c?: EngineChoices) {
     ...(c?.noRepack && { noRepack: true }),
     ...(!stream && c?.ctx && { ctx: c.ctx }),
     ...(c?.recommended && { recommended: c.recommended }),
+    ...(c?.threads && { threads: c.threads }),
+    ...(c?.threadsBatch && { threadsBatch: c.threadsBatch }),
   };
 }
 
@@ -571,6 +576,48 @@ export function ContextBar({
 }
 
 /**
+ * The processor threads (3.12.10, the user: «anche il numero di thread devo poterlo scegliere»): one bar for writing
+ * and one for reading the message, from «automatic» (the engine's own choice) to every thread of the processor.
+ */
+export function ThreadsChoice({
+  cores,
+  threads,
+  threadsBatch,
+  onChange,
+}: {
+  cores: number;
+  threads: number;
+  threadsBatch: number;
+  onChange: (threads: number, threadsBatch: number) => void;
+}) {
+  const max = Math.max(1, cores);
+  const text = (n: number) => (n > 0 ? String(n) : t("lmThreadsAuto"));
+  return (
+    <div class="threads-choice" data-testid="threads">
+      <Slider
+        label={t("lmThreadsWrite")}
+        value={Math.min(threads, max)}
+        min={0}
+        max={max}
+        step={1}
+        format={text}
+        onChange={(n) => onChange(n, threadsBatch)}
+      />
+      <Slider
+        label={t("lmThreadsRead")}
+        value={Math.min(threadsBatch, max)}
+        min={0}
+        max={max}
+        step={1}
+        format={text}
+        onChange={(n) => onChange(threads, n)}
+        help={t("lmThreadsHelp", { n: String(max) })}
+      />
+    </div>
+  );
+}
+
+/**
  * The engine we recommend for this model (3.12.10): our settings, measured faster on a computer, with a gold border
  * and a switch the person turns on and off; never on by itself.
  */
@@ -595,7 +642,8 @@ function RecommendedCard({
       </div>
       <p class="ui-help">
         {[
-          rec.ubatch && t("lmRecPass", { n: String(rec.ubatch) }),
+          rec.ubatch &&
+            t(rec.passes?.length ? "lmRecPasses" : "lmRecPass", { n: String(rec.ubatch) }),
           rec.ctx && t("lmRecCtx", { ctx: ctxText(rec.ctx) }),
         ]
           .filter(Boolean)
@@ -1394,6 +1442,8 @@ function ModelPanel({
       live = false;
     };
   }, [file?.file, variant, recOn]);
+  const [threads, setThreads] = useState<number>((inUse && eng?.threads) || 0);
+  const [threadsBatch, setThreadsBatch] = useState<number>((inUse && eng?.threadsBatch) || 0);
   const switchRec = (v: boolean) => {
     setRecOn(v);
     if (v && rec?.ctx) setCtx(rec.ctx);
@@ -1410,6 +1460,8 @@ function ModelPanel({
     noRepack: flags.noRepack,
     ctx: Math.min(ctx, ctxInfo?.trained ?? ctx),
     recommended: rec && recOn ? m.id : undefined,
+    threads: threads || undefined,
+    threadsBatch: threadsBatch || undefined,
   };
   const sameChoices =
     !inUse ||
@@ -1417,7 +1469,9 @@ function ModelPanel({
       Boolean(stream && choices.moePrefetch) === Boolean(eng?.moePrefetch) &&
       Boolean(choices.noRepack) === Boolean(eng?.noRepack) &&
       (stream || (eng?.ctx ?? 65536) === choices.ctx) &&
-      eng?.recommended === choices.recommended);
+      eng?.recommended === choices.recommended &&
+      eng?.threads === choices.threads &&
+      eng?.threadsBatch === choices.threadsBatch);
   const sameSpec = (chosenSpec?.speculative ?? "none") === running && sameChoices;
   const downloaded = !!name && files.some((f) => f.file === name && !f.partial);
   const measure = async (id: "prefetch" | "bigChunks" | "noRepack") => {
@@ -1533,6 +1587,15 @@ function ModelPanel({
             </label>
           )}
           {!stream && <ContextBar info={ctxInfo} value={ctx} onChange={setCtx} />}
+          <ThreadsChoice
+            cores={s.hardware.cores}
+            threads={threads}
+            threadsBatch={threadsBatch}
+            onChange={(w, r) => {
+              setThreads(w);
+              setThreadsBatch(r);
+            }}
+          />
           <div class="impr">
             <span class="ui-label">{t("lmImprTitle")}</span>
             <p class="notice warn">{t("lmImprWarn")}</p>

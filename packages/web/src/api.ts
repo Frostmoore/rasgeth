@@ -226,6 +226,8 @@ export interface SetupState {
       /** The context booked (3.12.10) and the engine we recommend, when on. */
       ctx?: number;
       recommended?: string;
+      threads?: number;
+      threadsBatch?: number;
       /** The tuning's tries (2026-11-05): the kept one's speed is the model's measured speed. */
       trials?: { genTps?: number; chosen?: boolean }[];
       /** What the last start decided (SSD stream). */
@@ -1244,6 +1246,8 @@ export class Api {
       /** The context chosen on the bar and the engine we recommend (3.12.10). */
       ctx?: number;
       recommended?: string;
+      threads?: number;
+      threadsBatch?: number;
       /** A row of the tuning table picked by the person (2026-11-05). */
       tuning?: { moeCacheShare: number; opOffload: boolean; batch?: number };
     } | null,
@@ -1673,6 +1677,8 @@ export class Api {
       noRepack?: boolean;
       ctx?: number;
       recommended?: string;
+      threads?: number;
+      threadsBatch?: number;
       speculative?: "draft" | "ngram" | "mtp";
       draftModel?: string;
     },

@@ -6,7 +6,7 @@
 // For a dense model llama.cpp fits as many layers as it can in the card (--fit) and the rest
 // comes from RAM or the SSD at each token. This file decides the numbers; the engine does the rest.
 import type { GgufMeta } from "@redgiant/engine-local";
-import { recommendedFor } from "@redgiant/protocol";
+import { recommendedFor, ubatchFor } from "@redgiant/protocol";
 
 const GB = 1024 ** 3;
 
@@ -204,9 +204,9 @@ export function bigBatches(
 
 /**
  * The context booked and how (3.12.10, plan_contesto.md): the person's choice from the model's card, else the
- * recommended engine's, else `NORMAL_CTX`; the recommended reading pass; keys and values at 8 bits on a graphics card
- * (Inkling 2 Mini on an RTX 4080 SUPER: about half the memory, writing 10 -> 18 t/s at 65 536 tokens). With SSD
- * stream the plan decides, these give only the context.
+ * recommended engine's, else `NORMAL_CTX`; the recommended engine's reading pass for that context; keys and values at
+ * 8 bits on a graphics card (Inkling 2 Mini on an RTX 4080 SUPER: about half the memory, writing 10 -> 18 t/s at
+ * 65 536 tokens). With SSD stream the plan decides, these give only the context.
  */
 export function contextArgs(
   cfg: { ctx?: number | undefined; recommended?: string | undefined },
@@ -216,15 +216,31 @@ export function contextArgs(
   const rec = cfg.recommended ? recommendedFor(cfg.recommended) : undefined;
   const ctx = plan?.ctx ?? cfg.ctx ?? rec?.ctx ?? NORMAL_CTX;
   if (plan) return { ctx, args: [] };
+  const ubatch = rec && ubatchFor(rec, ctx);
   return {
     ctx,
     args: [
       "-c",
       String(ctx),
-      ...(rec?.ubatch ? ["-ub", String(rec.ubatch)] : []),
+      ...(ubatch ? ["-ub", String(ubatch)] : []),
       ...(gpu ? ["-ctk", "q8_0", "-ctv", "q8_0"] : []),
     ],
   };
+}
+
+/**
+ * The processor threads the person chose on the model's card (3.12.10): `-t` for writing, `-tb` for reading the
+ * message; unset leaves llama.cpp's own choice. On Coder (Intel i5-12500H, Inkling 2 Mini on the processor) 8 for
+ * writing and 12 for reading: a long text 5.9 -> 6.7 t/s, reading 22.6 -> 26.9.
+ */
+export function threadArgs(cfg: {
+  threads?: number | undefined;
+  threadsBatch?: number | undefined;
+}): string[] {
+  return [
+    ...(cfg.threads ? ["-t", String(cfg.threads)] : []),
+    ...(cfg.threadsBatch ? ["-tb", String(cfg.threadsBatch)] : []),
+  ];
 }
 
 /**

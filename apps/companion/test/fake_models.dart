@@ -86,8 +86,12 @@ class FakeModels {
       ],
       // 3.12.10: an engine we recommend for it (the page's `RECOMMENDED_ENGINES`).
       'recommended': {
-        'ubatch': 256,
-        'ctx': 32768,
+        'ubatch': 128,
+        'passes': [
+          {'upTo': 32768, 'ubatch': 256},
+          {'upTo': 65536, 'ubatch': 128},
+        ],
+        'ctx': 65536,
         'hardware': 'NVIDIA RTX 4080 SUPER',
         'write': {'before': 9.4, 'after': 47.6},
       },

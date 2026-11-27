@@ -9031,6 +9031,14 @@
     }
   },
   "moLmPreloadSpeed": "Model read from the disk",
+  "moLmRecPasses": "Reading in passes of {n} tokens, shorter with a longer context.",
+  "@moLmRecPasses": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "moLmRecommended": "recommended",
   "moLmResume": "Go on",
   "moLmRoom": "Room",
@@ -9151,6 +9159,17 @@
   "moLmSysmemText": "When the card's memory runs out, NVIDIA's driver on Windows uses the computer's RAM instead of failing: reading messages becomes 2 to 3.5 times slower. Rasgeth cannot read this setting, so check it once:",
   "moLmSysmemTitle": "NVIDIA card: turn off «CUDA Sysmem Fallback»",
   "moLmThisPc": "This computer",
+  "moLmThreadsAuto": "automatic",
+  "moLmThreadsHelp": "They count most when the model runs on the processor. Automatic: the engine chooses. This processor has {n}. With fast and efficient cores mixed, writing is often best with the fast cores only and reading with all of them.",
+  "@moLmThreadsHelp": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmThreadsRead": "Processor threads for reading the message",
+  "moLmThreadsWrite": "Processor threads for writing",
   "moLmTokensPerSec": "{n} tokens/s",
   "@moLmTokensPerSec": {
     "placeholders": {

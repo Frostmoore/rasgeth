@@ -3427,6 +3427,14 @@
   "moLmPaused": "In pausa: {done} di {total}",
   "moLmPausedAt": "In pausa a {done}",
   "moLmPreloadSpeed": "Modello letto dal disco",
+  "moLmRecPasses": "Legge a blocchi di {n} token, più corti se il contesto è più lungo.",
+  "@moLmRecPasses": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "moLmRecommended": "consigliato",
   "moLmResume": "Riprendi",
   "moLmRoom": "Spazio",
@@ -3476,6 +3484,17 @@
   "moLmSysmemText": "Quando la memoria della scheda finisce, il driver NVIDIA su Windows usa la RAM del computer invece di dare errore: la lettura dei messaggi diventa da 2 a 3,5 volte più lenta. Rasgeth non può leggere questa impostazione, quindi controllala una volta:",
   "moLmSysmemTitle": "Scheda NVIDIA: spegni «CUDA Sysmem Fallback»",
   "moLmThisPc": "Questo computer",
+  "moLmThreadsAuto": "automatico",
+  "moLmThreadsHelp": "Contano soprattutto quando il modello gira sul processore. Automatico: li sceglie il motore. Questo processore ne ha {n}. Con core veloci ed efficienti insieme, di solito scrive meglio con i soli core veloci e legge meglio con tutti.",
+  "@moLmThreadsHelp": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmThreadsRead": "Thread del processore per leggere il messaggio",
+  "moLmThreadsWrite": "Thread del processore per scrivere",
   "moLmTokensPerSec": "{n} token/s",
   "moLmTokensUnit": "token/s",
   "moLmTooBig": "Serve almeno {need}: su questo computer ci sta fino a {max}.",

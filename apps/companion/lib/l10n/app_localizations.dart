@@ -20655,6 +20655,12 @@ abstract class AppLocalizations {
   /// **'Model read from the disk'**
   String get moLmPreloadSpeed;
 
+  /// No description provided for @moLmRecPasses.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading in passes of {n} tokens, shorter with a longer context.'**
+  String moLmRecPasses(String n);
+
   /// No description provided for @moLmRecommended.
   ///
   /// In en, this message translates to:
@@ -20948,6 +20954,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This computer'**
   String get moLmThisPc;
+
+  /// No description provided for @moLmThreadsAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'automatic'**
+  String get moLmThreadsAuto;
+
+  /// No description provided for @moLmThreadsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'They count most when the model runs on the processor. Automatic: the engine chooses. This processor has {n}. With fast and efficient cores mixed, writing is often best with the fast cores only and reading with all of them.'**
+  String moLmThreadsHelp(String n);
+
+  /// No description provided for @moLmThreadsRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Processor threads for reading the message'**
+  String get moLmThreadsRead;
+
+  /// No description provided for @moLmThreadsWrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Processor threads for writing'**
+  String get moLmThreadsWrite;
 
   /// No description provided for @moLmTokensPerSec.
   ///

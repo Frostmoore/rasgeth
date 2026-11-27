@@ -182,6 +182,75 @@ class ContextBar extends StatelessWidget {
   }
 }
 
+/// The processor threads (3.12.10, the page's `ThreadsChoice`): one bar for writing and one for reading the
+/// message, from «automatic» (0, the engine's own choice) to every thread of the processor.
+class ThreadsChoice extends StatelessWidget {
+  const ThreadsChoice({
+    super.key,
+    required this.cores,
+    required this.threads,
+    required this.threadsBatch,
+    required this.onChanged,
+  });
+
+  final int cores;
+  final int threads;
+  final int threadsBatch;
+  final void Function(int threads, int threadsBatch) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final max = cores < 1 ? 1 : cores;
+    String text(int n) => n > 0 ? '$n' : l.moLmThreadsAuto;
+    Widget bar(String id, String label, int value, ValueChanged<int> set) => Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(fontWeight: FontWeight.w700, color: c.text, fontSize: 14),
+              ),
+            ),
+            Text(
+              text(value.clamp(0, max)),
+              key: Key('threads-$id-value'),
+              style: TextStyle(fontWeight: FontWeight.w800, color: c.accent),
+            ),
+          ],
+        ),
+        Slider(
+          key: Key('threads-$id-slider'),
+          value: value.clamp(0, max).toDouble(),
+          min: 0,
+          max: max.toDouble(),
+          divisions: max,
+          label: text(value.clamp(0, max)),
+          onChanged: (v) => set(v.round()),
+        ),
+      ],
+    );
+    return Padding(
+      key: const Key('threads-choice'),
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          bar('write', l.moLmThreadsWrite, threads, (n) => onChanged(n, threadsBatch)),
+          bar('read', l.moLmThreadsRead, threadsBatch, (n) => onChanged(threads, n)),
+          Text(
+            l.moLmThreadsHelp('$max'),
+            style: TextStyle(color: c.dim, fontSize: 12.5, height: 1.35),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// One improvement: name and what it does, its switch (none for the one made of choices), the
 /// help, the lock with its reason, the gold star, what was measured here and the button to measure.
 class ImprovementCard extends StatelessWidget {
@@ -793,6 +862,12 @@ class _ImprovementsSectionState extends State<ImprovementsSection> {
             value: ch.ctx ?? 65536,
             onChanged: (v) => widget.onChoices(ch.copy(ctx: v)),
           ),
+        ThreadsChoice(
+          cores: widget.s.cores,
+          threads: ch.threads,
+          threadsBatch: ch.threadsBatch,
+          onChanged: (w, r) => widget.onChoices(ch.copy(threads: w, threadsBatch: r)),
+        ),
         Padding(
           padding: const EdgeInsets.only(top: 6, bottom: 6),
           child: Text(
@@ -814,7 +889,8 @@ class _ImprovementsSectionState extends State<ImprovementsSection> {
               v ? ch.copy(recommended: m.id, ctx: rec.ctx) : ch.copy(noRecommended: true),
             ),
             help: [
-              if (rec.ubatch != null) l.moLmRecPass('${rec.ubatch}'),
+              if (rec.ubatch != null)
+                rec.passes > 0 ? l.moLmRecPasses('${rec.ubatch}') : l.moLmRecPass('${rec.ubatch}'),
               if (rec.ctx != null) l.moLmRecCtx(ctxText(rec.ctx!)),
             ].join(' '),
             tested: improvementTested(

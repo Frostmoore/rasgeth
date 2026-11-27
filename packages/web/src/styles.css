@@ -11153,6 +11153,12 @@ button.pick-tile.on {
   opacity: 1;
 }
 /* The context bar's «all in the card up to here» (3.12.10). */
+/* The processor threads on a model's card (3.12.10): two bars, apart. */
+.threads-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
 .kit-slider-mark {
   position: absolute;
   top: 50%;

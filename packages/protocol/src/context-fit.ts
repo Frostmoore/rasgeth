@@ -22,8 +22,8 @@ export interface ContextFitInput {
   swaFull: boolean;
   /** Keys and values at 8 bits (q8_0) or 16. */
   kvBits: 8 | 16;
-  /** Tokens of a reading pass (`-ub`, llama.cpp's default 512). */
-  ubatch: number;
+  /** Tokens of a reading pass (`-ub`, llama.cpp's default 512), or the pass for each context. */
+  ubatch: number | ((ctx: number) => number);
 }
 
 const GIB = 1024 ** 3;
@@ -41,7 +41,8 @@ export function contextNeedGb(i: ContextFitInput, ctx: number): number {
       scale *
       Math.min(ctx, i.slidingWindow ?? 0)
     : 0;
-  const scratch = (i.pairBytes ?? 0) * i.ubatch * ctx;
+  const ubatch = typeof i.ubatch === "function" ? i.ubatch(ctx) : i.ubatch;
+  const scratch = (i.pairBytes ?? 0) * ubatch * ctx;
   return i.fileGb + (perToken * ctx + window + scratch) / GIB + BASE_GB;
 }
 
@@ -51,15 +52,8 @@ export function contextNeedGb(i: ContextFitInput, ctx: number): number {
  */
 export function contextInCard(i: ContextFitInput, max: number): number {
   const room = i.vramGb - i.marginGb;
-  if (contextNeedGb(i, 1024) > room) return 0;
-  let lo = 1024;
-  let hi = Math.max(1024, Math.floor(max / 1024) * 1024);
-  if (contextNeedGb(i, hi) <= room) return hi;
-  // The need grows with the context: the last 1024-step that fits.
-  while (hi - lo > 1024) {
-    const mid = Math.floor((lo + hi) / 2048) * 1024;
-    if (contextNeedGb(i, mid) <= room) lo = mid;
-    else hi = mid;
-  }
-  return lo;
+  // From the longest down: with a pass that shrinks as the context grows the need is not monotonic.
+  for (let ctx = Math.max(1024, Math.floor(max / 1024) * 1024); ctx >= 1024; ctx -= 1024)
+    if (contextNeedGb(i, ctx) <= room) return ctx;
+  return 0;
 }

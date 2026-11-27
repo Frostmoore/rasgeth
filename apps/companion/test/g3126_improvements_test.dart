@@ -45,6 +45,11 @@ void main() {
       'speculative': 'draft',
       'draftModel': 'small.gguf',
     });
+    expect(const EngineChoices(threads: 6, threadsBatch: 0).body('cpu', 'm.gguf'), {
+      'variant': 'cpu',
+      'model': 'm.gguf',
+      'threads': 6,
+    });
     expect(const EngineChoices().body('cpu', 'm.gguf'), {'variant': 'cpu', 'model': 'm.gguf'});
     expect(const EngineChoices(speculative: 'mtp').body('cpu', 'm.gguf'), {
       'variant': 'cpu',
@@ -180,7 +185,9 @@ void main() {
         expect(find.byKey(const Key('impr-recommended')), findsOneWidget);
         expect(find.text('Impostazioni consigliate'), findsOneWidget);
         expect(
-          find.textContaining('Legge a blocchi di 256 token. Contesto 32k, tutto nella scheda.'),
+          find.textContaining(
+            'Legge a blocchi di 128 token, più corti se il contesto è più lungo. Contesto 64k, tutto nella scheda.',
+          ),
           findsOneWidget,
         );
         expect(find.textContaining('NVIDIA RTX 4080 SUPER'), findsOneWidget);
@@ -190,12 +197,46 @@ void main() {
         expect((fm.bodies['PUT /api/setup/engine'] as Map)['engine'], {
           'variant': 'cuda',
           'model': 'Qwen3-30B-A3B-Q4_K_M.gguf',
-          'ctx': 32768,
+          'ctx': 65536,
           'recommended': 'qwen3-30b',
         });
         await done(tester);
       },
     );
+
+    testWidgets('3.12.10: the processor threads, automatic until moved, then with the start', (
+      tester,
+    ) async {
+      fm.files.add({'file': 'Qwen3-30B-A3B-Q4_K_M.gguf', 'bytes': 18500000000, 'partial': false});
+      await open(tester);
+      await tap(tester, 'lm-card-qwen3-30b');
+      expect(find.byKey(const Key('threads-choice')), findsOneWidget);
+      expect(find.text('Thread del processore per scrivere'), findsOneWidget);
+      expect(find.text('Thread del processore per leggere il messaggio'), findsOneWidget);
+      expect(find.text('automatico'), findsNWidgets(2));
+      expect(find.textContaining('Questo processore ne ha 16.'), findsOneWidget);
+      // Untouched: nothing is sent.
+      await tap(tester, 'lm-start');
+      expect(
+        (fm.bodies['PUT /api/setup/engine'] as Map)['engine'],
+        isNot(anyOf(contains('threads'), contains('threadsBatch'))),
+      );
+      final write = tester.widget<Slider>(find.byKey(const Key('threads-write-slider')));
+      write.onChanged!(6);
+      await _settle(tester);
+      final read = tester.widget<Slider>(find.byKey(const Key('threads-read-slider')));
+      read.onChanged!(16);
+      await _settle(tester);
+      expect(find.text('automatico'), findsNothing);
+      await tap(tester, 'lm-start');
+      expect((fm.bodies['PUT /api/setup/engine'] as Map)['engine'], {
+        'variant': 'cuda',
+        'model': 'Qwen3-30B-A3B-Q4_K_M.gguf',
+        'threads': 6,
+        'threadsBatch': 16,
+      });
+      await done(tester);
+    });
 
     testWidgets('the same in English', (tester) async {
       await open(tester, lang: 'en');

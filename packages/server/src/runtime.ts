@@ -58,6 +58,7 @@ import {
   noRepackArgs,
   speculativeArgs,
   streamPlan,
+  threadArgs,
 } from "./stream.js";
 import type { WinEngine } from "./win-engine.js";
 
@@ -555,11 +556,16 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
           if (template) await installTemplate(template, join(win.dir, "templates"));
           // Without SSD stream: the context booked and how, as a plan of its own (3.12.10).
           const context = contextArgs(cfg, plan, true);
-          const winPlan = plan ?? {
-            ctx: context.ctx,
-            args: context.args.filter((_, i, a) => a[i] !== "-c" && a[i - 1] !== "-c"),
-            fit: true,
-          };
+          const winPlan = plan
+            ? { ...plan, args: [...plan.args, ...threadArgs(cfg)] }
+            : {
+                ctx: context.ctx,
+                args: [
+                  ...context.args.filter((_, i, a) => a[i] !== "-c" && a[i - 1] !== "-c"),
+                  ...threadArgs(cfg),
+                ],
+                fit: true,
+              };
           const baseURL = await win.start(
             cfg.model,
             h,
@@ -648,6 +654,8 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
             // forcing them all in (--n-gpu-layers 999) let a 12 GB model on a 16 GB card spill
             // into shared memory at the first long read, minutes instead of seconds (2026-11-04).
             ...(plan ? ["-c", String(plan.ctx), ...plan.args] : context.args),
+            // The processor threads chosen on the model's card (3.12.10).
+            ...threadArgs(cfg),
             // Speculative decoding, when the person turned it on (2026-11-04).
             ...speculativeArgs(cfg.speculative, cfg.draftModel && `/models/${cfg.draftModel}`),
             ...noRepackArgs(cfg.noRepack),

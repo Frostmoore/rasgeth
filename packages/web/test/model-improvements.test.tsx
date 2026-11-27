@@ -313,7 +313,7 @@ describe("Improvements in the model's card (p3.12.6)", () => {
     const rec = await waitFor(() => card("recommended"));
     expect(rec.className).toMatch(/gold/);
     expect(rec.textContent).toMatch(
-      /Legge a blocchi di 256 token\. Contesto 32k, tutto nella scheda\./,
+      /Legge a blocchi di 128 token, più corti se il contesto è più lungo\. Contesto 64k, tutto nella scheda\./,
     );
     expect(rec.textContent).toMatch(/NVIDIA RTX 4080 SUPER/);
     const sw = rec.querySelector("[role=switch]") as HTMLElement;
@@ -328,9 +328,24 @@ describe("Improvements in the model's card (p3.12.6)", () => {
     const sent = calls.find((c) => c.name === "setupEngine")?.args[0];
     expect(sent).toMatchObject({
       model: "inkling-2-mini-Q4.gguf",
-      ctx: 32768,
+      ctx: 65536,
       recommended: "inkling-2-mini",
     });
+  });
+
+  it("3.12.10: the processor threads, automatic until chosen, for writing and reading apart", async () => {
+    choices = [entry("qwen3.8-27b")];
+    const r = render(<LocalModels s={state()} reload={() => {}} />);
+    await open(r, "Qwen3.8 27B");
+    const box = await waitFor(() => r.getByTestId("threads"));
+    expect(box.textContent).toMatch(/automatico/);
+    expect(box.textContent).toMatch(/Questo processore ne ha 12/);
+    const [write, read] = Array.from(box.querySelectorAll("input[type=range]")) as HTMLElement[];
+    fireEvent.input(write as HTMLElement, { target: { value: "8" } });
+    fireEvent.input(read as HTMLElement, { target: { value: "12" } });
+    fireEvent.click(startButton(r));
+    const sent = calls.find((c) => c.name === "setupEngine")?.args[0];
+    expect(sent).toMatchObject({ threads: 8, threadsBatch: 12 });
   });
 
   it("sends nothing it was not asked: switches off, no extra fields", async () => {
@@ -342,6 +357,8 @@ describe("Improvements in the model's card (p3.12.6)", () => {
     expect(sent.noRepack).toBeUndefined();
     expect(sent.bigChunks).toBeUndefined();
     expect(sent.moePrefetch).toBeUndefined();
+    expect(sent.threads).toBeUndefined();
+    expect(sent.threadsBatch).toBeUndefined();
   });
 
   it("shows the running engine's choices on the active model's card", async () => {

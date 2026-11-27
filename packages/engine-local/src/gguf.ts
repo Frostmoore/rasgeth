@@ -27,7 +27,8 @@ export interface GgufMeta {
   slidingWindow?: number;
   /**
    * Attention with relative positions (Inkling 2, 3.12.10): its scratch grows with the reading pass times the
-   * context, about these bytes for each pair of tokens (fitted on Rig: 216 bytes for 24 heads). Unset for the others.
+   * context, about these bytes for each pair of tokens (fitted on Rig's runs with a 2.5 GB margin: 65 536 tokens fit
+   * with 128-token passes, not with 256; 144 bytes for 24 heads). Unset for the others.
    */
   pairBytes?: number;
 }
@@ -226,7 +227,7 @@ export async function readGgufMeta(read: ReadAt): Promise<GgufMeta> {
     ...(num("vocab_size") > 0 && { vocabSize: num("vocab_size") }),
     ...(num("nextn_predict_layers") > 0 && { mtpLayers: num("nextn_predict_layers") }),
     ...(kvGrow !== undefined && { kvGrowBytesPerToken: Math.round(kvGrow), slidingWindow: window }),
-    ...(relative && { pairBytes: Math.round(heads * 9) }),
+    ...(relative && { pairBytes: Math.round(heads * 6) }),
   };
 }
 
