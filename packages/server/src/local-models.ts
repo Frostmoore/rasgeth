@@ -1,6 +1,8 @@
 // The suggested local models for this computer (G24.3): for each one, the best file that fits
 // (`suggest`), its quality in words, or why none fits.
+import type { GgufMeta } from "@redgiant/engine-local";
 import {
+  contextInCard,
   type Improvement,
   type ImprovementInput,
   improvementsFor,
@@ -8,6 +10,7 @@ import {
   type LocalModel,
 } from "@redgiant/protocol";
 import { betterNearby, type GgufFile, HuggingFace, offered, qualityOf, suggest } from "./hf.js";
+import { NORMAL_CTX } from "./stream.js";
 
 /**
  * A file's quality among its repository's (2026-11-04): by its name, unless it is about as big as
@@ -113,4 +116,36 @@ export async function localModelChoices(
       }
     }),
   );
+}
+
+/**
+ * The context bar of a model's card (3.12.10, plan_contesto.md): the longest context the model knows, and how much of
+ * it stays in the card with Rasgeth's settings (no --swa-full, keys and values at 8 bits, the margin left free on
+ * Windows, the recommended engine's reading pass when it is on). `inCard` is null without a card of its own (the
+ * processor, or one memory shared with it): there the context only takes more RAM.
+ */
+export function contextChoice(
+  meta: GgufMeta,
+  fileGb: number,
+  hw: { kind: "gpu" | "gpu-unknown" | "igpu" | "cpu"; vramGb: number },
+  opts: { windows: boolean; ubatch?: number | undefined },
+): { trained: number; inCard: number | null } {
+  const trained = meta.contextLength || NORMAL_CTX;
+  if (hw.kind !== "gpu" || hw.vramGb <= 0) return { trained, inCard: null };
+  const inCard = contextInCard(
+    {
+      fileGb,
+      vramGb: hw.vramGb,
+      marginGb: opts.windows ? 2.5 : 1,
+      kvBytesPerToken: meta.kvBytesPerToken,
+      kvGrowBytesPerToken: meta.kvGrowBytesPerToken,
+      slidingWindow: meta.slidingWindow,
+      pairBytes: meta.pairBytes,
+      swaFull: false,
+      kvBits: 8,
+      ubatch: opts.ubatch ?? 512,
+    },
+    trained,
+  );
+  return { trained, inCard };
 }

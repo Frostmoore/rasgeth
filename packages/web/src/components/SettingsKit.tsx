@@ -455,6 +455,7 @@ export function Slider({
   onChange,
   format = String,
   help,
+  mark,
 }: {
   label: string;
   value: number;
@@ -465,6 +466,8 @@ export function Slider({
   /** The value in words ("80%", "at 80%"), beside the name and under the notches' ends. */
   format?: (v: number) => string;
   help?: ComponentChildren;
+  /** A gold line at a value (3.12.10, the context bar: «all in the card up to here»), named for screen readers. */
+  mark?: { at: number; label: string } | undefined;
 }) {
   const id = useId();
   const count = Math.round((max - min) / step);
@@ -487,6 +490,13 @@ export function Slider({
               style={{ "--at": String(frac(n)) }}
             />
           ))}
+          {mark && (
+            <span
+              class="kit-slider-mark"
+              title={mark.label}
+              style={{ "--at": String(frac(mark.at)) }}
+            />
+          )}
         </span>
         <input
           id={id}

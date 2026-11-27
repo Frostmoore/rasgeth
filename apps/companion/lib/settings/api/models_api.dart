@@ -109,6 +109,10 @@ class ModelsSetup {
   bool get engineMoePrefetch => engine?['moePrefetch'] == true;
   bool get engineNoRepack => engine?['noRepack'] == true;
 
+  /// The context the engine books (3.12.10), and the engine we recommend when it is on.
+  int? get engineCtx => engine?['ctx'] is num ? (engine!['ctx'] as num).toInt() : null;
+  String? get engineRecommended => _s(engine?['recommended']);
+
   /// `none`, `draft` or `ngram`: what speculative decoding the engine runs with.
   String get engineSpeculative => _s(engine?['speculative']) ?? 'none';
 
@@ -249,6 +253,21 @@ class TestedResult {
   final SpeedPair? write;
 }
 
+/// An engine set up for one model that we measured faster (3.12.10, the page's `RecommendedEngine`).
+class RecommendedEngine {
+  RecommendedEngine(Map<String, dynamic> j)
+    : ubatch = j['ubatch'] is num ? (j['ubatch'] as num).toInt() : null,
+      ctx = j['ctx'] is num ? (j['ctx'] as num).toInt() : null,
+      hardware = '${j['hardware'] ?? ''}',
+      write = SpeedPair(_m(j['write']));
+
+  /// Tokens of a reading pass, and the context it keeps.
+  final int? ubatch;
+  final int? ctx;
+  final String hardware;
+  final SpeedPair write;
+}
+
 /// What the person measured on this computer (`config.improvementTests`).
 class ImprovementTest {
   ImprovementTest(Map<String, dynamic> j)
@@ -285,7 +304,8 @@ class LocalChoice {
       tested = [
         for (final i in j['tested'] is List ? j['tested'] as List : const [])
           if (i is Map) TestedResult(i.cast<String, dynamic>()),
-      ];
+      ],
+      recommended = j['recommended'] is Map ? RecommendedEngine(_m(j['recommended'])) : null;
 
   final String id;
   final String name;
@@ -305,6 +325,9 @@ class LocalChoice {
   /// Empty with an older server (then only No Repack and Speculative Decoding stay on offer).
   final List<Improvement> improvements;
   final List<TestedResult> tested;
+
+  /// The engine we recommend for this model, when we measured one (3.12.10, `RECOMMENDED_ENGINES`).
+  final RecommendedEngine? recommended;
 
   Improvement? improvement(String id) => improvements.where((i) => i.id == id).firstOrNull;
 }
@@ -375,6 +398,28 @@ extension ModelsApi on RedGiantClient {
 
   /// `PUT /api/setup/models`.
   Future<void> setupModels(Map<String, Object?> b) => callJson('PUT', '/api/setup/models', b);
+
+  /// `GET /api/setup/context`: the longest context a model file knows and how much stays in the card (null without a
+  /// card of its own), with the engine we recommend when [recommended] is on (3.12.10).
+  Future<({int trained, int? inCard})> contextInfo(
+    String variant,
+    String repo,
+    String file, {
+    String? recommended,
+  }) async {
+    final j = objectOf(
+      await getJson('/api/setup/context', {
+        'variant': variant,
+        'repo': repo,
+        'file': file,
+        'recommended': ?recommended,
+      }),
+    );
+    return (
+      trained: j['trained'] is num ? (j['trained'] as num).toInt() : 65536,
+      inCard: j['inCard'] is num ? (j['inCard'] as num).toInt() : null,
+    );
+  }
 
   /// `GET /api/setup/local-models?variant=…`: the suggestions and the folder's files.
   Future<({List<LocalChoice> models, List<LocalFile> files})> localModels(
@@ -454,6 +499,8 @@ class EngineChoices {
     this.prefetch = false,
     this.noRepack = false,
     this.speculative = 'none',
+    this.ctx,
+    this.recommended,
   });
 
   final bool bigChunks;
@@ -463,13 +510,28 @@ class EngineChoices {
   /// none | draft | ngram | mtp.
   final String speculative;
 
-  EngineChoices copy({bool? bigChunks, bool? prefetch, bool? noRepack, String? speculative}) =>
-      EngineChoices(
-        bigChunks: bigChunks ?? this.bigChunks,
-        prefetch: prefetch ?? this.prefetch,
-        noRepack: noRepack ?? this.noRepack,
-        speculative: speculative ?? this.speculative,
-      );
+  /// The context chosen on the bar (3.12.10); with Deep Field its plan decides.
+  final int? ctx;
+
+  /// The engine we recommend for this catalog model, turned on (3.12.10): its id.
+  final String? recommended;
+
+  EngineChoices copy({
+    bool? bigChunks,
+    bool? prefetch,
+    bool? noRepack,
+    String? speculative,
+    int? ctx,
+    String? recommended,
+    bool noRecommended = false,
+  }) => EngineChoices(
+    bigChunks: bigChunks ?? this.bigChunks,
+    prefetch: prefetch ?? this.prefetch,
+    noRepack: noRepack ?? this.noRepack,
+    speculative: speculative ?? this.speculative,
+    ctx: ctx ?? this.ctx,
+    recommended: noRecommended ? null : (recommended ?? this.recommended),
+  );
 
   /// The choices the engine runs with now.
   factory EngineChoices.running(ModelsSetup s) => EngineChoices(
@@ -477,6 +539,8 @@ class EngineChoices {
     prefetch: s.engineMoePrefetch,
     noRepack: s.engineNoRepack,
     speculative: s.engineSpeculative,
+    ctx: s.engineCtx,
+    recommended: s.engineRecommended,
   );
 
   /// The body of `PUT /api/setup/engine` (and of the improvement test): only what is on; Big
@@ -493,6 +557,8 @@ class EngineChoices {
     if (stream && bigChunks) 'bigChunks': true,
     if (stream && prefetch) 'moePrefetch': true,
     if (noRepack) 'noRepack': true,
+    if (!stream && ctx != null) 'ctx': ctx,
+    if (recommended != null) 'recommended': recommended,
     if (speculative == 'ngram') 'speculative': 'ngram',
     if (speculative == 'mtp') 'speculative': 'mtp',
     if (speculative == 'draft' && draftModel != null) ...{
@@ -506,5 +572,7 @@ class EngineChoices {
       (stream && bigChunks) == s.engineBigChunks &&
       (stream && prefetch) == s.engineMoePrefetch &&
       noRepack == s.engineNoRepack &&
+      (stream || (ctx ?? 65536) == (s.engineCtx ?? 65536)) &&
+      recommended == s.engineRecommended &&
       speculative == s.engineSpeculative;
 }

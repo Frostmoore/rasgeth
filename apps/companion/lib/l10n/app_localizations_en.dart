@@ -20292,4 +20292,45 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get smpArtifactsEmpty =>
       'None yet. Ask for a small app to keep and use again, and it will be here.';
+
+  @override
+  String moLmCtxBeyond(String max) {
+    return 'Beyond $max part of the model goes to the processor: it writes 3 to 5 times slower. A longer context keeps longer conversations and documents.';
+  }
+
+  @override
+  String get moLmCtxFits =>
+      'All in the card: full speed. The context is what the model keeps of the conversation; it is booked whole when the model starts.';
+
+  @override
+  String moLmCtxMark(String max) {
+    return 'All in the card up to $max';
+  }
+
+  @override
+  String get moLmCtxNoCard =>
+      'Without a graphics card of its own the context only takes more RAM: a longer one keeps longer conversations and documents.';
+
+  @override
+  String get moLmCtxTitle => 'Context';
+
+  @override
+  String get moLmCtxTooBig =>
+      'The model alone does not fit in the card: part of it runs on the processor whatever the context.';
+
+  @override
+  String moLmRecCtx(String ctx) {
+    return 'Context $ctx, all in the card.';
+  }
+
+  @override
+  String moLmRecPass(String n) {
+    return 'Reading in passes of $n tokens.';
+  }
+
+  @override
+  String get moLmRecSub => 'Our engine for this model';
+
+  @override
+  String get moLmRecTitle => 'Recommended settings';
 }

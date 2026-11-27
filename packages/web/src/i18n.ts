@@ -2085,6 +2085,20 @@ const en = {
   job_step_draft: "With the small model",
   job_step_ngram: "With the n-grams",
   job_step_restore: "Putting the engine back as it was",
+  lmCtxTitle: "Context",
+  lmCtxMark: "All in the card up to {max}",
+  lmCtxFits:
+    "All in the card: full speed. The context is what the model keeps of the conversation; it is booked whole when the model starts.",
+  lmCtxBeyond:
+    "Beyond {max} part of the model goes to the processor: it writes 3 to 5 times slower. A longer context keeps longer conversations and documents.",
+  lmCtxNoCard:
+    "Without a graphics card of its own the context only takes more RAM: a longer one keeps longer conversations and documents.",
+  lmCtxTooBig:
+    "The model alone does not fit in the card: part of it runs on the processor whatever the context.",
+  lmRecTitle: "Recommended settings",
+  lmRecSub: "Our engine for this model",
+  lmRecPass: "Reading in passes of {n} tokens.",
+  lmRecCtx: "Context {ctx}, all in the card.",
   lmImprTitle: "Improvements",
   lmImprWarn:
     "They are turned on by hand, one by one. To know whether they pay off here you can measure them: every measurement takes a lot of time and a lot of compute (the model is loaded more than once, even tens of minutes for a big one; meanwhile the local model does not answer the agents) and it may give no gain at all or even make things worse.",
@@ -10804,6 +10818,20 @@ const it: Record<Key, string> = {
   job_step_draft: "Con il modello piccolo",
   job_step_ngram: "Con gli n-gram",
   job_step_restore: "Rimetto il motore com'era",
+  lmCtxTitle: "Contesto",
+  lmCtxMark: "Tutto nella scheda fino a {max}",
+  lmCtxFits:
+    "Tutto nella scheda: la velocità piena. Il contesto è quanto il modello tiene della conversazione; si prenota tutto quando il modello parte.",
+  lmCtxBeyond:
+    "Oltre {max} una parte del modello va sul processore: scrive da 3 a 5 volte più piano. Un contesto più lungo tiene conversazioni e documenti più lunghi.",
+  lmCtxNoCard:
+    "Senza una scheda grafica sua il contesto occupa solo più RAM: più è lungo, più lunghe le conversazioni e i documenti che tiene.",
+  lmCtxTooBig:
+    "Il modello da solo non sta nella scheda: una parte va sul processore qualunque sia il contesto.",
+  lmRecTitle: "Impostazioni consigliate",
+  lmRecSub: "Il nostro motore per questo modello",
+  lmRecPass: "Legge a blocchi di {n} token.",
+  lmRecCtx: "Contesto {ctx}, tutto nella scheda.",
   lmImprTitle: "Miglioramenti",
   lmImprWarn:
     "Si accendono a mano, uno per uno. Per sapere se qui convengono puoi misurarli: ogni misura richiede molto tempo e molto calcolo (il modello viene caricato più volte, anche decine di minuti per uno grande; intanto il modello locale non risponde agli agenti) e può dare zero guadagno o anche peggiorare le cose.",

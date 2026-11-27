@@ -20350,4 +20350,45 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get smpArtifactsEmpty =>
       'Ancora nessuno. Chiedi una piccola app da tenere e riusare, e la troverai qui.';
+
+  @override
+  String moLmCtxBeyond(String max) {
+    return 'Oltre $max una parte del modello va sul processore: scrive da 3 a 5 volte più piano. Un contesto più lungo tiene conversazioni e documenti più lunghi.';
+  }
+
+  @override
+  String get moLmCtxFits =>
+      'Tutto nella scheda: la velocità piena. Il contesto è quanto il modello tiene della conversazione; si prenota tutto quando il modello parte.';
+
+  @override
+  String moLmCtxMark(String max) {
+    return 'Tutto nella scheda fino a $max';
+  }
+
+  @override
+  String get moLmCtxNoCard =>
+      'Senza una scheda grafica sua il contesto occupa solo più RAM: più è lungo, più lunghe le conversazioni e i documenti che tiene.';
+
+  @override
+  String get moLmCtxTitle => 'Contesto';
+
+  @override
+  String get moLmCtxTooBig =>
+      'Il modello da solo non sta nella scheda: una parte va sul processore qualunque sia il contesto.';
+
+  @override
+  String moLmRecCtx(String ctx) {
+    return 'Contesto $ctx, tutto nella scheda.';
+  }
+
+  @override
+  String moLmRecPass(String n) {
+    return 'Legge a blocchi di $n token.';
+  }
+
+  @override
+  String get moLmRecSub => 'Il nostro motore per questo modello';
+
+  @override
+  String get moLmRecTitle => 'Impostazioni consigliate';
 }

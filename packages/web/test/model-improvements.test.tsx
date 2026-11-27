@@ -35,6 +35,9 @@ const fakeApi = new Proxy(
             vars: {},
           });
         if (name === "setupEngine") return Promise.resolve({ id: "e1" });
+        // 3.12.10: 16k in a 16 GB card, 32k with the recommended engine's passes.
+        if (name === "contextInfo")
+          return Promise.resolve({ trained: 1048576, inCard: args[3] ? 32768 : 16384 });
         return Promise.resolve({});
       };
     },
@@ -280,6 +283,53 @@ describe("Improvements in the model's card (p3.12.6)", () => {
       bigChunks: true,
       moePrefetch: true,
       noRepack: true,
+    });
+  });
+
+  it("3.12.10: the context bar says where everything stops fitting in the card, and its choice goes with the start", async () => {
+    choices = [entry("qwen3.8-27b")];
+    const r = render(<LocalModels s={state()} reload={() => {}} />);
+    await open(r, "Qwen3.8 27B");
+    const bar = await waitFor(() => {
+      const b = r.getByTestId("context-bar");
+      expect(b.textContent).toMatch(/Oltre 16k una parte del modello va sul processore/);
+      return b;
+    });
+    expect(bar.querySelector(".kit-slider-mark")).not.toBeNull();
+    // The steps 4k 8k 16k 32k …: the third is 16k, all in the card.
+    fireEvent.input(bar.querySelector("input[type=range]") as HTMLElement, {
+      target: { value: "2" },
+    });
+    await waitFor(() => expect(bar.textContent).toMatch(/Tutto nella scheda: la velocità piena/));
+    fireEvent.click(startButton(r));
+    const sent = calls.find((c) => c.name === "setupEngine")?.args[0];
+    expect(sent).toMatchObject({ model: "qwen3.8-27b-Q4.gguf", ctx: 16384 });
+  });
+
+  it("3.12.10: our recommended engine, gold, off until switched on; on, it books its context and goes with the start", async () => {
+    choices = [entry("inkling-2-mini")];
+    const r = render(<LocalModels s={state()} reload={() => {}} />);
+    await open(r, "Inkling 2 Mini");
+    const rec = await waitFor(() => card("recommended"));
+    expect(rec.className).toMatch(/gold/);
+    expect(rec.textContent).toMatch(
+      /Legge a blocchi di 256 token\. Contesto 32k, tutto nella scheda\./,
+    );
+    expect(rec.textContent).toMatch(/NVIDIA RTX 4080 SUPER/);
+    const sw = rec.querySelector("[role=switch]") as HTMLElement;
+    expect(sw.getAttribute("aria-checked")).toBe("false");
+    fireEvent.click(sw);
+    await waitFor(() =>
+      expect(calls.some((c) => c.name === "contextInfo" && c.args[3] === "inkling-2-mini")).toBe(
+        true,
+      ),
+    );
+    fireEvent.click(startButton(r));
+    const sent = calls.find((c) => c.name === "setupEngine")?.args[0];
+    expect(sent).toMatchObject({
+      model: "inkling-2-mini-Q4.gguf",
+      ctx: 32768,
+      recommended: "inkling-2-mini",
     });
   });
 

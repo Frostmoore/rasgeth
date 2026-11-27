@@ -84,6 +84,13 @@ class FakeModels {
           'read': {'before': 14.0, 'after': 14.0},
         },
       ],
+      // 3.12.10: an engine we recommend for it (the page's `RECOMMENDED_ENGINES`).
+      'recommended': {
+        'ubatch': 256,
+        'ctx': 32768,
+        'hardware': 'NVIDIA RTX 4080 SUPER',
+        'write': {'before': 9.4, 'after': 47.6},
+      },
     },
     {
       'id': 'gemma3-12b',
@@ -179,6 +186,7 @@ class FakeModels {
         path == '/api/setup/server' ||
         path == '/api/setup/backup-model' ||
         path.startsWith('/api/setup/local-models') ||
+        path == '/api/setup/context' ||
         path.startsWith('/api/setup/engine') ||
         path.startsWith('/api/jobs');
     if (!known) return false;
@@ -244,6 +252,13 @@ class FakeModels {
           _config['backupModel'] = b['model'];
         }
         await json(200, {'ok': true});
+      // 3.12.10: 16k in the card, 32k with the recommended engine's passes.
+      case ('GET', '/api/setup/context'):
+        queries.add(r.uri.query);
+        await json(200, {
+          'trained': 262144,
+          'inCard': r.uri.queryParameters['recommended'] == null ? 16384 : 32768,
+        });
       case ('GET', '/api/setup/local-models'):
         final stream = r.uri.queryParameters['stream'] == '1';
         queries.add(r.uri.query);

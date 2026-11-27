@@ -11152,6 +11152,18 @@ button.pick-tile.on {
   background: var(--accent);
   opacity: 1;
 }
+/* The context bar's «all in the card up to here» (3.12.10). */
+.kit-slider-mark {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--at) * (100% - 4px));
+  width: 4px;
+  height: 28px;
+  margin: -14px 0 0;
+  border-radius: 2px;
+  background: var(--gold);
+  box-shadow: 0 0 0 2px var(--gold-soft);
+}
 .kit-slider input[type="range"] {
   position: absolute;
   inset: 0;

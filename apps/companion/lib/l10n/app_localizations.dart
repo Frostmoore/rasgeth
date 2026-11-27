@@ -35069,6 +35069,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'None yet. Ask for a small app to keep and use again, and it will be here.'**
   String get smpArtifactsEmpty;
+
+  /// No description provided for @moLmCtxBeyond.
+  ///
+  /// In en, this message translates to:
+  /// **'Beyond {max} part of the model goes to the processor: it writes 3 to 5 times slower. A longer context keeps longer conversations and documents.'**
+  String moLmCtxBeyond(String max);
+
+  /// No description provided for @moLmCtxFits.
+  ///
+  /// In en, this message translates to:
+  /// **'All in the card: full speed. The context is what the model keeps of the conversation; it is booked whole when the model starts.'**
+  String get moLmCtxFits;
+
+  /// No description provided for @moLmCtxMark.
+  ///
+  /// In en, this message translates to:
+  /// **'All in the card up to {max}'**
+  String moLmCtxMark(String max);
+
+  /// No description provided for @moLmCtxNoCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Without a graphics card of its own the context only takes more RAM: a longer one keeps longer conversations and documents.'**
+  String get moLmCtxNoCard;
+
+  /// No description provided for @moLmCtxTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Context'**
+  String get moLmCtxTitle;
+
+  /// No description provided for @moLmCtxTooBig.
+  ///
+  /// In en, this message translates to:
+  /// **'The model alone does not fit in the card: part of it runs on the processor whatever the context.'**
+  String get moLmCtxTooBig;
+
+  /// No description provided for @moLmRecCtx.
+  ///
+  /// In en, this message translates to:
+  /// **'Context {ctx}, all in the card.'**
+  String moLmRecCtx(String ctx);
+
+  /// No description provided for @moLmRecPass.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading in passes of {n} tokens.'**
+  String moLmRecPass(String n);
+
+  /// No description provided for @moLmRecSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Our engine for this model'**
+  String get moLmRecSub;
+
+  /// No description provided for @moLmRecTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended settings'**
+  String get moLmRecTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

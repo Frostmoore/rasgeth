@@ -6,6 +6,7 @@ import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { AutomationNotFoundError, RecipeError, WebhookForbiddenError } from "@redgiant/automations";
+import { readLocalGgufMeta, readRemoteGgufMeta } from "@redgiant/engine-local";
 import {
   exportSkill,
   importSkill,
@@ -51,6 +52,7 @@ import {
   PROTOCOL_VERSION,
   ProjectMaxAgents,
   RefineRequest,
+  recommendedFor,
   SEARCH_PROVIDER_IDS,
   SecretaryChannel,
   TelegramBotInput,
@@ -118,7 +120,7 @@ import { HuggingFace } from "./hf.js";
 import { importRoutes } from "./import-routes.js";
 import { knowledgeRoutes } from "./knowledge/routes.js";
 import { lanHsts, lanRedirect } from "./lan-https.js";
-import { localModelChoices, prefetchEngineFor } from "./local-models.js";
+import { contextChoice, localModelChoices, prefetchEngineFor } from "./local-models.js";
 import { LoginError } from "./login.js";
 import { MachineError, type MachinePatch } from "./machines.js";
 import { MagicNotFoundError, MagicStateError } from "./magic.js";
@@ -4562,6 +4564,35 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
   );
   app.get("/api/setup/hf/files", (c) =>
     wizard(c, async () => (hf ? hf.files(c.req.query("repo") ?? "") : [])),
+  );
+  // The context bar of a model's card (3.12.10): the longest context the model knows and how much stays in the card,
+  // from the file's header (the downloaded file, or the first bytes from Hugging Face).
+  app.get("/api/setup/context", (c) =>
+    wizard(c, async () => {
+      const folder = modelsFor(c.req.query("variant"));
+      const repo = c.req.query("repo") ?? "";
+      const file = c.req.query("file") ?? "";
+      if (
+        !folder ||
+        !/^[\w.-]+\/[\w.-]+$/.test(repo) ||
+        file.includes("..") ||
+        !file.endsWith(".gguf")
+      )
+        throw new Error("Give a repository and a GGUF file of it");
+      const local = join(folder.dir, HuggingFace.target(file));
+      const here = await stat(local).catch(() => null);
+      const meta = here
+        ? await readLocalGgufMeta(local)
+        : await readRemoteGgufMeta(`https://huggingface.co/${repo}/resolve/main/${file}`);
+      const listed = (await folder.files(repo).catch(() => [])).find((f) => f.file === file);
+      const fileGb = listed?.sizeGb ?? (here ? here.size / 1024 ** 3 : 0);
+      const hw = (await (setup as SetupService).state()).hardware;
+      const rec = c.req.query("recommended");
+      return contextChoice(meta, fileGb, hw.suggestion, {
+        windows: c.req.query("variant") === "windows",
+        ubatch: rec ? recommendedFor(rec)?.ubatch : undefined,
+      });
+    }),
   );
   // The suggested local models for this computer, and what the models folder holds (G24.3).
   app.get("/api/setup/local-models", (c) =>

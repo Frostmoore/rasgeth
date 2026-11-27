@@ -223,6 +223,9 @@ export interface SetupState {
       draftModel?: string;
       /** No Repack (p3.12.6): the weights as they are in the file. */
       noRepack?: boolean;
+      /** The context booked (3.12.10) and the engine we recommend, when on. */
+      ctx?: number;
+      recommended?: string;
       /** The tuning's tries (2026-11-05): the kept one's speed is the model's measured speed. */
       trials?: { genTps?: number; chosen?: boolean }[];
       /** What the last start decided (SSD stream). */
@@ -1238,6 +1241,9 @@ export class Api {
       draftModel?: string;
       /** No Repack (p3.12.6). */
       noRepack?: boolean;
+      /** The context chosen on the bar and the engine we recommend (3.12.10). */
+      ctx?: number;
+      recommended?: string;
       /** A row of the tuning table picked by the person (2026-11-05). */
       tuning?: { moeCacheShare: number; opOffload: boolean; batch?: number };
     } | null,
@@ -1625,6 +1631,17 @@ export class Api {
       budgetGb?: number;
       diskFreeGb?: number;
     }>("GET", `/api/setup/local-models?variant=${variant}${stream ? "&stream=1" : ""}`);
+  /**
+   * The context bar of a model's card (3.12.10): the longest context the model knows, and how much stays in the card
+   * (null without a card of its own), with the recommended engine of `recommended` when it is on.
+   */
+  contextInfo = (variant: EngineVariant, repo: string, file: string, recommended?: string) =>
+    this.call<{ trained: number; inCard: number | null }>(
+      "GET",
+      `/api/setup/context?variant=${variant}&repo=${encodeURIComponent(repo)}&file=${encodeURIComponent(file)}${
+        recommended ? `&recommended=${encodeURIComponent(recommended)}` : ""
+      }`,
+    );
   /** Downloads a model file: a job to follow; cancelling it pauses, starting again goes on. */
   downloadModel = (repo: string, file: string, variant: EngineVariant) =>
     this.call<Job>("POST", "/api/setup/local-models/download", { repo, file, variant });
@@ -1654,6 +1671,8 @@ export class Api {
       bigChunks?: boolean;
       moePrefetch?: boolean;
       noRepack?: boolean;
+      ctx?: number;
+      recommended?: string;
       speculative?: "draft" | "ngram" | "mtp";
       draftModel?: string;
     },

@@ -6,6 +6,7 @@ import {
   type Improvement,
   type ImprovementId,
   type Job,
+  type RecommendedEngine,
   type TestedResult,
 } from "@redgiant/protocol";
 import type { ComponentChildren } from "preact";
@@ -47,7 +48,7 @@ import {
 import { explain } from "./Brain.js";
 import { askConfirm } from "./dialogs.js";
 import { Gallery, GalleryCard } from "./Gallery.js";
-import { Acts, Sub, Switch } from "./SettingsKit.js";
+import { Acts, Slider, Sub, Switch } from "./SettingsKit.js";
 import { Advanced, DropChoice, Field, JobView, Modal, Pick, Progress, useJob } from "./ui.js";
 
 const gb = (n: number) => `${n.toFixed(1)} GB`;
@@ -492,6 +493,10 @@ export interface EngineChoices {
   bigChunks?: boolean | undefined;
   moePrefetch?: boolean | undefined;
   noRepack?: boolean | undefined;
+  /** The context chosen on the bar (3.12.10); with Deep Field its plan decides. */
+  ctx?: number | undefined;
+  /** The engine we recommend for this catalog model, turned on (3.12.10): its id. */
+  recommended?: string | undefined;
 }
 
 /** What goes with the activation for the card's choices: only what is on. */
@@ -500,7 +505,110 @@ export function choicesPayload(stream: boolean | undefined, c?: EngineChoices) {
     ...(stream && c?.bigChunks && { bigChunks: true }),
     ...(stream && c?.moePrefetch && { moePrefetch: true }),
     ...(c?.noRepack && { noRepack: true }),
+    ...(!stream && c?.ctx && { ctx: c.ctx }),
+    ...(c?.recommended && { recommended: c.recommended }),
   };
+}
+
+/** The context bar's steps (3.12.10): round sizes up to the longest the model knows. */
+const CTX_STEPS = [4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576];
+/** 32768 -> «32k», 1048576 -> «1M». */
+export const ctxText = (n: number) =>
+  n >= 1048576 ? `${Math.round(n / 1048576)}M` : `${Math.round(n / 1024)}k`;
+
+/**
+ * How much context the engine books (3.12.10, plan_contesto.md): the bar in round steps, a gold line where the model,
+ * its context and the engine's scratch stop fitting in the card, and what each side means. Booked whole at the start:
+ * beyond the line part of the model goes to the processor and writing gets 3-5 times slower.
+ */
+export function ContextBar({
+  info,
+  value,
+  onChange,
+}: {
+  info: { trained: number; inCard: number | null } | undefined;
+  value: number;
+  onChange: (ctx: number) => void;
+}) {
+  const trained = info?.trained ?? 65536;
+  const steps = CTX_STEPS.filter((n) => n <= trained);
+  if (steps.length === 0) steps.push(trained);
+  const index = Math.max(
+    0,
+    steps.findIndex((n) => n >= value) === -1
+      ? steps.length - 1
+      : steps.findIndex((n) => n >= value),
+  );
+  const inCard = info?.inCard;
+  const markIndex =
+    inCard && inCard > 0 ? steps.reduce((last, n, i) => (n <= inCard ? i : last), -1) : -1;
+  const help = (() => {
+    if (!info) return undefined;
+    if (info.inCard === null) return t("lmCtxNoCard");
+    if (info.inCard === 0) return t("lmCtxTooBig");
+    const max = ctxText(info.inCard);
+    return (steps[index] ?? value) <= info.inCard ? t("lmCtxFits") : t("lmCtxBeyond", { max });
+  })();
+  return (
+    <div class="ctx-bar" data-testid="context-bar">
+      <Slider
+        label={t("lmCtxTitle")}
+        value={index}
+        min={0}
+        max={Math.max(1, steps.length - 1)}
+        step={1}
+        format={(i) => ctxText(steps[i] ?? value)}
+        onChange={(i) => onChange(steps[i] ?? value)}
+        mark={
+          markIndex >= 0
+            ? { at: markIndex, label: t("lmCtxMark", { max: ctxText(steps[markIndex] as number) }) }
+            : undefined
+        }
+        help={help}
+      />
+    </div>
+  );
+}
+
+/**
+ * The engine we recommend for this model (3.12.10): our settings, measured faster on a computer, with a gold border
+ * and a switch the person turns on and off; never on by itself.
+ */
+function RecommendedCard({
+  rec,
+  on,
+  onChange,
+}: {
+  rec: RecommendedEngine;
+  on: boolean;
+  onChange: (on: boolean) => void;
+}) {
+  const title = t("lmRecTitle");
+  return (
+    <div class="impr-card gold" data-improvement="recommended">
+      <div class="impr-head">
+        <div>
+          <h4>{title}</h4>
+          <span class="impr-sub">{t("lmRecSub")}</span>
+        </div>
+        <Switch small on={on} label={title} onChange={onChange} />
+      </div>
+      <p class="ui-help">
+        {[
+          rec.ubatch && t("lmRecPass", { n: String(rec.ubatch) }),
+          rec.ctx && t("lmRecCtx", { ctx: ctxText(rec.ctx) }),
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      </p>
+      <p class="impr-star">
+        <IconStar size={14} /> <b>{t("lmImprTested")}</b>{" "}
+        <span>
+          {testedText({ improvement: "speculative", hardware: rec.hardware, write: rec.write })}
+        </span>
+      </p>
+    </div>
+  );
 }
 
 /** What can be done with one model file: download, pause, go on, start, use, delete. */
@@ -1266,6 +1374,30 @@ function ModelPanel({
     bigChunks: inUse && eng?.bigChunks === true,
     noRepack: inUse && eng?.noRepack === true,
   });
+  // The engine we recommend and the context bar (3.12.10).
+  const rec = m.recommended;
+  const [recOn, setRecOn] = useState(inUse && eng?.recommended === m.id);
+  const [ctx, setCtx] = useState<number>(
+    (inUse && eng?.ctx) || (inUse && eng?.recommended === m.id && rec?.ctx) || 65536,
+  );
+  const [ctxInfo, setCtxInfo] = useState<{ trained: number; inCard: number | null }>();
+  useEffect(() => {
+    if (!file) return;
+    let live = true;
+    void getApi()
+      .contextInfo(variant, m.repo, file.file, recOn ? m.id : undefined)
+      .then(
+        (r) => live && setCtxInfo(r),
+        () => live && setCtxInfo(undefined),
+      );
+    return () => {
+      live = false;
+    };
+  }, [file?.file, variant, recOn]);
+  const switchRec = (v: boolean) => {
+    setRecOn(v);
+    if (v && rec?.ctx) setCtx(rec.ctx);
+  };
   const [run, setRun] = useState<string>();
   const [improveError, setImproveError] = useState<string>();
   const improvement = (id: ImprovementId) => m.improvements?.find((x) => x.id === id);
@@ -1276,12 +1408,16 @@ function ModelPanel({
     bigChunks: can("bigChunks") && flags.bigChunks,
     moePrefetch: can("prefetch") && flags.prefetch,
     noRepack: flags.noRepack,
+    ctx: Math.min(ctx, ctxInfo?.trained ?? ctx),
+    recommended: rec && recOn ? m.id : undefined,
   };
   const sameChoices =
     !inUse ||
     (Boolean(stream && choices.bigChunks) === Boolean(eng?.bigChunks) &&
       Boolean(stream && choices.moePrefetch) === Boolean(eng?.moePrefetch) &&
-      Boolean(choices.noRepack) === Boolean(eng?.noRepack));
+      Boolean(choices.noRepack) === Boolean(eng?.noRepack) &&
+      (stream || (eng?.ctx ?? 65536) === choices.ctx) &&
+      eng?.recommended === choices.recommended);
   const sameSpec = (chosenSpec?.speculative ?? "none") === running && sameChoices;
   const downloaded = !!name && files.some((f) => f.file === name && !f.partial);
   const measure = async (id: "prefetch" | "bigChunks" | "noRepack") => {
@@ -1396,9 +1532,11 @@ function ModelPanel({
               />
             </label>
           )}
+          {!stream && <ContextBar info={ctxInfo} value={ctx} onChange={setCtx} />}
           <div class="impr">
             <span class="ui-label">{t("lmImprTitle")}</span>
             <p class="notice warn">{t("lmImprWarn")}</p>
+            {rec && <RecommendedCard rec={rec} on={recOn} onChange={switchRec} />}
             {card("prefetch", "prefetch", moePrefetchTexts(variant).help)}
             {card("bigChunks", "bigChunks", t("lmBigChunksHelp"))}
             <ImprovementCard

@@ -137,17 +137,71 @@ void main() {
       expect(dim.opacity, lessThan(1));
       // Gold: the star and our numbers.
       expect(find.byKey(const Key('impr-tested-noRepack')), findsOneWidget);
-      expect(find.textContaining('Provato da noi su questo modello'), findsOneWidget);
+      // Two gold cards: No Repack and the recommended engine (3.12.10).
+      expect(find.textContaining('Provato da noi su questo modello'), findsNWidgets(2));
       expect(find.textContaining('Scrittura da 2,88 a 3,21 token/s (+11%)'), findsOneWidget);
       expect(find.byKey(const Key('impr-tested-prefetch')), findsNothing);
       await done(tester);
     });
 
+    testWidgets('3.12.10: the context bar with its gold mark, and its choice in the start', (
+      tester,
+    ) async {
+      fm.files.add({'file': 'Qwen3-30B-A3B-Q4_K_M.gguf', 'bytes': 18500000000, 'partial': false});
+      await open(tester);
+      await tap(tester, 'lm-card-qwen3-30b');
+      expect(find.byKey(const Key('context-bar')), findsOneWidget);
+      expect(find.byKey(const Key('context-bar-mark')), findsOneWidget);
+      expect(
+        find.textContaining('Oltre 16k una parte del modello va sul processore'),
+        findsOneWidget,
+      );
+      final slider = tester.widget<Slider>(find.byKey(const Key('context-bar-slider')));
+      // The steps 4k 8k 16k 32k …: the third is 16k, all in the card.
+      slider.onChanged!(2);
+      await _settle(tester);
+      expect(find.textContaining('Tutto nella scheda: la velocità piena'), findsOneWidget);
+      expect(find.text('16k'), findsWidgets);
+      await tap(tester, 'lm-start');
+      expect((fm.bodies['PUT /api/setup/engine'] as Map)['engine'], {
+        'variant': 'cuda',
+        'model': 'Qwen3-30B-A3B-Q4_K_M.gguf',
+        'ctx': 16384,
+      });
+      await done(tester);
+    });
+
+    testWidgets(
+      '3.12.10: our recommended engine, gold, off until on; on, its context and its id go with the start',
+      (tester) async {
+        fm.files.add({'file': 'Qwen3-30B-A3B-Q4_K_M.gguf', 'bytes': 18500000000, 'partial': false});
+        await open(tester);
+        await tap(tester, 'lm-card-qwen3-30b');
+        expect(find.byKey(const Key('impr-recommended')), findsOneWidget);
+        expect(find.text('Impostazioni consigliate'), findsOneWidget);
+        expect(
+          find.textContaining('Legge a blocchi di 256 token. Contesto 32k, tutto nella scheda.'),
+          findsOneWidget,
+        );
+        expect(find.textContaining('NVIDIA RTX 4080 SUPER'), findsOneWidget);
+        await tap(tester, 'impr-switch-recommended');
+        expect(fm.queries.any((q) => q.contains('recommended=qwen3-30b')), isTrue);
+        await tap(tester, 'lm-start');
+        expect((fm.bodies['PUT /api/setup/engine'] as Map)['engine'], {
+          'variant': 'cuda',
+          'model': 'Qwen3-30B-A3B-Q4_K_M.gguf',
+          'ctx': 32768,
+          'recommended': 'qwen3-30b',
+        });
+        await done(tester);
+      },
+    );
+
     testWidgets('the same in English', (tester) async {
       await open(tester, lang: 'en');
       await tap(tester, 'lm-card-qwen3-30b');
       expect(find.text('Improvements'), findsOneWidget);
-      expect(find.textContaining('Tried by us on this model'), findsOneWidget);
+      expect(find.textContaining('Tried by us on this model'), findsNWidgets(2));
       await done(tester);
     });
 

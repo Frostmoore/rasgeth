@@ -5858,5 +5858,15 @@
   "smpArtifacts": "Artefatti",
   "smpArtifactsTitle": "Artefatti",
   "smpArtifactsLead": "Le piccole app fatte per te: un calcolatore, un gioco, una tabella da compilare. Toccane una per aprirla.",
-  "smpArtifactsEmpty": "Ancora nessuno. Chiedi una piccola app da tenere e riusare, e la troverai qui."
+  "smpArtifactsEmpty": "Ancora nessuno. Chiedi una piccola app da tenere e riusare, e la troverai qui.",
+  "moLmCtxBeyond": "Oltre {max} una parte del modello va sul processore: scrive da 3 a 5 volte più piano. Un contesto più lungo tiene conversazioni e documenti più lunghi.",
+  "moLmCtxFits": "Tutto nella scheda: la velocità piena. Il contesto è quanto il modello tiene della conversazione; si prenota tutto quando il modello parte.",
+  "moLmCtxMark": "Tutto nella scheda fino a {max}",
+  "moLmCtxNoCard": "Senza una scheda grafica sua il contesto occupa solo più RAM: più è lungo, più lunghe le conversazioni e i documenti che tiene.",
+  "moLmCtxTitle": "Contesto",
+  "moLmCtxTooBig": "Il modello da solo non sta nella scheda: una parte va sul processore qualunque sia il contesto.",
+  "moLmRecCtx": "Contesto {ctx}, tutto nella scheda.",
+  "moLmRecPass": "Legge a blocchi di {n} token.",
+  "moLmRecSub": "Il nostro motore per questo modello",
+  "moLmRecTitle": "Impostazioni consigliate"
 }

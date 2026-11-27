@@ -14021,5 +14021,43 @@
   "smpArtifacts": "Artifacts",
   "smpArtifactsTitle": "Artifacts",
   "smpArtifactsLead": "The small apps made for you: a calculator, a game, a table to fill in. Tap one to open it.",
-  "smpArtifactsEmpty": "None yet. Ask for a small app to keep and use again, and it will be here."
+  "smpArtifactsEmpty": "None yet. Ask for a small app to keep and use again, and it will be here.",
+  "moLmCtxBeyond": "Beyond {max} part of the model goes to the processor: it writes 3 to 5 times slower. A longer context keeps longer conversations and documents.",
+  "@moLmCtxBeyond": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmCtxFits": "All in the card: full speed. The context is what the model keeps of the conversation; it is booked whole when the model starts.",
+  "moLmCtxMark": "All in the card up to {max}",
+  "@moLmCtxMark": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmCtxNoCard": "Without a graphics card of its own the context only takes more RAM: a longer one keeps longer conversations and documents.",
+  "moLmCtxTitle": "Context",
+  "moLmCtxTooBig": "The model alone does not fit in the card: part of it runs on the processor whatever the context.",
+  "moLmRecCtx": "Context {ctx}, all in the card.",
+  "@moLmRecCtx": {
+    "placeholders": {
+      "ctx": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmRecPass": "Reading in passes of {n} tokens.",
+  "@moLmRecPass": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmRecSub": "Our engine for this model",
+  "moLmRecTitle": "Recommended settings"
 }

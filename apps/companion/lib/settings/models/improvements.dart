@@ -64,6 +64,7 @@ String improvementTested(AppLocalizations l, TestedResult r, String lang) {
 }
 
 String improvementName(AppLocalizations l, String id) => switch (id) {
+  'recommended' => l.moLmRecTitle,
   'prefetch' => l.moLmImpr_prefetch,
   'bigChunks' => l.moLmImpr_bigChunks,
   'speculative' => l.moLmImpr_speculative,
@@ -71,11 +72,115 @@ String improvementName(AppLocalizations l, String id) => switch (id) {
 };
 
 String _sub(AppLocalizations l, String id) => switch (id) {
+  'recommended' => l.moLmRecSub,
   'prefetch' => l.moLmImprSub_prefetch,
   'bigChunks' => l.moLmImprSub_bigChunks,
   'speculative' => l.moLmImprSub_speculative,
   _ => l.moLmImprSub_noRepack,
 };
+
+/// The context bar's steps (3.12.10, the page's `CTX_STEPS`): round sizes up to the longest the model knows.
+const ctxSteps = [4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576];
+
+/// 32768 -> «32k», 1048576 -> «1M» (the page's `ctxText`).
+String ctxText(int n) => n >= 1048576 ? '${(n / 1048576).round()}M' : '${(n / 1024).round()}k';
+
+/// How much context the engine books (3.12.10, the page's `ContextBar`): the bar in round steps, a gold line where
+/// the model, its context and the engine's scratch stop fitting in the card, and what each side means.
+class ContextBar extends StatelessWidget {
+  const ContextBar({super.key, required this.info, required this.value, required this.onChanged});
+
+  /// From the server; null until it answers.
+  final ({int trained, int? inCard})? info;
+  final int value;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = RgColors.of(context);
+    final trained = info?.trained ?? 65536;
+    final steps = ctxSteps.where((n) => n <= trained).toList();
+    if (steps.isEmpty) steps.add(trained);
+    final found = steps.indexWhere((n) => n >= value);
+    final index = found == -1 ? steps.length - 1 : found;
+    final inCard = info?.inCard;
+    final mark = inCard != null && inCard > 0 ? steps.lastIndexWhere((n) => n <= inCard) : -1;
+    final help = info == null
+        ? null
+        : inCard == null
+        ? l.moLmCtxNoCard
+        : inCard == 0
+        ? l.moLmCtxTooBig
+        : steps[index] <= inCard
+        ? l.moLmCtxFits
+        : l.moLmCtxBeyond(ctxText(inCard));
+    final last = (steps.length - 1).clamp(1, 99);
+    return Padding(
+      key: const Key('context-bar'),
+      padding: const EdgeInsets.only(top: 6, bottom: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l.moLmCtxTitle,
+                  style: TextStyle(fontWeight: FontWeight.w700, color: c.text, fontSize: 14),
+                ),
+              ),
+              Text(
+                ctxText(steps[index]),
+                key: const Key('context-bar-value'),
+                style: TextStyle(fontWeight: FontWeight.w800, color: c.accent),
+              ),
+            ],
+          ),
+          LayoutBuilder(
+            builder: (context, box) {
+              // Flutter's slider draws its track inside the overlay's radius at each end.
+              const inset = 24.0;
+              final track = box.maxWidth - inset * 2;
+              return Stack(
+                children: [
+                  Slider(
+                    key: const Key('context-bar-slider'),
+                    value: index.toDouble(),
+                    min: 0,
+                    max: last.toDouble(),
+                    divisions: last,
+                    label: ctxText(steps[index]),
+                    onChanged: (v) => onChanged(steps[v.round()]),
+                  ),
+                  if (mark >= 0)
+                    Positioned(
+                      key: const Key('context-bar-mark'),
+                      left: inset + track * (mark / last) - 2,
+                      top: 10,
+                      bottom: 10,
+                      child: Semantics(
+                        label: l.moLmCtxMark(ctxText(steps[mark])),
+                        child: Container(
+                          width: 4,
+                          decoration: BoxDecoration(
+                            color: c.gold,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+          if (help != null)
+            Text(help, style: TextStyle(color: c.dim, fontSize: 12.5, height: 1.35)),
+        ],
+      ),
+    );
+  }
+}
 
 /// One improvement: name and what it does, its switch (none for the one made of choices), the
 /// help, the lock with its reason, the gold star, what was measured here and the button to measure.
@@ -418,6 +523,9 @@ class ImprovementsSection extends StatefulWidget {
 }
 
 class _ImprovementsSectionState extends State<ImprovementsSection> {
+  /// The context bar's numbers from the server (3.12.10): null until it answers.
+  ({int trained, int? inCard})? _ctxInfo;
+  String? _ctxFor;
   List<LocalFile>? _files;
   List<LmJob>? _jobs;
   String? _error;
@@ -434,6 +542,35 @@ class _ImprovementsSectionState extends State<ImprovementsSection> {
     super.initState();
     widget.bump.addListener(_refresh);
     unawaited(_refresh());
+    unawaited(_context());
+  }
+
+  @override
+  void didUpdateWidget(ImprovementsSection old) {
+    super.didUpdateWidget(old);
+    if (old.name != widget.name || old.choices.recommended != widget.choices.recommended) {
+      unawaited(_context());
+    }
+  }
+
+  /// How much context the model knows and how much stays in the card (3.12.10, the page's `contextInfo`).
+  Future<void> _context() async {
+    final c = AppScope.read(context).client;
+    final file = widget.m.file?.file;
+    if (c == null || file == null) return;
+    final key = '$file ${widget.choices.recommended}';
+    _ctxFor = key;
+    try {
+      final r = await c.contextInfo(
+        widget.variant,
+        widget.m.repo,
+        file,
+        recommended: widget.choices.recommended,
+      );
+      if (mounted && _ctxFor == key) setState(() => _ctxInfo = r);
+    } on Object {
+      // The bar without its mark.
+    }
   }
 
   @override
@@ -649,6 +786,13 @@ class _ImprovementsSectionState extends State<ImprovementsSection> {
       key: const Key('impr-section'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // How much context the engine books (3.12.10); with Deep Field its plan decides.
+        if (!widget.stream)
+          ContextBar(
+            info: _ctxInfo,
+            value: ch.ctx ?? 65536,
+            onChanged: (v) => widget.onChoices(ch.copy(ctx: v)),
+          ),
         Padding(
           padding: const EdgeInsets.only(top: 6, bottom: 6),
           child: Text(
@@ -660,6 +804,29 @@ class _ImprovementsSectionState extends State<ImprovementsSection> {
           tone: c.warn,
           children: [Text(l.moLmImprWarn, style: TextStyle(color: c.text))],
         ),
+        // Our engine for this model (3.12.10): gold, off until the person switches it on.
+        if (m.recommended case final rec?)
+          ImprovementCard(
+            id: 'recommended',
+            available: true,
+            on: ch.recommended == m.id,
+            onChanged: (v) => widget.onChoices(
+              v ? ch.copy(recommended: m.id, ctx: rec.ctx) : ch.copy(noRecommended: true),
+            ),
+            help: [
+              if (rec.ubatch != null) l.moLmRecPass('${rec.ubatch}'),
+              if (rec.ctx != null) l.moLmRecCtx(ctxText(rec.ctx!)),
+            ].join(' '),
+            tested: improvementTested(
+              l,
+              TestedResult({
+                'improvement': 'speculative',
+                'hardware': rec.hardware,
+                'write': {'before': rec.write.before, 'after': rec.write.after},
+              }),
+              lang,
+            ),
+          ),
         card(
           'prefetch',
           can('prefetch') && ch.prefetch,
