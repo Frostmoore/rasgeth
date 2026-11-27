@@ -822,6 +822,39 @@ export function yourFolder(ws: Workspace, findFiles = true): string {
   return `## Your folder\nYour project is ${both}. Every bash call is a new shell that starts there: cd and variables, $OLDPWD too, do not carry over, so write this folder in full when you need it again. Stay in it: never search a whole disk (find /, grep -r /); use glob and grep inside it${findFiles ? ", and find_files for files or programs elsewhere on this computer" : ""}.`;
 }
 
+/**
+ * A git remote in words (3.12.10): Rasgeth's own routes through the egress proxy become «Gitea, owner/name» or «GitHub,
+ * owner/name»; any other address loses the credentials it may carry.
+ */
+export function describeRemote(url: string): string {
+  const m = /\/route\/(gitea|github)\/([^/]+)\/([^/]+?)(?:\.git)?\/?$/.exec(url);
+  if (m) return `${m[1] === "github" ? "GitHub" : "Gitea"}, ${m[2]}/${m[3]}`;
+  return url.replace(/^(https?:\/\/)[^@/]+@/, "$1");
+}
+
+/**
+ * The project's git remotes, read on the server when the conversation starts (3.12.10, the person: «il modello non
+ * vede le remotes configurate»: an agent said GitHub was not set up while the project had it). Fixed with the rest
+ * of the system prompt.
+ */
+export async function yourRepository(dir: string): Promise<string> {
+  const out = await runFile("git", ["-C", dir, "remote", "-v"], { timeout: 5000 }).then(
+    (r) => r.stdout,
+    () => "",
+  );
+  const remotes = new Map<string, string>();
+  for (const line of out.split("\n")) {
+    const m = /^(\S+)\s+(\S+)\s+\(push\)/.exec(line);
+    if (m) remotes.set(m[1] as string, m[2] as string);
+  }
+  if (remotes.size === 0)
+    return "## Your repository\nThis project has no git remote yet: its work lives only here.";
+  const list = [...remotes]
+    .map(([name, url]) => `- \`${name}\`: ${describeRemote(url)}`)
+    .join("\n");
+  return `## Your repository\nThe project's git remotes (${PRODUCT_NAME} adds the credentials on the way out: never write a token or a password into a remote):\n${list}\nPush with \`git push <remote> <branch>\` to each of them; \`git ls-remote <remote>\` shows what is there.`;
+}
+
 /** One model in the menus (`GET /api/models`). */
 /** A removed agent's worktree left in place (3.10.1): what on it is not in the project yet. */
 export interface KeptWorktree {
@@ -2968,6 +3001,10 @@ export class RedGiantCore implements OrchestrationHost {
               ws,
               tools.some((t) => t.def.name === "find_files"),
             )
+          : "",
+        // The project's remotes (3.12.10): where its code goes, read from the project's folder.
+        this.agentRoots.get(agentId)?.[1]
+          ? await yourRepository(this.agentRoots.get(agentId)?.[1] as string)
           : "",
         // The language the person chose for the agents (G33.5); fixed for the conversation.
         replyLanguageLine(this.agentLang),
