@@ -4,10 +4,13 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.12.8';
+const newsVersion = '3.12.10';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.12.10', 'news31210Models', 'news31210ModelsText'),
+  NewsRow('3.12.10', 'news31210Context', 'news31210ContextText'),
+  NewsRow('3.12.10', 'news31210Repo', 'news31210RepoText'),
   NewsRow('3.12.8', 'news3128Projects', 'news3128ProjectsText'),
   NewsRow('3.12.8', 'news3128Working', 'news3128WorkingText'),
   NewsRow('3.12.6', 'news3126Improvements', 'news3126ImprovementsText'),
@@ -440,6 +443,12 @@ const generalWords = <String, Map<String, String>>{
     'news3120SimpleText': 'Per chi vuole solo un assistente: un saluto, una casella grande per chiedere qualsiasi cosa, le cose in corso come schede che dicono a parole se ti aspettano, e risposte da leggere come una pagina, con le tue decisioni come pulsanti. Niente parole tecniche in vista; l\'interfaccia completa è a un interruttore in Impostazioni › Generale.',
     'news3120Topics': 'God mette in ordine le conversazioni per argomento',
     'news3120TopicsText': 'Scrivi a God sempre in un posto solo: ogni messaggio va nell\'argomento giusto, o ne apre uno nuovo con il suo titolo. Se finisce nel posto sbagliato, lo Sposti con un tocco. Gli argomenti fermi da tre giorni vanno in archivio e tornano quando ne riparli.',
+    'news31210Context': 'Il contesto e i thread li scegli tu',
+    'news31210ContextText': 'La scheda di un modello locale ha una barra del contesto con una linea dorata dove modello, contesto e motore smettono di stare nella scheda video, e due barre per i thread del processore, per scrivere e per leggere. Dove abbiamo misurato un motore più veloce del nostro, una scheda dorata lo propone: per Inkling 2 Mini 64k di contesto, circa quattro volte più veloce su una RTX 4080 SUPER.',
+    'news31210Models': 'Modelli locali: molto più veloci, e leggono le immagini',
+    'news31210ModelsText': 'I motori locali non tengono più tutta la conversazione in ogni strato dei modelli che guardano solo le ultime parole (Gemma, Inkling): su una scheda da 16 GB Gemma 4 scrive tre volte più veloce, Qwen 3.6 una volta e mezza, e i turni successivi di una conversazione ripartono dalla cache in una frazione di secondo. Nel catalogo arriva Inkling 2 Mini: legge anche le immagini, e la parte che le legge si scarica con il modello.',
+    'news31210Repo': 'Gli agenti vedono il repository del progetto',
+    'news31210RepoText': 'Un agente che lavora in un progetto ora conosce i suoi remoti git (GitHub, Gitea o altri) senza che glielo si dica, e carica dove deve. Nell\'interfaccia semplice ci sono il canvas, i widget, gli artefatti e le tavole, e un file mandato da un agente si apre nel Canvas o si scarica.',
     'news3121Emulators': 'Gli emulatori nel Canvas',
     'news3121EmulatorsText': 'Un emulatore Android trovato sul computer, o su un nodo, si apre nel Canvas, per te e per gli agenti che provano le app che costruiscono; installare gli strumenti è un passo guidato, con il tuo sì. iOS arriva dopo.',
     'news3121Home': 'God e Satellite in primo piano',
@@ -823,6 +832,12 @@ const generalWords = <String, Map<String, String>>{
     'news3120SimpleText': 'For anyone who just wants an assistant: a greeting, one big box to ask anything, the things in progress as cards that say in words whether they wait for you, and answers to read like a page, with your decisions as buttons. No technical words in view; the full interface is one switch away in Settings › General.',
     'news3120Topics': 'God sorts your conversations by topic',
     'news3120TopicsText': 'Write to God always in one place: each message goes to the topic it belongs to, or opens a new one with its title. If it lands in the wrong place, Move it with a tap. Topics left alone for three days rest in the archive and come back when you write about them.',
+    'news31210Context': 'You choose the context and the threads',
+    'news31210ContextText': 'A local model\'s card has a context bar with a gold line where the model, its context and the engine stop fitting in the graphics card, and two bars for the processor threads, for writing and for reading. Where we measured an engine faster than ours, a gold card offers it: for Inkling 2 Mini 64k of context, about four times faster on an RTX 4080 SUPER.',
+    'news31210Models': 'Local models: much faster, and they read pictures',
+    'news31210ModelsText': 'Local engines no longer keep the whole conversation in every layer of models that look only at the latest words (Gemma, Inkling): on a 16 GB card Gemma 4 writes three times faster, Qwen 3.6 about half again, and the following turns of a conversation start again from the cache in a fraction of a second. Inkling 2 Mini joins the catalog: it reads pictures too, and its image part comes down with the model.',
+    'news31210Repo': 'Agents see the project\'s repository',
+    'news31210RepoText': 'An agent working in a project now knows its git remotes (GitHub, Gitea or others) without being told, so it pushes where it should. In the simple interface the canvas, the widgets, the artifacts and the boards are there, and a file an agent sends opens in the Canvas or downloads.',
     'news3121Emulators': 'Emulators in the Canvas',
     'news3121EmulatorsText': 'An Android emulator found on the computer, or on a node, opens in the Canvas, for you and for the agents trying the apps they build; installing the tools is one guided step, with your yes. iOS comes next.',
     'news3121Home': 'God and Satellite at home',

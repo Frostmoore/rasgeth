@@ -426,6 +426,9 @@ Rasgeth is in pre-alpha. What comes next, in order:
 - **3.12.8 — Projects from Claude Code**: whole projects imported from Claude Code or cloned from their repository,
   instructions, notes and memory included; a line that always shows an agent at work; security, privacy and usage
   drafts.
+- **3.12.10 — Faster local models**: no full history in sliding-window layers, context checkpoints, a context bar
+  and processor threads on each model's card, our recommended engine where we measured one; Inkling 2 Mini with
+  pictures; agents see their project's git remotes.
 - **4.0 — Alpha**: documentation, security and privacy pages, and a stability round on everything.
 - **Then** the beta (community, documentation site) and the production release.
 

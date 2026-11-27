@@ -2642,6 +2642,15 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news31210Models: "Local models: much faster, and they read pictures",
+  news31210ModelsText:
+    "Local engines no longer keep the whole conversation in every layer of models that look only at the latest words (Gemma, Inkling): on a 16 GB card Gemma 4 writes three times faster, Qwen 3.6 about half again, and the following turns of a conversation start again from the cache in a fraction of a second. Inkling 2 Mini joins the catalog: it reads pictures too, and its image part comes down with the model.",
+  news31210Context: "You choose the context and the threads",
+  news31210ContextText:
+    "A local model's card has a context bar with a gold line where the model, its context and the engine stop fitting in the graphics card, and two bars for the processor threads, for writing and for reading. Where we measured an engine faster than ours, a gold card offers it: for Inkling 2 Mini 64k of context, about four times faster on an RTX 4080 SUPER.",
+  news31210Repo: "Agents see the project's repository",
+  news31210RepoText:
+    "An agent working in a project now knows its git remotes (GitHub, Gitea or others) without being told, so it pushes where it should. In the simple interface the canvas, the widgets, the artifacts and the boards are there, and a file an agent sends opens in the Canvas or downloads.",
   news3128Projects: "Bring your Claude Code projects",
   news3128ProjectsText:
     "Settings › Import now finds the projects Claude Code knows on this computer, or clones them from a repository address you paste. Each comes whole: its folder left where it is, copied or cloned; its CLAUDE.md as the orchestrator's instructions; its notes and Claude's memory in the Knowledge. Secret files stay out, and the lines tied to the old computer are marked for the orchestrator to adapt with you. Every import can be undone.",
@@ -11392,6 +11401,15 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news31210Models: "Modelli locali: molto più veloci, e leggono le immagini",
+  news31210ModelsText:
+    "I motori locali non tengono più tutta la conversazione in ogni strato dei modelli che guardano solo le ultime parole (Gemma, Inkling): su una scheda da 16 GB Gemma 4 scrive tre volte più veloce, Qwen 3.6 una volta e mezza, e i turni successivi di una conversazione ripartono dalla cache in una frazione di secondo. Nel catalogo arriva Inkling 2 Mini: legge anche le immagini, e la parte che le legge si scarica con il modello.",
+  news31210Context: "Il contesto e i thread li scegli tu",
+  news31210ContextText:
+    "La scheda di un modello locale ha una barra del contesto con una linea dorata dove modello, contesto e motore smettono di stare nella scheda video, e due barre per i thread del processore, per scrivere e per leggere. Dove abbiamo misurato un motore più veloce del nostro, una scheda dorata lo propone: per Inkling 2 Mini 64k di contesto, circa quattro volte più veloce su una RTX 4080 SUPER.",
+  news31210Repo: "Gli agenti vedono il repository del progetto",
+  news31210RepoText:
+    "Un agente che lavora in un progetto ora conosce i suoi remoti git (GitHub, Gitea o altri) senza che glielo si dica, e carica dove deve. Nell'interfaccia semplice ci sono il canvas, i widget, gli artefatti e le tavole, e un file mandato da un agente si apre nel Canvas o si scarica.",
   news3128Projects: "Porta i tuoi progetti di Claude Code",
   news3128ProjectsText:
     "Impostazioni › Importa ora trova i progetti che Claude Code conosce su questo computer, oppure li clona da un indirizzo di repository che incolli. Ognuno arriva intero: la cartella lasciata dov'è, copiata o clonata; il suo CLAUDE.md come istruzioni dell'orchestratore; le note e la memoria di Claude nella Conoscenza. I file segreti restano fuori, e le righe legate al vecchio computer sono segnate perché l'orchestratore le adatti con te. Ogni importazione si annulla.",
