@@ -308,6 +308,16 @@ export interface EngineConfig {
    */
   noRepack?: boolean | undefined;
   /**
+   * The context the person chose (3.12.10, the bar on the model's card): tokens booked when the engine starts.
+   * Unset: the recommended engine's, or Rasgeth's own (`NORMAL_CTX`).
+   */
+  ctx?: number | undefined;
+  /**
+   * The engine we recommend for this catalog model (3.12.10, `RECOMMENDED_ENGINES`), turned on by the person: its
+   * catalog id, the server takes the settings from our table.
+   */
+  recommended?: string | undefined;
+  /**
    * Turned off by the person (2026-11-04): kept with its tuning, but not started when RedGiant
    * opens and using no memory until it is turned on again.
    */
@@ -1607,6 +1617,8 @@ export class SetupService {
           Boolean(now.bigChunks) === Boolean(e.bigChunks) &&
           Boolean(now.moePrefetch) === Boolean(e.moePrefetch) &&
           Boolean(now.noRepack) === Boolean(e.noRepack) &&
+          now.ctx === e.ctx &&
+          now.recommended === e.recommended &&
           now.speculative === e.speculative &&
           now.draftModel === e.draftModel &&
           // Another tuning picked from the table (2026-11-05) is a new start.
@@ -1981,6 +1993,8 @@ export class SetupService {
       Boolean(a.bigChunks) === Boolean(b.bigChunks) &&
       Boolean(a.moePrefetch) === Boolean(b.moePrefetch) &&
       Boolean(a.noRepack) === Boolean(b.noRepack) &&
+      a.ctx === b.ctx &&
+      a.recommended === b.recommended &&
       a.speculative === b.speculative &&
       a.draftModel === b.draftModel &&
       JSON.stringify(a.tuning ?? null) === JSON.stringify(b.tuning ?? null);

@@ -150,6 +150,10 @@ export function engineContainerEnv(prefetch: boolean): string[] {
   return [
     "CUDA_CACHE_PATH=/kv/cuda-cache",
     "CUDA_CACHE_MAXSIZE=4294967296",
+    // Images published before 3.12.10 set LLAMA_ARG_SWA_FULL=1: llama.cpp leaves a flag off unless its variable says
+    // true, so «false» undoes it; the prefix is kept by checkpoints instead (plan_contesto.md).
+    "LLAMA_ARG_SWA_FULL=false",
+    "LLAMA_ARG_CTX_CHECKPOINTS=8",
     ...(prefetch ? ["LLAMA_MOE_PREFETCH=1"] : []),
   ];
 }

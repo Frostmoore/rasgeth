@@ -28,7 +28,11 @@ function gguf(kv: [string, number, unknown][]): Uint8Array {
     u32(type);
     if (type === 4) u32(v as number);
     else if (type === 8) str(v as string);
-    else if (type === 9) {
+    else if (type === 9 && typeof (v as unknown[])[0] === "boolean") {
+      u32(7);
+      u64((v as boolean[]).length);
+      for (const x of v as boolean[]) parts.push(x ? 1 : 0);
+    } else if (type === 9) {
       u32(4);
       u64((v as number[]).length);
       for (const x of v as number[]) u32(x);
@@ -97,6 +101,41 @@ describe("GGUF header (2026-11-03)", () => {
     // 24 layers, 12 of them three times: 48 passes of 8 heads x (128 + 128) x 2 bytes, as llama.cpp's KV buffer.
     expect(meta.kvBytesPerToken).toBe(48 * 8 * (128 + 128) * 2);
     expect(meta.kvBytesPerToken).toBe(196608);
+  });
+
+  it("says what grows without --swa-full, the attention's scratch, and skips a hybrid's recurrent layers (3.12.10)", async () => {
+    const pattern = Array.from({ length: 24 }, (_, i) => i % 6 !== 5);
+    const inkling = gguf([
+      ["general.architecture", 8, "inkling2_loop"],
+      ["inkling2_loop.block_count", 4, 24],
+      ["inkling2_loop.attention.head_count", 9, Array(24).fill(24)],
+      ["inkling2_loop.attention.head_count_kv", 9, Array(24).fill(8)],
+      ["inkling2_loop.attention.key_length", 4, 128],
+      ["inkling2_loop.attention.value_length", 4, 128],
+      ["inkling2_loop.loop.count", 4, 3],
+      ["inkling2_loop.loop.start", 4, 6],
+      ["inkling2_loop.loop.end", 4, 18],
+      ["inkling2_loop.attention.sliding_window", 4, 1024],
+      ["inkling2_loop.attention.sliding_window_pattern", 9, pattern],
+      ["inkling2_loop.attention.relative_length", 4, 16],
+    ]);
+    const m = await readGgufMeta(async (o, n) => inkling.subarray(o, o + n));
+    // Layers 5, 11, 17, 23 see everything; 11 and 17 run three times: 8 passes x 4096 bytes.
+    expect(m).toMatchObject({ kvGrowBytesPerToken: 32768, slidingWindow: 1024, pairBytes: 216 });
+    // Qwen 3.5+: only every fourth layer has attention (measured header: 20480 bytes a token).
+    const qwen = gguf([
+      ["general.architecture", 8, "qwen35moe"],
+      ["qwen35moe.block_count", 4, 40],
+      ["qwen35moe.attention.head_count", 4, 16],
+      ["qwen35moe.attention.head_count_kv", 4, 2],
+      ["qwen35moe.attention.key_length", 4, 256],
+      ["qwen35moe.attention.value_length", 4, 256],
+      ["qwen35moe.full_attention_interval", 4, 4],
+    ]);
+    const q = await readGgufMeta(async (o, n) => qwen.subarray(o, o + n));
+    expect(q.kvBytesPerToken).toBe(10 * 2 * (256 + 256) * 2);
+    expect(q.kvGrowBytesPerToken).toBeUndefined();
+    expect(q.pairBytes).toBeUndefined();
   });
 
   it("a model with MTP heads says how many (3.12.6: MTP decoding needs them)", async () => {

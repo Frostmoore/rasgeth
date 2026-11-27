@@ -958,7 +958,7 @@ static class WinEngine
             var info = new ProcessStartInfo(Exe,
                 "-m \"" + Path.Combine(Dir, "models", model) + "\" --host 127.0.0.1 --port " + Port
                 + " -c " + ctx + " --parallel " + parallel + " --slot-save-path \"" + Path.Combine(Dir, "kv")
-                + "\" --swa-full --kv-unified --jinja"
+                + "\" --ctx-checkpoints 8 --kv-unified --jinja"
                 // SSD stream: llama.cpp fits the layers to the card itself (--fit, its default).
                 + (fit == "1" ? "" : " --n-gpu-layers 999") + SafeArgs(args) + DraftArgs(draft) + ProjectorArgs(model) + TemplateArgs(template))
             {

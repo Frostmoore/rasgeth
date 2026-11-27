@@ -37,6 +37,40 @@ export const TESTED_IMPROVEMENTS: Readonly<Record<string, readonly TestedResult[
   ],
 };
 
+/**
+ * An engine set up for one model (3.12.10, the user: «possiamo scegliere il motore per ogni modello. default quello di
+ * serie, su quelli testati consigliamo quello che funziona meglio»): what we measured faster than Rasgeth's own
+ * settings on a computer, offered with a gold border on the model's card, never applied by itself. Only words of
+ * ours reach the engine: the page names the model, the server takes the settings from here.
+ */
+export interface RecommendedEngine {
+  /** Tokens of a reading pass (`-ub`). */
+  ubatch?: number;
+  /** The context to keep (tokens): the longest that keeps everything in the card where it was measured. */
+  ctx?: number;
+  /** The computer it was measured on, in words. */
+  hardware: string;
+  /** Writing, tokens a second: Rasgeth's own settings, then these. */
+  write: { before: number; after: number };
+}
+
+export const RECOMMENDED_ENGINES: Readonly<Record<string, RecommendedEngine>> = {
+  // Inkling 2 Mini UD-IQ3_XXS on Rig, 2026-11-27 (plan_contesto.md): its attention's scratch grows with the reading
+  // pass times the context; 256-token passes and 32 768 tokens keep it all in a 16 GB card. A rewritten file
+  // 9.4 -> 47.6 t/s, a long text 7.5 -> 49.7, the second turn of a conversation from the cache in 0.3 s.
+  "inkling-2-mini": {
+    ubatch: 256,
+    ctx: 32768,
+    hardware: "NVIDIA RTX 4080 SUPER",
+    write: { before: 9.4, after: 47.6 },
+  },
+};
+
+/** The engine we recommend for a model, when we measured one. */
+export function recommendedFor(id: string): RecommendedEngine | undefined {
+  return RECOMMENDED_ENGINES[id];
+}
+
 /** What we measured for a model, the improvements that helped (empty when none or not tried). */
 export function testedFor(id: string): TestedResult[] {
   return [...(TESTED_IMPROVEMENTS[id] ?? [])];

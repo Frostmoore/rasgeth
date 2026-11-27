@@ -2732,6 +2732,13 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     draftModel: z.string().min(1).optional(),
     /** No Repack (p3.12.6): the weights as they are in the file (`--no-repack`). */
     noRepack: z.boolean().optional(),
+    /** The context chosen on the model's card (3.12.10), in tokens. */
+    ctx: z.number().int().min(2048).max(1048576).optional(),
+    /** The engine we recommend for this catalog model (3.12.10): its id, never settings. */
+    recommended: z
+      .string()
+      .regex(/^[a-z0-9.-]+$/)
+      .optional(),
   });
   app.get("/api/setup", (c) => wizard(c, () => (setup as SetupService).state()));
   app.put("/api/setup/models", (c) =>

@@ -1,5 +1,5 @@
 import type { TestedResult } from "./improvements.js";
-import { testedFor } from "./tested-improvements.js";
+import { type RecommendedEngine, recommendedFor, testedFor } from "./tested-improvements.js";
 
 /**
  * Models suggested for this computer (G24.3), from the smallest to the largest: well known,
@@ -34,6 +34,8 @@ export interface LocalModel {
   mtp?: true;
   /** What we measured ourselves with an improvement on this model (p3.12.6). */
   tested?: TestedResult[];
+  /** An engine set up for this model that we measured faster (3.12.10, tested-improvements.ts). */
+  recommended?: RecommendedEngine | undefined;
 }
 
 /**
@@ -140,6 +142,7 @@ export const LOCAL_MODELS: readonly LocalModel[] = [
     activeB: 3.4,
     scores: { smart: 4, code: 4, tools: 4, languages: 4 },
     tested: testedFor("inkling-2-mini"),
+    recommended: recommendedFor("inkling-2-mini"),
   },
   {
     id: "glm-4.7-flash",

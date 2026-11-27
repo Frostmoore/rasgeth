@@ -94,7 +94,10 @@ export function engineArgs(dir: string, r: WinEngineRequest, port: number): stri
     String(r.parallel),
     "--slot-save-path",
     join(dir, "kv"),
-    "--swa-full",
+    // Sliding-window models keep their prefix between turns from checkpoints (3.12.10); --swa-full kept every token
+    // in every layer and pushed the model out of the card.
+    "--ctx-checkpoints",
+    "8",
     "--kv-unified",
     "--jinja",
     // SSD stream: llama.cpp fits the layers itself (--fit, its default); otherwise all on the GPU.

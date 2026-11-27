@@ -6,6 +6,7 @@
 // For a dense model llama.cpp fits as many layers as it can in the card (--fit) and the rest
 // comes from RAM or the SSD at each token. This file decides the numbers; the engine does the rest.
 import type { GgufMeta } from "@redgiant/engine-local";
+import { recommendedFor } from "@redgiant/protocol";
 
 const GB = 1024 ** 3;
 
@@ -199,6 +200,31 @@ export function bigBatches(
     const ctx = streamPlan(meta, fileGb, hw, { ...tuning, batch: b }).ctx;
     return kvTokens >= MIN_CTX && b <= ctx;
   });
+}
+
+/**
+ * The context booked and how (3.12.10, plan_contesto.md): the person's choice from the model's card, else the
+ * recommended engine's, else `NORMAL_CTX`; the recommended reading pass; keys and values at 8 bits on a graphics card
+ * (Inkling 2 Mini on an RTX 4080 SUPER: about half the memory, writing 10 -> 18 t/s at 65 536 tokens). With SSD
+ * stream the plan decides, these give only the context.
+ */
+export function contextArgs(
+  cfg: { ctx?: number | undefined; recommended?: string | undefined },
+  plan: EnginePlan | undefined,
+  gpu: boolean,
+): { ctx: number; args: string[] } {
+  const rec = cfg.recommended ? recommendedFor(cfg.recommended) : undefined;
+  const ctx = plan?.ctx ?? cfg.ctx ?? rec?.ctx ?? NORMAL_CTX;
+  if (plan) return { ctx, args: [] };
+  return {
+    ctx,
+    args: [
+      "-c",
+      String(ctx),
+      ...(rec?.ubatch ? ["-ub", String(rec.ubatch)] : []),
+      ...(gpu ? ["-ctk", "q8_0", "-ctv", "q8_0"] : []),
+    ],
+  };
 }
 
 /**

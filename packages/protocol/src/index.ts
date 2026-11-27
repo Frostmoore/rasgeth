@@ -13,6 +13,7 @@ export * from "./canvas.js";
 export * from "./capabilities.js";
 export * from "./chat-tools.js";
 export * from "./connections.js";
+export * from "./context-fit.js";
 export * from "./critical.js";
 export * from "./dangers.js";
 export * from "./devices.js";

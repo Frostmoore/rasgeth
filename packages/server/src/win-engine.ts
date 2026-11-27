@@ -124,6 +124,9 @@ export class WinEngine {
           : []),
         // The launcher passes plain flags through (SafeArgs), the Mac's too.
         ...noRepackArgs(spec.noRepack),
+        // Windows moves the card's memory to RAM when it runs short, and the engine stalls for seconds (3.12.10, Rig:
+        // 40 t/s, then 0.2): 2.5 GB left free for the desktop instead of llama.cpp's 1 GB. Not on a Mac (one memory).
+        ...(process.platform === "darwin" ? [] : ["--fit-target", "2560"]),
       ].join(" "),
       // Always fitted by llama.cpp to the card's free memory (no --n-gpu-layers 999).
       fit: "1" as const,

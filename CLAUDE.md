@@ -95,8 +95,10 @@
   language, no bar of the page) and its bridge (`toApp`/`onApp` in `web/src/embed.ts`, `EmbedView`/`EmbedBridge` in
   `lib/embed/`, vectors from `tool/embed_vectors.mjs`). Same colours (`colors_parity_test.dart`), fonts and drawn
   icons as the page; no Checkbox/Radio, every window through `lib/ui/dialogs.dart`.
-- Local engines: llama.cpp must run with `--slot-save-path` (shared with the server) and `--swa-full` for
-  sliding-window models (Gemma…), or prefixes beyond the window are recomputed every turn.
+- Local engines: llama.cpp must run with `--slot-save-path` (shared with the server) and `--ctx-checkpoints 8`, so
+  sliding-window models (Gemma, Inkling…) keep their prefix between turns. Never `--swa-full` (3.12.10): it kept
+  every token in every layer, 12-28 GB at 65 536 tokens, and pushed the model out of the card (3-5x slower, Rig).
+  On a card the context is booked at 8 bits; how much fits is `contextInCard` (protocol, plan_contesto.md).
 - Extensions never install themselves: an agent's proposal is tested in a throwaway sandbox and waits for the
   user (`ExtensionBuilder.decide`); only the user's own extensions install directly once their tests pass. The one
   exception is the user's choice (G29.4, policy `skills: "auto"`): an agent's _skill_ (instructions) installs once

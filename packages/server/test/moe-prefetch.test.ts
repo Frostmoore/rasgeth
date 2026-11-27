@@ -218,7 +218,13 @@ describe("«next layer ahead»: the patched llama.cpp (G32.2)", () => {
   });
 
   it("switches the patch on in the container's environment only for the patched image", () => {
-    const plain = ["CUDA_CACHE_PATH=/kv/cuda-cache", "CUDA_CACHE_MAXSIZE=4294967296"];
+    const plain = [
+      "CUDA_CACHE_PATH=/kv/cuda-cache",
+      "CUDA_CACHE_MAXSIZE=4294967296",
+      // 3.12.10: images published before keep --swa-full on; checkpoints instead.
+      "LLAMA_ARG_SWA_FULL=false",
+      "LLAMA_ARG_CTX_CHECKPOINTS=8",
+    ];
     expect(engineContainerEnv(false)).toEqual(plain);
     expect(engineContainerEnv(true)).toEqual([...plain, "LLAMA_MOE_PREFETCH=1"]);
   });

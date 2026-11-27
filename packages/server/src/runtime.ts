@@ -53,8 +53,8 @@ import { LocalSearxng } from "./searxng-local.js";
 import type { EngineConfig, SetupHooks } from "./setup.js";
 import {
   bigBatches,
+  contextArgs,
   type EnginePlan,
-  NORMAL_CTX,
   noRepackArgs,
   speculativeArgs,
   streamPlan,
@@ -553,10 +553,17 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
           // A template of ours where the model's own changes past turns (gpt-oss, 2026-11-05).
           const template = templateFor(cfg.model);
           if (template) await installTemplate(template, join(win.dir, "templates"));
+          // Without SSD stream: the context booked and how, as a plan of its own (3.12.10).
+          const context = contextArgs(cfg, plan, true);
+          const winPlan = plan ?? {
+            ctx: context.ctx,
+            args: context.args.filter((_, i, a) => a[i] !== "-c" && a[i - 1] !== "-c"),
+            fit: true,
+          };
           const baseURL = await win.start(
             cfg.model,
             h,
-            plan,
+            winPlan,
             pre.fits,
             { speculative: cfg.speculative, draft: cfg.draftModel, noRepack: cfg.noRepack },
             flavor,
@@ -624,6 +631,8 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
         const template = templateFor(cfg.model);
         if (template && e.modelsDir)
           await installTemplate(template, join(e.modelsDir, ".redgiant"));
+        // The context booked, the recommended engine's pass, keys and values at 8 bits on a card (3.12.10).
+        const context = contextArgs(cfg, plan, cfg.variant !== "cpu");
         // The image projector downloaded with the model (3.12.10): the model reads pictures.
         const projector =
           e.modelsDir && existsSync(join(e.modelsDir, projectorFile(cfg.model)))
@@ -638,7 +647,7 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
             // llama.cpp fits the layers to the card's free memory itself (--fit, its default):
             // forcing them all in (--n-gpu-layers 999) let a 12 GB model on a 16 GB card spill
             // into shared memory at the first long read, minutes instead of seconds (2026-11-04).
-            ...(plan ? ["-c", String(plan.ctx), ...plan.args] : []),
+            ...(plan ? ["-c", String(plan.ctx), ...plan.args] : context.args),
             // Speculative decoding, when the person turned it on (2026-11-04).
             ...speculativeArgs(cfg.speculative, cfg.draftModel && `/models/${cfg.draftModel}`),
             ...noRepackArgs(cfg.noRepack),
@@ -647,7 +656,7 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
             // One pool shared by the slots, and each conversation may use all of it: without
             // this llama.cpp gives each slot a quarter (16k of 65k, seen 2026-11-04).
             "--kv-unified-per-slot",
-            String(plan?.ctx ?? NORMAL_CTX),
+            String(context.ctx),
           ],
           Labels: { "io.redgiant.engine": "1" },
           // CUDA's kernel cache in the KV volume; LLAMA_MOE_PREFETCH=1 for the patched image.

@@ -19,6 +19,17 @@ export interface GgufMeta {
   vocabSize?: number;
   /** Its MTP heads (`<arch>.nextn_predict_layers`), when it has some: what MTP decoding needs. */
   mtpLayers?: number;
+  /**
+   * Sliding-window models (3.12.10): bytes of keys and values a token adds at 16 bits when only the layers that see
+   * the whole conversation keep it (no `--swa-full`), and the window the others keep. Unset: every layer grows.
+   */
+  kvGrowBytesPerToken?: number;
+  slidingWindow?: number;
+  /**
+   * Attention with relative positions (Inkling 2, 3.12.10): its scratch grows with the reading pass times the
+   * context, about these bytes for each pair of tokens (fitted on Rig: 216 bytes for 24 heads). Unset for the others.
+   */
+  pairBytes?: number;
 }
 
 /** Reads `length` bytes at `offset` (fewer at the end of the file). */
@@ -123,6 +134,12 @@ async function value(c: Cursor, type: number): Promise<unknown> {
         for (let i = 0; i < n; i++) out.push(inner === 5 ? (await c.u32()) | 0 : await c.u32());
         return out;
       }
+      // Short lists of yes/no (which layers see through a sliding window).
+      if (inner === 7 && n <= 1024) {
+        const out: boolean[] = [];
+        for (let i = 0; i < n; i++) out.push((await c.bytes(1))[0] !== 0);
+        return out;
+      }
       if (inner === 8) for (let i = 0; i < n; i++) await c.skip(await c.u64());
       else await c.skip(n * (SIZES[inner] ?? 0));
       return undefined;
@@ -175,10 +192,28 @@ export async function readGgufMeta(read: ReadAt): Promise<GgufMeta> {
   const loops = num("loop.count");
   const from = num("loop.start");
   const to = num("loop.end");
-  const passes = (i: number) => (loops > 1 && i >= from && i < to ? loops : 1);
+  // Hybrid models (Qwen 3.5+): only every `full_attention_interval`-th layer has attention, the others a recurrent
+  // state of fixed size; only the attention layers keep keys and values.
+  const interval = num("full_attention_interval");
+  const attends = (i: number) => interval <= 1 || (i + 1) % interval === 0;
+  const passes = (i: number) => (attends(i) ? (loops > 1 && i >= from && i < to ? loops : 1) : 0);
   const kvPerToken = kvHeadsBy
     .slice(0, layers || kvHeadsBy.length)
     .reduce((sum, n, i) => sum + n * (keyLen + valueLen) * 2 * passes(i), 0);
+  // A sliding window: the layers marked true keep only the last `sliding_window` tokens.
+  const window = num("attention.sliding_window");
+  const pattern = kv.get(`${arch}.attention.sliding_window_pattern`);
+  const swaLayer = (i: number) => Array.isArray(pattern) && pattern[i] === true;
+  const kvGrow =
+    window > 0 && Array.isArray(pattern)
+      ? kvHeadsBy
+          .slice(0, layers || kvHeadsBy.length)
+          .reduce(
+            (sum, n, i) => sum + (swaLayer(i) ? 0 : n * (keyLen + valueLen) * 2 * passes(i)),
+            0,
+          )
+      : undefined;
+  const relative = num("attention.relative_length") > 0;
   const name = kv.get("general.name");
   return {
     architecture: arch,
@@ -190,6 +225,8 @@ export async function readGgufMeta(read: ReadAt): Promise<GgufMeta> {
     kvBytesPerToken: Math.round(kvPerToken),
     ...(num("vocab_size") > 0 && { vocabSize: num("vocab_size") }),
     ...(num("nextn_predict_layers") > 0 && { mtpLayers: num("nextn_predict_layers") }),
+    ...(kvGrow !== undefined && { kvGrowBytesPerToken: Math.round(kvGrow), slidingWindow: window }),
+    ...(relative && { pairBytes: Math.round(heads * 9) }),
   };
 }
 
