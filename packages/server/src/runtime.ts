@@ -7,7 +7,7 @@ import { Transform, Writable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { KvStore, LocalEngineProvider, readLocalGgufMeta } from "@redgiant/engine-local";
 import type { Redactor, SqlClient } from "@redgiant/events";
-import { keyProvider, OWN_SERVER_ID, PRODUCT_NAME } from "@redgiant/protocol";
+import { keyProvider, OWN_SERVER_ID, PRODUCT_NAME, projectorFile } from "@redgiant/protocol";
 import {
   AnthropicProvider,
   LOCAL_STALL,
@@ -624,6 +624,11 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
         const template = templateFor(cfg.model);
         if (template && e.modelsDir)
           await installTemplate(template, join(e.modelsDir, ".redgiant"));
+        // The image projector downloaded with the model (3.12.10): the model reads pictures.
+        const projector =
+          e.modelsDir && existsSync(join(e.modelsDir, projectorFile(cfg.model)))
+            ? ["--mmproj", `/models/${projectorFile(cfg.model)}`]
+            : [];
         container = await docker.createContainer({
           name: ENGINE,
           Image: image,
@@ -637,6 +642,7 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
             // Speculative decoding, when the person turned it on (2026-11-04).
             ...speculativeArgs(cfg.speculative, cfg.draftModel && `/models/${cfg.draftModel}`),
             ...noRepackArgs(cfg.noRepack),
+            ...projector,
             ...(template ? ["--chat-template-file", `/models/.redgiant/${template}`] : []),
             // One pool shared by the slots, and each conversation may use all of it: without
             // this llama.cpp gives each slot a quarter (16k of 65k, seen 2026-11-04).

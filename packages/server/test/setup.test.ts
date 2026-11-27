@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { Job } from "@redgiant/protocol";
@@ -1283,6 +1284,51 @@ describe("Hugging Face models", () => {
     expect(await hf.local()).toEqual([]);
   });
 
+  it("downloads a model's image projector with it, one bar, never offered as a model (3.12.10)", async () => {
+    const sizes: Record<string, number> = { "vis-UD-IQ3_XXS.gguf": 1500, "mmproj-F16.gguf": 500 };
+    const fetched: string[] = [];
+    const fake = (async (url: string) => {
+      if (url.includes("/tree/main"))
+        return Response.json([
+          { path: "vis-UD-IQ3_XXS.gguf", lfs: { size: 1500 } },
+          { path: "mmproj-BF16.gguf", lfs: { size: 500 } },
+          { path: "mmproj-F32.gguf", lfs: { size: 1000 } },
+          { path: "mmproj-F16.gguf", lfs: { size: 500 } },
+        ]);
+      const f = Object.keys(sizes).find((k) => url.endsWith(`/resolve/main/${k}`));
+      if (!f) return new Response("no", { status: 404 });
+      fetched.push(f);
+      const body = new Uint8Array(sizes[f] as number);
+      return new Response(body, { headers: { "content-length": String(body.length) } });
+    }) as typeof fetch;
+    s = await startServer(() => ({ text: "x" }));
+    const hf = new HuggingFace(join(s.dir, "models-vision"), fake);
+    expect((await hf.files("acme/vis-GGUF")).map((f) => f.file)).toEqual(["vis-UD-IQ3_XXS.gguf"]);
+    expect(await hf.projector("acme/vis-GGUF")).toEqual({ file: "mmproj-F16.gguf", bytes: 500 });
+    const jobs = new Jobs();
+    const seen: [number, number | null][] = [];
+    const job = jobs.start("me", "model_download", ["download"], (h) =>
+      hf.download("acme/vis-GGUF", "vis-UD-IQ3_XXS.gguf", {
+        ...h,
+        progress: (done, total) => {
+          seen.push([done, total]);
+          h.progress(done, total);
+        },
+      }),
+    );
+    expect((await jobs.settled(job.id))?.state).toBe("done");
+    expect(fetched).toEqual(["vis-UD-IQ3_XXS.gguf", "mmproj-F16.gguf"]);
+    // One bar for both: 2000 bytes in all, never going back.
+    expect(seen.every(([, t]) => t === 2000)).toBe(true);
+    expect(seen.map(([d]) => d)).toEqual([...seen.map(([d]) => d)].sort((x, y) => x - y));
+    expect(seen.at(-1)?.[0]).toBe(2000);
+    expect(existsSync(join(s.dir, "models-vision", "vis-UD-IQ3_XXS.mmproj.gguf"))).toBe(true);
+    // The projector is not a model to start, and goes with its model.
+    expect((await hf.local()).map((f) => f.file)).toEqual(["vis-UD-IQ3_XXS.gguf"]);
+    await hf.remove("vis-UD-IQ3_XXS.gguf");
+    expect(existsSync(join(s.dir, "models-vision", "vis-UD-IQ3_XXS.mmproj.gguf"))).toBe(false);
+  });
+
   it("downloads a model as a job, and a paused download goes on from where it was", async () => {
     const payload = new Uint8Array(1500).map((_, i) => i % 251);
     const ranges: (string | null)[] = [];
@@ -1297,6 +1343,9 @@ describe("Hugging Face models", () => {
           { path: "MTP/mtp-tiny-Q8_0.gguf", size: 10 },
           { path: "README.md", size: 5 },
         ]);
+      // Its image projector comes down with it (3.12.10).
+      if (url.endsWith("/resolve/main/mmproj-tiny-f16.gguf"))
+        return new Response(new Uint8Array(10), { headers: { "content-length": "10" } });
       if (url.endsWith("/resolve/main/tiny-Q4_K_M.gguf")) {
         const range = new Headers(init?.headers).get("range");
         ranges.push(range);
@@ -1342,6 +1391,7 @@ describe("Hugging Face models", () => {
     expect(second?.state).toBe("done");
     expect(ranges).toEqual([null, "bytes=600-"]);
     expect(new Uint8Array(await readFile(join(dir, "tiny-Q4_K_M.gguf")))).toEqual(payload);
+    expect((await stat(join(dir, "tiny-Q4_K_M.mmproj.gguf"))).size).toBe(10);
     expect(await hf.local()).toEqual([{ file: "tiny-Q4_K_M.gguf", bytes: 1500, partial: false }]);
     await hf.remove("tiny-Q4_K_M.gguf");
     expect(await hf.local()).toEqual([]);

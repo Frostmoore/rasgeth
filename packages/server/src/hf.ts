@@ -3,6 +3,7 @@ import { mkdir, readdir, rename, rm, stat } from "node:fs/promises";
 import { join } from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
+import { isProjectorFile, projectorFile } from "@redgiant/protocol";
 import { JobFailure, type JobHandle } from "./jobs.js";
 
 /** Hugging Face: GGUF models for the local engine (G17.2). */
@@ -137,7 +138,10 @@ export interface LocalFile {
 }
 
 export class HuggingFace {
-  private readonly cache = new Map<string, { at: number; files: GgufFile[] }>();
+  private readonly cache = new Map<
+    string,
+    { at: number; files: GgufFile[]; projector: { file: string; bytes: number } | undefined }
+  >();
 
   constructor(
     private readonly modelsDir: string,
@@ -160,9 +164,24 @@ export class HuggingFace {
 
   /** The model files of a repository (`isModelFile`), smallest first; cached for an hour. */
   async files(repo: string): Promise<GgufFile[]> {
+    return (await this.read(repo)).files;
+  }
+
+  /**
+   * The image projector of a repository (3.12.10), when it has one: F16 first (the size of BF16,
+   * read by every engine), then BF16, then F32. Downloaded with any of its models.
+   */
+  async projector(repo: string): Promise<{ file: string; bytes: number } | undefined> {
+    return (await this.read(repo)).projector;
+  }
+
+  private async read(repo: string): Promise<{
+    files: GgufFile[];
+    projector: { file: string; bytes: number } | undefined;
+  }> {
     if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) throw new Error("A repository is owner/name");
     const hit = this.cache.get(repo);
-    if (hit && Date.now() - hit.at < 3_600_000) return hit.files;
+    if (hit && Date.now() - hit.at < 3_600_000) return hit;
     const r = await this.fetchImpl(`${HF}/api/models/${repo}/tree/main?recursive=true`);
     if (!r.ok) throw new Error(`Hugging Face answered ${r.status}`);
     const tree = (await r.json()) as { path: string; size?: number; lfs?: { size?: number } }[];
@@ -202,8 +221,23 @@ export class HuggingFace {
     // (2026-11-05: NVIDIA's 1.2 GB correction was chosen for a 120B model, «200 tokens/s»).
     const largest = Math.max(0, ...files.map((f) => f.sizeGb));
     const kept = files.filter((f) => f.quant !== null || f.sizeGb >= largest * 0.25);
-    this.cache.set(repo, { at: Date.now(), files: kept });
-    return kept;
+    const rank = (p: string) => {
+      const n = p.toLowerCase();
+      return n.includes("f16") && !n.includes("bf16")
+        ? 0
+        : n.includes("bf16")
+          ? 1
+          : n.includes("f32")
+            ? 2
+            : 3;
+    };
+    const found = tree
+      .filter((f) => /(^|\/)mmproj[^/]*\.gguf$/i.test(f.path))
+      .sort((a, b) => rank(a.path) - rank(b.path) || a.path.length - b.path.length)[0];
+    const projector = found && { file: found.path, bytes: found.lfs?.size ?? found.size ?? 0 };
+    const entry = { at: Date.now(), files: kept, projector };
+    this.cache.set(repo, entry);
+    return entry;
   }
 
   /** The name a repository's file gets in the models folder. */
@@ -219,6 +253,8 @@ export class HuggingFace {
     for (const n of names) {
       const partial = n.endsWith(".gguf.part");
       if (!partial && !n.endsWith(".gguf")) continue;
+      // A model's image projector goes with it, it is not a model to start (3.12.10).
+      if (isProjectorFile(n)) continue;
       const st = await stat(join(this.modelsDir, n)).catch(() => null);
       if (!st?.isFile()) continue;
       const name = partial ? n.slice(0, -5) : n;
@@ -252,7 +288,8 @@ export class HuggingFace {
             `${sp.base}-${String(i + 1).padStart(5, "0")}-of-${String(sp.of).padStart(5, "0")}.gguf`,
         )
       : [target];
-    for (const n of names) {
+    // The image projector goes with its model (3.12.10).
+    for (const n of [...names, projectorFile(target)]) {
       await rm(join(this.modelsDir, `${n}.part`), { force: true });
       await rm(join(this.modelsDir, n), { force: true });
     }
@@ -265,6 +302,45 @@ export class HuggingFace {
   async download(repo: string, file: string, h: JobHandle): Promise<{ target: string }> {
     if (!/^[\w.-]+\/[\w.-]+$/.test(repo) || file.includes("..") || !file.endsWith(".gguf"))
       throw new JobFailure("bad_file", "Not a GGUF file of a Hugging Face repository");
+    // Everything the model needs comes down with it (3.12.10): its image projector too, one bar for both.
+    const projector = await this.projector(repo).catch(() => undefined);
+    const projTarget = projectorFile(HuggingFace.target(file));
+    const extra =
+      projector && !(await stat(join(this.modelsDir, projTarget)).catch(() => null))
+        ? projector.bytes
+        : 0;
+    if (!projector || extra === 0) return this.downloadModel(repo, file, h);
+    const done = await this.downloadModel(repo, file, {
+      ...h,
+      signal: h.signal,
+      step: (id) => h.step(id),
+      progress: (d, t) => h.progress(d, t === null ? null : t + extra),
+    });
+    const listed = (await this.files(repo)).find((f) => f.file === file);
+    let modelBytes = 0;
+    for (const p of listed?.parts ?? [file])
+      modelBytes +=
+        (await stat(join(this.modelsDir, HuggingFace.target(p))).catch(() => null))?.size ?? 0;
+    await this.downloadOne(
+      repo,
+      projector.file,
+      {
+        ...h,
+        signal: h.signal,
+        step: () => {},
+        progress: (d) => h.progress(modelBytes + d, modelBytes + extra),
+      },
+      projTarget,
+    );
+    return done;
+  }
+
+  /** The model's own file or parts (`download` adds the projector). */
+  private async downloadModel(
+    repo: string,
+    file: string,
+    h: JobHandle,
+  ): Promise<{ target: string }> {
     // A model in parts: every part, one after the other, with one bar for all of them.
     const listed = splitPart(file)
       ? (await this.files(repo)).find((f) => f.file === file)
@@ -289,8 +365,13 @@ export class HuggingFace {
   }
 
   /** One file into the models folder, going on from where a paused download stopped. */
-  private async downloadOne(repo: string, file: string, h: JobHandle): Promise<{ target: string }> {
-    const target = HuggingFace.target(file);
+  private async downloadOne(
+    repo: string,
+    file: string,
+    h: JobHandle,
+    as?: string,
+  ): Promise<{ target: string }> {
+    const target = as ?? HuggingFace.target(file);
     const final = join(this.modelsDir, target);
     const part = `${final}.part`;
     await mkdir(this.modelsDir, { recursive: true });

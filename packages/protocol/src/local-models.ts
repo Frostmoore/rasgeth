@@ -35,6 +35,21 @@ export interface LocalModel {
   tested?: TestedResult[];
 }
 
+/**
+ * The image projector of a model (3.12.10, the user: «se un utente sceglie quel modello deve scaricare tutto quello
+ * che serve per farlo girare»): downloaded with the model when its repository has one, kept beside it as
+ * `<model>.mmproj.gguf`; every engine (Docker, Windows, Mac) passes it with `--mmproj` when it is there, and the
+ * model reads pictures. A split model's projector is named after its first part.
+ */
+export function projectorFile(model: string): string {
+  return model.replace(/\.gguf$/i, "") + ".mmproj.gguf";
+}
+
+/** A file of the models folder that is a projector, not a model to start. */
+export function isProjectorFile(name: string): boolean {
+  return /\.mmproj\.gguf(\.part)?$/i.test(name);
+}
+
 export const LOCAL_MODELS: readonly LocalModel[] = [
   // The catalogue renewed on 2026-11-05 (the person approved the list): the newest open models
   // as unsloth publishes them, by size. Scores are estimates from published benchmarks, not
@@ -112,6 +127,17 @@ export const LOCAL_MODELS: readonly LocalModel[] = [
     totalB: 26,
     activeB: 4,
     scores: { smart: 4, code: 3, tools: 4, languages: 4 },
+  },
+  // Thinking Machines (2026-11-27, the user: «proviamo inkling 2 mini»): looped mixture of experts, 128 experts with
+  // 8 at work, layers 6-18 run three times; text and pictures (its projector comes down with it). Header checked:
+  // `inkling2_loop`, no MTP heads. Tried on an i5-12500H at UD-IQ3_XXS (10.8 GB): 7.3 t/s writing, 28 t/s reading.
+  {
+    id: "inkling-2-mini",
+    name: "Inkling 2 Mini",
+    repo: "unsloth/Inkling-2-Mini-GGUF",
+    totalB: 26,
+    activeB: 3.4,
+    scores: { smart: 4, code: 4, tools: 4, languages: 4 },
   },
   {
     id: "glm-4.7-flash",

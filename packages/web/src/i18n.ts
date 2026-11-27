@@ -2216,6 +2216,8 @@ const en = {
   "lm_lfm2.5-24b-a2b": "Light mixture of experts, very fast: for everyday jobs.",
   "lm_glm-4.7-flash": "Strong on code for its size, fast: 3B at work on each token.",
   "lm_nemotron-3.5-lightning-30b": "NVIDIA's, recent: fast, with a context up to a million tokens.",
+  "lm_inkling-2-mini":
+    "Fast on the processor alone, reads pictures too: good with code, reasoning and languages.",
   "lm_qwen3.6-35b-a3b": "The most used medium model: fast, very good with tools and code.",
   "lm_gemma-4-31b": "Google's dense model: writes very well, in Italian too.",
   "lm_nemotron-3.5-bolt-74b": "NVIDIA's, October 2026: fits in 16 GB of card and 64 of RAM.",
@@ -10938,6 +10940,8 @@ const it: Record<Key, string> = {
     "Forte sul codice per la sua taglia, veloce: 3 miliardi al lavoro per ogni token.",
   "lm_nemotron-3.5-lightning-30b":
     "Di NVIDIA, recente: veloce, con un contesto fino a un milione di token.",
+  "lm_inkling-2-mini":
+    "Veloce anche con il solo processore, legge anche le immagini: bravo con codice, ragionamento e lingue.",
   "lm_qwen3.6-35b-a3b": "Il modello medio più usato: veloce, ottimo con strumenti e codice.",
   "lm_gemma-4-31b": "Il modello denso di Google: scrive benissimo, anche in italiano.",
   "lm_nemotron-3.5-bolt-74b": "Di NVIDIA, ottobre 2026: entra in 16 GB di scheda e 64 di RAM.",

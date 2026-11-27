@@ -18,6 +18,7 @@ import { totalmem } from "node:os";
 import { dirname, join } from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
+import { projectorFile } from "@redgiant/protocol";
 import type { WinEngineRequest, WinEngineStatus } from "./win-engine.js";
 
 const GB = 1024 ** 3;
@@ -75,6 +76,11 @@ export function engineArgs(dir: string, r: WinEngineRequest, port: number): stri
     existsSync(join(dir, "templates", r.template))
       ? ["--chat-template-file", join(dir, "templates", r.template)]
       : [];
+  // The image projector downloaded with the model (3.12.10): the model reads pictures.
+  const projector =
+    r.model && existsSync(join(models, projectorFile(r.model)))
+      ? ["--mmproj", join(models, projectorFile(r.model))]
+      : [];
   return [
     "-m",
     join(models, r.model ?? ""),
@@ -95,6 +101,7 @@ export function engineArgs(dir: string, r: WinEngineRequest, port: number): stri
     ...(r.fit === "1" ? [] : ["--n-gpu-layers", "999"]),
     ...safeArgs(r.args),
     ...draft,
+    ...projector,
     ...template,
   ];
 }

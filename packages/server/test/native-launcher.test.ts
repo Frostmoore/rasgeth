@@ -103,6 +103,28 @@ describe("the local engine on a Mac (2026-11-05)", () => {
     expect(safeArgs("--kv-unified-per-slot 8192 --no-repack")).toContain("--no-repack");
   });
 
+  it("passes the model's image projector when it is beside the model (3.12.10)", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "rg-mmproj-"));
+    try {
+      await mkdir(join(dir, "models"), { recursive: true });
+      await writeFile(join(dir, "models", "vis.gguf"), "x");
+      const req = {
+        id: "1",
+        model: "vis.gguf",
+        build: "b1",
+        ctx: 8192,
+        parallel: 4,
+        fit: "1" as const,
+      };
+      expect(engineArgs(dir, req, 8091)).not.toContain("--mmproj");
+      await writeFile(join(dir, "models", "vis.mmproj.gguf"), "p");
+      const args = engineArgs(dir, req, 8091);
+      expect(args[args.indexOf("--mmproj") + 1]).toBe(join(dir, "models", "vis.mmproj.gguf"));
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
   it("reads what macOS can hand out from vm_stat", () => {
     const text = `Mach Virtual Memory Statistics: (page size of 16384 bytes)
 Pages free:                               65536.

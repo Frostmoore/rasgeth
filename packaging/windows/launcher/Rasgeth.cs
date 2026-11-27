@@ -921,6 +921,17 @@ static class WinEngine
         return File.Exists(path) ? " --chat-template-file \"" + path + "\"" : "";
     }
 
+    /**
+     * The image projector downloaded with the model (3.12.10): "<model>.mmproj.gguf" beside it in
+     * models\ (projectorFile in @redgiant/protocol); with it the model reads pictures.
+     */
+    static string ProjectorArgs(string model)
+    {
+        if (string.IsNullOrEmpty(model) || !Regex.IsMatch(model, @"^[A-Za-z0-9_.-]+\.gguf$")) return "";
+        string path = Path.Combine(Dir, "models", Regex.Replace(model, @"\.gguf$", "", RegexOptions.IgnoreCase) + ".mmproj.gguf");
+        return File.Exists(path) ? " --mmproj \"" + path + "\"" : "";
+    }
+
     static void Handle(int gen, string id, string model, string build, string ctx, string parallel, string args, string fit, string preload, string draft, string wanted, string template, string release)
     {
         lock (gate) { if (gen != generation) return; Kill(); flavor = wanted; }
@@ -949,7 +960,7 @@ static class WinEngine
                 + " -c " + ctx + " --parallel " + parallel + " --slot-save-path \"" + Path.Combine(Dir, "kv")
                 + "\" --swa-full --kv-unified --jinja"
                 // SSD stream: llama.cpp fits the layers to the card itself (--fit, its default).
-                + (fit == "1" ? "" : " --n-gpu-layers 999") + SafeArgs(args) + DraftArgs(draft) + TemplateArgs(template))
+                + (fit == "1" ? "" : " --n-gpu-layers 999") + SafeArgs(args) + DraftArgs(draft) + ProjectorArgs(model) + TemplateArgs(template))
             {
                 UseShellExecute = false,
                 CreateNoWindow = true,
