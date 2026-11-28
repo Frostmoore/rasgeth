@@ -2,7 +2,13 @@
 // table. The server computes it for each model choice, the page and the app only render it.
 import type { LocalModel } from "./local-models.js";
 
-export const IMPROVEMENT_IDS = ["prefetch", "bigChunks", "speculative", "noRepack"] as const;
+export const IMPROVEMENT_IDS = [
+  "prefetch",
+  "bigChunks",
+  "speculative",
+  "noRepack",
+  "longContext",
+] as const;
 export type ImprovementId = (typeof IMPROVEMENT_IDS)[number];
 
 /** Why an improvement is off (and locked), in a code each page explains in its words. */
@@ -11,16 +17,21 @@ export type ImprovementReason =
   | "needGpu"
   | "needMoe"
   | "needDeepField"
+  | "needNoDeepField"
+  | "needSlidingWindow"
   | "missingEngine";
 
 /** What the rule needs to know: the model, the computer, and what is switched on. */
 export interface ImprovementInput {
-  model: Pick<LocalModel, "totalB" | "activeB" | "draft" | "mtp">;
+  model: Pick<LocalModel, "totalB" | "activeB" | "draft" | "mtp" | "slidingWindow">;
   /** The computer's graphics cards, as the setup describes them. */
   gpus: { name: string; vendor: string; integrated: boolean }[];
   /** Deep Field (the SSD streaming) is on. */
   deepField: boolean;
-  /** The patched engine of Prefetch: there, not published/downloadable, or not applicable (null). */
+  /**
+   * The patched engine of Prefetch (also the one of Long context): there, not published/downloadable, or not
+   * applicable (null).
+   */
   prefetchEngine?: "available" | "missing" | null | undefined;
 }
 
@@ -82,6 +93,14 @@ export function improvementsFor(input: ImprovementInput): Improvement[] {
     if (!input.deepField) return off("bigChunks", "needDeepField");
     return { id: "bigChunks", available: true };
   };
+  // Long context (p3.13.0): the full-context layers' cache in RAM, so a huge context does not push the model out of the card.
+  const longContext = (): Improvement => {
+    if (!nvidia) return off("longContext", "needNvidia", bestGpu);
+    if (!input.model.slidingWindow) return off("longContext", "needSlidingWindow");
+    if (input.deepField) return off("longContext", "needNoDeepField");
+    if (input.prefetchEngine !== "available") return off("longContext", "missingEngine");
+    return { id: "longContext", available: true };
+  };
   return [
     prefetch(),
     bigChunks(),
@@ -92,5 +111,6 @@ export function improvementsFor(input: ImprovementInput): Improvement[] {
       mtp: Boolean(input.model.mtp),
     },
     { id: "noRepack", available: true },
+    longContext(),
   ];
 }

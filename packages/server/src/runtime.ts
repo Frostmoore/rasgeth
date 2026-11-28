@@ -7,7 +7,13 @@ import { Transform, Writable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { KvStore, LocalEngineProvider, readLocalGgufMeta } from "@redgiant/engine-local";
 import type { Redactor, SqlClient } from "@redgiant/events";
-import { keyProvider, OWN_SERVER_ID, PRODUCT_NAME, projectorFile } from "@redgiant/protocol";
+import {
+  hotCells,
+  keyProvider,
+  OWN_SERVER_ID,
+  PRODUCT_NAME,
+  projectorFile,
+} from "@redgiant/protocol";
 import {
   AnthropicProvider,
   LOCAL_STALL,
@@ -273,6 +279,31 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
     });
     return { dir: dir ?? "/models", fits: gb <= ram.gb };
   };
+  /**
+   * Long context (p3.13.0): the cells of the context booked the card keeps (`hotCells`), from the model's header, its
+   * size, the card's memory and the margin left free (2.5 GB on Windows, 1 elsewhere, as the context bar's).
+   * Undefined when it cannot work: no card of its own, no sliding-window layers, or no room.
+   */
+  const kvHotFor = async (cfg: EngineConfig): Promise<number | undefined> => {
+    const dir = cfg.variant === "windows" ? o.engine?.windows?.modelsDir : o.engine?.modelsDir;
+    const [meta, fileGb, hw] = await Promise.all([
+      readLocalGgufMeta(join(dir ?? "/models", cfg.model)).catch(() => undefined),
+      modelGb(dir ?? "/models", cfg.model).catch(() => 0),
+      hardware(),
+    ]);
+    if (!meta?.slidingWindow || !meta.kvGrowBytesPerToken) return undefined;
+    if (hw.suggestion.kind !== "gpu" || hw.suggestion.vramGb <= 0) return undefined;
+    const hot = hotCells(
+      {
+        fileGb,
+        vramGb: hw.suggestion.vramGb,
+        marginGb: cfg.variant === "windows" ? 2.5 : 1,
+        kvGrowBytesPerToken: meta.kvGrowBytesPerToken,
+      },
+      contextArgs(cfg, undefined, true).ctx,
+    );
+    return hot > 0 ? hot : undefined;
+  };
   /** The streaming plan for a model file, from its header and this computer's memory. */
   const planFor = async (cfg: EngineConfig, prefetch = false): Promise<EnginePlan> => {
     const dir = cfg.variant === "windows" ? o.engine?.windows?.modelsDir : o.engine?.modelsDir;
@@ -513,27 +544,36 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
         }
       }
       // «Next layer ahead» (G32.2): the patched build of this version's release, when there.
-      const prefetch =
-        cfg.moePrefetch && cfg.stream && cfg.variant === "windows"
+      // The same patched build serves Long context (p3.13.0, without SSD stream).
+      const prefetchAsked =
+        cfg.variant === "windows"
           ? moePrefetchRelease(cfg, await moePrefetchBinaries(), version)
           : undefined;
       // In Docker (Linux, NVIDIA): the patched image, when there (G32.2).
-      const prefetchImg =
-        cfg.moePrefetch && cfg.stream && cfg.variant === "cuda"
+      const prefetchImgAsked =
+        cfg.variant === "cuda"
           ? moePrefetchImage(cfg, await moePrefetchImageState(), prefetchImageName)
           : undefined;
+      const patched = prefetchAsked !== undefined || prefetchImgAsked !== undefined;
+      // «Next layer ahead» is the patch's own switch: only with the option, never for Long context alone.
+      const prefetchOn = patched && Boolean(cfg.moePrefetch && cfg.stream);
+      // Long context: the cells the card keeps; none (and the usual engine path) where it cannot work.
+      const kvHot = patched && cfg.longContext && !cfg.stream ? await kvHotFor(cfg) : undefined;
+      // Long context alone that cannot work (no room, no sliding window): the official engine, not the patched one.
+      const usePatch = prefetchOn || kvHot !== undefined;
+      const prefetch = usePatch ? prefetchAsked : undefined;
+      const prefetchImg = usePatch ? prefetchImgAsked : undefined;
       // SSD stream (2026-11-03): the numbers come from the model's file and this computer.
-      const plan = cfg.stream
-        ? await planFor(cfg, prefetch !== undefined || prefetchImg !== undefined)
-        : undefined;
+      const plan = cfg.stream ? await planFor(cfg, prefetchOn) : undefined;
       debugLog.write("engine", "start asked", {
         variant: cfg.variant,
         model: cfg.model,
         stream: cfg.stream ?? false,
         bigChunks: cfg.bigChunks ?? false,
-        moePrefetch: cfg.moePrefetch ? (prefetch ?? prefetchImg ?? "no binaries") : false,
+        moePrefetch: cfg.moePrefetch ? (prefetchAsked ?? prefetchImgAsked ?? "no binaries") : false,
         speculative: cfg.speculative ?? null,
         noRepack: cfg.noRepack ?? false,
+        longContext: cfg.longContext ? (kvHot ?? "off") : false,
         draftModel: cfg.draftModel ?? null,
         tuning: cfg.tuning ?? null,
         plan: plan ?? null,
@@ -578,6 +618,7 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
             flavor,
             template,
             prefetch,
+            kvHot !== undefined ? { hot: kvHot, prefetch: prefetchOn } : undefined,
           );
           const provider = new LocalEngineProvider({
             id: "local",
@@ -670,8 +711,8 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
             String(context.ctx),
           ],
           Labels: { "io.redgiant.engine": "1" },
-          // CUDA's kernel cache in the KV volume; LLAMA_MOE_PREFETCH=1 for the patched image.
-          Env: engineContainerEnv(prefetchImg !== undefined),
+          // CUDA's kernel cache in the KV volume; LLAMA_MOE_PREFETCH=1 and Long context's variables for the patched image.
+          Env: engineContainerEnv({ prefetch: prefetchOn, hotCells: kvHot }),
           HostConfig: {
             RestartPolicy: { Name: "unless-stopped" },
             NetworkMode: e.network,

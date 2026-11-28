@@ -31,7 +31,7 @@ index e541626..8bdcfc5 100644
      target_compile_definitions(llama PUBLIC  LLAMA_SHARED)
  endif()
 +
-+# RedGiant (C.4): the fast attention over a cache in RAM is built with AVX-512 and called only where the processor has
++# Rasgeth (C.4): the fast attention over a cache in RAM is built with AVX-512 and called only where the processor has
 +# AVX-512 VNNI (checked at run time); the rest of the library keeps its own flags.
 +if (CMAKE_SYSTEM_PROCESSOR MATCHES "AMD64|x86_64|x86|i686")
 +    if (MSVC)

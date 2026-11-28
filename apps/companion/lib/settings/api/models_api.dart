@@ -109,6 +109,9 @@ class ModelsSetup {
   bool get engineMoePrefetch => engine?['moePrefetch'] == true;
   bool get engineNoRepack => engine?['noRepack'] == true;
 
+  /// Long context (p3.13.0): the full-context layers' cache in RAM.
+  bool get engineLongContext => engine?['longContext'] == true;
+
   /// The context the engine books (3.12.10), and the engine we recommend when it is on.
   int? get engineCtx => engine?['ctx'] is num ? (engine!['ctx'] as num).toInt() : null;
   String? get engineRecommended => _s(engine?['recommended']);
@@ -209,7 +212,7 @@ class GgufChoice {
 }
 
 /// The ids of the four improvements, in the order the server sends them (`IMPROVEMENT_IDS`).
-const improvementIds = ['prefetch', 'bigChunks', 'speculative', 'noRepack'];
+const improvementIds = ['prefetch', 'bigChunks', 'speculative', 'noRepack', 'longContext'];
 
 /// What can be turned on for a model here, with the reason when not (`Improvement`).
 class Improvement {
@@ -418,6 +421,7 @@ extension ModelsApi on RedGiantClient {
     String repo,
     String file, {
     String? recommended,
+    bool longContext = false,
   }) async {
     final j = objectOf(
       await getJson('/api/setup/context', {
@@ -425,6 +429,7 @@ extension ModelsApi on RedGiantClient {
         'repo': repo,
         'file': file,
         'recommended': ?recommended,
+        if (longContext) 'longContext': '1',
       }),
     );
     return (
@@ -510,6 +515,7 @@ class EngineChoices {
     this.bigChunks = false,
     this.prefetch = false,
     this.noRepack = false,
+    this.longContext = false,
     this.speculative = 'none',
     this.ctx,
     this.recommended,
@@ -520,6 +526,9 @@ class EngineChoices {
   final bool bigChunks;
   final bool prefetch;
   final bool noRepack;
+
+  /// Long context (p3.13.0): the full-context layers' cache in RAM; only without Deep Field.
+  final bool longContext;
 
   /// none | draft | ngram | mtp.
   final String speculative;
@@ -538,6 +547,7 @@ class EngineChoices {
     bool? bigChunks,
     bool? prefetch,
     bool? noRepack,
+    bool? longContext,
     String? speculative,
     int? ctx,
     String? recommended,
@@ -548,6 +558,7 @@ class EngineChoices {
     bigChunks: bigChunks ?? this.bigChunks,
     prefetch: prefetch ?? this.prefetch,
     noRepack: noRepack ?? this.noRepack,
+    longContext: longContext ?? this.longContext,
     speculative: speculative ?? this.speculative,
     ctx: ctx ?? this.ctx,
     recommended: noRecommended ? null : (recommended ?? this.recommended),
@@ -560,6 +571,7 @@ class EngineChoices {
     bigChunks: s.engineBigChunks,
     prefetch: s.engineMoePrefetch,
     noRepack: s.engineNoRepack,
+    longContext: s.engineLongContext,
     speculative: s.engineSpeculative,
     ctx: s.engineCtx,
     recommended: s.engineRecommended,
@@ -581,6 +593,7 @@ class EngineChoices {
     if (stream && bigChunks) 'bigChunks': true,
     if (stream && prefetch) 'moePrefetch': true,
     if (noRepack) 'noRepack': true,
+    if (!stream && longContext) 'longContext': true,
     if (!stream && ctx != null) 'ctx': ctx,
     if (recommended != null) 'recommended': recommended,
     if (threads > 0) 'threads': threads,
@@ -598,6 +611,7 @@ class EngineChoices {
       (stream && bigChunks) == s.engineBigChunks &&
       (stream && prefetch) == s.engineMoePrefetch &&
       noRepack == s.engineNoRepack &&
+      (!stream && longContext) == s.engineLongContext &&
       (stream || (ctx ?? 65536) == (s.engineCtx ?? 65536)) &&
       recommended == s.engineRecommended &&
       threads == s.engineThreads &&

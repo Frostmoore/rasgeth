@@ -128,16 +128,25 @@ const withTimeout = <T>(p: Promise<T>, ms: number): Promise<T> =>
     p.then(resolve, reject).finally(() => clearTimeout(timer));
   });
 
+/** What asks for the patched engine: Prefetch (with SSD stream) or Long context (without it, p3.13.0). */
+type PatchedAsk = {
+  stream?: boolean | undefined;
+  moePrefetch?: boolean | undefined;
+  longContext?: boolean | undefined;
+};
+const wantsPatched = (cfg: PatchedAsk): boolean =>
+  Boolean(cfg.moePrefetch && cfg.stream) || Boolean(cfg.longContext && !cfg.stream);
+
 /**
- * The image an engine start in Docker uses for «next layer ahead», or undefined for the usual one:
- * the option on, SSD stream on, the `cuda` engine, and the patched image there.
+ * The image an engine start in Docker uses for «next layer ahead» or Long context, or undefined for the usual one:
+ * the option on (Prefetch with SSD stream, Long context without), the `cuda` engine, and the patched image there.
  */
 export function moePrefetchImage(
-  cfg: { variant: string; stream?: boolean | undefined; moePrefetch?: boolean | undefined },
+  cfg: { variant: string } & PatchedAsk,
   image: MoePrefetchState,
   name: string = MOE_PREFETCH_IMAGE,
 ): string | undefined {
-  if (!cfg.moePrefetch || !cfg.stream || cfg.variant !== "cuda") return undefined;
+  if (!wantsPatched(cfg) || cfg.variant !== "cuda") return undefined;
   return image === "available" ? name : undefined;
 }
 
@@ -146,7 +155,12 @@ export function moePrefetchImage(
  * image's build compiles them at the first use, for minutes; once is enough, 2026-11-04), and the
  * patch switched on only for the patched image.
  */
-export function engineContainerEnv(prefetch: boolean): string[] {
+export function engineContainerEnv(patch: {
+  /** The patch's «next layer ahead» (LLAMA_MOE_PREFETCH=1). */
+  prefetch: boolean;
+  /** Long context: the cells the card keeps (LLAMA_KV_HOT_CELLS), the rest of the full-context cache in RAM. */
+  hotCells?: number | undefined;
+}): string[] {
   return [
     "CUDA_CACHE_PATH=/kv/cuda-cache",
     "CUDA_CACHE_MAXSIZE=4294967296",
@@ -154,21 +168,24 @@ export function engineContainerEnv(prefetch: boolean): string[] {
     // true, so «false» undoes it; the prefix is kept by checkpoints instead (plan_contesto.md).
     "LLAMA_ARG_SWA_FULL=false",
     "LLAMA_ARG_CTX_CHECKPOINTS=8",
-    ...(prefetch ? ["LLAMA_MOE_PREFETCH=1"] : []),
+    ...(patch.prefetch ? ["LLAMA_MOE_PREFETCH=1"] : []),
+    ...(patch.hotCells !== undefined
+      ? ["LLAMA_KV_FULL_HOST=2", `LLAMA_KV_HOT_CELLS=${patch.hotCells}`]
+      : []),
   ];
 }
 
 /**
  * The release whose patched build an engine start uses, or undefined for the official one: the
- * option on, SSD stream on (the experts outside the card are what it copies ahead), RedGiant's
- * Windows engine, and the binaries in the release.
+ * option on (Prefetch with SSD stream: the experts outside the card are what it copies ahead; Long context
+ * without it), RedGiant's Windows engine, and the binaries in the release.
  */
 export function moePrefetchRelease(
-  cfg: { variant: string; stream?: boolean | undefined; moePrefetch?: boolean | undefined },
+  cfg: { variant: string } & PatchedAsk,
   binaries: MoePrefetchState,
   version: string | undefined,
 ): string | undefined {
-  if (!cfg.moePrefetch || !cfg.stream || cfg.variant !== "windows") return undefined;
+  if (!wantsPatched(cfg) || cfg.variant !== "windows") return undefined;
   if (binaries !== "available") return undefined;
   return releaseVersion(version);
 }

@@ -20224,6 +20224,10 @@ class AppLocalizationsIt extends AppLocalizations {
       'Di solito llama.cpp riordina i pesi del modello per il processore quando li carica. Per scrivere un token alla volta, su un Intel i5-12500H questo era più lento: con No Repack 3,21 token/s invece di 2,88 (+11%), mentre la lettura del messaggio restava uguale. Su altri processori può non dare nulla o andare più piano.';
 
   @override
+  String get moLmImprHelp_longContext =>
+      'Tiene la memoria della conversazione degli strati a contesto pieno nella RAM e solo la parte usata più spesso nella scheda: si può prenotare un contesto lunghissimo (fino a quello del modello) senza che il modello esca dalla scheda. Usa il motore di Rasgeth modificato, lo stesso di Prefetch, scaricato la prima volta. Solo schede NVIDIA, solo per i modelli con strati a finestra (Inkling, Gemma).';
+
+  @override
   String get moLmImprIntegratedOnly => 'solo la grafica integrata';
 
   @override
@@ -20239,6 +20243,10 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get moLmImprSub_noRepack => 'i pesi come sono nel file, senza riordinarli';
+
+  @override
+  String get moLmImprSub_longContext =>
+      'il contesto prenotato in RAM, la parte recente nella scheda';
 
   @override
   String get moLmImprSub_prefetch => 'gli esperti dello strato dopo arrivano in anticipo';
@@ -20292,6 +20300,14 @@ class AppLocalizationsIt extends AppLocalizations {
       'Spento: serve Deep Field, che è spento. Accendilo nel riquadro del computer.';
 
   @override
+  String get moLmImprWhy_needSlidingWindow =>
+      'Spento: funziona solo con i modelli che hanno strati a finestra (Inkling, Gemma), e questo no.';
+
+  @override
+  String get moLmImprWhy_needNoDeepField =>
+      'Spento: non funziona con Deep Field, che è acceso. Spegni Deep Field nel riquadro del computer.';
+
+  @override
   String get moLmImprWhy_needGpu =>
       'Spento: serve una scheda video con una memoria sua. Questo computer ha solo la grafica integrata.';
 
@@ -20315,6 +20331,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get moLmImpr_noRepack => 'No Repack';
+
+  @override
+  String get moLmImpr_longContext => 'Contesto lungo';
 
   @override
   String get moLmImpr_prefetch => 'Prefetch';
@@ -20376,12 +20395,22 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String moLmCtxBeyondLong(String max) {
+    return 'Oltre $max la parte più vecchia della conversazione è letta dal processore: rallenta poco a poco, il modello resta tutto nella scheda.';
+  }
+
+  @override
   String get moLmCtxFits =>
       'Tutto nella scheda: la velocità piena. Il contesto è quanto il modello tiene della conversazione; si prenota tutto quando il modello parte.';
 
   @override
   String moLmCtxMark(String max) {
     return 'Tutto nella scheda fino a $max';
+  }
+
+  @override
+  String moLmCtxMarkLong(String max) {
+    return 'Nella scheda fino a $max, il resto in RAM';
   }
 
   @override

@@ -223,6 +223,8 @@ export interface SetupState {
       draftModel?: string;
       /** No Repack (p3.12.6): the weights as they are in the file. */
       noRepack?: boolean;
+      /** Long context (p3.13.0): the full-context layers' cache in RAM, the patched engine. */
+      longContext?: boolean;
       /** The context booked (3.12.10) and the engine we recommend, when on. */
       ctx?: number;
       recommended?: string;
@@ -1243,6 +1245,8 @@ export class Api {
       draftModel?: string;
       /** No Repack (p3.12.6). */
       noRepack?: boolean;
+      /** Long context (p3.13.0). */
+      longContext?: boolean;
       /** The context chosen on the bar and the engine we recommend (3.12.10). */
       ctx?: number;
       recommended?: string;
@@ -1637,14 +1641,21 @@ export class Api {
     }>("GET", `/api/setup/local-models?variant=${variant}${stream ? "&stream=1" : ""}`);
   /**
    * The context bar of a model's card (3.12.10): the longest context the model knows, and how much stays in the card
-   * (null without a card of its own), with the recommended engine of `recommended` when it is on.
+   * (null without a card of its own), with the recommended engine of `recommended` when it is on; with `longContext`
+   * the cells the card keeps while the rest of the full-context cache is in RAM (p3.13.0).
    */
-  contextInfo = (variant: EngineVariant, repo: string, file: string, recommended?: string) =>
+  contextInfo = (
+    variant: EngineVariant,
+    repo: string,
+    file: string,
+    recommended?: string,
+    longContext?: boolean,
+  ) =>
     this.call<{ trained: number; inCard: number | null }>(
       "GET",
       `/api/setup/context?variant=${variant}&repo=${encodeURIComponent(repo)}&file=${encodeURIComponent(file)}${
         recommended ? `&recommended=${encodeURIComponent(recommended)}` : ""
-      }`,
+      }${longContext ? "&longContext=1" : ""}`,
     );
   /** Downloads a model file: a job to follow; cancelling it pauses, starting again goes on. */
   downloadModel = (repo: string, file: string, variant: EngineVariant) =>
@@ -1675,6 +1686,7 @@ export class Api {
       bigChunks?: boolean;
       moePrefetch?: boolean;
       noRepack?: boolean;
+      longContext?: boolean;
       ctx?: number;
       recommended?: string;
       threads?: number;

@@ -111,7 +111,8 @@ export function engineArgs(dir: string, r: WinEngineRequest, port: number): stri
 
 /**
  * llama-server's environment for a request: «next layer ahead» (G32.2) is switched on by
- * LLAMA_MOE_PREFETCH=1, which only RedGiant's patched build reads (the Windows launcher's rule).
+ * LLAMA_MOE_PREFETCH=1, which only RedGiant's patched build reads (the Windows launcher's rule); Long context
+ * (p3.13.0) by LLAMA_KV_FULL_HOST=2 and LLAMA_KV_HOT_CELLS (digits only), likewise.
  */
 export function engineEnv(
   r: WinEngineRequest,
@@ -119,7 +120,13 @@ export function engineEnv(
 ): NodeJS.ProcessEnv {
   const env = { ...base };
   delete env.LLAMA_MOE_PREFETCH;
+  delete env.LLAMA_KV_FULL_HOST;
+  delete env.LLAMA_KV_HOT_CELLS;
   if (r.prefetch === "1" && r.flavor === "cuda") env.LLAMA_MOE_PREFETCH = "1";
+  if (r.kvhost === "1" && r.flavor === "cuda") {
+    env.LLAMA_KV_FULL_HOST = "2";
+    if (r.hot && /^\d{1,9}$/.test(r.hot)) env.LLAMA_KV_HOT_CELLS = r.hot;
+  }
   return env;
 }
 

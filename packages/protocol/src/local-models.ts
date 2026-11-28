@@ -32,6 +32,11 @@ export interface LocalModel {
    * the header of the catalogue's file says so.
    */
   mtp?: true;
+  /**
+   * The GGUF has sliding-window layers beside full-context ones (Gemma, Inkling): only their full-context cache grows
+   * with the context, so «Long context» can keep it in RAM. Set only for families whose header says so.
+   */
+  slidingWindow?: true;
   /** What we measured ourselves with an improvement on this model (p3.12.6). */
   tested?: TestedResult[];
   /** An engine set up for this model that we measured faster (3.12.10, tested-improvements.ts). */
@@ -60,6 +65,7 @@ export const LOCAL_MODELS: readonly LocalModel[] = [
   // Small: up to about 6 GB, laptops and small cards, the processor alone too.
   {
     id: "gemma-4-e2b",
+    slidingWindow: true,
     name: "Gemma 4 E2B",
     repo: "unsloth/gemma-4-E2B-it-GGUF",
     totalB: 5,
@@ -76,6 +82,7 @@ export const LOCAL_MODELS: readonly LocalModel[] = [
   },
   {
     id: "gemma-4-e4b",
+    slidingWindow: true,
     name: "Gemma 4 E4B",
     repo: "unsloth/gemma-4-E4B-it-GGUF",
     totalB: 8,
@@ -108,6 +115,7 @@ export const LOCAL_MODELS: readonly LocalModel[] = [
   },
   {
     id: "gemma-4-12b",
+    slidingWindow: true,
     name: "Gemma 4 12B",
     repo: "unsloth/gemma-4-12b-it-GGUF",
     totalB: 12,
@@ -125,6 +133,7 @@ export const LOCAL_MODELS: readonly LocalModel[] = [
   },
   {
     id: "gemma-4-26b",
+    slidingWindow: true,
     name: "Gemma 4 26B A4B",
     repo: "unsloth/gemma-4-26B-A4B-it-GGUF",
     totalB: 26,
@@ -136,6 +145,7 @@ export const LOCAL_MODELS: readonly LocalModel[] = [
   // `inkling2_loop`, no MTP heads. Tried on an i5-12500H at UD-IQ3_XXS (10.8 GB): 7.3 t/s writing, 28 t/s reading.
   {
     id: "inkling-2-mini",
+    slidingWindow: true,
     name: "Inkling 2 Mini",
     repo: "unsloth/Inkling-2-Mini-GGUF",
     totalB: 26,
@@ -183,6 +193,7 @@ export const LOCAL_MODELS: readonly LocalModel[] = [
   },
   {
     id: "gemma-4-31b",
+    slidingWindow: true,
     name: "Gemma 4 31B",
     repo: "unsloth/gemma-4-31B-it-GGUF",
     totalB: 31,

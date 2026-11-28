@@ -2087,6 +2087,9 @@ const en = {
   job_step_restore: "Putting the engine back as it was",
   lmCtxTitle: "Context",
   lmCtxMark: "All in the card up to {max}",
+  lmCtxMarkLong: "In the card up to {max}, the rest in RAM",
+  lmCtxBeyondLong:
+    "Beyond {max} the oldest part of the conversation is read by the processor: it slows down little by little, the model stays entirely in the card.",
   lmCtxFits:
     "All in the card: full speed. The context is what the model keeps of the conversation; it is booked whole when the model starts.",
   lmCtxBeyond:
@@ -2112,10 +2115,14 @@ const en = {
   lmImpr_bigChunks: "Big Chunks",
   lmImpr_speculative: "Speculative Decoding",
   lmImpr_noRepack: "No Repack",
+  lmImpr_longContext: "Long context",
   lmImprSub_prefetch: "the next layer's experts arrive ahead of time",
   lmImprSub_bigChunks: "the message is read in big blocks",
   lmImprSub_speculative: "more tokens at each pass",
   lmImprSub_noRepack: "the weights as they are in the file, without re-arranging them",
+  lmImprSub_longContext: "the context booked in RAM, the recent part in the card",
+  lmImprHelp_longContext:
+    "Keeps the conversation memory of the full-context layers in RAM and only the most used part in the card: a very long context (up to the model's own) can be booked without the model leaving the card. It uses {product}'s changed engine, the same as Prefetch, downloaded the first time. Only NVIDIA cards, only models with sliding-window layers (Inkling, Gemma).",
   lmImprHelp_noRepack:
     "llama.cpp normally re-arranges the model's weights for the processor when it loads them. For writing one token at a time this was slower on an Intel i5-12500H: with No Repack 3.21 tokens/s instead of 2.88 (+11%), while reading the message stayed the same. On other processors it may give nothing, or be slower.",
   lmImprWhy_needNvidia: "Off: it needs an NVIDIA graphics card. This computer has {gpu}.",
@@ -2125,6 +2132,10 @@ const en = {
   lmImprWhy_needMoe: "Off: it only works with mixture-of-experts models, and this one is not.",
   lmImprWhy_needDeepField:
     "Off: it needs Deep Field, which is off. Turn it on in the computer's box.",
+  lmImprWhy_needNoDeepField:
+    "Off: it does not work with Deep Field, which is on. Turn Deep Field off in the computer's box.",
+  lmImprWhy_needSlidingWindow:
+    "Off: it only works with models that have sliding-window layers (Inkling, Gemma), and this one does not.",
   lmImprWhy_missingEngine:
     "Off: the changed engine is not available (this version of {product} was released without it, or there is no network).",
   lmImprTested: "Tried by us on this model",
@@ -10835,6 +10846,9 @@ const it: Record<Key, string> = {
   job_step_restore: "Rimetto il motore com'era",
   lmCtxTitle: "Contesto",
   lmCtxMark: "Tutto nella scheda fino a {max}",
+  lmCtxMarkLong: "Nella scheda fino a {max}, il resto in RAM",
+  lmCtxBeyondLong:
+    "Oltre {max} la parte più vecchia della conversazione è letta dal processore: rallenta poco a poco, il modello resta tutto nella scheda.",
   lmCtxFits:
     "Tutto nella scheda: la velocità piena. Il contesto è quanto il modello tiene della conversazione; si prenota tutto quando il modello parte.",
   lmCtxBeyond:
@@ -10860,10 +10874,14 @@ const it: Record<Key, string> = {
   lmImpr_bigChunks: "Big Chunks",
   lmImpr_speculative: "Speculative Decoding",
   lmImpr_noRepack: "No Repack",
+  lmImpr_longContext: "Contesto lungo",
   lmImprSub_prefetch: "gli esperti dello strato dopo arrivano in anticipo",
   lmImprSub_bigChunks: "il messaggio letto a blocchi grandi",
   lmImprSub_speculative: "più token per ogni passaggio",
   lmImprSub_noRepack: "i pesi come sono nel file, senza riordinarli",
+  lmImprSub_longContext: "il contesto prenotato in RAM, la parte recente nella scheda",
+  lmImprHelp_longContext:
+    "Tiene la memoria della conversazione degli strati a contesto pieno nella RAM e solo la parte usata più spesso nella scheda: si può prenotare un contesto lunghissimo (fino a quello del modello) senza che il modello esca dalla scheda. Usa il motore di {product} modificato, lo stesso di Prefetch, scaricato la prima volta. Solo schede NVIDIA, solo per i modelli con strati a finestra (Inkling, Gemma).",
   lmImprHelp_noRepack:
     "Di solito llama.cpp riordina i pesi del modello per il processore quando li carica. Per scrivere un token alla volta, su un Intel i5-12500H questo era più lento: con No Repack 3,21 token/s invece di 2,88 (+11%), mentre la lettura del messaggio restava uguale. Su altri processori può non dare nulla o andare più piano.",
   lmImprWhy_needNvidia: "Spento: serve una scheda video NVIDIA. Questo computer ha {gpu}.",
@@ -10873,6 +10891,10 @@ const it: Record<Key, string> = {
   lmImprWhy_needMoe: "Spento: funziona solo con i modelli a esperti, e questo non lo è.",
   lmImprWhy_needDeepField:
     "Spento: serve Deep Field, che è spento. Accendilo nel riquadro del computer.",
+  lmImprWhy_needNoDeepField:
+    "Spento: non funziona con Deep Field, che è acceso. Spegni Deep Field nel riquadro del computer.",
+  lmImprWhy_needSlidingWindow:
+    "Spento: funziona solo con i modelli che hanno strati a finestra (Inkling, Gemma), e questo no.",
   lmImprWhy_missingEngine:
     "Spento: il motore modificato non è disponibile (questa versione di {product} è uscita senza, oppure manca la rete).",
   lmImprTested: "Provato da noi su questo modello",

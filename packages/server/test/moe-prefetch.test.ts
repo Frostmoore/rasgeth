@@ -124,6 +124,16 @@ describe("«next layer ahead»: the patched llama.cpp (G32.2)", () => {
     expect(vulkan.release).toBeUndefined();
     const official = await asked("cuda");
     expect(official.prefetch).toBeUndefined();
+    // Long context alone (p3.13.0): the patched build and the hot cells, but not «next layer ahead».
+    await engine
+      .start("m.gguf", undefined, plan, false, {}, "cuda", undefined, "3.2.0", {
+        hot: 32768,
+        prefetch: false,
+      })
+      .catch(() => {});
+    const lc = JSON.parse(await readFile(join(dir, "engine.json"), "utf8")) as WinEngineRequest;
+    expect(lc).toMatchObject({ flavor: "cuda", release: "3.2.0", kvhost: "1", hot: "32768" });
+    expect(lc.prefetch).toBeUndefined();
   });
 
   it("switches the patch on in llama-server's environment, and only then", () => {
@@ -142,6 +152,30 @@ describe("«next layer ahead»: the patched llama.cpp (G32.2)", () => {
     // Never inherited from RedGiant's own environment.
     expect(engineEnv(plain, { PATH: "p", LLAMA_MOE_PREFETCH: "1" })).toEqual({ PATH: "p" });
     expect(engineEnv({ ...r, flavor: "vulkan" }, {})).toEqual({});
+  });
+
+  it("switches Long context's variables on the same way, with the hot cells as digits only", () => {
+    const r: WinEngineRequest = {
+      id: "x",
+      model: "m.gguf",
+      build: "b12679",
+      ctx: 4096,
+      parallel: 1,
+      flavor: "cuda",
+      kvhost: "1",
+      hot: "32768",
+      release: "3.2.0",
+    };
+    expect(engineEnv(r, { PATH: "p" })).toEqual({
+      PATH: "p",
+      LLAMA_KV_FULL_HOST: "2",
+      LLAMA_KV_HOT_CELLS: "32768",
+    });
+    expect(engineEnv({ ...r, hot: "1; calc" }, {})).toEqual({ LLAMA_KV_FULL_HOST: "2" });
+    expect(engineEnv({ ...r, prefetch: "1" }, {}).LLAMA_MOE_PREFETCH).toBe("1");
+    // Never inherited from RedGiant's own environment.
+    const { kvhost: _k, hot: _h, ...plain } = r;
+    expect(engineEnv(plain, { LLAMA_KV_FULL_HOST: "2", LLAMA_KV_HOT_CELLS: "9" })).toEqual({});
   });
 
   it("in Docker: an NVIDIA card through Docker's NVIDIA runtime, never on a Mac", () => {
@@ -225,8 +259,32 @@ describe("«next layer ahead»: the patched llama.cpp (G32.2)", () => {
       "LLAMA_ARG_SWA_FULL=false",
       "LLAMA_ARG_CTX_CHECKPOINTS=8",
     ];
-    expect(engineContainerEnv(false)).toEqual(plain);
-    expect(engineContainerEnv(true)).toEqual([...plain, "LLAMA_MOE_PREFETCH=1"]);
+    expect(engineContainerEnv({ prefetch: false })).toEqual(plain);
+    expect(engineContainerEnv({ prefetch: true })).toEqual([...plain, "LLAMA_MOE_PREFETCH=1"]);
+    // Long context (p3.13.0): the two variables; the prefetch one only if Prefetch is on too.
+    expect(engineContainerEnv({ prefetch: false, hotCells: 32768 })).toEqual([
+      ...plain,
+      "LLAMA_KV_FULL_HOST=2",
+      "LLAMA_KV_HOT_CELLS=32768",
+    ]);
+    expect(engineContainerEnv({ prefetch: true, hotCells: 4096 })).toEqual([
+      ...plain,
+      "LLAMA_MOE_PREFETCH=1",
+      "LLAMA_KV_FULL_HOST=2",
+      "LLAMA_KV_HOT_CELLS=4096",
+    ]);
+  });
+
+  it("Long context asks for the patched engine without SSD stream, Prefetch needs it (p3.13.0)", () => {
+    const lc = { stream: false, longContext: true };
+    expect(moePrefetchImage({ ...lc, variant: "cuda" }, "available")).toBe(MOE_PREFETCH_IMAGE);
+    expect(moePrefetchRelease({ ...lc, variant: "windows" }, "available", "3.2.0")).toBe("3.2.0");
+    // With Deep Field on, Long context does not count.
+    expect(
+      moePrefetchImage({ variant: "cuda", stream: true, longContext: true }, "available"),
+    ).toBeUndefined();
+    expect(moePrefetchImage({ variant: "cuda", stream: false }, "available")).toBeUndefined();
+    expect(moePrefetchImage({ ...lc, variant: "vulkan" }, "available")).toBeUndefined();
   });
 
   it("the patched image has the usual engine's defaults, b12679 with apply.sh, every card family", async () => {

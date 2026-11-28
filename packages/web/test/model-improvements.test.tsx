@@ -333,6 +333,68 @@ describe("Improvements in the model's card (p3.12.6)", () => {
     });
   });
 
+  it("p3.13.0: Long context: its card, gold tested line, the bar asks with longContext=1, the start carries it", async () => {
+    choices = [
+      entry("inkling-2-mini", {
+        improvements: [
+          { id: "prefetch", available: false, reason: "needDeepField" },
+          { id: "bigChunks", available: false, reason: "needDeepField" },
+          { id: "speculative", available: true, draft: false },
+          { id: "noRepack", available: true },
+          { id: "longContext", available: true },
+        ],
+      }),
+    ];
+    const r = render(<LocalModels s={state()} reload={() => {}} />);
+    await open(r, "Inkling 2 Mini");
+    const lc = await waitFor(() => card("longContext"));
+    expect(lc.textContent).toMatch(/Contesto lungo/);
+    expect(lc.textContent).toMatch(/il contesto prenotato in RAM, la parte recente nella scheda/);
+    expect(lc.textContent).toMatch(/Tiene la memoria della conversazione degli strati/);
+    expect(lc.className).toMatch(/gold/);
+    expect(lc.textContent).toMatch(/Scrittura da 4,7 a 44,8 token\/s/);
+    const sw = lc.querySelector("[role=switch]") as HTMLElement;
+    expect(sw.getAttribute("aria-checked")).toBe("false");
+    // Off: the bar is asked without it.
+    expect(
+      calls.filter((c) => c.name === "contextInfo").every((c) => c.args[4] === undefined),
+    ).toBe(true);
+    fireEvent.click(sw);
+    await waitFor(() =>
+      expect(calls.some((c) => c.name === "contextInfo" && c.args[4] === true)).toBe(true),
+    );
+    await waitFor(() =>
+      expect(r.getByTestId("context-bar").textContent).toMatch(
+        /Oltre 16k la parte più vecchia della conversazione è letta dal processore/,
+      ),
+    );
+    expect(
+      r.getByTestId("context-bar").querySelector(".kit-slider-mark")?.getAttribute("title"),
+    ).toBe("Nella scheda fino a 16k, il resto in RAM");
+    fireEvent.click(startButton(r));
+    const sent = calls.find((c) => c.name === "setupEngine")?.args[0];
+    expect(sent).toMatchObject({ model: "inkling-2-mini-Q4.gguf", longContext: true });
+  });
+
+  it("p3.13.0: Long context locked with its reason, and never sent", async () => {
+    choices = [
+      entry("qwen3.8-27b", {
+        improvements: [
+          { id: "speculative", available: true, draft: false },
+          { id: "noRepack", available: true },
+          { id: "longContext", available: false, reason: "needSlidingWindow" },
+        ],
+      }),
+    ];
+    const r = render(<LocalModels s={state()} reload={() => {}} />);
+    await open(r, "Qwen3.8 27B");
+    const lc = await waitFor(() => card("longContext"));
+    expect(lc.textContent).toMatch(/funziona solo con i modelli che hanno strati a finestra/);
+    fireEvent.click(startButton(r));
+    const sent = calls.find((c) => c.name === "setupEngine")?.args[0];
+    expect(sent).not.toHaveProperty("longContext");
+  });
+
   it("3.12.10: the processor threads, automatic until chosen, for writing and reading apart", async () => {
     choices = [entry("qwen3.8-27b")];
     const r = render(<LocalModels s={state()} reload={() => {}} />);

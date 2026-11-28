@@ -1449,7 +1449,31 @@ describe("Hugging Face models", () => {
       ["bigChunks", false, "needMoe"],
       ["speculative", true, undefined],
       ["noRepack", true, undefined],
+      ["longContext", false, "needSlidingWindow"],
     ]);
+    // Long context (p3.13.0): NVIDIA, patched engine, no Deep Field and a sliding-window model.
+    const longOf = (list: typeof ok, id: string) =>
+      list.find((m) => m.id === id)?.improvements?.find((x) => x.id === "longContext");
+    expect(longOf(ok, "inkling-2-mini")).toMatchObject({ available: true });
+    expect(longOf(ok, "gemma-4-e4b")).toMatchObject({ available: true });
+    const lcOff = async (over: Record<string, unknown>) =>
+      longOf(
+        await localModelChoices(hf, 12.8, undefined, new Set(), {
+          gpus: [{ name: "RTX 4080", vendor: "nvidia", integrated: false }],
+          deepField: false,
+          prefetchEngine: "available",
+          ...over,
+        }),
+        "inkling-2-mini",
+      );
+    expect(
+      await lcOff({ gpus: [{ name: "RX 7800", vendor: "amd", integrated: false }] }),
+    ).toMatchObject({
+      available: false,
+      reason: "needNvidia",
+    });
+    expect(await lcOff({ deepField: true })).toMatchObject({ reason: "needNoDeepField" });
+    expect(await lcOff({ prefetchEngine: null })).toMatchObject({ reason: "missingEngine" });
     expect(qwen?.tested?.[0]).toMatchObject({ improvement: "noRepack", write: { after: 3.21 } });
     // Unreachable Hugging Face: the card still says what is possible.
     expect(

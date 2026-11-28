@@ -28,6 +28,17 @@ Future<void> _settle(WidgetTester tester, [int rounds = 14]) async {
 
 void main() {
   test('the engine body carries only what is on, Deep Field gating the first two', () {
+    const long = EngineChoices(longContext: true);
+    expect(long.body('cuda', 'm.gguf'), {
+      'variant': 'cuda',
+      'model': 'm.gguf',
+      'longContext': true,
+    });
+    expect(long.body('cuda', 'm.gguf', stream: true), {
+      'variant': 'cuda',
+      'model': 'm.gguf',
+      'stream': true,
+    });
     const all = EngineChoices(
       bigChunks: true,
       prefetch: true,
@@ -124,7 +135,7 @@ void main() {
       await tap(tester, 'lm-card-qwen3-30b');
       expect(find.byKey(const Key('impr-section')), findsOneWidget);
       expect(find.text('Miglioramenti'), findsOneWidget);
-      for (final id in ['prefetch', 'bigChunks', 'speculative', 'noRepack']) {
+      for (final id in ['prefetch', 'bigChunks', 'speculative', 'noRepack', 'longContext']) {
         expect(find.byKey(Key('impr-$id')), findsOneWidget, reason: id);
       }
       expect(find.text('Speculative Decoding'), findsOneWidget);
@@ -254,6 +265,13 @@ void main() {
       await tap(tester, 'lm-card-qwen3-30b');
       // A switch that is locked does nothing.
       await tap(tester, 'impr-switch-prefetch');
+      // Long context is locked here (no sliding-window layers): nothing is sent for it.
+      expect(find.byKey(const Key('impr-lock-longContext')), findsOneWidget);
+      expect(
+        find.textContaining('Spento: funziona solo con i modelli che hanno strati'),
+        findsOneWidget,
+      );
+      await tap(tester, 'impr-switch-longContext');
       await tap(tester, 'impr-switch-noRepack');
       await tap(tester, 'lm-start');
       expect(fm.bodies['PUT /api/setup/engine'], {
@@ -306,6 +324,30 @@ void main() {
       });
       await done(tester);
     });
+
+    testWidgets(
+      'p3.13.0: Long context, gold, switched on: the context call and the start carry it',
+      (tester) async {
+        fm.files.add({'file': 'Qwen3.8-27B-Q4_K_M.gguf', 'bytes': 16500000000, 'partial': false});
+        await open(tester);
+        await tap(tester, 'lm-tab-slow');
+        await tap(tester, 'lm-card-qwen3.8-27b');
+        expect(find.text('Contesto lungo'), findsOneWidget);
+        expect(find.byKey(const Key('impr-lock-longContext')), findsNothing);
+        expect(find.byKey(const Key('impr-tested-longContext')), findsOneWidget);
+        expect(find.textContaining('Scrittura da 4,70 a 44,80 token/s'), findsOneWidget);
+        expect(fm.queries.any((q) => q.contains('longContext=1')), isFalse);
+        expect(find.textContaining('Oltre 16k una parte del modello'), findsOneWidget);
+        await tap(tester, 'impr-switch-longContext');
+        expect(fm.queries.any((q) => q.contains('longContext=1')), isTrue);
+        expect(find.textContaining('Oltre 16k la parte più vecchia'), findsOneWidget);
+        await tap(tester, 'lm-start');
+        expect(fm.bodies['PUT /api/setup/engine'], {
+          'engine': {'variant': 'cuda', 'model': 'Qwen3.8-27B-Q4_K_M.gguf', 'longContext': true},
+        });
+        await done(tester);
+      },
+    );
 
     testWidgets('the measure button needs the model on disk', (tester) async {
       await open(tester);

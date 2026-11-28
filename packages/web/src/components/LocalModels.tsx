@@ -493,6 +493,8 @@ export interface EngineChoices {
   bigChunks?: boolean | undefined;
   moePrefetch?: boolean | undefined;
   noRepack?: boolean | undefined;
+  /** Long context (p3.13.0): the full-context layers' cache in RAM; only without Deep Field. */
+  longContext?: boolean | undefined;
   /** The context chosen on the bar (3.12.10); with Deep Field its plan decides. */
   ctx?: number | undefined;
   /** The engine we recommend for this catalog model, turned on (3.12.10): its id. */
@@ -508,6 +510,7 @@ export function choicesPayload(stream: boolean | undefined, c?: EngineChoices) {
     ...(stream && c?.bigChunks && { bigChunks: true }),
     ...(stream && c?.moePrefetch && { moePrefetch: true }),
     ...(c?.noRepack && { noRepack: true }),
+    ...(!stream && c?.longContext && { longContext: true }),
     ...(!stream && c?.ctx && { ctx: c.ctx }),
     ...(c?.recommended && { recommended: c.recommended }),
     ...(c?.threads && { threads: c.threads }),
@@ -530,10 +533,13 @@ export function ContextBar({
   info,
   value,
   onChange,
+  longContext = false,
 }: {
   info: { trained: number; inCard: number | null } | undefined;
   value: number;
   onChange: (ctx: number) => void;
+  /** Long context is on (p3.13.0): the mark is what the card keeps, the rest of the cache is in RAM. */
+  longContext?: boolean;
 }) {
   const trained = info?.trained ?? 65536;
   const steps = CTX_STEPS.filter((n) => n <= trained);
@@ -552,7 +558,9 @@ export function ContextBar({
     if (info.inCard === null) return t("lmCtxNoCard");
     if (info.inCard === 0) return t("lmCtxTooBig");
     const max = ctxText(info.inCard);
-    return (steps[index] ?? value) <= info.inCard ? t("lmCtxFits") : t("lmCtxBeyond", { max });
+    return (steps[index] ?? value) <= info.inCard
+      ? t("lmCtxFits")
+      : t(longContext ? "lmCtxBeyondLong" : "lmCtxBeyond", { max });
   })();
   return (
     <div class="ctx-bar" data-testid="context-bar">
@@ -566,7 +574,12 @@ export function ContextBar({
         onChange={(i) => onChange(steps[i] ?? value)}
         mark={
           markIndex >= 0
-            ? { at: markIndex, label: t("lmCtxMark", { max: ctxText(steps[markIndex] as number) }) }
+            ? {
+                at: markIndex,
+                label: t(longContext ? "lmCtxMarkLong" : "lmCtxMark", {
+                  max: ctxText(steps[markIndex] as number),
+                }),
+              }
             : undefined
         }
         help={help}
@@ -1103,6 +1116,10 @@ export function whyText(i: Improvement): string {
       return t("lmImprWhy_needMoe");
     case "needDeepField":
       return t("lmImprWhy_needDeepField");
+    case "needNoDeepField":
+      return t("lmImprWhy_needNoDeepField");
+    case "needSlidingWindow":
+      return t("lmImprWhy_needSlidingWindow");
     case "missingEngine":
       return t("lmImprWhy_missingEngine");
     default:
@@ -1421,6 +1438,7 @@ function ModelPanel({
     prefetch: inUse && eng?.moePrefetch === true,
     bigChunks: inUse && eng?.bigChunks === true,
     noRepack: inUse && eng?.noRepack === true,
+    longContext: inUse && eng?.longContext === true,
   });
   // The engine we recommend and the context bar (3.12.10).
   const rec = m.recommended;
@@ -1429,11 +1447,16 @@ function ModelPanel({
     (inUse && eng?.ctx) || (inUse && eng?.recommended === m.id && rec?.ctx) || 65536,
   );
   const [ctxInfo, setCtxInfo] = useState<{ trained: number; inCard: number | null }>();
+  // Long context counts only where the server says it can work (the switch is locked otherwise).
+  const longOn =
+    (m.improvements?.find((x) => x.id === "longContext")?.available ?? false) &&
+    flags.longContext &&
+    !stream;
   useEffect(() => {
     if (!file) return;
     let live = true;
     void getApi()
-      .contextInfo(variant, m.repo, file.file, recOn ? m.id : undefined)
+      .contextInfo(variant, m.repo, file.file, recOn ? m.id : undefined, longOn ? true : undefined)
       .then(
         (r) => live && setCtxInfo(r),
         () => live && setCtxInfo(undefined),
@@ -1441,7 +1464,7 @@ function ModelPanel({
     return () => {
       live = false;
     };
-  }, [file?.file, variant, recOn]);
+  }, [file?.file, variant, recOn, longOn]);
   const [threads, setThreads] = useState<number>((inUse && eng?.threads) || 0);
   const [threadsBatch, setThreadsBatch] = useState<number>((inUse && eng?.threadsBatch) || 0);
   const switchRec = (v: boolean) => {
@@ -1458,6 +1481,7 @@ function ModelPanel({
     bigChunks: can("bigChunks") && flags.bigChunks,
     moePrefetch: can("prefetch") && flags.prefetch,
     noRepack: flags.noRepack,
+    longContext: longOn,
     ctx: Math.min(ctx, ctxInfo?.trained ?? ctx),
     recommended: rec && recOn ? m.id : undefined,
     threads: threads || undefined,
@@ -1468,6 +1492,7 @@ function ModelPanel({
     (Boolean(stream && choices.bigChunks) === Boolean(eng?.bigChunks) &&
       Boolean(stream && choices.moePrefetch) === Boolean(eng?.moePrefetch) &&
       Boolean(choices.noRepack) === Boolean(eng?.noRepack) &&
+      Boolean(choices.longContext) === Boolean(eng?.longContext) &&
       (stream || (eng?.ctx ?? 65536) === choices.ctx) &&
       eng?.recommended === choices.recommended &&
       eng?.threads === choices.threads &&
@@ -1586,7 +1611,9 @@ function ModelPanel({
               />
             </label>
           )}
-          {!stream && <ContextBar info={ctxInfo} value={ctx} onChange={setCtx} />}
+          {!stream && (
+            <ContextBar info={ctxInfo} value={ctx} onChange={setCtx} longContext={longOn} />
+          )}
           <ThreadsChoice
             cores={s.hardware.cores}
             threads={threads}
@@ -1621,6 +1648,19 @@ function ModelPanel({
               />
             </ImprovementCard>
             {card("noRepack", "noRepack", t("lmImprHelp_noRepack"))}
+            <ImprovementCard
+              id="longContext"
+              available={can("longContext")}
+              why={
+                improvement("longContext") && !improvement("longContext")?.available
+                  ? whyText(improvement("longContext") as Improvement)
+                  : undefined
+              }
+              on={flags.longContext}
+              onChange={(v) => setFlags((f) => ({ ...f, longContext: v }))}
+              help={t("lmImprHelp_longContext")}
+              tested={m.tested?.find((x) => x.improvement === "longContext")}
+            />
             {improveError && <p class="notice error">{improveError}</p>}
             {run && (
               <ImprovementRun

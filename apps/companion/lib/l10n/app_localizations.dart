@@ -34854,6 +34854,12 @@ abstract class AppLocalizations {
   /// **'llama.cpp normally re-arranges the model\'s weights for the processor when it loads them. For writing one token at a time this was slower on an Intel i5-12500H: with No Repack 3.21 tokens/s instead of 2.88 (+11%), while reading the message stayed the same. On other processors it may give nothing, or be slower.'**
   String get moLmImprHelp_noRepack;
 
+  /// No description provided for @moLmImprHelp_longContext.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeps the conversation memory of the full-context layers in RAM and only the most used part in the card: a very long context (up to the model\'s own) can be booked without the model leaving the card. It uses Rasgeth\'s changed engine, the same as Prefetch, downloaded the first time. Only NVIDIA cards, only models with sliding-window layers (Inkling, Gemma).'**
+  String get moLmImprHelp_longContext;
+
   /// No description provided for @moLmImprIntegratedOnly.
   ///
   /// In en, this message translates to:
@@ -34883,6 +34889,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'the weights as they are in the file, without re-arranging them'**
   String get moLmImprSub_noRepack;
+
+  /// No description provided for @moLmImprSub_longContext.
+  ///
+  /// In en, this message translates to:
+  /// **'the context booked in RAM, the recent part in the card'**
+  String get moLmImprSub_longContext;
 
   /// No description provided for @moLmImprSub_prefetch.
   ///
@@ -34968,6 +34980,18 @@ abstract class AppLocalizations {
   /// **'Off: it needs Deep Field, which is off. Turn it on in the computer\'s box.'**
   String get moLmImprWhy_needDeepField;
 
+  /// No description provided for @moLmImprWhy_needSlidingWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: it only works with models that have sliding-window layers (Inkling, Gemma), and this one does not.'**
+  String get moLmImprWhy_needSlidingWindow;
+
+  /// No description provided for @moLmImprWhy_needNoDeepField.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: it does not work with Deep Field, which is on. Turn Deep Field off in the computer\'s box.'**
+  String get moLmImprWhy_needNoDeepField;
+
   /// No description provided for @moLmImprWhy_needGpu.
   ///
   /// In en, this message translates to:
@@ -35009,6 +35033,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No Repack'**
   String get moLmImpr_noRepack;
+
+  /// No description provided for @moLmImpr_longContext.
+  ///
+  /// In en, this message translates to:
+  /// **'Long context'**
+  String get moLmImpr_longContext;
 
   /// No description provided for @moLmImpr_prefetch.
   ///
@@ -35106,6 +35136,12 @@ abstract class AppLocalizations {
   /// **'Beyond {max} part of the model goes to the processor: it writes 3 to 5 times slower. A longer context keeps longer conversations and documents.'**
   String moLmCtxBeyond(String max);
 
+  /// No description provided for @moLmCtxBeyondLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Beyond {max} the oldest part of the conversation is read by the processor: it slows down little by little, the model stays entirely in the card.'**
+  String moLmCtxBeyondLong(String max);
+
   /// No description provided for @moLmCtxFits.
   ///
   /// In en, this message translates to:
@@ -35117,6 +35153,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All in the card up to {max}'**
   String moLmCtxMark(String max);
+
+  /// No description provided for @moLmCtxMarkLong.
+  ///
+  /// In en, this message translates to:
+  /// **'In the card up to {max}, the rest in RAM'**
+  String moLmCtxMarkLong(String max);
 
   /// No description provided for @moLmCtxNoCard.
   ///

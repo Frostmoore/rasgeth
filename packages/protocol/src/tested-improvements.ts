@@ -34,6 +34,13 @@ export const TESTED_IMPROVEMENTS: Readonly<Record<string, readonly TestedResult[
       hardware: "NVIDIA RTX 4080 SUPER",
       write: { before: 9.4, after: 12.7 },
     },
+    // Long context, Rig (2026-11-28): 1M context booked, the first 32k cells in the card, the rest of the full-context
+    // layers' cache in RAM (LLAMA_KV_FULL_HOST=2): writing 4.7 -> 44.8 t/s, reading the message 44 -> 502 t/s.
+    {
+      improvement: "longContext",
+      hardware: "NVIDIA RTX 4080 SUPER",
+      write: { before: 4.7, after: 44.8 },
+    },
   ],
 };
 

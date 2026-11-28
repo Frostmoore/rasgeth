@@ -806,11 +806,14 @@ static class WinEngine
         // The patched build only for CUDA, and only of a version written as one ("3.2.0").
         string release = Field(json, "release");
         if (release != null && !Regex.IsMatch(release, @"^\d+\.\d+\.\d+$")) release = null;
-        if (wanted == "cuda" && Field(json, "prefetch") == "1" && release != null) wanted = "cuda-prefetch";
+        if (wanted == "cuda" && (Field(json, "prefetch") == "1" || Field(json, "kvhost") == "1") && release != null) wanted = "cuda-prefetch";
+        // Long context: the full-context layers' cache in RAM, and how many cells stay in the card (digits only).
+        string hot = Field(json, "hot");
+        if (hot != null && !Regex.IsMatch(hot, @"^\d{1,9}$")) hot = null;
         var t = new Thread(() => Handle(gen, id, Field(json, "model"), Field(json, "build"),
             Field(json, "ctx") ?? "65536", Field(json, "parallel") ?? "4", Field(json, "args"),
             Field(json, "fit"), Field(json, "preload"), Field(json, "draft"), wanted,
-            Field(json, "template"), release)) { IsBackground = true };
+            Field(json, "template"), release, Field(json, "prefetch") == "1", Field(json, "kvhost") == "1", hot)) { IsBackground = true };
         t.Start();
     }
 
@@ -932,7 +935,7 @@ static class WinEngine
         return File.Exists(path) ? " --mmproj \"" + path + "\"" : "";
     }
 
-    static void Handle(int gen, string id, string model, string build, string ctx, string parallel, string args, string fit, string preload, string draft, string wanted, string template, string release)
+    static void Handle(int gen, string id, string model, string build, string ctx, string parallel, string args, string fit, string preload, string draft, string wanted, string template, string release, bool prefetch, bool kvhost, string hot)
     {
         lock (gate) { if (gen != generation) return; Kill(); flavor = wanted; }
         if (model == null) { Status(gen, id, "stopped", null); Diag.Log("engine", "stop asked"); return; }
@@ -969,7 +972,13 @@ static class WinEngine
                 WorkingDirectory = Bin,
             };
             // The patch does nothing without it (G32.2).
-            if (wanted == "cuda-prefetch") info.EnvironmentVariables["LLAMA_MOE_PREFETCH"] = "1";
+            if (wanted == "cuda-prefetch" && prefetch) info.EnvironmentVariables["LLAMA_MOE_PREFETCH"] = "1";
+            // Long context: the same patched build keeps the full-context layers' cache in RAM.
+            if (wanted == "cuda-prefetch" && kvhost)
+            {
+                info.EnvironmentVariables["LLAMA_KV_FULL_HOST"] = "2";
+                if (hot != null) info.EnvironmentVariables["LLAMA_KV_HOT_CELLS"] = hot;
+            }
             var p = new Process { StartInfo = info };
             DataReceivedEventHandler keep = (s, e) =>
             {

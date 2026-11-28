@@ -308,6 +308,12 @@ export interface EngineConfig {
    */
   noRepack?: boolean | undefined;
   /**
+   * Long context (p3.13.0, off by default): with an NVIDIA card and a model with sliding-window layers, the patched
+   * engine (the one of `moePrefetch`) keeps the full-context layers' cache in RAM and only the first cells in the
+   * card (`LLAMA_KV_FULL_HOST=2`, `LLAMA_KV_HOT_CELLS`): a huge context can be booked without the model leaving the card.
+   */
+  longContext?: boolean | undefined;
+  /**
    * The context the person chose (3.12.10, the bar on the model's card): tokens booked when the engine starts.
    * Unset: the recommended engine's, or Rasgeth's own (`NORMAL_CTX`).
    */
@@ -1623,6 +1629,7 @@ export class SetupService {
           Boolean(now.bigChunks) === Boolean(e.bigChunks) &&
           Boolean(now.moePrefetch) === Boolean(e.moePrefetch) &&
           Boolean(now.noRepack) === Boolean(e.noRepack) &&
+          Boolean(now.longContext) === Boolean(e.longContext) &&
           now.ctx === e.ctx &&
           now.recommended === e.recommended &&
           now.threads === e.threads &&
@@ -2001,6 +2008,7 @@ export class SetupService {
       Boolean(a.bigChunks) === Boolean(b.bigChunks) &&
       Boolean(a.moePrefetch) === Boolean(b.moePrefetch) &&
       Boolean(a.noRepack) === Boolean(b.noRepack) &&
+      Boolean(a.longContext) === Boolean(b.longContext) &&
       a.ctx === b.ctx &&
       a.recommended === b.recommended &&
       a.threads === b.threads &&

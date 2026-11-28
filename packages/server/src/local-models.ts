@@ -3,6 +3,7 @@
 import type { GgufMeta } from "@redgiant/engine-local";
 import {
   contextInCard,
+  hotCells,
   type Improvement,
   type ImprovementInput,
   improvementsFor,
@@ -128,10 +129,29 @@ export function contextChoice(
   meta: GgufMeta,
   fileGb: number,
   hw: { kind: "gpu" | "gpu-unknown" | "igpu" | "cpu"; vramGb: number },
-  opts: { windows: boolean; ubatch?: number | ((ctx: number) => number) | undefined },
+  opts: {
+    windows: boolean;
+    ubatch?: number | ((ctx: number) => number) | undefined;
+    /** Long context (p3.13.0): `inCard` is the cells the card keeps, the rest of the full-context cache is in RAM. */
+    longContext?: boolean | undefined;
+  },
 ): { trained: number; inCard: number | null } {
   const trained = meta.contextLength || NORMAL_CTX;
   if (hw.kind !== "gpu" || hw.vramGb <= 0) return { trained, inCard: null };
+  if (opts.longContext && meta.kvGrowBytesPerToken) {
+    return {
+      trained,
+      inCard: hotCells(
+        {
+          fileGb,
+          vramGb: hw.vramGb,
+          marginGb: opts.windows ? 2.5 : 1,
+          kvGrowBytesPerToken: meta.kvGrowBytesPerToken,
+        },
+        trained,
+      ),
+    };
+  }
   const inCard = contextInCard(
     {
       fileGb,

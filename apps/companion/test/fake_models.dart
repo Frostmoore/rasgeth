@@ -75,6 +75,7 @@ class FakeModels {
         {'id': 'bigChunks', 'available': false, 'reason': 'needDeepField'},
         {'id': 'speculative', 'available': true, 'draft': false},
         {'id': 'noRepack', 'available': true},
+        {'id': 'longContext', 'available': false, 'reason': 'needSlidingWindow'},
       ],
       'tested': [
         {
@@ -145,6 +146,7 @@ class FakeModels {
         {'id': 'bigChunks', 'available': false, 'reason': 'needMoe'},
         {'id': 'speculative', 'available': true, 'draft': false, 'mtp': true},
         {'id': 'noRepack', 'available': true},
+        {'id': 'longContext', 'available': true},
       ],
       'tested': [
         {
@@ -152,6 +154,11 @@ class FakeModels {
           'mode': 'mtp',
           'hardware': 'Intel i5-12500H',
           'write': {'before': 2.98, 'after': 3.88},
+        },
+        {
+          'improvement': 'longContext',
+          'hardware': 'NVIDIA RTX 4080 SUPER',
+          'write': {'before': 4.7, 'after': 44.8},
         },
       ],
     },

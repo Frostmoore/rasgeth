@@ -2735,6 +2735,8 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
     draftModel: z.string().min(1).optional(),
     /** No Repack (p3.12.6): the weights as they are in the file (`--no-repack`). */
     noRepack: z.boolean().optional(),
+    /** Long context (p3.13.0): the full-context layers' cache in RAM, the patched engine. */
+    longContext: z.boolean().optional(),
     /** The context chosen on the model's card (3.12.10), in tokens. */
     ctx: z.number().int().min(2048).max(1048576).optional(),
     /** The engine we recommend for this catalog model (3.12.10): its id, never settings. */
@@ -4595,6 +4597,7 @@ export function createApp(core: RedGiantCore, auth: AuthProvider, options: AppOp
       const rec = id ? recommendedFor(id) : undefined;
       return contextChoice(meta, fileGb, hw.suggestion, {
         windows: c.req.query("variant") === "windows",
+        longContext: c.req.query("longContext") === "1",
         ubatch: rec ? (ctx: number) => ubatchFor(rec, ctx) ?? 512 : undefined,
       });
     }),

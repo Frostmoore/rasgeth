@@ -48,6 +48,12 @@ export interface WinEngineRequest {
    */
   prefetch?: "1";
   release?: string;
+  /**
+   * Long context (p3.13.0): the same patched build keeps the full-context layers' cache in RAM
+   * (LLAMA_KV_FULL_HOST=2), `hot` cells of it in the card (LLAMA_KV_HOT_CELLS). Selects the patched build too.
+   */
+  kvhost?: "1";
+  hot?: string;
 }
 
 export interface WinEngineStatus {
@@ -104,6 +110,7 @@ export class WinEngine {
     flavor: "cuda" | "vulkan" = "vulkan",
     template?: string,
     prefetchRelease?: string,
+    kvHost?: { hot: number; prefetch: boolean },
   ): Promise<string> {
     const r: WinEngineRequest = {
       flavor,
@@ -135,8 +142,13 @@ export class WinEngine {
       // A chat template in the engine folder's templates/ (2026-11-05), by name only.
       ...(template && { template }),
       // The patched build exists only for CUDA (G32.2).
+      // With Long context the patch's own «next layer ahead» follows `kvHost.prefetch`.
       ...(flavor === "cuda" &&
-        prefetchRelease && { prefetch: "1" as const, release: prefetchRelease }),
+        prefetchRelease && {
+          ...((kvHost?.prefetch ?? true) && { prefetch: "1" as const }),
+          release: prefetchRelease,
+          ...(kvHost && { kvhost: "1" as const, hot: String(kvHost.hot) }),
+        }),
     };
     await mkdir(this.o.dir, { recursive: true });
     const file = join(this.o.dir, "engine.json");
@@ -266,13 +278,23 @@ export class WinEngine {
     flavor: "cuda" | "vulkan" = "vulkan",
     template?: string,
     prefetchRelease?: string,
+    kvHost?: { hot: number; prefetch: boolean },
   ): Promise<string> {
     if (!this.o.host)
       throw new JobFailure(
         "launcher_missing",
         `${PRODUCT_NAME} does not know Windows' address on WSL's network: start ${PRODUCT_NAME} again from its icon`,
       );
-    const id = await this.request(model, plan, preload, spec, flavor, template, prefetchRelease);
+    const id = await this.request(
+      model,
+      plan,
+      preload,
+      spec,
+      flavor,
+      template,
+      prefetchRelease,
+      kvHost,
+    );
     const poll = this.o.pollMs ?? 1000;
     const asked = Date.now();
     let seen = false;
@@ -283,6 +305,7 @@ export class WinEngine {
       preload,
       spec,
       prefetch: flavor === "cuda" && prefetchRelease ? prefetchRelease : null,
+      kvHost: flavor === "cuda" && prefetchRelease ? (kvHost ?? null) : null,
     });
     for (;;) {
       if (h?.signal.aborted) {

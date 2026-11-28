@@ -32,6 +32,18 @@ describe("the context bar of a model's card (3.12.10)", () => {
     expect(plain.inCard).toBeLessThan(rec.inCard as number);
   });
 
+  it("Long context: the mark is the cells the card keeps, not the whole context (p3.13.0)", () => {
+    const card = { kind: "gpu" as const, vramGb: 15.99 };
+    const plain = contextChoice(inkling, 10.86, card, { windows: true });
+    const lc = contextChoice(inkling, 10.86, card, { windows: true, longContext: true });
+    expect(lc.trained).toBe(1048576);
+    // Rig measured 32k cells in the card with the margin free.
+    expect(lc.inCard).toBeGreaterThanOrEqual(32768);
+    expect(lc.inCard).toBeLessThan(65536);
+    expect((lc.inCard as number) % 256).toBe(0);
+    expect(lc.inCard).not.toBe(plain.inCard);
+  });
+
   it("no card of its own: the context only takes RAM, no mark", () => {
     expect(contextChoice(inkling, 10.86, { kind: "cpu", vramGb: 0 }, { windows: false })).toEqual({
       trained: 1048576,

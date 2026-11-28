@@ -13919,6 +13919,7 @@
   },
   "moLmImprAskYes": "Start the measurement",
   "moLmImprHelp_noRepack": "llama.cpp normally re-arranges the model's weights for the processor when it loads them. For writing one token at a time this was slower on an Intel i5-12500H: with No Repack 3.21 tokens/s instead of 2.88 (+11%), while reading the message stayed the same. On other processors it may give nothing, or be slower.",
+  "moLmImprHelp_longContext": "Keeps the conversation memory of the full-context layers in RAM and only the most used part in the card: a very long context (up to the model's own) can be booked without the model leaving the card. It uses Rasgeth's changed engine, the same as Prefetch, downloaded the first time. Only NVIDIA cards, only models with sliding-window layers (Inkling, Gemma).",
   "moLmImprIntegratedOnly": "only the integrated graphics",
   "moLmImprMeasure": "Measure on this computer",
   "moLmImprMeasured": "Measured on this computer: reading {rb} → {ra}, writing {wb} → {wa} tokens/s.",
@@ -13940,6 +13941,7 @@
   },
   "moLmImprSub_bigChunks": "the message is read in big blocks",
   "moLmImprSub_noRepack": "the weights as they are in the file, without re-arranging them",
+  "moLmImprSub_longContext": "the context booked in RAM, the recent part in the card",
   "moLmImprSub_prefetch": "the next layer's experts arrive ahead of time",
   "moLmImprSub_speculative": "more tokens at each pass",
   "moLmImprTestDone": "The engine is back as it was. The result stays on the card.",
@@ -13987,6 +13989,8 @@
   "moLmImprWarn": "They are turned on by hand, one by one. To know whether they pay off here you can measure them: every measurement takes a lot of time and a lot of compute (the model is loaded more than once, even tens of minutes for a big one; meanwhile the local model does not answer the agents) and it may give no gain at all or even make things worse.",
   "moLmImprWhy_missingEngine": "Off: the changed engine is not available (this version of Rasgeth was released without it, or there is no network).",
   "moLmImprWhy_needDeepField": "Off: it needs Deep Field, which is off. Turn it on in the computer's box.",
+  "moLmImprWhy_needSlidingWindow": "Off: it only works with models that have sliding-window layers (Inkling, Gemma), and this one does not.",
+  "moLmImprWhy_needNoDeepField": "Off: it does not work with Deep Field, which is on. Turn Deep Field off in the computer's box.",
   "moLmImprWhy_needGpu": "Off: it needs a graphics card with its own memory. This computer has only the integrated graphics.",
   "moLmImprWhy_needMoe": "Off: it only works with mixture-of-experts models, and this one is not.",
   "moLmImprWhy_needNvidia": "Off: it needs an NVIDIA graphics card. This computer has {gpu}.",
@@ -14001,6 +14005,7 @@
   "moLmImprWithout": "Without it",
   "moLmImpr_bigChunks": "Big Chunks",
   "moLmImpr_noRepack": "No Repack",
+  "moLmImpr_longContext": "Long context",
   "moLmImpr_prefetch": "Prefetch",
   "moLmImpr_speculative": "Speculative Decoding",
   "moSysDeepFieldWhat": "Rasgeth's SSD streaming",
@@ -14049,9 +14054,25 @@
       }
     }
   },
+  "moLmCtxBeyondLong": "Beyond {max} the oldest part of the conversation is read by the processor: it slows down little by little, the model stays entirely in the card.",
+  "@moLmCtxBeyondLong": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
   "moLmCtxFits": "All in the card: full speed. The context is what the model keeps of the conversation; it is booked whole when the model starts.",
   "moLmCtxMark": "All in the card up to {max}",
   "@moLmCtxMark": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "moLmCtxMarkLong": "In the card up to {max}, the rest in RAM",
+  "@moLmCtxMarkLong": {
     "placeholders": {
       "max": {
         "type": "String"

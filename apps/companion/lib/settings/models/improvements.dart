@@ -38,6 +38,8 @@ String improvementWhy(AppLocalizations l, Improvement i) => switch (i.reason) {
   'needGpu' => l.moLmImprWhy_needGpu,
   'needMoe' => l.moLmImprWhy_needMoe,
   'needDeepField' => l.moLmImprWhy_needDeepField,
+  'needNoDeepField' => l.moLmImprWhy_needNoDeepField,
+  'needSlidingWindow' => l.moLmImprWhy_needSlidingWindow,
   'missingEngine' => l.moLmImprWhy_missingEngine,
   _ => '',
 };
@@ -68,6 +70,7 @@ String improvementName(AppLocalizations l, String id) => switch (id) {
   'prefetch' => l.moLmImpr_prefetch,
   'bigChunks' => l.moLmImpr_bigChunks,
   'speculative' => l.moLmImpr_speculative,
+  'longContext' => l.moLmImpr_longContext,
   _ => l.moLmImpr_noRepack,
 };
 
@@ -76,6 +79,7 @@ String _sub(AppLocalizations l, String id) => switch (id) {
   'prefetch' => l.moLmImprSub_prefetch,
   'bigChunks' => l.moLmImprSub_bigChunks,
   'speculative' => l.moLmImprSub_speculative,
+  'longContext' => l.moLmImprSub_longContext,
   _ => l.moLmImprSub_noRepack,
 };
 
@@ -88,12 +92,21 @@ String ctxText(int n) => n >= 1048576 ? '${(n / 1048576).round()}M' : '${(n / 10
 /// How much context the engine books (3.12.10, the page's `ContextBar`): the bar in round steps, a gold line where
 /// the model, its context and the engine's scratch stop fitting in the card, and what each side means.
 class ContextBar extends StatelessWidget {
-  const ContextBar({super.key, required this.info, required this.value, required this.onChanged});
+  const ContextBar({
+    super.key,
+    required this.info,
+    required this.value,
+    required this.onChanged,
+    this.longContext = false,
+  });
 
   /// From the server; null until it answers.
   final ({int trained, int? inCard})? info;
   final int value;
   final ValueChanged<int> onChanged;
+
+  /// Long context is on (p3.13.0): the mark is what the card keeps, the rest of the cache is in RAM.
+  final bool longContext;
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +127,8 @@ class ContextBar extends StatelessWidget {
         ? l.moLmCtxTooBig
         : steps[index] <= inCard
         ? l.moLmCtxFits
+        : longContext
+        ? l.moLmCtxBeyondLong(ctxText(inCard))
         : l.moLmCtxBeyond(ctxText(inCard));
     final last = (steps.length - 1).clamp(1, 99);
     return Padding(
@@ -160,7 +175,9 @@ class ContextBar extends StatelessWidget {
                       top: 10,
                       bottom: 10,
                       child: Semantics(
-                        label: l.moLmCtxMark(ctxText(steps[mark])),
+                        label: longContext
+                            ? l.moLmCtxMarkLong(ctxText(steps[mark]))
+                            : l.moLmCtxMark(ctxText(steps[mark])),
                         child: Container(
                           width: 4,
                           decoration: BoxDecoration(
@@ -617,17 +634,24 @@ class _ImprovementsSectionState extends State<ImprovementsSection> {
   @override
   void didUpdateWidget(ImprovementsSection old) {
     super.didUpdateWidget(old);
-    if (old.name != widget.name || old.choices.recommended != widget.choices.recommended) {
+    if (old.name != widget.name ||
+        old.choices.recommended != widget.choices.recommended ||
+        _longOn(old) != _longOn(widget)) {
       unawaited(_context());
     }
   }
+
+  /// Long context counts only where the server says it can work and not with Deep Field.
+  static bool _longOn(ImprovementsSection w) =>
+      (w.m.improvement('longContext')?.available ?? false) && w.choices.longContext && !w.stream;
 
   /// How much context the model knows and how much stays in the card (3.12.10, the page's `contextInfo`).
   Future<void> _context() async {
     final c = AppScope.read(context).client;
     final file = widget.m.file?.file;
     if (c == null || file == null) return;
-    final key = '$file ${widget.choices.recommended}';
+    final long = _longOn(widget);
+    final key = '$file ${widget.choices.recommended} $long';
     _ctxFor = key;
     try {
       final r = await c.contextInfo(
@@ -635,6 +659,7 @@ class _ImprovementsSectionState extends State<ImprovementsSection> {
         widget.m.repo,
         file,
         recommended: widget.choices.recommended,
+        longContext: long,
       );
       if (mounted && _ctxFor == key) setState(() => _ctxInfo = r);
     } on Object {
@@ -861,6 +886,7 @@ class _ImprovementsSectionState extends State<ImprovementsSection> {
             info: _ctxInfo,
             value: ch.ctx ?? 65536,
             onChanged: (v) => widget.onChoices(ch.copy(ctx: v)),
+            longContext: _longOn(widget),
           ),
         ThreadsChoice(
           cores: widget.s.cores,
@@ -925,6 +951,12 @@ class _ImprovementsSectionState extends State<ImprovementsSection> {
           child: _speculation(l, c),
         ),
         card('noRepack', ch.noRepack, l.moLmImprHelp_noRepack, (v) => ch.copy(noRepack: v)),
+        card(
+          'longContext',
+          can('longContext') && ch.longContext,
+          l.moLmImprHelp_longContext,
+          (v) => ch.copy(longContext: v),
+        ),
         if (_error != null) KbLine(_error!, error: true),
       ],
     );

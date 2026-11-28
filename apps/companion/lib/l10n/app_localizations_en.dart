@@ -20165,6 +20165,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'llama.cpp normally re-arranges the model\'s weights for the processor when it loads them. For writing one token at a time this was slower on an Intel i5-12500H: with No Repack 3.21 tokens/s instead of 2.88 (+11%), while reading the message stayed the same. On other processors it may give nothing, or be slower.';
 
   @override
+  String get moLmImprHelp_longContext =>
+      'Keeps the conversation memory of the full-context layers in RAM and only the most used part in the card: a very long context (up to the model\'s own) can be booked without the model leaving the card. It uses Rasgeth\'s changed engine, the same as Prefetch, downloaded the first time. Only NVIDIA cards, only models with sliding-window layers (Inkling, Gemma).';
+
+  @override
   String get moLmImprIntegratedOnly => 'only the integrated graphics';
 
   @override
@@ -20181,6 +20185,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get moLmImprSub_noRepack =>
       'the weights as they are in the file, without re-arranging them';
+
+  @override
+  String get moLmImprSub_longContext => 'the context booked in RAM, the recent part in the card';
 
   @override
   String get moLmImprSub_prefetch => 'the next layer\'s experts arrive ahead of time';
@@ -20234,6 +20241,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Off: it needs Deep Field, which is off. Turn it on in the computer\'s box.';
 
   @override
+  String get moLmImprWhy_needSlidingWindow =>
+      'Off: it only works with models that have sliding-window layers (Inkling, Gemma), and this one does not.';
+
+  @override
+  String get moLmImprWhy_needNoDeepField =>
+      'Off: it does not work with Deep Field, which is on. Turn Deep Field off in the computer\'s box.';
+
+  @override
   String get moLmImprWhy_needGpu =>
       'Off: it needs a graphics card with its own memory. This computer has only the integrated graphics.';
 
@@ -20257,6 +20272,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get moLmImpr_noRepack => 'No Repack';
+
+  @override
+  String get moLmImpr_longContext => 'Long context';
 
   @override
   String get moLmImpr_prefetch => 'Prefetch';
@@ -20318,12 +20336,22 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String moLmCtxBeyondLong(String max) {
+    return 'Beyond $max the oldest part of the conversation is read by the processor: it slows down little by little, the model stays entirely in the card.';
+  }
+
+  @override
   String get moLmCtxFits =>
       'All in the card: full speed. The context is what the model keeps of the conversation; it is booked whole when the model starts.';
 
   @override
   String moLmCtxMark(String max) {
     return 'All in the card up to $max';
+  }
+
+  @override
+  String moLmCtxMarkLong(String max) {
+    return 'In the card up to $max, the rest in RAM';
   }
 
   @override
