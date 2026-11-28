@@ -14,7 +14,7 @@ index 8e17564..5136c00 100644
      ggml_backend_sched_synchronize(sched);
  
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index e541626..8bdcfc5 100644
+index e541626..fb449fb 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
 @@ -19,6 +19,8 @@ set(LLAMA_CORE_SOURCES
@@ -42,7 +42,7 @@ index e541626..8bdcfc5 100644
 +    endif()
 +endif()
 diff --git a/src/llama-graph.cpp b/src/llama-graph.cpp
-index 19efbca..9ad1296 100644
+index 19efbca..6ffaaf8 100644
 --- a/src/llama-graph.cpp
 +++ b/src/llama-graph.cpp
 @@ -17,6 +17,7 @@
@@ -137,7 +137,20 @@ index 19efbca..9ad1296 100644
  
          if (v_mla) {
  #if 0
-@@ -3816,6 +3856,40 @@ static ggml_tensor * build_attn_iswa_impl(
+@@ -3750,7 +3790,11 @@ static ggml_tensor * build_attn_iswa_impl(
+         ggml_tensor * sinks,
+         ggml_tensor * v_mla,
+             float     kq_scale,
+-            int       il) {
++            int       il,
++        ggml_tensor * rg_mask_cold = nullptr,
++        ggml_tensor * rg_raw_cold  = nullptr,
++        ggml_tensor * rg_rel_cold  = nullptr,
++        ggml_tensor * rg_table     = nullptr) {
+     ggml_context * ctx0 = gctx.ctx0;
+     ggml_cgraph  * gf   = gctx.gf;
+ 
+@@ -3816,6 +3860,49 @@ static ggml_tensor * build_attn_iswa_impl(
      ggml_tensor * k = use_kv_cur ? k_cur : mctx_cur->get_k(ctx0, il);
      ggml_tensor * v = use_kv_cur ? v_cur : mctx_cur->get_v(ctx0, il);
  
@@ -159,17 +172,26 @@ index 19efbca..9ad1296 100644
 +            const int64_t vpad  = GGML_PAD(group*n_tok, 256);
 +            ggml_tensor * kc = ggml_permute(ctx0, mctx_cur->rg_get_cold(ctx0, il, false), 0, 2, 1, 3);
 +            ggml_tensor * vc = ggml_permute(ctx0, mctx_cur->rg_get_cold(ctx0, il, true),  0, 2, 1, 3);
-+            ggml_tensor * mc = ggml_view_4d(ctx0, kq_mask, n_kv - hot, kq_mask->ne[1], kq_mask->ne[2], kq_mask->ne[3],
-+                                            kq_mask->nb[1], kq_mask->nb[2], kq_mask->nb[3], hot*ggml_element_size(kq_mask));
-+            const auto cold = llama_redgiant_attn_cold(ctx0, ggml_permute(ctx0, q, 0, 2, 1, 3), kc, vc, mc, kq_scale, group, vpad);
++            // the mask's cold part: from its parts, read cell by cell (rel bias), or cut from the whole mask
++            const bool parts = rg_rel_cold != nullptr;
++            ggml_tensor * mc = parts ? nullptr : rg_mask_cold ? rg_mask_cold :
++                ggml_view_4d(ctx0, kq_mask, n_kv - hot, kq_mask->ne[1], kq_mask->ne[2], kq_mask->ne[3],
++                             kq_mask->nb[1], kq_mask->nb[2], kq_mask->nb[3], hot*ggml_element_size(kq_mask));
++            const auto cold = llama_redgiant_attn_cold(ctx0, ggml_permute(ctx0, q, 0, 2, 1, 3), kc, vc, mc,
++                                                       rg_raw_cold, rg_rel_cold, rg_table, kq_scale, group, vpad);
 +            ggml_build_forward_expand(gf, mctx_cur->rg_cpy_virt(ctx0, cold.vrows, inp->rg_idxs_virt, il));
-+            ggml_tensor * mh = ggml_cont(ctx0, ggml_view_4d(ctx0, kq_mask, hot, kq_mask->ne[1], kq_mask->ne[2], kq_mask->ne[3],
-+                                                            kq_mask->nb[1], kq_mask->nb[2], kq_mask->nb[3], 0));
-+            // cut and joined where the whole mask is, in RAM: only the card's part travels to the card (in the card
-+            // the copy of the whole mask took 2 GB at 1M)
-+            ggml_backend_sched_set_tensor_backend(gctx.sched, mh, gctx.backend_cpu);
-+            kq_mask = ggml_concat(ctx0, mh, cold.mask, 0);
-+            ggml_backend_sched_set_tensor_backend(gctx.sched, kq_mask, gctx.backend_cpu);
++            if (rg_mask_cold || rg_rel_cold) {
++                // the hot mask was built in the card, for the hot cells only: the processor's rows join it there
++                kq_mask = ggml_concat(ctx0, kq_mask, cold.mask, 0);
++            } else {
++                ggml_tensor * mh = ggml_cont(ctx0, ggml_view_4d(ctx0, kq_mask, hot, kq_mask->ne[1], kq_mask->ne[2], kq_mask->ne[3],
++                                                                kq_mask->nb[1], kq_mask->nb[2], kq_mask->nb[3], 0));
++                // cut and joined where the whole mask is, in RAM: only the card's part travels to the card (in the
++                // card the copy of the whole mask took 2 GB at 1M)
++                ggml_backend_sched_set_tensor_backend(gctx.sched, mh, gctx.backend_cpu);
++                kq_mask = ggml_concat(ctx0, mh, cold.mask, 0);
++                ggml_backend_sched_set_tensor_backend(gctx.sched, kq_mask, gctx.backend_cpu);
++            }
 +            k = mctx_cur->rg_get_hot(ctx0, il, hot + vpad, false);
 +            v = mctx_cur->rg_get_hot(ctx0, il, hot + vpad, true);
 +        }
@@ -178,7 +200,7 @@ index 19efbca..9ad1296 100644
      ggml_tensor * cur = gctx.build_attn_mha(q, k, v, kq_b, kq_mask, kv_rows, sinks, v_mla, 0, kq_scale, il);
      cur = build_attn_scale_kv_output(ctx0, mctx_cur, cur, il);
      gctx.cb(cur, "kqv_out", il);
-@@ -4067,6 +4141,27 @@ llm_graph_input_attn_kv_msa * llm_graph_context::build_attn_inp_kv_msa(bool msa_
+@@ -4067,6 +4154,27 @@ llm_graph_input_attn_kv_msa * llm_graph_context::build_attn_inp_kv_msa(bool msa_
  // TODO: maybe separate the inner implementation into a separate function
  //       like with the non-sliding window equivalent
  //       once sliding-window hybrid caches are a thing.
@@ -206,7 +228,7 @@ index 19efbca..9ad1296 100644
  llm_graph_input_attn_kv_iswa * llm_graph_context::build_attn_inp_kv_iswa() const {
      const auto * mctx_cur = static_cast<const llama_kv_cache_iswa_context *>(mctx);
  
-@@ -4077,6 +4172,8 @@ llm_graph_input_attn_kv_iswa * llm_graph_context::build_attn_inp_kv_iswa() const
+@@ -4077,6 +4185,8 @@ llm_graph_input_attn_kv_iswa * llm_graph_context::build_attn_inp_kv_iswa() const
          inp->self_v_idxs = mctx_cur->get_base()->build_input_v_idxs(ctx0, ubatch);
  
          inp->self_attn_mask = build_attn_inp_attn_mask(ctx0, mctx_cur->get_base(), ubatch, cparams);
@@ -215,7 +237,7 @@ index 19efbca..9ad1296 100644
      }
  
      {
-@@ -4443,6 +4540,8 @@ llm_graph_input_mem_hybrid_iswa_rel * llm_graph_context::build_inp_mem_hybrid_is
+@@ -4443,6 +4553,8 @@ llm_graph_input_mem_hybrid_iswa_rel * llm_graph_context::build_inp_mem_hybrid_is
          inp_attn->self_v_idxs = attn_ctx->get_base()->build_input_v_idxs(ctx0, ubatch);
  
          inp_attn->self_attn_mask.raw = build_attn_inp_kq_mask(ctx0, attn_ctx->get_base(), ubatch, cparams);
@@ -224,7 +246,66 @@ index 19efbca..9ad1296 100644
      }
  
      {
-@@ -4499,8 +4598,27 @@ ggml_tensor * llm_graph_context::build_attn(
+@@ -4493,14 +4605,86 @@ ggml_tensor * llm_graph_context::build_attn(
+     //       needs a kv_rows flash attention with a per-head mask (CUDA has none)
+     GGML_ASSERT(attn_mask.rows == nullptr);
+ 
++    // RedGiant (C.4 tappa C): with the card's copy of the first cells, the mask is built in two parts from the bias
++    // table: the hot cells' in the card (as the official engine does, small), the cold cells' in RAM. One mask over
++    // every cell, built in RAM, cost the processor more and more with the conversation (reading 371 -> 83 t/s from
++    // 10k to 30k tokens, all of them still hot).
++    const auto * rg_base = inp_attn->mctx->get_base();
++    if (!is_swa && cparams.flash_attn && rg_base->rg_has_hot(il) && inp_attn->rg_idxs_hot) {
++        ggml_tensor * gathered = kq_b;
++        while (gathered->view_src || gathered->op == GGML_OP_CONT) {
++            gathered = gathered->view_src ? gathered->view_src : gathered->src[0];
++        }
++        GGML_ASSERT(gathered->op == GGML_OP_GET_ROWS);
++        ggml_tensor * table   = gathered->src[0];
++        ggml_tensor * rel_pos = gathered->src[1];
++        ggml_tensor * raw     = attn_mask.raw;
++        const int64_t n_kv  = rel_pos->ne[0];
++        const int64_t n_tok = rel_pos->ne[1];
++        const int64_t hot   = rg_base->rg_hot_cells();
++        auto part = [&](int64_t c0, int64_t n, bool cpu) {
++            // the distances are an input in RAM: cut there, a small contiguous block travels to the card
++            ggml_tensor * rp = ggml_cont(ctx0, ggml_view_2d(ctx0, rel_pos, n, n_tok, rel_pos->nb[1], c0*rel_pos->nb[0]));
++            ggml_backend_sched_set_tensor_backend(sched, rp, backend_cpu);
++            ggml_tensor * g  = ggml_get_rows(ctx0, table, rp);
++            ggml_tensor * b  = ggml_cont(ctx0, ggml_permute(ctx0, ggml_reshape_4d(ctx0, g, g->ne[0], n, n_tok, 1), 2, 0, 1, 3));
++            ggml_tensor * r  = ggml_view_4d(ctx0, raw, n, raw->ne[1], raw->ne[2], raw->ne[3], raw->nb[1], raw->nb[2], raw->nb[3],
++                                            c0*ggml_element_size(raw));
++            if (r->type != GGML_TYPE_F32) {
++                r = ggml_cast(ctx0, r, GGML_TYPE_F32);
++            }
++            ggml_tensor * m  = ggml_add(ctx0, b, r);
++            ggml_tensor * mf = ggml_cast(ctx0, m, GGML_TYPE_F16);
++            if (cpu) {
++                for (ggml_tensor * t : {rp, g, b, m, mf}) {
++                    ggml_backend_sched_set_tensor_backend(sched, t, backend_cpu);
++                }
++                if (r != raw && !r->view_src) {
++                    ggml_backend_sched_set_tensor_backend(sched, r, backend_cpu);
++                }
++            }
++            return mf;
++        };
++        ggml_tensor * mask_hot = part(0, std::min(n_kv, hot), false);
++        cb(mask_hot, "kq_mask_rel_pos_hot", il);
++        // the cold part's mask is never built: the processor reads the input mask, the distances and the table
++        ggml_tensor * raw_cold = nullptr;
++        ggml_tensor * rel_cold = nullptr;
++        if (n_kv > hot) {
++            raw_cold = ggml_view_2d(ctx0, raw, n_kv - hot, n_tok, raw->nb[1], hot*ggml_element_size(raw));
++            rel_cold = ggml_view_2d(ctx0, rel_pos, n_kv - hot, n_tok, rel_pos->nb[1], hot*rel_pos->nb[0]);
++        }
++        return build_attn_iswa_impl(*this, inp_attn, wo, wo_b, wo_s, q_cur, k_cur, v_cur, nullptr, mask_hot, nullptr, sinks,
++                                    nullptr, kq_scale, il, nullptr, raw_cold, rel_cold, n_kv > hot ? table : nullptr);
++    }
++
+     // a mask per head, in the dense layout of the input mask, which flash attention takes in F16
+     ggml_tensor * kq_mask = attn_mask.raw;
+     if (kq_mask->type != GGML_TYPE_F32) {
          kq_mask = ggml_cast(ctx0, kq_mask, GGML_TYPE_F32);
      }
      kq_mask = ggml_add(ctx0, kq_b, kq_mask);
@@ -269,7 +350,7 @@ index ff155f1..70f801e 100644
      llm_attn_mask self_attn_mask_swa;
  
 diff --git a/src/llama-kv-cache.cpp b/src/llama-kv-cache.cpp
-index bb546f7..353bd3f 100644
+index bb546f7..32d7c4f 100644
 --- a/src/llama-kv-cache.cpp
 +++ b/src/llama-kv-cache.cpp
 @@ -213,7 +213,20 @@ llama_kv_cache::llama_kv_cache(
@@ -303,7 +384,7 @@ index bb546f7..353bd3f 100644
 +        const char * hot_env = getenv("LLAMA_KV_HOT_CELLS");
 +        const char * fh_env  = getenv("LLAMA_KV_FULL_HOST");
 +        // only where the processor's attention can take the cold part: Q8_0 keys and values, heads of 128
-+        const bool rg_fits = type_k == GGML_TYPE_Q8_0 && type_v == GGML_TYPE_Q8_0 &&
++        const bool rg_fits = (type_k == GGML_TYPE_Q8_0 || type_k == GGML_TYPE_Q4_0) && type_v == type_k &&
 +                             hparams.n_embd_head_k(il) == 128 && hparams.n_embd_head_v(il) == 128;
 +        if (full_host && rg_fits && hot_env && fh_env && fh_env[0] == '2' && n_stream == 1 && !v_trans && has_k && has_v) {
 +            const uint32_t want = (uint32_t) std::min<long long>(atoll(hot_env), (long long) kv_size);
@@ -520,10 +601,10 @@ index 1b40f6f..40ea2de 100644
      void set_input_pos_bucket(ggml_tensor * dst, const llama_ubatch * ubatch) const;
 diff --git a/src/llama-redgiant-attn-avx512.cpp b/src/llama-redgiant-attn-avx512.cpp
 new file mode 100644
-index 0000000..9ae6082
+index 0000000..965251d
 --- /dev/null
 +++ b/src/llama-redgiant-attn-avx512.cpp
-@@ -0,0 +1,235 @@
+@@ -0,0 +1,506 @@
 +// RedGiant (C.4): the fast kernel of llama-redgiant-attn.cpp, built with AVX-512 and called only when the processor has
 +// AVX-512 with VNNI (checked at run time). The C.4.1 prototype (rg-test/c4/proto.cu, cpu_attn2) read the cache at the
 +// RAM's speed on a Ryzen 9 9900X (60-67 GB/s): every kv head of a cell together, keys with VNNI (k+128 unsigned times q
@@ -539,12 +620,13 @@ index 0000000..9ae6082
 +#include <cmath>
 +#include <cstdint>
 +#include <cstring>
++#include <vector>
 +
 +namespace {
 +
 +constexpr int D   = 128;
 +constexpr int NB  = D/32;
-+constexpr int TG  = 4;   // query rows read together (several when the message is being read)
++constexpr int TG  = 8;   // query rows read together while a message is read: each cell's keys serve them all
 +constexpr int SUB = 32;  // cells per scoring step
 +constexpr int MAXH = 64;
 +
@@ -580,7 +662,249 @@ index 0000000..9ae6082
 +    return _mm_cvtss_f32(a);
 +}
 +
++// A Q8_0 or Q4_0 block's 32 values as unsigned bytes for VNNI (+128, or the Q4_0 nibbles as they are: value + 8),
++// and its scale. The offset to take back is 128 x, or 8 x, the sum of the query's values.
++inline __m256i k_unsigned(const char * row, int b, bool q4, float & d) {
++    if (q4) {
++        const char * p = row + b*18;
++        d = h2f(*(const uint16_t *) p);
++        const __m128i qs = _mm_loadu_si128((const __m128i *) (p + 2));
++        const __m128i lo = _mm_and_si128(qs, _mm_set1_epi8(0x0F));
++        const __m128i hi = _mm_and_si128(_mm_srli_epi16(qs, 4), _mm_set1_epi8(0x0F));
++        return _mm256_set_m128i(hi, lo);
++    }
++    const char * p = row + b*34;
++    d = h2f(*(const uint16_t *) p);
++    return _mm256_xor_si256(_mm256_loadu_si256((const __m256i *) (p + 2)), _mm256_set1_epi8((char) 0x80));
++}
++
++// A block's 32 values as floats (scale applied), in two halves.
++inline void v_floats(const char * row, int b, bool q4, __m512 & lo, __m512 & hi) {
++    if (q4) {
++        const char * p = row + b*18;
++        const __m512 d = _mm512_set1_ps(h2f(*(const uint16_t *) p));
++        const __m128i qs = _mm_loadu_si128((const __m128i *) (p + 2));
++        const __m512i eight = _mm512_set1_epi32(8);
++        const __m512i l = _mm512_sub_epi32(_mm512_cvtepu8_epi32(_mm_and_si128(qs, _mm_set1_epi8(0x0F))), eight);
++        const __m512i h = _mm512_sub_epi32(_mm512_cvtepu8_epi32(_mm_and_si128(_mm_srli_epi16(qs, 4), _mm_set1_epi8(0x0F))), eight);
++        lo = _mm512_mul_ps(_mm512_cvtepi32_ps(l), d);
++        hi = _mm512_mul_ps(_mm512_cvtepi32_ps(h), d);
++        return;
++    }
++    const char * p = row + b*34;
++    const __m512 d = _mm512_set1_ps(h2f(*(const uint16_t *) p));
++    const __m128i * src = (const __m128i *) (p + 2);
++    lo = _mm512_mul_ps(_mm512_cvtepi32_ps(_mm512_cvtepi8_epi32(_mm_loadu_si128(src))), d);
++    hi = _mm512_mul_ps(_mm512_cvtepi32_ps(_mm512_cvtepi8_epi32(_mm_loadu_si128(src + 1))), d);
++}
++
 +}  // namespace
++
++// The kernel for a message being read (many query rows): for each kv head, blocks of 32 cells like a matrix product.
++// Keys repacked so one VNNI instruction scores a query against 16 cells (no horizontal sums); the mask built once per
++// block for the head's queries; values dequantized once per block and multiplied by the probabilities in tiles of
++// 4 queries x 64 dims kept in registers. Same result as the row kernel (exact softmax, same int8 query).
++static bool rg_chunk_gemm(const llama_redgiant_attn_job & j) {
++    const ggml_tensor * q = j.q;
++    const ggml_tensor * k = j.k;
++    const ggml_tensor * v = j.v;
++    const ggml_tensor * mask = j.mask;
++    const int64_t n_batch = q->ne[1], n_head = q->ne[2], ne3 = q->ne[3];
++    const int64_t n_head_kv = k->ne[2], G = n_head/n_head_kv;
++    const int64_t NQ = G*n_batch;  // queries of one kv head: row t, head g -> t*G + g
++    const bool    q4   = k->type == GGML_TYPE_Q4_0;
++    const int32_t koff = q4 ? 8 : 128;
++    constexpr int CB = 32;         // cells per block (two VNNI groups of 16)
++
++    static thread_local std::vector<int8_t>  qi;      // [NQ][D]
++    static thread_local std::vector<int32_t> qsum;    // [NQ][NB] 128 x sum of the block
++    static thread_local std::vector<float>   qd;      // [NQ][NB] scale x attention scale
++    static thread_local std::vector<float>   sc;      // [NQ][CB]
++    static thread_local std::vector<float>   accv;    // [NQ][D]
++    static thread_local std::vector<float>   mv, lv;  // [NQ]
++    alignas(64) static thread_local int32_t kp[2][32][16];  // [group of 16 cells][dword of the key][cell]
++    alignas(64) static thread_local float   dk[2][NB][16];
++    alignas(64) static thread_local float   vf[CB][D];
++    qi.resize(NQ*D + 64); qsum.resize(NQ*NB); qd.resize(NQ*NB); sc.resize(NQ*CB + 16); accv.resize(NQ*D + 16);
++    mv.resize(NQ); lv.resize(NQ);
++    int8_t * QI = (int8_t *) (((uintptr_t) qi.data() + 63) & ~(uintptr_t) 63);
++    float * ACC = (float *) (((uintptr_t) accv.data() + 63) & ~(uintptr_t) 63);
++    float * SC = (float *) (((uintptr_t) sc.data() + 63) & ~(uintptr_t) 63);
++
++    for (int64_t s = 0; s < ne3; s++) {
++        for (int64_t kvh = 0; kvh < n_head_kv; kvh++) {
++            // the queries of this kv head in int8 per block of 32
++            for (int64_t t = 0; t < n_batch; t++) {
++                for (int64_t g = 0; g < G; g++) {
++                    const int64_t qq = t*G + g, h = kvh*G + g;
++                    const float * qp = (const float *) ((const char *) q->data + t*q->nb[1] + h*q->nb[2] + s*q->nb[3]);
++                    for (int b = 0; b < NB; b++) {
++                        // 32 values at a time: absolute max, scale, round to int8 (no lrint: a CRT call on Windows)
++                        const __m512 x0 = _mm512_loadu_ps(qp + b*32), x1 = _mm512_loadu_ps(qp + b*32 + 16);
++                        const float a = _mm512_reduce_max_ps(_mm512_max_ps(_mm512_abs_ps(x0), _mm512_abs_ps(x1)));
++                        const float d = a/127.0f;
++                        qd[qq*NB + b] = d*j.scale;
++                        const __m512 inv = _mm512_set1_ps(d != 0.0f ? 1.0f/d : 0.0f);
++                        const __m512i i0 = _mm512_cvtps_epi32(_mm512_mul_ps(x0, inv));
++                        const __m512i i1 = _mm512_cvtps_epi32(_mm512_mul_ps(x1, inv));
++                        _mm_storeu_si128((__m128i *) (QI + qq*D + b*32), _mm512_cvtsepi32_epi8(i0));
++                        _mm_storeu_si128((__m128i *) (QI + qq*D + b*32 + 16), _mm512_cvtsepi32_epi8(i1));
++                        qsum[qq*NB + b] = koff*_mm512_reduce_add_epi32(_mm512_add_epi32(i0, i1));
++                    }
++                    mv[qq] = -INFINITY;
++                    lv[qq] = 0.0f;
++                    std::memset(ACC + qq*D, 0, D*sizeof(float));
++                }
++            }
++            for (int64_t c0 = j.c0; c0 < j.c1; c0 += CB) {
++                const int len = (int) std::min<int64_t>(CB, j.c1 - c0);
++                // keys repacked: dword d4 of each cell, 16 cells side by side (unsigned: +128)
++                for (int grp = 0; grp < 2; grp++) {
++                    for (int ci = 0; ci < 16; ci++) {
++                        const int cell = grp*16 + ci;
++                        if (cell < len) {
++                            const char * kr = (const char *) k->data + (c0 + cell)*k->nb[1] + kvh*k->nb[2] + s*k->nb[3];
++                            for (int b = 0; b < NB; b++) {
++                                alignas(32) uint32_t w[8];
++                                _mm256_store_si256((__m256i *) w, k_unsigned(kr, b, q4, dk[grp][b][ci]));
++                                for (int x = 0; x < 8; x++) {
++                                    kp[grp][b*8 + x][ci] = (int32_t) w[x];
++                                }
++                            }
++                        } else {
++                            for (int b = 0; b < NB; b++) {
++                                dk[grp][b][ci] = 0.0f;
++                                for (int x = 0; x < 8; x++) kp[grp][b*8 + x][ci] = 0;
++                            }
++                        }
++                    }
++                }
++                // scores of every query against the 32 cells
++                for (int64_t qq = 0; qq < NQ; qq++) {
++                    const int8_t * qrow = QI + qq*D;
++                    for (int grp = 0; grp < 2; grp++) {
++                        __m512 f = _mm512_setzero_ps();
++                        for (int b = 0; b < NB; b++) {
++                            __m512i acc = _mm512_setzero_si512();
++                            for (int x = 0; x < 8; x++) {
++                                int32_t qw;
++                                std::memcpy(&qw, qrow + b*32 + x*4, 4);
++                                acc = _mm512_dpbusd_epi32(acc, _mm512_load_si512((const void *) kp[grp][b*8 + x]), _mm512_set1_epi32(qw));
++                            }
++                            acc = _mm512_sub_epi32(acc, _mm512_set1_epi32(qsum[qq*NB + b]));
++                            f = _mm512_fmadd_ps(_mm512_cvtepi32_ps(acc),
++                                                _mm512_mul_ps(_mm512_load_ps(dk[grp][b]), _mm512_set1_ps(qd[qq*NB + b])), f);
++                        }
++                        _mm512_store_ps(SC + qq*CB + grp*16, f);
++                    }
++                }
++                // the mask, once per cell, row and head of this group
++                if (mask || j.raw) {
++                    for (int64_t t = 0; t < n_batch; t++) {
++                        for (int ci = 0; ci < len; ci++) {
++                            const int64_t cell = c0 + ci;
++                            if (mask) {
++                                for (int64_t g = 0; g < G; g++) {
++                                    const int64_t h = kvh*G + g;
++                                    SC[(t*G + g)*CB + ci] += h2f(*(const uint16_t *) ((const char *) mask->data + cell*mask->nb[0] +
++                                                                  t*mask->nb[1] + (h % mask->ne[2])*mask->nb[2] + (s % mask->ne[3])*mask->nb[3]));
++                                }
++                                continue;
++                            }
++                            const char * rp = (const char *) j.raw->data + cell*j.raw->nb[0] + t*j.raw->nb[1];
++                            const float r = j.raw->type == GGML_TYPE_F16 ? h2f(*(const uint16_t *) rp) : *(const float *) rp;
++                            if (r == -INFINITY) {
++                                for (int64_t g = 0; g < G; g++) SC[(t*G + g)*CB + ci] = -INFINITY;
++                                continue;
++                            }
++                            const int32_t dd = *(const int32_t *) ((const char *) j.relpos->data + cell*j.relpos->nb[0] + t*j.relpos->nb[1]);
++                            const char * row = (const char *) j.table->data + dd*j.table->nb[1] + t*j.table->nb[2];
++                            for (int64_t g = 0; g < G; g++) {
++                                SC[(t*G + g)*CB + ci] += r + *(const float *) (row + (kvh*G + g)*j.table->nb[0]);
++                            }
++                        }
++                    }
++                }
++                // softmax by query: new max, rescale the sums, probabilities (exact zero where masked or padding)
++                const __mmask16 pad0 = len >= 16 ? (__mmask16) 0xFFFF : (__mmask16) ((1u << len) - 1);
++                const __mmask16 pad1 = len >= 32 ? (__mmask16) 0xFFFF : len <= 16 ? (__mmask16) 0 : (__mmask16) ((1u << (len - 16)) - 1);
++                for (int64_t qq = 0; qq < NQ; qq++) {
++                    float * srow = SC + qq*CB;
++                    __m512 s0 = _mm512_mask_mov_ps(_mm512_set1_ps(-INFINITY), pad0, _mm512_load_ps(srow));
++                    __m512 s1 = _mm512_mask_mov_ps(_mm512_set1_ps(-INFINITY), pad1, _mm512_load_ps(srow + 16));
++                    const float nm = std::max(mv[qq], _mm512_reduce_max_ps(_mm512_max_ps(s0, s1)));
++                    if (nm == -INFINITY) {
++                        _mm512_store_ps(srow, _mm512_setzero_ps());
++                        _mm512_store_ps(srow + 16, _mm512_setzero_ps());
++                        continue;
++                    }
++                    const float r = std::exp(mv[qq] - nm);
++                    if (r != 1.0f) {
++                        const __m512 rv = _mm512_set1_ps(r);
++                        float * a = ACC + qq*D;
++                        for (int d = 0; d < D; d += 16) _mm512_store_ps(a + d, _mm512_mul_ps(_mm512_load_ps(a + d), rv));
++                        lv[qq] *= r;
++                    }
++                    mv[qq] = nm;
++                    const __m512 nmv = _mm512_set1_ps(nm), ninf = _mm512_set1_ps(-INFINITY);
++                    const __m512 e0 = _mm512_maskz_mov_ps(_mm512_cmp_ps_mask(s0, ninf, _CMP_NEQ_OQ), exp16(_mm512_sub_ps(s0, nmv)));
++                    const __m512 e1 = _mm512_maskz_mov_ps(_mm512_cmp_ps_mask(s1, ninf, _CMP_NEQ_OQ), exp16(_mm512_sub_ps(s1, nmv)));
++                    _mm512_store_ps(srow, e0);
++                    _mm512_store_ps(srow + 16, e1);
++                    lv[qq] += _mm512_reduce_add_ps(_mm512_add_ps(e0, e1));
++                }
++                // values of the block in floats, once
++                for (int ci = 0; ci < CB; ci++) {
++                    if (ci >= len) {
++                        for (int d = 0; d < D; d += 16) _mm512_store_ps(&vf[ci][d], _mm512_setzero_ps());
++                        continue;
++                    }
++                    const char * vr = (const char *) v->data + (c0 + ci)*v->nb[1] + kvh*v->nb[2] + s*v->nb[3];
++                    for (int b = 0; b < NB; b++) {
++                        __m512 lo, hi;
++                        v_floats(vr, b, q4, lo, hi);
++                        _mm512_store_ps(&vf[ci][b*32], lo);
++                        _mm512_store_ps(&vf[ci][b*32 + 16], hi);
++                    }
++                }
++                // sums += probabilities x values, tiles of 4 queries x 64 dims in registers
++                for (int64_t q0 = 0; q0 < NQ; q0 += 4) {
++                    const int nq = (int) std::min<int64_t>(4, NQ - q0);
++                    for (int d0 = 0; d0 < D; d0 += 64) {
++                        __m512 a[4][4];
++                        for (int x = 0; x < 4; x++)
++                            for (int y = 0; y < 4; y++)
++                                a[x][y] = x < nq ? _mm512_load_ps(ACC + (q0 + x)*D + d0 + y*16) : _mm512_setzero_ps();
++                        for (int ci = 0; ci < len; ci++) {
++                            const __m512 v0 = _mm512_load_ps(&vf[ci][d0]), v1 = _mm512_load_ps(&vf[ci][d0 + 16]);
++                            const __m512 v2 = _mm512_load_ps(&vf[ci][d0 + 32]), v3 = _mm512_load_ps(&vf[ci][d0 + 48]);
++                            for (int x = 0; x < 4; x++) {
++                                const __m512 p = _mm512_set1_ps(x < nq ? SC[(q0 + x)*CB + ci] : 0.0f);
++                                a[x][0] = _mm512_fmadd_ps(p, v0, a[x][0]);
++                                a[x][1] = _mm512_fmadd_ps(p, v1, a[x][1]);
++                                a[x][2] = _mm512_fmadd_ps(p, v2, a[x][2]);
++                                a[x][3] = _mm512_fmadd_ps(p, v3, a[x][3]);
++                            }
++                        }
++                        for (int x = 0; x < nq; x++)
++                            for (int y = 0; y < 4; y++) _mm512_store_ps(ACC + (q0 + x)*D + d0 + y*16, a[x][y]);
++                    }
++                }
++            }
++            // the partial results of this kv head's queries
++            for (int64_t t = 0; t < n_batch; t++) {
++                for (int64_t g = 0; g < G; g++) {
++                    const int64_t qq = t*G + g, h = kvh*G + g;
++                    float * o = j.out + ((s*n_batch + t)*n_head + h)*(D + 2);
++                    std::memcpy(o, ACC + qq*D, D*sizeof(float));
++                    o[D] = mv[qq];
++                    o[D + 1] = lv[qq];
++                }
++            }
++        }
++    }
++    return true;
++}
 +
 +bool llama_redgiant_attn_chunk_avx512(const llama_redgiant_attn_job & j) {
 +    const ggml_tensor * q = j.q;
@@ -592,15 +916,21 @@ index 0000000..9ae6082
 +    if (n_head > MAXH || k->ne[0] != D) {
 +        return false;
 +    }
++    // reading a message: many query rows, the matrix kernel
++    if (n_batch >= 4) {
++        return rg_chunk_gemm(j);
++    }
++    const bool    q4   = k->type == GGML_TYPE_Q4_0;
++    const int32_t koff = q4 ? 8 : 128;
 +
 +    alignas(64) static thread_local int8_t  qi[TG][MAXH][D];
 +    alignas(64) static thread_local int32_t corr[TG][MAXH][NB][8];
 +    alignas(64) static thread_local float   qd[TG][MAXH][NB];
 +    alignas(64) static thread_local float   sc[TG][MAXH][SUB];
-+    alignas(64) static thread_local float   acc[TG][MAXH][D];
++    // [head][row][dim]: the rows of a head side by side (as [row][head][dim] they were 32 KB apart, one cache set)
++    alignas(64) static thread_local float   acc[MAXH][TG][D];
 +    static thread_local float m[TG][MAXH], l[TG][MAXH];
 +
-+    const __m256i flip = _mm256_set1_epi8((char) 0x80);
 +
 +    for (int64_t s = 0; s < ne3; s++) {
 +        for (int64_t t0 = 0; t0 < n_batch; t0 += TG) {
@@ -610,26 +940,25 @@ index 0000000..9ae6082
 +                for (int64_t h = 0; h < n_head; h++) {
 +                    const float * qp = (const float *) ((const char *) q->data + (t0 + tt)*q->nb[1] + h*q->nb[2] + s*q->nb[3]);
 +                    for (int b = 0; b < NB; b++) {
-+                        float a = 0.0f;
-+                        for (int i = 0; i < 32; i++) {
-+                            a = std::max(a, std::fabs(qp[b*32 + i]));
-+                        }
++                        // 32 values at a time (no lrint: a CRT call on Windows, ~2 ms a token over 8 layers)
++                        const __m512 x0 = _mm512_loadu_ps(qp + b*32), x1 = _mm512_loadu_ps(qp + b*32 + 16);
++                        const float a = _mm512_reduce_max_ps(_mm512_max_ps(_mm512_abs_ps(x0), _mm512_abs_ps(x1)));
 +                        const float d = a/127.0f;
 +                        qd[tt][h][b] = d*j.scale;
-+                        for (int i = 0; i < 32; i++) {
-+                            qi[tt][h][b*32 + i] = (int8_t) std::lrint(d != 0.0f ? qp[b*32 + i]/d : 0.0f);
-+                        }
++                        const __m512 inv = _mm512_set1_ps(d != 0.0f ? 1.0f/d : 0.0f);
++                        _mm_store_si128((__m128i *) &qi[tt][h][b*32], _mm512_cvtsepi32_epi8(_mm512_cvtps_epi32(_mm512_mul_ps(x0, inv))));
++                        _mm_store_si128((__m128i *) &qi[tt][h][b*32 + 16], _mm512_cvtsepi32_epi8(_mm512_cvtps_epi32(_mm512_mul_ps(x1, inv))));
 +                        for (int g = 0; g < 8; g++) {
 +                            int c = 0;
 +                            for (int i = 0; i < 4; i++) {
 +                                c += qi[tt][h][b*32 + g*4 + i];
 +                            }
-+                            corr[tt][h][b][g] = 128*c;
++                            corr[tt][h][b][g] = koff*c;
 +                        }
 +                    }
 +                    m[tt][h] = -INFINITY;
 +                    l[tt][h] = 0.0f;
-+                    std::memset(acc[tt][h], 0, sizeof(acc[tt][h]));
++                    std::memset(acc[h][tt], 0, sizeof(acc[h][tt]));
 +                }
 +            }
 +
@@ -639,12 +968,11 @@ index 0000000..9ae6082
 +                for (int i = 0; i < len; i++) {
 +                    const int64_t cell = c + i;
 +                    for (int64_t kvh = 0; kvh < n_head_kv; kvh++) {
-+                        const block * kb = (const block *) ((const char *) k->data + cell*k->nb[1] + kvh*k->nb[2] + s*k->nb[3]);
++                        const char * kr = (const char *) k->data + cell*k->nb[1] + kvh*k->nb[2] + s*k->nb[3];
 +                        __m256i ku[NB];
 +                        float   dk[NB];
 +                        for (int b = 0; b < NB; b++) {
-+                            ku[b] = _mm256_xor_si256(_mm256_loadu_si256((const __m256i *) kb[b].q), flip);
-+                            dk[b] = h2f(kb[b].d);
++                            ku[b] = k_unsigned(kr, b, q4, dk[b]);
 +                        }
 +                        for (int64_t g = 0; g < G; g++) {
 +                            const int64_t h = kvh*G + g;
@@ -656,13 +984,38 @@ index 0000000..9ae6082
 +                                    dot = _mm256_sub_epi32(dot, _mm256_load_si256((const __m256i *) corr[tt][h][b]));
 +                                    f = _mm256_fmadd_ps(_mm256_cvtepi32_ps(dot), _mm256_set1_ps(dk[b]*qd[tt][h][b]), f);
 +                                }
-+                                float x = hsum8(f);
-+                                if (mask) {
-+                                    x += h2f(*(const uint16_t *) ((const char *) mask->data + cell*mask->nb[0] +
-+                                                                  (t0 + tt)*mask->nb[1] + (h % mask->ne[2])*mask->nb[2] +
-+                                                                  (s % mask->ne[3])*mask->nb[3]));
++                                sc[tt][h][i] = hsum8(f);
++                            }
++                        }
++                    }
++                }
++                // The mask, once per cell and row: from the bias table every head's value is one row of n_head floats
++                // (the input mask and the distance read once, not once per head).
++                if (mask || j.raw) {
++                    for (int tt = 0; tt < nt; tt++) {
++                        const int64_t t = t0 + tt;
++                        for (int i = 0; i < len; i++) {
++                            const int64_t cell = c + i;
++                            if (mask) {
++                                for (int64_t h = 0; h < n_head; h++) {
++                                    sc[tt][h][i] += h2f(*(const uint16_t *) ((const char *) mask->data + cell*mask->nb[0] +
++                                                                             t*mask->nb[1] + (h % mask->ne[2])*mask->nb[2] +
++                                                                             (s % mask->ne[3])*mask->nb[3]));
 +                                }
-+                                sc[tt][h][i] = x;
++                                continue;
++                            }
++                            const char * rp = (const char *) j.raw->data + cell*j.raw->nb[0] + t*j.raw->nb[1];
++                            const float r = j.raw->type == GGML_TYPE_F16 ? h2f(*(const uint16_t *) rp) : *(const float *) rp;
++                            if (r == -INFINITY) {
++                                for (int64_t h = 0; h < n_head; h++) {
++                                    sc[tt][h][i] = -INFINITY;
++                                }
++                                continue;
++                            }
++                            const int32_t d = *(const int32_t *) ((const char *) j.relpos->data + cell*j.relpos->nb[0] + t*j.relpos->nb[1]);
++                            const char * row = (const char *) j.table->data + d*j.table->nb[1] + t*j.table->nb[2];
++                            for (int64_t h = 0; h < n_head; h++) {
++                                sc[tt][h][i] += r + *(const float *) (row + h*j.table->nb[0]);
 +                            }
 +                        }
 +                    }
@@ -693,7 +1046,7 @@ index 0000000..9ae6082
 +                        if (r != 1.0f) {
 +                            const __m512 rv = _mm512_set1_ps(r);
 +                            for (int d = 0; d < D; d += 16) {
-+                                _mm512_store_ps(&acc[tt][h][d], _mm512_mul_ps(_mm512_load_ps(&acc[tt][h][d]), rv));
++                                _mm512_store_ps(&acc[h][tt][d], _mm512_mul_ps(_mm512_load_ps(&acc[h][tt][d]), rv));
 +                            }
 +                        }
 +                        l[tt][h] *= r;
@@ -715,12 +1068,11 @@ index 0000000..9ae6082
 +                for (int i = 0; i < len; i++) {
 +                    const int64_t cell = c + i;
 +                    for (int64_t kvh = 0; kvh < n_head_kv; kvh++) {
-+                        const block * vb = (const block *) ((const char *) v->data + cell*v->nb[1] + kvh*v->nb[2] + s*v->nb[3]);
++                        const char * vr = (const char *) v->data + cell*v->nb[1] + kvh*v->nb[2] + s*v->nb[3];
 +                        for (int b = 0; b < NB; b++) {
-+                            const __m128i * src = (const __m128i *) vb[b].q;
-+                            const __m512 lo = _mm512_cvtepi32_ps(_mm512_cvtepi8_epi32(_mm_loadu_si128(src)));
-+                            const __m512 hi = _mm512_cvtepi32_ps(_mm512_cvtepi8_epi32(_mm_loadu_si128(src + 1)));
-+                            const float dv = h2f(vb[b].d);
++                            __m512 lo, hi;
++                            v_floats(vr, b, q4, lo, hi);  // scale applied
++                            const float dv = 1.0f;
 +                            for (int64_t g = 0; g < G; g++) {
 +                                const int64_t h = kvh*G + g;
 +                                for (int tt = 0; tt < nt; tt++) {
@@ -729,7 +1081,7 @@ index 0000000..9ae6082
 +                                        continue;
 +                                    }
 +                                    const __m512 w = _mm512_set1_ps(wf*dv);
-+                                    float * p = &acc[tt][h][b*32];
++                                    float * p = &acc[h][tt][b*32];
 +                                    _mm512_store_ps(p, _mm512_fmadd_ps(lo, w, _mm512_load_ps(p)));
 +                                    _mm512_store_ps(p + 16, _mm512_fmadd_ps(hi, w, _mm512_load_ps(p + 16)));
 +                                }
@@ -742,7 +1094,7 @@ index 0000000..9ae6082
 +            for (int tt = 0; tt < nt; tt++) {
 +                for (int64_t h = 0; h < n_head; h++) {
 +                    float * o = j.out + ((s*n_batch + t0 + tt)*n_head + h)*(D + 2);
-+                    std::memcpy(o, acc[tt][h], sizeof(acc[tt][h]));
++                    std::memcpy(o, acc[h][tt], sizeof(acc[h][tt]));
 +                    o[D] = m[tt][h];
 +                    o[D + 1] = l[tt][h];
 +                }
@@ -761,16 +1113,18 @@ index 0000000..9ae6082
 +#endif
 diff --git a/src/llama-redgiant-attn.cpp b/src/llama-redgiant-attn.cpp
 new file mode 100644
-index 0000000..ebb2219
+index 0000000..62dd513
 --- /dev/null
 +++ b/src/llama-redgiant-attn.cpp
-@@ -0,0 +1,288 @@
+@@ -0,0 +1,426 @@
 +#include "llama-redgiant-attn.h"
 +
 +#include <algorithm>
 +#include <cmath>
 +#include <cstdint>
 +#include <cstring>
++#include <mutex>
++#include <unordered_map>
 +#include <vector>
 +
 +#if defined(_MSC_VER)
@@ -783,10 +1137,16 @@ index 0000000..ebb2219
 +// by the second op. Enough to keep 12-24 threads busy with uneven cores.
 +static constexpr int64_t RG_CHUNKS = 64;
 +static constexpr int64_t RG_D      = 128;
++static constexpr int64_t RG_PAGE   = 64;  // cells per page of the selective reading
 +
 +// The chunks used for n_kv cells: about 256 cells each, so a short conversation is not split in 64 tiny pieces that
 +// each prepare the queries and clear their sums (measured: 44 against 50 t/s at 439 cells).
-+static int64_t rg_chunks_used(int64_t n_kv) {
++// With many query rows (a message being read) each cell is much work: fewer, longer chunks keep the threads busy and
++// the partial results small (64 chunks x 1536 rows x 130 floats was 51 MB written and read back twice per layer).
++static int64_t rg_chunks_used(int64_t n_kv, int64_t rows) {
++    if (rows >= 4) {
++        return std::max<int64_t>(1, std::min<int64_t>(24, n_kv/512));
++    }
 +    return std::max<int64_t>(1, std::min<int64_t>(RG_CHUNKS, n_kv/256));
 +}
 +
@@ -809,24 +1169,14 @@ index 0000000..ebb2219
 +
 +static const bool rg_fast = rg_has_avx512_vnni();
 +
-+static float rg_h2f(ggml_fp16_t h) {
-+    return ggml_fp16_to_fp32(h);
-+}
-+
-+struct rg_block {
-+    ggml_fp16_t d;
-+    int8_t      q[32];
-+};
-+static_assert(sizeof(rg_block) == 34, "q8_0 block");
-+
 +// The plain kernel: the same result, one cell at a time, for processors without AVX-512 VNNI.
 +static void rg_chunk_plain(const llama_redgiant_attn_job & j) {
 +    const ggml_tensor * q = j.q;
 +    const ggml_tensor * k = j.k;
 +    const ggml_tensor * v = j.v;
-+    const ggml_tensor * mask = j.mask;
 +    const int64_t n_batch = q->ne[1], n_head = q->ne[2], ne3 = q->ne[3];
 +    const int64_t n_head_kv = k->ne[2], group = n_head / n_head_kv;
++    const bool q4 = k->type == GGML_TYPE_Q4_0;
 +    std::vector<float> qf(RG_D), acc(RG_D);
 +    for (int64_t s = 0; s < ne3; s++) {
 +        for (int64_t t = 0; t < n_batch; t++) {
@@ -836,31 +1186,29 @@ index 0000000..ebb2219
 +                std::fill(acc.begin(), acc.end(), 0.0f);
 +                float m = -INFINITY, l = 0.0f;
 +                for (int64_t c = j.c0; c < j.c1; c++) {
-+                    float mv = 0.0f;
-+                    if (mask) {
-+                        mv = rg_h2f(*(const ggml_fp16_t *) ((const char *) mask->data + c*mask->nb[0] + t*mask->nb[1] +
-+                                                            (h % mask->ne[2])*mask->nb[2] + (s % mask->ne[3])*mask->nb[3]));
-+                        if (mv == -INFINITY) {
-+                            continue;
-+                        }
++                    const float mv = llama_redgiant_mask_at(j, c, t, h, s);
++                    if (mv == -INFINITY) {
++                        continue;
 +                    }
-+                    const rg_block * kb = (const rg_block *) ((const char *) k->data + c*k->nb[1] + kvh*k->nb[2] + s*k->nb[3]);
++                    const char * kr = (const char *) k->data + c*k->nb[1] + kvh*k->nb[2] + s*k->nb[3];
 +                    float dot = 0.0f;
++                    int8_t x8[32];
 +                    for (int b = 0; b < RG_D/32; b++) {
++                        const float dk = llama_redgiant_block(kr, b, q4, x8);
 +                        float sb = 0.0f;
 +                        for (int i = 0; i < 32; i++) {
-+                            sb += kb[b].q[i] * qp[b*32 + i];
++                            sb += x8[i] * qp[b*32 + i];
 +                        }
-+                        dot += sb * rg_h2f(kb[b].d);
++                        dot += sb * dk;
 +                    }
 +                    const float x = dot*j.scale + mv;
 +                    const float nm = std::max(m, x);
 +                    const float r = std::exp(m - nm), w = std::exp(x - nm);
-+                    const rg_block * vb = (const rg_block *) ((const char *) v->data + c*v->nb[1] + kvh*v->nb[2] + s*v->nb[3]);
++                    const char * vr = (const char *) v->data + c*v->nb[1] + kvh*v->nb[2] + s*v->nb[3];
 +                    for (int b = 0; b < RG_D/32; b++) {
-+                        const float dv = rg_h2f(vb[b].d);
++                        const float dv = llama_redgiant_block(vr, b, q4, x8);
 +                        for (int i = 0; i < 32; i++) {
-+                            acc[b*32 + i] = acc[b*32 + i]*r + w*dv*vb[b].q[i];
++                            acc[b*32 + i] = acc[b*32 + i]*r + w*dv*x8[i];
 +                        }
 +                    }
 +                    l = l*r + w;
@@ -880,12 +1228,38 @@ index 0000000..ebb2219
 +    const ggml_tensor * q = dst->src[0];
 +    const ggml_tensor * k = dst->src[1];
 +    const ggml_tensor * v = dst->src[2];
-+    const ggml_tensor * mask = dst->src[3];
++    // src[3]: the mask whole, or (with src[4], src[5]) the input mask, the distances and the bias table
++    const ggml_tensor * mask   = dst->src[4] ? nullptr : dst->src[3];
++    const ggml_tensor * raw    = dst->src[4] ? dst->src[3] : nullptr;
++    const ggml_tensor * relpos = dst->src[4];
++    const ggml_tensor * table  = dst->src[5];
 +    float scale;
 +    std::memcpy(&scale, &userdata, sizeof(float));
-+    const int64_t n_kv = k->ne[1], used = rg_chunks_used(n_kv);
++    const int64_t n_kv = k->ne[1], used = rg_chunks_used(n_kv, q->ne[1]*q->ne[3]);
++    // selective reading (LLAMA_KV_SELECT): one chunk per chosen page of 64 cells, the others empty
++    const ggml_tensor * list = dst->src[6];
++    if (list) {
++        const int32_t * pages = (const int32_t *) list->data;
++        const int64_t rows = q->ne[2]*q->ne[1]*q->ne[3];
++        for (int64_t c = ith; c < RG_CHUNKS; c += nth) {
++            float * out = (float *) ((char *) dst->data + c*dst->nb[3]);
++            if (c >= list->ne[0] || pages[c] < 0) {
++                for (int64_t r = 0; r < rows; r++) {
++                    out[r*(RG_D + 2) + RG_D] = -INFINITY;
++                    out[r*(RG_D + 2) + RG_D + 1] = 0.0f;
++                }
++                continue;
++            }
++            const int64_t c0 = (int64_t) pages[c]*RG_PAGE, c1 = std::min(n_kv, c0 + RG_PAGE);
++            llama_redgiant_attn_job job = {q, k, v, mask, raw, relpos, table, scale, c0, c1, out};
++            if (!rg_fast || !llama_redgiant_attn_chunk_avx512(job)) {
++                rg_chunk_plain(job);
++            }
++        }
++        return;
++    }
 +    for (int64_t c = ith; c < used; c += nth) {
-+        llama_redgiant_attn_job job = {q, k, v, mask, scale, n_kv*c/used, n_kv*(c + 1)/used,
++        llama_redgiant_attn_job job = {q, k, v, mask, raw, relpos, table, scale, n_kv*c/used, n_kv*(c + 1)/used,
 +                                       (float *) ((char *) dst->data + c*dst->nb[3])};
 +        if (!rg_fast || !llama_redgiant_attn_chunk_avx512(job)) {
 +            rg_chunk_plain(job);
@@ -900,7 +1274,7 @@ index 0000000..ebb2219
 +    const int64_t n_head = dst->ne[1], rows = dst->ne[1]*dst->ne[2]*dst->ne[3];
 +    const float * pd = (const float *) parts->data;
 +    const int64_t stride = rows*(RG_D + 2);
-+    const int64_t used = rg_chunks_used(parts->src[1]->ne[1]);
++    const int64_t used = parts->src[6] ? RG_CHUNKS : rg_chunks_used(parts->src[1]->ne[1], parts->src[0]->ne[1]*parts->src[0]->ne[3]);
 +    for (int64_t r = ith; r < rows; r += nth) {
 +        const int64_t h = r % n_head;
 +        float m = -INFINITY;
@@ -937,7 +1311,8 @@ index 0000000..ebb2219
 +}
 +
 +bool llama_redgiant_attn_supported(const ggml_tensor * k, const ggml_tensor * v, float max_bias, float softcap) {
-+    return k->type == GGML_TYPE_Q8_0 && v->type == GGML_TYPE_Q8_0 && k->ne[0] == RG_D && v->ne[0] == RG_D &&
++    const bool types = (k->type == GGML_TYPE_Q8_0 || k->type == GGML_TYPE_Q4_0) && v->type == k->type;
++    return types && k->ne[0] == RG_D && v->ne[0] == RG_D &&
 +           max_bias == 0.0f && softcap == 0.0f;
 +}
 +
@@ -963,7 +1338,8 @@ index 0000000..ebb2219
 +// The merged result of row r (query row x head) over the chunks: sum of weighted values, max score, softmax sum.
 +static void rg_merge_row(const ggml_tensor * parts, int64_t r, int64_t rows, float * acc, float & m, float & l) {
 +    const float * pd = (const float *) parts->data;
-+    const int64_t stride = rows*(RG_D + 2), used = rg_chunks_used(parts->src[1]->ne[1]);
++    const int64_t stride = rows*(RG_D + 2);
++    const int64_t used = parts->src[6] ? RG_CHUNKS : rg_chunks_used(parts->src[1]->ne[1], parts->src[0]->ne[1]*parts->src[0]->ne[3]);
 +    m = -INFINITY;
 +    for (int64_t c = 0; c < used; c++) {
 +        const float * p = pd + c*stride + r*(RG_D + 2);
@@ -1029,12 +1405,115 @@ index 0000000..ebb2219
 +    }
 +}
 +
++// Selective reading (C.4 2(c), LLAMA_KV_SELECT=<pages>, approximate, while writing only): per page of 64 cold cells and
++// kv head, the minimum and maximum of every key dimension (kept across calls, recomputed only for pages that grew);
++// a page's score is the highest a query could reach there (sum over dims of max(q*min, q*max)), the best pages are read
++// exactly, with the first page and the last two always (Quest, Tang et al. 2024).
++struct rg_pages_state {
++    std::vector<float>   mn, mx;  // [page][kvh][D]
++    std::vector<int32_t> count;   // cells summarized in each page
++};
++static std::mutex rg_pages_mu;
++static std::unordered_map<const void *, rg_pages_state> rg_pages;
++
++static rg_pages_state & rg_pages_for(const void * key, int64_t n_pages, int64_t n_head_kv) {
++    std::lock_guard<std::mutex> lock(rg_pages_mu);
++    auto & st = rg_pages[key];
++    if ((int64_t) st.count.size() < n_pages) {
++        st.mn.resize(n_pages*n_head_kv*RG_D);
++        st.mx.resize(n_pages*n_head_kv*RG_D);
++        st.count.resize(n_pages, 0);
++    }
++    return st;
++}
++
++// Scores of the pages: dst [n_pages] F32. src: q, k.
++static void rg_score_op(ggml_tensor * dst, int ith, int nth, void *) {
++    const ggml_tensor * q = dst->src[0];
++    const ggml_tensor * k = dst->src[1];
++    const int64_t n_kv = k->ne[1], n_pages = dst->ne[0], n_head_kv = k->ne[2];
++    const int64_t n_batch = q->ne[1], n_head = q->ne[2], G = n_head/n_head_kv;
++    const bool q4 = k->type == GGML_TYPE_Q4_0;
++    rg_pages_state & st = rg_pages_for(k->data, n_pages, n_head_kv);
++    int8_t x8[32];
++    for (int64_t p = ith; p < n_pages; p += nth) {
++        const int32_t cnt = (int32_t) std::min<int64_t>(RG_PAGE, n_kv - p*RG_PAGE);
++        if (st.count[p] != cnt) {
++            for (int64_t kvh = 0; kvh < n_head_kv; kvh++) {
++                float * mn = &st.mn[(p*n_head_kv + kvh)*RG_D];
++                float * mx = &st.mx[(p*n_head_kv + kvh)*RG_D];
++                std::fill(mn, mn + RG_D, INFINITY);
++                std::fill(mx, mx + RG_D, -INFINITY);
++                for (int64_t c = p*RG_PAGE; c < p*RG_PAGE + cnt; c++) {
++                    const char * kr = (const char *) k->data + c*k->nb[1] + kvh*k->nb[2];
++                    for (int b = 0; b < RG_D/32; b++) {
++                        const float d = llama_redgiant_block(kr, b, q4, x8);
++                        for (int i = 0; i < 32; i++) {
++                            const float x = d*x8[i];
++                            mn[b*32 + i] = std::min(mn[b*32 + i], x);
++                            mx[b*32 + i] = std::max(mx[b*32 + i], x);
++                        }
++                    }
++                }
++            }
++            st.count[p] = cnt;
++        }
++        float best = -INFINITY;
++        for (int64_t t = 0; t < n_batch; t++) {
++            for (int64_t h = 0; h < n_head; h++) {
++                const int64_t kvh = h / G;
++                const float * qp = (const float *) ((const char *) q->data + t*q->nb[1] + h*q->nb[2]);
++                const float * mn = &st.mn[(p*n_head_kv + kvh)*RG_D];
++                const float * mx = &st.mx[(p*n_head_kv + kvh)*RG_D];
++                float ub = 0.0f;
++                for (int d = 0; d < RG_D; d++) {
++                    ub += std::max(qp[d]*mn[d], qp[d]*mx[d]);
++                }
++                best = std::max(best, ub);
++            }
++        }
++        ((float *) dst->data)[p] = best;
++    }
++}
++
++// The chosen pages: dst [RG_CHUNKS] I32, ascending, -1 for the empty ones. src: the scores. userdata: the budget.
++static void rg_select_op(ggml_tensor * dst, int ith, int, void * userdata) {
++    if (ith != 0) {
++        return;
++    }
++    const ggml_tensor * sc = dst->src[0];
++    const int64_t n_pages = sc->ne[0];
++    const int64_t budget = std::min<int64_t>((int64_t) (intptr_t) userdata, RG_CHUNKS - 3);
++    int32_t * out = (int32_t *) dst->data;
++    std::vector<int32_t> pick;
++    if (n_pages <= budget + 3) {
++        for (int64_t p = 0; p < n_pages; p++) pick.push_back((int32_t) p);
++    } else {
++        // always the first page and the last two (the conversation's start, the newest cold cells)
++        std::vector<int32_t> rest;
++        for (int64_t p = 1; p < n_pages - 2; p++) rest.push_back((int32_t) p);
++        const float * s = (const float *) sc->data;
++        std::nth_element(rest.begin(), rest.begin() + budget, rest.end(), [s](int32_t a, int32_t b) { return s[a] > s[b]; });
++        pick.assign(rest.begin(), rest.begin() + budget);
++        pick.push_back(0);
++        pick.push_back((int32_t) (n_pages - 2));
++        pick.push_back((int32_t) (n_pages - 1));
++        std::sort(pick.begin(), pick.end());
++    }
++    for (int64_t i = 0; i < dst->ne[0]; i++) {
++        out[i] = i < (int64_t) pick.size() ? pick[i] : -1;
++    }
++}
++
 +llama_redgiant_cold llama_redgiant_attn_cold(
 +        ggml_context * ctx,
 +        ggml_tensor * q,
 +        ggml_tensor * k,
 +        ggml_tensor * v,
 +        ggml_tensor * mask,
++        ggml_tensor * raw,
++        ggml_tensor * relpos,
++        ggml_tensor * table,
 +        float scale,
 +        int64_t group,
 +        int64_t vpad) {
@@ -1042,9 +1521,20 @@ index 0000000..ebb2219
 +    const int64_t n_batch = q->ne[1], n_head = q->ne[2];
 +    void * ud = nullptr;
 +    std::memcpy(&ud, &scale, sizeof(float));
-+    ggml_tensor * args[4] = {q, k, v, mask};
++    // selective reading only while writing (a row or a few): reading a message stays exact
++    const char * sel = getenv("LLAMA_KV_SELECT");
++    ggml_tensor * list = nullptr;
++    if (sel && atoi(sel) > 0 && n_batch < 4) {
++        const int64_t n_pages = (k->ne[1] + RG_PAGE - 1)/RG_PAGE;
++        ggml_tensor * sa[2] = {q, k};
++        ggml_tensor * scores = ggml_custom_4d(ctx, GGML_TYPE_F32, n_pages, 1, 1, 1, sa, 2, rg_score_op, GGML_N_TASKS_MAX, nullptr);
++        ggml_tensor * la[1] = {scores};
++        list = ggml_custom_4d(ctx, GGML_TYPE_I32, RG_CHUNKS, 1, 1, 1, la, 1, rg_select_op, 1, (void *) (intptr_t) atoi(sel));
++    }
++    ggml_tensor * args[7] = {q, k, v, relpos ? raw : mask, relpos, table, list};
++    const int n_args = list ? 7 : relpos ? 6 : (mask ? 4 : 3);
 +    ggml_tensor * parts = ggml_custom_4d(ctx, GGML_TYPE_F32, RG_D + 2, n_head, n_batch, RG_CHUNKS, args,
-+                                         mask ? 4 : 3, rg_chunks_op, GGML_N_TASKS_MAX, ud);
++                                         n_args, rg_chunks_op, GGML_N_TASKS_MAX, ud);
 +    ggml_tensor * pa[1] = {parts};
 +    void * g = (void *) (intptr_t) group;
 +    llama_redgiant_cold res;
@@ -1055,10 +1545,10 @@ index 0000000..ebb2219
 +}
 diff --git a/src/llama-redgiant-attn.h b/src/llama-redgiant-attn.h
 new file mode 100644
-index 0000000..341b840
+index 0000000..912ab89
 --- /dev/null
 +++ b/src/llama-redgiant-attn.h
-@@ -0,0 +1,59 @@
+@@ -0,0 +1,106 @@
 +#pragma once
 +
 +// RedGiant (C.4, plan_contesto.md): attention over a key/value cache kept in RAM, computed by the processor with the
@@ -1067,6 +1557,9 @@ index 0000000..341b840
 +// attention, which reads the same cache once per query head and row by row (~8 GB/s on a Ryzen 9 9900X, 60 here).
 +
 +#include "ggml.h"
++
++#include <cmath>
++#include <cstdint>
 +
 +// Same inputs and result as ggml_flash_attn_ext with sinks:
 +//   q:     [D, n_batch, n_head, ne3] F32
@@ -1094,12 +1587,18 @@ index 0000000..341b840
 +    ggml_tensor * vrows;
 +    ggml_tensor * mask;
 +};
++// The mask either whole (`mask`, F16 per head) or, for a relative bias, from its parts read cell by cell: the input
++// mask `raw` [n_kv, n_batch] (F32 or F16), the distances `relpos` [n_kv, n_batch] I32 and the bias table `table`
++// [n_head, bins, n_batch] F32 (value = raw + table[h, relpos, t]): nothing of n_kv x n_batch x n_head is ever built.
 +llama_redgiant_cold llama_redgiant_attn_cold(
 +        ggml_context * ctx,
 +        ggml_tensor * q,
 +        ggml_tensor * k,
 +        ggml_tensor * v,
 +        ggml_tensor * mask,
++        ggml_tensor * raw,
++        ggml_tensor * relpos,
++        ggml_tensor * table,
 +        float scale,
 +        int64_t group,
 +        int64_t vpad);
@@ -1113,8 +1612,46 @@ index 0000000..341b840
 +    const ggml_tensor * k;
 +    const ggml_tensor * v;
 +    const ggml_tensor * mask;
++    const ggml_tensor * raw;     // with relpos and table: the mask from its parts
++    const ggml_tensor * relpos;
++    const ggml_tensor * table;
 +    float scale;
 +    int64_t c0, c1;   // cells of this chunk
 +    float * out;      // [n_tokens*ne3][n_head][D+2]: acc, m, l
 +};
 +bool llama_redgiant_attn_chunk_avx512(const llama_redgiant_attn_job & job);
++
++// One block of 32 values of a Q8_0 or Q4_0 cache row (C.4: the cold part at 4 bits reads half the bytes): its scale,
++// and the values as int8 (-128..127, or -8..7 for Q4_0).
++inline float llama_redgiant_block(const char * row, int b, bool q4, int8_t out[32]) {
++    if (q4) {
++        const char * p = row + b*18;  // block_q4_0: fp16 scale, 16 bytes: low nibbles values 0-15, high 16-31
++        for (int i = 0; i < 16; i++) {
++            const uint8_t x = (uint8_t) p[2 + i];
++            out[i]      = (int8_t) ((x & 0x0F) - 8);
++            out[i + 16] = (int8_t) ((x >> 4) - 8);
++        }
++        return ggml_fp16_to_fp32(*(const ggml_fp16_t *) p);
++    }
++    const char * p = row + b*34;  // block_q8_0: fp16 scale, 32 int8
++    for (int i = 0; i < 32; i++) out[i] = (int8_t) p[2 + i];
++    return ggml_fp16_to_fp32(*(const ggml_fp16_t *) p);
++}
++
++// The mask's value for a cell, a query row and a head: whole, from its parts, or none (0).
++inline float llama_redgiant_mask_at(const llama_redgiant_attn_job & j, int64_t c, int64_t t, int64_t h, int64_t s) {
++    if (j.mask) {
++        return ggml_fp16_to_fp32(*(const ggml_fp16_t *) ((const char *) j.mask->data + c*j.mask->nb[0] + t*j.mask->nb[1] +
++                                                         (h % j.mask->ne[2])*j.mask->nb[2] + (s % j.mask->ne[3])*j.mask->nb[3]));
++    }
++    if (j.raw) {
++        const char * rp = (const char *) j.raw->data + c*j.raw->nb[0] + t*j.raw->nb[1];
++        const float r = j.raw->type == GGML_TYPE_F16 ? ggml_fp16_to_fp32(*(const ggml_fp16_t *) rp) : *(const float *) rp;
++        if (r == -INFINITY) {
++            return r;
++        }
++        const int32_t d = *(const int32_t *) ((const char *) j.relpos->data + c*j.relpos->nb[0] + t*j.relpos->nb[1]);
++        return r + *(const float *) ((const char *) j.table->data + h*j.table->nb[0] + d*j.table->nb[1] + t*j.table->nb[2]);
++    }
++    return 0.0f;
++}
