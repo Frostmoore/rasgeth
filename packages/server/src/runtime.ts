@@ -12,6 +12,7 @@ import {
   AnthropicProvider,
   LOCAL_STALL,
   OpenAICompatProvider,
+  OpenAIResponsesProvider,
   type ProviderRegistry,
 } from "@redgiant/providers";
 import {
@@ -336,7 +337,9 @@ export function runtimeHooks(o: RuntimeOptions): SetupHooks {
         models = await p.models();
         o.providers.register(p);
       } else {
-        const p = new OpenAICompatProvider({
+        // OpenAI itself speaks the Responses API (function tools plus reasoning effort).
+        const Impl = id === "openai" ? OpenAIResponsesProvider : OpenAICompatProvider;
+        const p = new Impl({
           id,
           baseURL: entry.baseUrl ?? "",
           apiKey: key,

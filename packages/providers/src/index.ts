@@ -7,6 +7,7 @@ export * from "./fake.js";
 export * from "./fallback.js";
 export * from "./metrics.js";
 export * from "./openai-compat.js";
+export * from "./openai-responses.js";
 export * from "./pricing.js";
 export * from "./record.js";
 export * from "./sse.js";

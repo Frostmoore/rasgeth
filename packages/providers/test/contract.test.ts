@@ -3,6 +3,7 @@ import {
   AnthropicProvider,
   FakeProvider,
   OpenAICompatProvider,
+  OpenAIResponsesProvider,
   type Provider,
   ProviderError,
   type StreamEvent,
@@ -100,6 +101,38 @@ const setups: Record<string, (s: Scenario) => Provider> = {
           delayMs: s === "slow" ? 5 : 0,
           ...(signal && { signal }),
         });
+      }).fetch,
+    }),
+  openaiResponses: (s) =>
+    new OpenAIResponsesProvider({
+      id: "openai",
+      baseURL: "http://local.test/v1",
+      fetch: fakeFetch((_call, signal) => {
+        if (s === "overloaded") return new Response("busy", { status: 503 });
+        const done = {
+          data: { type: "response.completed", response: { status: "completed", usage: {} } },
+        };
+        if (s === "tool")
+          return sseResponse([
+            {
+              data: {
+                type: "response.output_item.done",
+                item: {
+                  type: "function_call",
+                  call_id: "call_1",
+                  name: TOOL.name,
+                  arguments: JSON.stringify(TOOL.input),
+                },
+              },
+            },
+            done,
+          ]);
+        const text = s === "slow" ? `${TEXT} `.repeat(50) : TEXT;
+        const words = text.match(/\S+\s*/g) ?? [];
+        return sseResponse(
+          [...words.map((w) => ({ data: { type: "response.output_text.delta", delta: w } })), done],
+          { delayMs: s === "slow" ? 5 : 0, ...(signal && { signal }) },
+        );
       }).fetch,
     }),
 };

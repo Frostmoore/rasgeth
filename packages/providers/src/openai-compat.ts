@@ -110,9 +110,9 @@ const STOP_REASONS: Record<string, StopReason> = {
 export class OpenAICompatProvider implements Provider {
   readonly id: string;
   readonly stall: StallLimits | undefined;
-  private readonly fetchImpl: typeof fetch;
+  protected readonly fetchImpl: typeof fetch;
 
-  constructor(private readonly options: OpenAICompatOptions) {
+  constructor(protected readonly options: OpenAICompatOptions) {
     this.id = options.id ?? "openai-compat";
     this.stall = options.stall;
     this.fetchImpl = options.fetch ?? globalThis.fetch;
@@ -397,7 +397,7 @@ function toWire(m: ChatMessage, replayReasoning: boolean): WireMessage[] {
 }
 
 /** Parsed arguments, or `undefined` when the model produced invalid JSON (repaired later). */
-function parseArgs(raw: string): unknown {
+export function parseArgs(raw: string): unknown {
   if (raw.trim() === "") return {};
   try {
     return JSON.parse(raw);
