@@ -4,10 +4,12 @@
 import 'general_types.dart';
 
 /// The release whose news the page shows last (WhatsNew.tsx's NEWS_VERSION).
-const newsVersion = '3.12.10';
+const newsVersion = '3.13.0';
 
 /// Every item, in the page's order (newest release first).
 const newsRows = <NewsRow>[
+  NewsRow('3.13.0', 'news3130LongContext', 'news3130LongContextText'),
+  NewsRow('3.13.0', 'news3130OpenAI', 'news3130OpenAIText'),
   NewsRow('3.12.10', 'news31210Models', 'news31210ModelsText'),
   NewsRow('3.12.10', 'news31210Context', 'news31210ContextText'),
   NewsRow('3.12.10', 'news31210Repo', 'news31210RepoText'),
@@ -485,6 +487,10 @@ const generalWords = <String, Map<String, String>>{
     'news3128ProjectsText': 'Impostazioni › Importa ora trova i progetti che Claude Code conosce su questo computer, oppure li clona da un indirizzo di repository che incolli. Ognuno arriva intero: la cartella lasciata dov\'è, copiata o clonata; il suo CLAUDE.md come istruzioni dell\'orchestratore; le note e la memoria di Claude nella Conoscenza. I file segreti restano fuori, e le righe legate al vecchio computer sono segnate perché l\'orchestratore le adatti con te. Ogni importazione si annulla.',
     'news3128Working': 'Vedi sempre quando un agente lavora',
     'news3128WorkingText': 'Mentre un agente lavora senza scrivere (legge, aspetta uno strumento), una riga in fondo alla conversazione lo dice, con i secondi e lo strumento che usa. Nell\'app la conversazione scorre fluida mentre l\'agente scrive, e il pulsante per fermarlo è uno solo. Le anteprime impaginate dei documenti tornano a funzionare su Linux quando il sito solito di LibreOffice non risponde.',
+    'news3130LongContext': 'Contesto lungo per i modelli locali',
+    'news3130LongContextText': 'Nella scheda di un modello locale c\'è un nuovo miglioramento, Contesto lungo: la memoria della conversazione degli strati che guardano tutto sta nella RAM, e il modello resta intero nella scheda video. I modelli con strati a finestra (Inkling 2 Mini, Gemma 4) possono prenotare un contesto fino a un milione di token senza rallentare: su una RTX 4080 SUPER Inkling scrive a circa 50 token al secondo con 1M prenotato, contro circa 8 di prima, e continua a lavorare su conversazioni da 100k token e oltre. Solo schede NVIDIA; usa il motore di Rasgeth, scaricato la prima volta.',
+    'news3130OpenAI': 'I modelli nuovi di OpenAI funzionano con gli strumenti',
+    'news3130OpenAIText': 'Rasgeth ora parla con OpenAI attraverso la sua interfaccia più nuova: modelli come gpt-6.2-astra non rifiutano più gli strumenti insieme al ragionamento, e il loro ragionamento passa da un turno all\'altro.',
     'news321Linux': 'Strato dopo in anticipo anche su Linux',
     'news321LinuxText': 'L\'interruttore sperimentale «Strato dopo in anticipo» di SSD stream ora funziona anche su Linux con una scheda NVIDIA, con un\'immagine del motore tutta sua scaricata solo quando lo accendi.',
     'news321Settings': 'Le Impostazioni nello stile della configurazione',
@@ -874,6 +880,10 @@ const generalWords = <String, Map<String, String>>{
     'news3128ProjectsText': 'Settings › Import now finds the projects Claude Code knows on this computer, or clones them from a repository address you paste. Each comes whole: its folder left where it is, copied or cloned; its CLAUDE.md as the orchestrator\'s instructions; its notes and Claude\'s memory in the Knowledge. Secret files stay out, and the lines tied to the old computer are marked for the orchestrator to adapt with you. Every import can be undone.',
     'news3128Working': 'You always see when an agent works',
     'news3128WorkingText': 'While an agent works without writing (reading, waiting for a tool), a line at the bottom of the conversation says so, with the seconds and the tool it uses. In the app the conversation scrolls smoothly while an agent writes, and the stop button is only one. Paged previews of documents work again on Linux when LibreOffice\'s usual site fails.',
+    'news3130LongContext': 'Long context for local models',
+    'news3130LongContextText': 'A new improvement on a local model\'s card, Long context: the conversation\'s memory of the layers that see everything stays in RAM, and the model stays whole in the graphics card. Models with sliding-window layers (Inkling 2 Mini, Gemma 4) can book a context of up to a million tokens without slowing down: on an RTX 4080 SUPER Inkling writes at about 50 tokens a second with 1M booked, against about 8 before, and keeps working on conversations of 100k tokens and more. NVIDIA cards only; it uses Rasgeth\'s own engine, downloaded the first time.',
+    'news3130OpenAI': 'OpenAI\'s newest models work with tools',
+    'news3130OpenAIText': 'Rasgeth now talks to OpenAI through its newer interface: models like gpt-6.2-astra no longer refuse tools together with reasoning, and their reasoning is carried from one turn to the next.',
     'news321Linux': 'Next layer ahead on Linux too',
     'news321LinuxText': 'The experimental «Next layer ahead» switch of SSD stream now works on Linux with an NVIDIA card too, with an engine image of its own downloaded only when you turn it on.',
     'news321Settings': 'Settings in the setup\'s style',

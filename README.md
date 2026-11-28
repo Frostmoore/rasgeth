@@ -429,6 +429,9 @@ Rasgeth is in pre-alpha. What comes next, in order:
 - **3.12.10 — Faster local models**: no full history in sliding-window layers, context checkpoints, a context bar
   and processor threads on each model's card, our recommended engine where we measured one; Inkling 2 Mini with
   pictures; agents see their project's git remotes.
+- **3.13.0 — Long context**: local models with sliding-window layers book up to a million tokens with the model kept
+  in the graphics card (the conversation's memory in RAM, its recent part in the card, our own attention on the
+  processor); OpenAI through its Responses API.
 - **4.0 — Alpha**: documentation, security and privacy pages, and a stability round on everything.
 - **Then** the beta (community, documentation site) and the production release.
 

@@ -2653,6 +2653,12 @@ const en = {
   renameText:
     "Only the name changes: your projects, conversations, agents and keys stay as they are. Say it «RAHS-get», with a hard g.",
   renameOk: "Got it",
+  news3130LongContext: "Long context for local models",
+  news3130LongContextText:
+    "A new improvement on a local model's card, Long context: the conversation's memory of the layers that see everything stays in RAM, and the model stays whole in the graphics card. Models with sliding-window layers (Inkling 2 Mini, Gemma 4) can book a context of up to a million tokens without slowing down: on an RTX 4080 SUPER Inkling writes at about 50 tokens a second with 1M booked, against about 8 before, and keeps working on conversations of 100k tokens and more. NVIDIA cards only; it uses Rasgeth's own engine, downloaded the first time.",
+  news3130OpenAI: "OpenAI's newest models work with tools",
+  news3130OpenAIText:
+    "Rasgeth now talks to OpenAI through its newer interface: models like gpt-6.2-astra no longer refuse tools together with reasoning, and their reasoning is carried from one turn to the next.",
   news31210Models: "Local models: much faster, and they read pictures",
   news31210ModelsText:
     "Local engines no longer keep the whole conversation in every layer of models that look only at the latest words (Gemma, Inkling): on a 16 GB card Gemma 4 writes three times faster, Qwen 3.6 about half again, and the following turns of a conversation start again from the cache in a fraction of a second. Inkling 2 Mini joins the catalog: it reads pictures too, and its image part comes down with the model.",
@@ -11423,6 +11429,12 @@ const it: Record<Key, string> = {
   renameText:
     "Cambia solo il nome: progetti, conversazioni, agenti e chiavi restano come sono. Si legge «ràs-ghet», con la g dura.",
   renameOk: "Ho capito",
+  news3130LongContext: "Contesto lungo per i modelli locali",
+  news3130LongContextText:
+    "Nella scheda di un modello locale c'è un nuovo miglioramento, Contesto lungo: la memoria della conversazione degli strati che guardano tutto sta nella RAM, e il modello resta intero nella scheda video. I modelli con strati a finestra (Inkling 2 Mini, Gemma 4) possono prenotare un contesto fino a un milione di token senza rallentare: su una RTX 4080 SUPER Inkling scrive a circa 50 token al secondo con 1M prenotato, contro circa 8 di prima, e continua a lavorare su conversazioni da 100k token e oltre. Solo schede NVIDIA; usa il motore di Rasgeth, scaricato la prima volta.",
+  news3130OpenAI: "I modelli nuovi di OpenAI funzionano con gli strumenti",
+  news3130OpenAIText:
+    "Rasgeth ora parla con OpenAI attraverso la sua interfaccia più nuova: modelli come gpt-6.2-astra non rifiutano più gli strumenti insieme al ragionamento, e il loro ragionamento passa da un turno all'altro.",
   news31210Models: "Modelli locali: molto più veloci, e leggono le immagini",
   news31210ModelsText:
     "I motori locali non tengono più tutta la conversazione in ogni strato dei modelli che guardano solo le ultime parole (Gemma, Inkling): su una scheda da 16 GB Gemma 4 scrive tre volte più veloce, Qwen 3.6 una volta e mezza, e i turni successivi di una conversazione ripartono dalla cache in una frazione di secondo. Nel catalogo arriva Inkling 2 Mini: legge anche le immagini, e la parte che le legge si scarica con il modello.",
