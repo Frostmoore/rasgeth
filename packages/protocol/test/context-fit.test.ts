@@ -2,7 +2,12 @@
 // an RTX 4080 SUPER (16 GiB) on 2026-11-27 (plan_contesto.md): fitting configurations wrote at ~50 t/s, the others
 // had part of the model moved to the processor (10-20 t/s) or stalled.
 import { describe, expect, it } from "vitest";
-import { type ContextFitInput, contextInCard, contextNeedGb } from "../src/context-fit.js";
+import {
+  type ContextFitInput,
+  contextInCard,
+  contextNeedGb,
+  hotCells,
+} from "../src/context-fit.js";
 
 const inkling = (o: Partial<ContextFitInput>): ContextFitInput => ({
   fileGb: 10.86,
@@ -80,5 +85,34 @@ describe("context in the card (3.12.10)", () => {
     );
     expect(n).toBeGreaterThanOrEqual(65536);
     expect(n).toBeLessThan(131072);
+  });
+});
+
+describe("cells kept in the card with the long context (C.4 tappa C)", () => {
+  const rig = { fileGb: 10.86, vramGb: 15.99, marginGb: 2.5, kvGrowBytesPerToken: 32768 };
+  it.each([
+    // [what, input, booked context, at least, at most]
+    [
+      "Rig, Inkling, 1M booked: about 32-40k (32k measured with the margin free, 64k was too many)",
+      rig,
+      1048576,
+      32768,
+      40960,
+    ],
+    ["the booked context is smaller: all of it", rig, 16384, 16384, 16384],
+    [
+      "a 24 GB card on Linux: much more",
+      { ...rig, vramGb: 24, marginGb: 1 },
+      1048576,
+      500000,
+      700000,
+    ],
+    ["the model alone fills the card: none", { ...rig, vramGb: 12 }, 1048576, 0, 0],
+    ["no growing layers: none", { ...rig, kvGrowBytesPerToken: 0 }, 1048576, 0, 0],
+  ] as const)("%s", (_w, input, ctx, lo, hi) => {
+    const n = hotCells(input, ctx);
+    expect(n).toBeGreaterThanOrEqual(lo);
+    expect(n).toBeLessThanOrEqual(hi);
+    expect(n % 256).toBe(0);
   });
 });

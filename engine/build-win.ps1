@@ -53,7 +53,7 @@ Copy-Item "$env:CUDA_DIR/bin/cudart64_12.dll", "$env:CUDA_DIR/bin/cublas64_12.dl
 # The Visual C++ runtime and OpenMP, so it runs where they are not installed.
 $redist = Get-ChildItem "$env:VCToolsRedistDir/x64" -Directory | Where-Object { $_.Name -like "Microsoft.VC*.CRT" -or $_.Name -like "Microsoft.VC*.OpenMP" }
 foreach ($d in $redist) { Copy-Item "$($d.FullName)/*.dll" $out }
-Set-Content "$out/build.txt" "$env:LLAMA_BUILD + Rasgeth patches (0001 teal, 0002 moe-prefetch), CUDA $env:CUDA_VERSION, $env:CUDA_ARCHS"
+Set-Content "$out/build.txt" "$env:LLAMA_BUILD + Rasgeth patches (0001 teal, 0002 moe-prefetch, 0003 kv-host), CUDA $env:CUDA_VERSION, $env:CUDA_ARCHS"
 foreach ($f in "llama-server.exe", "llama.dll", "ggml.dll", "ggml-base.dll", "ggml-cuda.dll", "cudart64_12.dll", "cublas64_12.dll", "cublasLt64_12.dll") {
   if (-not (Test-Path "$out/$f")) { throw "$f is missing" }
 }

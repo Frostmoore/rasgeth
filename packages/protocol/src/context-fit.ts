@@ -57,3 +57,25 @@ export function contextInCard(i: ContextFitInput, max: number): number {
     if (contextNeedGb(i, ctx) <= room) return ctx;
   return 0;
 }
+
+/**
+ * RedGiant's long context (C.4, plan_contesto.md, engine patch 0003): the full-context layers keep their cache in RAM
+ * and the card a copy of their first cells; up to there the card attends at full speed, past it the processor reads
+ * the rest. How many cells the card keeps: what is left after the model, the engine and the margin, at 8 bits with
+ * q8_0's scales (34 bytes for 32). Measured on Rig (RTX 4080 SUPER, Windows, Inkling 2 Mini UD-IQ3_XXS): 32 768 cells
+ * took the card to 13.4 GB with the margin free, 65 536 to 15.6 GB and Windows started moving memory out.
+ */
+export function hotCells(
+  i: { fileGb: number; vramGb: number; marginGb: number; kvGrowBytesPerToken: number },
+  ctx: number,
+): number {
+  if (i.kvGrowBytesPerToken <= 0) return 0;
+  const perCell = (i.kvGrowBytesPerToken / 2) * (34 / 32);
+  // The engine beyond the model: its scratch, the sliding-window layers' cache, CUDA's own (measured ~2 GiB).
+  const room = i.vramGb - i.marginGb - i.fileGb - HOT_OVERHEAD_GB;
+  if (room <= 0) return 0;
+  const cells = Math.floor((room * GIB) / perCell / 256) * 256;
+  return Math.max(0, Math.min(cells, Math.floor(ctx / 256) * 256));
+}
+
+const HOT_OVERHEAD_GB = 2;

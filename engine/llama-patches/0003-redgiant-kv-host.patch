@@ -1,0 +1,1120 @@
+diff --git a/ggml/src/ggml-backend.cpp b/ggml/src/ggml-backend.cpp
+index 8e17564..5136c00 100644
+--- a/ggml/src/ggml-backend.cpp
++++ b/ggml/src/ggml-backend.cpp
+@@ -2431,7 +2431,9 @@ void ggml_backend_sched_reserve_size(ggml_backend_sched_t sched, struct ggml_cgr
+     GGML_ASSERT((int)sched->hash_set.size >= measure_graph->n_nodes + measure_graph->n_leafs);
+     GGML_ASSERT(sizes);
+ 
+-    ggml_backend_sched_reset(sched);
++    // RedGiant (C.4): no reset here, as in ggml_backend_sched_reserve: the caller resets before building the graph, and
++    // a reset now dropped the backends set on its nodes (ggml_backend_sched_set_tensor_backend), so the memory fit's
++    // dry run counted in the card what the real run puts in RAM (12.7 GB against a few hundred MB at 1M tokens)
+ 
+     ggml_backend_sched_synchronize(sched);
+ 
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index e541626..8bdcfc5 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -19,6 +19,8 @@ set(LLAMA_CORE_SOURCES
+     llama-grammar.cpp
+     llama-graph.cpp
+     llama-teal.cpp
++    llama-redgiant-attn.cpp
++    llama-redgiant-attn-avx512.cpp
+     llama-hparams.cpp
+     llama-impl.cpp
+     llama-io.cpp
+@@ -79,3 +81,14 @@ if (BUILD_SHARED_LIBS)
+     target_compile_definitions(llama PRIVATE LLAMA_BUILD)
+     target_compile_definitions(llama PUBLIC  LLAMA_SHARED)
+ endif()
++
++# RedGiant (C.4): the fast attention over a cache in RAM is built with AVX-512 and called only where the processor has
++# AVX-512 VNNI (checked at run time); the rest of the library keeps its own flags.
++if (CMAKE_SYSTEM_PROCESSOR MATCHES "AMD64|x86_64|x86|i686")
++    if (MSVC)
++        set_source_files_properties(llama-redgiant-attn-avx512.cpp PROPERTIES COMPILE_OPTIONS "/arch:AVX512")
++    else()
++        set_source_files_properties(llama-redgiant-attn-avx512.cpp PROPERTIES COMPILE_OPTIONS
++            "-mavx512f;-mavx512bw;-mavx512vl;-mavx512dq;-mavx512vnni;-mf16c;-mfma")
++    endif()
++endif()
+diff --git a/src/llama-graph.cpp b/src/llama-graph.cpp
+index 19efbca..9ad1296 100644
+--- a/src/llama-graph.cpp
++++ b/src/llama-graph.cpp
+@@ -17,6 +17,7 @@
+ #include "llama-memory-hybrid.h"
+ #include "llama-memory-hybrid-iswa.h"
+ #include "llama-memory-recurrent.h"
++#include "llama-redgiant-attn.h"
+ 
+ #include <cassert>
+ #include <cmath>
+@@ -842,6 +843,14 @@ bool llm_graph_input_attn_k_dsa_iswa::can_reuse(const llm_graph_params & params)
+ }
+ 
+ void llm_graph_input_attn_kv_iswa::set_input(const llama_ubatch * ubatch) {
++    // RedGiant (C.4 tappa C): the card's copy (brought up to date with the RAM first) and the processor's rows
++    if (rg_idxs_hot && rg_idxs_hot->buffer) {
++        mctx->get_base()->rg_set_input_hot_idxs(rg_idxs_hot, ubatch);
++    }
++    if (rg_idxs_virt && rg_idxs_virt->buffer) {
++        mctx->get_base()->rg_set_input_virt_idxs(rg_idxs_virt);
++    }
++
+     // base tensors may not be allocated if there are no non-SWA attention layers
+     if (self_k_idxs && self_k_idxs->buffer) {
+         mctx->get_base()->set_input_k_idxs(self_k_idxs, ubatch);
+@@ -1437,6 +1446,14 @@ bool llm_graph_input_mem_hybrid_iswa::can_reuse(const llm_graph_params & params)
+ void llm_graph_input_mem_hybrid_iswa_rel::set_input(const llama_ubatch * ubatch) {
+     const auto * attn_ctx = mctx->get_attn();
+ 
++    // RedGiant (C.4 tappa C): the card's copy (brought up to date with the RAM first) and the processor's rows
++    if (inp_attn->rg_idxs_hot && inp_attn->rg_idxs_hot->buffer) {
++        attn_ctx->get_base()->rg_set_input_hot_idxs(inp_attn->rg_idxs_hot, ubatch);
++    }
++    if (inp_attn->rg_idxs_virt && inp_attn->rg_idxs_virt->buffer) {
++        attn_ctx->get_base()->rg_set_input_virt_idxs(inp_attn->rg_idxs_virt);
++    }
++
+     // base tensors may not be allocated if there are no non-SWA attention layers
+     if (inp_attn->self_k_idxs && inp_attn->self_k_idxs->buffer) {
+         attn_ctx->get_base()->set_input_k_idxs(inp_attn->self_k_idxs, ubatch);
+@@ -3208,19 +3225,42 @@ ggml_tensor * llm_graph_context::build_attn_mha(
+             v = ggml_cast(ctx0, v, GGML_TYPE_F16);
+         }
+ 
+-        if (kv_rows) {
+-            cur = ggml_flash_attn_ext_rows(ctx0, q, k, v, kq_mask, kv_rows, kq_scale, hparams.f_max_alibi_bias,
+-                                           hparams.attn_soft_cap ? hparams.f_attn_logit_softcapping : 0.0f);
+-        } else {
+-            cur = ggml_flash_attn_ext(ctx0, q, k, v, kq_mask, kq_scale, hparams.f_max_alibi_bias,
+-                                      hparams.attn_soft_cap ? hparams.f_attn_logit_softcapping : 0.0f);
++        // RedGiant (C.4, LLAMA_KV_FULL_HOST): a cache kept in RAM is read where it is, by the processor. Decided by the
++        // switch and the layer, not by the cache's buffer: the memory fit (--fit) builds the graph before the cache has
++        // one, and must place this attention where the real run will. "2": our attention for it, which reads the cache
++        // once and in order (llama-redgiant-attn.cpp); "1": ggml's flash attention on the processor.
++        const char * rg_host  = getenv("LLAMA_KV_FULL_HOST");
++        const ggml_tensor * k_root = k;
++        while (k_root->view_src) {
++            k_root = k_root->view_src;
+         }
+-        res->add_fused_node({kv_rows ? LLM_FUSED_OP_FLASH_ATTN_KV_ROWS : LLM_FUSED_OP_FLASH_ATTN, cur, il});
++        // the card's copy (tappa C) is read by the card
++        const bool   rg_hot   = strstr(k_root->name, "_hot_") != nullptr;
++        const bool   rg_layer = rg_host != nullptr && !rg_hot && il >= 0 && hparams.swa_type != LLAMA_SWA_TYPE_NONE &&
++                                !hparams.is_swa(il);
++        const float  softcap  = hparams.attn_soft_cap ? hparams.f_attn_logit_softcapping : 0.0f;
++
++        if (rg_layer && rg_host[0] == '2' && !kv_rows && !v_mla &&
++            llama_redgiant_attn_supported(k, v, hparams.f_max_alibi_bias, softcap)) {
++            cur = llama_redgiant_attn_cpu(ctx0, q, k, v, kq_mask, sinks, kq_scale);
++            cb(cur, "redgiant_attn", il);
++        } else {
++            if (kv_rows) {
++                cur = ggml_flash_attn_ext_rows(ctx0, q, k, v, kq_mask, kv_rows, kq_scale, hparams.f_max_alibi_bias, softcap);
++            } else {
++                cur = ggml_flash_attn_ext(ctx0, q, k, v, kq_mask, kq_scale, hparams.f_max_alibi_bias, softcap);
++            }
++            res->add_fused_node({kv_rows ? LLM_FUSED_OP_FLASH_ATTN_KV_ROWS : LLM_FUSED_OP_FLASH_ATTN, cur, il});
+ 
+-        ggml_flash_attn_ext_add_sinks(cur, sinks);
+-        GGML_ASSERT(n_kv_max >= 0 && n_kv_max <= INT32_MAX);
+-        ggml_flash_attn_ext_set_n_kv_max(cur, static_cast<int32_t>(n_kv_max));
+-        ggml_prec_set_acc(cur, GGML_PREC_F32);
++            ggml_flash_attn_ext_add_sinks(cur, sinks);
++
++            if (rg_layer) {
++                ggml_backend_sched_set_tensor_backend(sched, cur, backend_cpu);
++            }
++            GGML_ASSERT(n_kv_max >= 0 && n_kv_max <= INT32_MAX);
++            ggml_flash_attn_ext_set_n_kv_max(cur, static_cast<int32_t>(n_kv_max));
++            ggml_prec_set_acc(cur, GGML_PREC_F32);
++        }
+ 
+         if (v_mla) {
+ #if 0
+@@ -3816,6 +3856,40 @@ static ggml_tensor * build_attn_iswa_impl(
+     ggml_tensor * k = use_kv_cur ? k_cur : mctx_cur->get_k(ctx0, il);
+     ggml_tensor * v = use_kv_cur ? v_cur : mctx_cur->get_v(ctx0, il);
+ 
++    // RedGiant (C.4 tappa C): the cache is in RAM and its first cells in the card too. The batch goes to both; the card
++    // attends to its cells, and past them the processor attends to the rest and hands its result to the card as rows.
++    if (!is_swa && !use_kv_cur && store_kv && k_cur && v_cur && inp->rg_idxs_hot && mctx_cur->rg_has_hot(il) &&
++        kq_b == nullptr && kv_rows == nullptr && v_mla == nullptr && kq_mask != nullptr) {
++        ggml_build_forward_expand(gf, mctx_cur->rg_cpy_hot(ctx0, k_cur, inp->rg_idxs_hot, il, false));
++        ggml_build_forward_expand(gf, mctx_cur->rg_cpy_hot(ctx0, v_cur, inp->rg_idxs_hot, il, true));
++
++        const int64_t hot  = mctx_cur->rg_hot_cells();
++        const int64_t n_kv = k->ne[2];
++        if (n_kv <= hot) {
++            k = mctx_cur->rg_get_hot(ctx0, il, n_kv, false);
++            v = mctx_cur->rg_get_hot(ctx0, il, n_kv, true);
++        } else {
++            const int64_t group = inp->rg_group;
++            const int64_t n_tok = q->ne[2];
++            const int64_t vpad  = GGML_PAD(group*n_tok, 256);
++            ggml_tensor * kc = ggml_permute(ctx0, mctx_cur->rg_get_cold(ctx0, il, false), 0, 2, 1, 3);
++            ggml_tensor * vc = ggml_permute(ctx0, mctx_cur->rg_get_cold(ctx0, il, true),  0, 2, 1, 3);
++            ggml_tensor * mc = ggml_view_4d(ctx0, kq_mask, n_kv - hot, kq_mask->ne[1], kq_mask->ne[2], kq_mask->ne[3],
++                                            kq_mask->nb[1], kq_mask->nb[2], kq_mask->nb[3], hot*ggml_element_size(kq_mask));
++            const auto cold = llama_redgiant_attn_cold(ctx0, ggml_permute(ctx0, q, 0, 2, 1, 3), kc, vc, mc, kq_scale, group, vpad);
++            ggml_build_forward_expand(gf, mctx_cur->rg_cpy_virt(ctx0, cold.vrows, inp->rg_idxs_virt, il));
++            ggml_tensor * mh = ggml_cont(ctx0, ggml_view_4d(ctx0, kq_mask, hot, kq_mask->ne[1], kq_mask->ne[2], kq_mask->ne[3],
++                                                            kq_mask->nb[1], kq_mask->nb[2], kq_mask->nb[3], 0));
++            // cut and joined where the whole mask is, in RAM: only the card's part travels to the card (in the card
++            // the copy of the whole mask took 2 GB at 1M)
++            ggml_backend_sched_set_tensor_backend(gctx.sched, mh, gctx.backend_cpu);
++            kq_mask = ggml_concat(ctx0, mh, cold.mask, 0);
++            ggml_backend_sched_set_tensor_backend(gctx.sched, kq_mask, gctx.backend_cpu);
++            k = mctx_cur->rg_get_hot(ctx0, il, hot + vpad, false);
++            v = mctx_cur->rg_get_hot(ctx0, il, hot + vpad, true);
++        }
++    }
++
+     ggml_tensor * cur = gctx.build_attn_mha(q, k, v, kq_b, kq_mask, kv_rows, sinks, v_mla, 0, kq_scale, il);
+     cur = build_attn_scale_kv_output(ctx0, mctx_cur, cur, il);
+     gctx.cb(cur, "kqv_out", il);
+@@ -4067,6 +4141,27 @@ llm_graph_input_attn_kv_msa * llm_graph_context::build_attn_inp_kv_msa(bool msa_
+ // TODO: maybe separate the inner implementation into a separate function
+ //       like with the non-sliding window equivalent
+ //       once sliding-window hybrid caches are a thing.
++// RedGiant (C.4 tappa C): the inputs of the card's copy, when the base cache keeps one
++static void rg_build_inputs(ggml_context * ctx0, llm_graph_input_attn_kv_iswa * inp, const llama_kv_cache_context * base,
++                            const llama_ubatch & ubatch, const llama_hparams & hparams) {
++    if (base->rg_hot_cells() == 0) {
++        return;
++    }
++    for (uint32_t il = 0; il < hparams.n_layer(); ++il) {
++        if (!hparams.is_swa(il) && hparams.n_head_kv(il) > 0) {
++            inp->rg_group = hparams.n_head(il)/hparams.n_head_kv(il);
++            break;
++        }
++    }
++    GGML_ASSERT(inp->rg_group > 0 && inp->rg_group*ubatch.n_tokens <= llama_kv_cache::RG_VIRT);
++    inp->rg_idxs_hot = ggml_new_tensor_1d(ctx0, GGML_TYPE_I64, ubatch.n_tokens);
++    ggml_set_input(inp->rg_idxs_hot);
++    ggml_set_name(inp->rg_idxs_hot, "rg_inp_idxs_hot");
++    inp->rg_idxs_virt = ggml_new_tensor_1d(ctx0, GGML_TYPE_I64, inp->rg_group*ubatch.n_tokens);
++    ggml_set_input(inp->rg_idxs_virt);
++    ggml_set_name(inp->rg_idxs_virt, "rg_inp_idxs_virt");
++}
++
+ llm_graph_input_attn_kv_iswa * llm_graph_context::build_attn_inp_kv_iswa() const {
+     const auto * mctx_cur = static_cast<const llama_kv_cache_iswa_context *>(mctx);
+ 
+@@ -4077,6 +4172,8 @@ llm_graph_input_attn_kv_iswa * llm_graph_context::build_attn_inp_kv_iswa() const
+         inp->self_v_idxs = mctx_cur->get_base()->build_input_v_idxs(ctx0, ubatch);
+ 
+         inp->self_attn_mask = build_attn_inp_attn_mask(ctx0, mctx_cur->get_base(), ubatch, cparams);
++
++        rg_build_inputs(ctx0, inp.get(), mctx_cur->get_base(), ubatch, hparams);
+     }
+ 
+     {
+@@ -4443,6 +4540,8 @@ llm_graph_input_mem_hybrid_iswa_rel * llm_graph_context::build_inp_mem_hybrid_is
+         inp_attn->self_v_idxs = attn_ctx->get_base()->build_input_v_idxs(ctx0, ubatch);
+ 
+         inp_attn->self_attn_mask.raw = build_attn_inp_kq_mask(ctx0, attn_ctx->get_base(), ubatch, cparams);
++
++        rg_build_inputs(ctx0, inp_attn.get(), attn_ctx->get_base(), ubatch, hparams);
+     }
+ 
+     {
+@@ -4499,8 +4598,27 @@ ggml_tensor * llm_graph_context::build_attn(
+         kq_mask = ggml_cast(ctx0, kq_mask, GGML_TYPE_F32);
+     }
+     kq_mask = ggml_add(ctx0, kq_b, kq_mask);
++    // RedGiant (C.4, LLAMA_KV_FULL_HOST): the full-context layers' attention runs on the processor, so their per-head
++    // mask (n_kv x tokens x heads, the biggest scratch of the graph: 4.8 GB at 512k with 64-token passes) is built in
++    // RAM too; in the card it pushed the model out again.
++    const bool mask_on_cpu = !is_swa && getenv("LLAMA_KV_FULL_HOST") != nullptr;
++    if (mask_on_cpu) {
++        ggml_tensor * gathered = kq_b;
++        // kq_b = cont(permute(reshape(get_rows(table, rel_pos)))): the two that hold data, on the processor
++        while (gathered->view_src || gathered->op == GGML_OP_CONT) {
++            if (!gathered->view_src) {
++                ggml_backend_sched_set_tensor_backend(sched, gathered, backend_cpu);
++            }
++            gathered = gathered->view_src ? gathered->view_src : gathered->src[0];
++        }
++        ggml_backend_sched_set_tensor_backend(sched, gathered, backend_cpu);
++        ggml_backend_sched_set_tensor_backend(sched, kq_mask, backend_cpu);
++    }
+     if (cparams.flash_attn) {
+         kq_mask = ggml_cast(ctx0, kq_mask, GGML_TYPE_F16);
++        if (mask_on_cpu) {
++            ggml_backend_sched_set_tensor_backend(sched, kq_mask, backend_cpu);
++        }
+     }
+     cb(kq_mask, "kq_mask_rel_pos", il);
+ 
+diff --git a/src/llama-graph.h b/src/llama-graph.h
+index ff155f1..70f801e 100644
+--- a/src/llama-graph.h
++++ b/src/llama-graph.h
+@@ -565,6 +565,11 @@ public:
+     ggml_tensor * self_k_idxs_swa = nullptr; // I64 [n_batch]
+     ggml_tensor * self_v_idxs_swa = nullptr; // I64 [n_batch] or [n_batch*n_embd_v_gqa]
+ 
++    // RedGiant (C.4 tappa C): where the batch goes in the card's copy, and the processor's rows
++    ggml_tensor * rg_idxs_hot  = nullptr; // I64 [n_batch]
++    ggml_tensor * rg_idxs_virt = nullptr; // I64 [group*n_batch]
++    int64_t       rg_group     = 0;
++
+     llm_attn_mask self_attn_mask;
+     llm_attn_mask self_attn_mask_swa;
+ 
+diff --git a/src/llama-kv-cache.cpp b/src/llama-kv-cache.cpp
+index bb546f7..353bd3f 100644
+--- a/src/llama-kv-cache.cpp
++++ b/src/llama-kv-cache.cpp
+@@ -213,7 +213,20 @@ llama_kv_cache::llama_kv_cache(
+ 
+         ggml_backend_buffer_type_t buft = ggml_backend_cpu_buffer_type();
+ 
+-        if (offload) {
++        // RedGiant (C.4, LLAMA_KV_FULL_HOST): in a model with sliding-window layers, the full-context layers keep their
++        // cache in pinned RAM and their attention runs on the processor; the model and the window layers stay in the
++        // card. A long context booked costs RAM instead of pushing the model out of the card, and only the cells in
++        // use are read.
++        const bool full_host = offload && swa_type == LLAMA_SWA_TYPE_NONE &&
++                               hparams.swa_type != LLAMA_SWA_TYPE_NONE && getenv("LLAMA_KV_FULL_HOST") != nullptr;
++
++        if (full_host) {
++            auto * dev  = model.dev_layer(il);
++            auto * host = ggml_backend_dev_host_buffer_type(dev);
++            buft = host ? host : ggml_backend_cpu_buffer_type();
++
++            dev_name = "CPU (LLAMA_KV_FULL_HOST)";
++        } else if (offload) {
+             auto * dev = model.dev_layer(il);
+             buft = ggml_backend_dev_buffer_type(dev);
+ 
+@@ -247,6 +260,28 @@ llama_kv_cache::llama_kv_cache(
+         map_layer_ids[il] = layers.size();
+ 
+         layers.push_back({ il, k, v, model.layers[il].k_cache_s, model.layers[il].v_cache_s, k_stream, v_stream, });
++
++        // RedGiant (C.4 tappa C): the card's copy of the first cells of a full-context layer kept in RAM
++        const char * hot_env = getenv("LLAMA_KV_HOT_CELLS");
++        const char * fh_env  = getenv("LLAMA_KV_FULL_HOST");
++        // only where the processor's attention can take the cold part: Q8_0 keys and values, heads of 128
++        const bool rg_fits = type_k == GGML_TYPE_Q8_0 && type_v == GGML_TYPE_Q8_0 &&
++                             hparams.n_embd_head_k(il) == 128 && hparams.n_embd_head_v(il) == 128;
++        if (full_host && rg_fits && hot_env && fh_env && fh_env[0] == '2' && n_stream == 1 && !v_trans && has_k && has_v) {
++            const uint32_t want = (uint32_t) std::min<long long>(atoll(hot_env), (long long) kv_size);
++            const uint32_t hot  = want/256*256;
++            if (hot > 0) {
++                auto * dev = model.dev_layer(il);
++                ggml_context * hctx = ctx_for_buft(ggml_backend_dev_buffer_type(dev));
++                auto & ly = layers.back();
++                ly.k_hot = ggml_new_tensor_2d(hctx, type_k, n_embd_k_gqa, hot + RG_VIRT + 1);
++                ly.v_hot = ggml_new_tensor_2d(hctx, type_v, n_embd_v_gqa, hot + RG_VIRT + 1);
++                ggml_format_name(ly.k_hot, "cache_%sk_hot_l%d", name_tag, il);
++                ggml_format_name(ly.v_hot, "cache_%sv_hot_l%d", name_tag, il);
++                rg_hot = hot;
++                LLAMA_LOG_INFO("%s: layer %3d: %u cells also in %s (LLAMA_KV_HOT_CELLS)\n", __func__, il, hot, ggml_backend_dev_name(dev));
++            }
++        }
+     }
+ 
+     if (reuse) {
+@@ -854,6 +889,11 @@ bool llama_kv_cache::update(llama_context * lctx, bool do_shift, const stream_co
+         return true;
+     }
+ 
++    // RedGiant (C.4 tappa C): a shift or a copy changes the RAM's cells: the card's copy follows before the next batch
++    if (do_shift || !sc_info.empty()) {
++        rg_dirty = true;
++    }
++
+     bool updated = false;
+ 
+     auto * sched = lctx->get_sched();
+@@ -2694,6 +2734,9 @@ bool llama_kv_cache::state_read_meta(llama_io_read_i & io, uint32_t strm, uint32
+ bool llama_kv_cache::state_read_data(llama_io_read_i & io, uint32_t strm, uint32_t cell_count, const slot_info & sinfo) {
+     auto & cells = v_cells[strm];
+ 
++    // RedGiant (C.4 tappa C): cells read from a saved state land in RAM: the card's copy follows before the next batch
++    rg_dirty = true;
++
+     // batch the scatter reads per contiguous run of destination indices
+     // from inclusive, to exclusive - same convention as cell_ranges_t
+     // contiguous cells yield a single run covering the whole block
+@@ -3131,3 +3174,111 @@ void llama_kv_cache_context::set_input_relative_pos(ggml_tensor * dst, const lla
+ void llama_kv_cache_context::get_prev_tokens(const llama_ubatch & ubatch, uint32_t n, std::vector<llama_token> & res) const {
+     kv->get_prev_tokens(ubatch, n, res);
+ }
++
++
++//
++// RedGiant (C.4 tappa C): the card's copy of the first cells of the full-context layers
++//
++
++bool llama_kv_cache::rg_has_hot(int32_t il) const {
++    const auto it = map_layer_ids.find(il);
++    return it != map_layer_ids.end() && layers[it->second].k_hot != nullptr;
++}
++
++ggml_tensor * llama_kv_cache::rg_get_hot(ggml_context * ctx, int32_t il, uint32_t rows, bool v) const {
++    const auto & ly = layers[map_layer_ids.at(il)];
++    ggml_tensor * t = v ? ly.v_hot : ly.k_hot;
++    const uint32_t d = v ? hparams.n_embd_head_v(il) : hparams.n_embd_head_k(il);
++    return ggml_view_4d(ctx, t, d, hparams.n_head_kv(il), rows, 1,
++            ggml_row_size(t->type, d), t->nb[1], t->nb[1]*rows, 0);
++}
++
++ggml_tensor * llama_kv_cache::rg_get_cold(ggml_context * ctx, int32_t il, uint32_t n_kv, bool v) const {
++    const auto & ly = layers[map_layer_ids.at(il)];
++    ggml_tensor * t = v ? ly.v : ly.k;
++    const uint32_t d = v ? hparams.n_embd_head_v(il) : hparams.n_embd_head_k(il);
++    GGML_ASSERT(n_kv > rg_hot);
++    return ggml_view_4d(ctx, t, d, hparams.n_head_kv(il), n_kv - rg_hot, 1,
++            ggml_row_size(t->type, d), t->nb[1], t->nb[1]*(n_kv - rg_hot), t->nb[1]*rg_hot);
++}
++
++ggml_tensor * llama_kv_cache::rg_cpy_hot(ggml_context * ctx, ggml_tensor * cur, ggml_tensor * idxs, int32_t il, bool v) const {
++    const auto & ly = layers[map_layer_ids.at(il)];
++    ggml_tensor * t = v ? ly.v_hot : ly.k_hot;
++    const int64_t n_embd_gqa = cur->ne[0]*cur->ne[1];
++    GGML_ASSERT(ggml_row_size(cur->type, cur->ne[0]) == cur->nb[1]);
++    cur = ggml_view_2d(ctx, cur, n_embd_gqa, cur->ne[2], cur->nb[2], 0);
++    return ggml_set_rows(ctx, t, cur, idxs);
++}
++
++void llama_kv_cache::rg_set_input_hot_idxs(ggml_tensor * dst, const llama_ubatch * ubatch, const slot_info & sinfo) const {
++    GGML_UNUSED(ubatch);
++    rg_sync();
++    GGML_ASSERT(ggml_backend_buffer_is_host(dst->buffer));
++    int64_t * data = (int64_t *) dst->data;
++    for (uint32_t i = 0; i < sinfo.size(); ++i) {
++        const int64_t idx = sinfo.idxs[0][i];
++        data[i] = idx < (int64_t) rg_hot ? idx : (int64_t) (rg_hot + RG_VIRT);
++    }
++}
++
++void llama_kv_cache::rg_set_input_virt_idxs(ggml_tensor * dst) const {
++    GGML_ASSERT(ggml_backend_buffer_is_host(dst->buffer));
++    int64_t * data = (int64_t *) dst->data;
++    for (int64_t i = 0; i < ggml_nelements(dst); ++i) {
++        data[i] = rg_hot + i;
++    }
++}
++
++void llama_kv_cache::rg_sync() const {
++    if (!rg_dirty || rg_hot == 0) {
++        return;
++    }
++    for (const auto & ly : layers) {
++        if (!ly.k_hot || !ly.k_hot->buffer || !ly.k->buffer) {
++            continue;
++        }
++        ggml_backend_tensor_set(ly.k_hot, ly.k->data, 0, ly.k->nb[1]*rg_hot);
++        ggml_backend_tensor_set(ly.v_hot, ly.v->data, 0, ly.v->nb[1]*rg_hot);
++        // the processor's rows: keys of zero (their score is the mask alone), values of zero until written
++        ggml_backend_tensor_memset(ly.k_hot, 0, ly.k_hot->nb[1]*rg_hot, ly.k_hot->nb[1]*(RG_VIRT + 1));
++        ggml_backend_tensor_memset(ly.v_hot, 0, ly.v_hot->nb[1]*rg_hot, ly.v_hot->nb[1]*(RG_VIRT + 1));
++    }
++    rg_dirty = false;
++}
++
++uint32_t llama_kv_cache_context::rg_hot_cells() const {
++    return kv->rg_hot_cells();
++}
++
++bool llama_kv_cache_context::rg_has_hot(int32_t il) const {
++    return kv->rg_has_hot(il);
++}
++
++ggml_tensor * llama_kv_cache_context::rg_get_hot(ggml_context * ctx, int32_t il, uint32_t rows, bool v) const {
++    return kv->rg_get_hot(ctx, il, rows, v);
++}
++
++ggml_tensor * llama_kv_cache_context::rg_get_cold(ggml_context * ctx, int32_t il, bool v) const {
++    return kv->rg_get_cold(ctx, il, n_kv, v);
++}
++
++ggml_tensor * llama_kv_cache_context::rg_cpy_hot(ggml_context * ctx, ggml_tensor * cur, ggml_tensor * idxs, int32_t il, bool v) const {
++    return kv->rg_cpy_hot(ctx, cur, idxs, il, v);
++}
++
++void llama_kv_cache_context::rg_set_input_hot_idxs(ggml_tensor * dst, const llama_ubatch * ubatch) const {
++    kv->rg_set_input_hot_idxs(dst, ubatch, sinfos[i_cur]);
++}
++
++void llama_kv_cache_context::rg_set_input_virt_idxs(ggml_tensor * dst) const {
++    kv->rg_set_input_virt_idxs(dst);
++}
++
++ggml_tensor * llama_kv_cache::rg_cpy_virt(ggml_context * ctx, ggml_tensor * vrows, ggml_tensor * idxs, int32_t il) const {
++    return ggml_set_rows(ctx, layers[map_layer_ids.at(il)].v_hot, vrows, idxs);
++}
++
++ggml_tensor * llama_kv_cache_context::rg_cpy_virt(ggml_context * ctx, ggml_tensor * vrows, ggml_tensor * idxs, int32_t il) const {
++    return kv->rg_cpy_virt(ctx, vrows, idxs, il);
++}
+diff --git a/src/llama-kv-cache.h b/src/llama-kv-cache.h
+index 1b40f6f..40ea2de 100644
+--- a/src/llama-kv-cache.h
++++ b/src/llama-kv-cache.h
+@@ -262,6 +262,20 @@ public:
+     // note: used by n-gram input embeddings
+     void get_prev_tokens(const llama_ubatch & ubatch, uint32_t n, std::vector<llama_token> & res) const;
+ 
++    // RedGiant (C.4 tappa C): the full-context layers keep their cache in RAM and a copy of the first rg_hot cells in
++    // the card; the card attends to those, the processor to the rest, and its result enters the card's attention as
++    // rows of their own (RG_VIRT: 3 per query row, every head of a group its own)
++    static constexpr uint32_t RG_VIRT = 1536;
++    uint32_t      rg_hot_cells() const { return rg_hot; }
++    bool          rg_has_hot(int32_t il) const;
++    ggml_tensor * rg_get_hot (ggml_context * ctx, int32_t il, uint32_t rows, bool v) const;
++    ggml_tensor * rg_get_cold(ggml_context * ctx, int32_t il, uint32_t n_kv, bool v) const;
++    ggml_tensor * rg_cpy_hot (ggml_context * ctx, ggml_tensor * cur, ggml_tensor * idxs, int32_t il, bool v) const;
++    ggml_tensor * rg_cpy_virt(ggml_context * ctx, ggml_tensor * vrows, ggml_tensor * idxs, int32_t il) const;
++    void          rg_set_input_hot_idxs(ggml_tensor * dst, const llama_ubatch * ubatch, const slot_info & sinfo) const;
++    void          rg_set_input_virt_idxs(ggml_tensor * dst) const;
++    void          rg_sync() const;
++
+ private:
+     const llama_model & model;
+     const llama_hparams & hparams;
+@@ -282,8 +296,18 @@ private:
+ 
+         ggml_tensor * k_rot = nullptr;
+         ggml_tensor * v_rot = nullptr;
++
++        // RedGiant (C.4 tappa C): the card's copy of the first rg_hot cells, then RG_VIRT rows for the processor's
++        // part of the attention, then one row for the writes past rg_hot
++        ggml_tensor * k_hot = nullptr;
++        ggml_tensor * v_hot = nullptr;
+     };
+ 
++    // RedGiant (C.4 tappa C, LLAMA_KV_HOT_CELLS with LLAMA_KV_FULL_HOST=2): cells kept in the card too, 0 = none
++    uint32_t rg_hot = 0;
++    // the card's copy is behind the RAM (after a state read or a shift): copied again before the next batch
++    mutable bool rg_dirty = true;
++
+     bool v_trans = true;  // the value tensor is transposed
+ 
+     const uint32_t n_seq_max = 1;
+@@ -451,6 +475,16 @@ public:
+     void set_input_k_idxs(ggml_tensor * dst, const llama_ubatch * ubatch) const;
+     void set_input_v_idxs(ggml_tensor * dst, const llama_ubatch * ubatch) const;
+ 
++    // RedGiant (C.4 tappa C): see llama_kv_cache::rg_*
++    uint32_t      rg_hot_cells() const;
++    bool          rg_has_hot(int32_t il) const;
++    ggml_tensor * rg_get_hot (ggml_context * ctx, int32_t il, uint32_t rows, bool v) const;
++    ggml_tensor * rg_get_cold(ggml_context * ctx, int32_t il, bool v) const;
++    ggml_tensor * rg_cpy_hot (ggml_context * ctx, ggml_tensor * cur, ggml_tensor * idxs, int32_t il, bool v) const;
++    ggml_tensor * rg_cpy_virt(ggml_context * ctx, ggml_tensor * vrows, ggml_tensor * idxs, int32_t il) const;
++    void          rg_set_input_hot_idxs(ggml_tensor * dst, const llama_ubatch * ubatch) const;
++    void          rg_set_input_virt_idxs(ggml_tensor * dst) const;
++
+     void set_input_k_shift   (ggml_tensor * dst) const;
+     void set_input_attn_mask (const llm_attn_mask & attn_mask, const llama_ubatch * ubatch, bool causal_attn) const;
+     void set_input_pos_bucket(ggml_tensor * dst, const llama_ubatch * ubatch) const;
+diff --git a/src/llama-redgiant-attn-avx512.cpp b/src/llama-redgiant-attn-avx512.cpp
+new file mode 100644
+index 0000000..9ae6082
+--- /dev/null
++++ b/src/llama-redgiant-attn-avx512.cpp
+@@ -0,0 +1,235 @@
++// RedGiant (C.4): the fast kernel of llama-redgiant-attn.cpp, built with AVX-512 and called only when the processor has
++// AVX-512 with VNNI (checked at run time). The C.4.1 prototype (rg-test/c4/proto.cu, cpu_attn2) read the cache at the
++// RAM's speed on a Ryzen 9 9900X (60-67 GB/s): every kv head of a cell together, keys with VNNI (k+128 unsigned times q
++// signed, minus 128 x the sum of q per group of 4 bytes), 16 exps at a time.
++
++#include "llama-redgiant-attn.h"
++
++#if defined(__AVX512F__)
++
++#include <immintrin.h>
++
++#include <algorithm>
++#include <cmath>
++#include <cstdint>
++#include <cstring>
++
++namespace {
++
++constexpr int D   = 128;
++constexpr int NB  = D/32;
++constexpr int TG  = 4;   // query rows read together (several when the message is being read)
++constexpr int SUB = 32;  // cells per scoring step
++constexpr int MAXH = 64;
++
++struct block {
++    uint16_t d;
++    int8_t   q[32];
++};
++
++inline float h2f(uint16_t h) {
++    // F16C, as every compiler spells it (MSVC has no _cvtsh_ss)
++    return _mm_cvtss_f32(_mm_cvtph_ps(_mm_cvtsi32_si128(h)));
++}
++
++inline __m512 exp16(__m512 x) {
++    x = _mm512_max_ps(x, _mm512_set1_ps(-87.f));
++    const __m512 t = _mm512_mul_ps(x, _mm512_set1_ps(1.44269504f));
++    const __m512 n = _mm512_roundscale_ps(t, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
++    const __m512 f = _mm512_sub_ps(t, n);
++    __m512 p = _mm512_set1_ps(1.535336188e-4f);
++    p = _mm512_fmadd_ps(p, f, _mm512_set1_ps(1.339887440e-3f));
++    p = _mm512_fmadd_ps(p, f, _mm512_set1_ps(9.618437357e-3f));
++    p = _mm512_fmadd_ps(p, f, _mm512_set1_ps(5.550332471e-2f));
++    p = _mm512_fmadd_ps(p, f, _mm512_set1_ps(2.402264791e-1f));
++    p = _mm512_fmadd_ps(p, f, _mm512_set1_ps(6.931472028e-1f));
++    p = _mm512_fmadd_ps(p, f, _mm512_set1_ps(1.f));
++    return _mm512_scalef_ps(p, n);
++}
++
++inline float hsum8(__m256 v) {
++    __m128 a = _mm_add_ps(_mm256_castps256_ps128(v), _mm256_extractf128_ps(v, 1));
++    a = _mm_add_ps(a, _mm_movehl_ps(a, a));
++    a = _mm_add_ss(a, _mm_movehdup_ps(a));
++    return _mm_cvtss_f32(a);
++}
++
++}  // namespace
++
++bool llama_redgiant_attn_chunk_avx512(const llama_redgiant_attn_job & j) {
++    const ggml_tensor * q = j.q;
++    const ggml_tensor * k = j.k;
++    const ggml_tensor * v = j.v;
++    const ggml_tensor * mask = j.mask;
++    const int64_t n_batch = q->ne[1], n_head = q->ne[2], ne3 = q->ne[3];
++    const int64_t n_head_kv = k->ne[2], G = n_head/n_head_kv;
++    if (n_head > MAXH || k->ne[0] != D) {
++        return false;
++    }
++
++    alignas(64) static thread_local int8_t  qi[TG][MAXH][D];
++    alignas(64) static thread_local int32_t corr[TG][MAXH][NB][8];
++    alignas(64) static thread_local float   qd[TG][MAXH][NB];
++    alignas(64) static thread_local float   sc[TG][MAXH][SUB];
++    alignas(64) static thread_local float   acc[TG][MAXH][D];
++    static thread_local float m[TG][MAXH], l[TG][MAXH];
++
++    const __m256i flip = _mm256_set1_epi8((char) 0x80);
++
++    for (int64_t s = 0; s < ne3; s++) {
++        for (int64_t t0 = 0; t0 < n_batch; t0 += TG) {
++            const int nt = (int) std::min<int64_t>(TG, n_batch - t0);
++            // The queries of these rows in int8 per block of 32, with their scale and the VNNI correction.
++            for (int tt = 0; tt < nt; tt++) {
++                for (int64_t h = 0; h < n_head; h++) {
++                    const float * qp = (const float *) ((const char *) q->data + (t0 + tt)*q->nb[1] + h*q->nb[2] + s*q->nb[3]);
++                    for (int b = 0; b < NB; b++) {
++                        float a = 0.0f;
++                        for (int i = 0; i < 32; i++) {
++                            a = std::max(a, std::fabs(qp[b*32 + i]));
++                        }
++                        const float d = a/127.0f;
++                        qd[tt][h][b] = d*j.scale;
++                        for (int i = 0; i < 32; i++) {
++                            qi[tt][h][b*32 + i] = (int8_t) std::lrint(d != 0.0f ? qp[b*32 + i]/d : 0.0f);
++                        }
++                        for (int g = 0; g < 8; g++) {
++                            int c = 0;
++                            for (int i = 0; i < 4; i++) {
++                                c += qi[tt][h][b*32 + g*4 + i];
++                            }
++                            corr[tt][h][b][g] = 128*c;
++                        }
++                    }
++                    m[tt][h] = -INFINITY;
++                    l[tt][h] = 0.0f;
++                    std::memset(acc[tt][h], 0, sizeof(acc[tt][h]));
++                }
++            }
++
++            for (int64_t c = j.c0; c < j.c1; c += SUB) {
++                const int len = (int) std::min<int64_t>(SUB, j.c1 - c);
++                // Scores: each cell's keys read once, every kv head, for every query row and head.
++                for (int i = 0; i < len; i++) {
++                    const int64_t cell = c + i;
++                    for (int64_t kvh = 0; kvh < n_head_kv; kvh++) {
++                        const block * kb = (const block *) ((const char *) k->data + cell*k->nb[1] + kvh*k->nb[2] + s*k->nb[3]);
++                        __m256i ku[NB];
++                        float   dk[NB];
++                        for (int b = 0; b < NB; b++) {
++                            ku[b] = _mm256_xor_si256(_mm256_loadu_si256((const __m256i *) kb[b].q), flip);
++                            dk[b] = h2f(kb[b].d);
++                        }
++                        for (int64_t g = 0; g < G; g++) {
++                            const int64_t h = kvh*G + g;
++                            for (int tt = 0; tt < nt; tt++) {
++                                __m256 f = _mm256_setzero_ps();
++                                for (int b = 0; b < NB; b++) {
++                                    __m256i dot = _mm256_dpbusd_epi32(_mm256_setzero_si256(), ku[b],
++                                                                      _mm256_load_si256((const __m256i *) &qi[tt][h][b*32]));
++                                    dot = _mm256_sub_epi32(dot, _mm256_load_si256((const __m256i *) corr[tt][h][b]));
++                                    f = _mm256_fmadd_ps(_mm256_cvtepi32_ps(dot), _mm256_set1_ps(dk[b]*qd[tt][h][b]), f);
++                                }
++                                float x = hsum8(f);
++                                if (mask) {
++                                    x += h2f(*(const uint16_t *) ((const char *) mask->data + cell*mask->nb[0] +
++                                                                  (t0 + tt)*mask->nb[1] + (h % mask->ne[2])*mask->nb[2] +
++                                                                  (s % mask->ne[3])*mask->nb[3]));
++                                }
++                                sc[tt][h][i] = x;
++                            }
++                        }
++                    }
++                }
++                for (int tt = 0; tt < nt; tt++) {
++                    for (int64_t h = 0; h < n_head; h++) {
++                        for (int i = len; i < SUB; i++) {
++                            sc[tt][h][i] = -INFINITY;
++                        }
++                    }
++                }
++                // Softmax by row and head: new max, rescale, 16 exps at a time.
++                for (int tt = 0; tt < nt; tt++) {
++                    for (int64_t h = 0; h < n_head; h++) {
++                        __m512 mx = _mm512_set1_ps(m[tt][h]);
++                        for (int i = 0; i < SUB; i += 16) {
++                            mx = _mm512_max_ps(mx, _mm512_load_ps(&sc[tt][h][i]));
++                        }
++                        const float nm = _mm512_reduce_max_ps(mx);
++                        if (nm == -INFINITY) {
++                            // every cell masked so far: nothing to add
++                            for (int i = 0; i < SUB; i++) {
++                                sc[tt][h][i] = 0.0f;
++                            }
++                            continue;
++                        }
++                        const float r = std::exp(m[tt][h] - nm);
++                        if (r != 1.0f) {
++                            const __m512 rv = _mm512_set1_ps(r);
++                            for (int d = 0; d < D; d += 16) {
++                                _mm512_store_ps(&acc[tt][h][d], _mm512_mul_ps(_mm512_load_ps(&acc[tt][h][d]), rv));
++                            }
++                        }
++                        l[tt][h] *= r;
++                        m[tt][h] = nm;
++                        __m512 sum = _mm512_setzero_ps();
++                        const __m512 nmv = _mm512_set1_ps(nm);
++                        for (int i = 0; i < SUB; i += 16) {
++                            __m512 x = _mm512_load_ps(&sc[tt][h][i]);
++                            // masked cells: an exact zero, not exp(-87)
++                            const __mmask16 live = _mm512_cmp_ps_mask(x, _mm512_set1_ps(-INFINITY), _CMP_NEQ_OQ);
++                            const __m512 e = _mm512_maskz_mov_ps(live, exp16(_mm512_sub_ps(x, nmv)));
++                            _mm512_store_ps(&sc[tt][h][i], e);
++                            sum = _mm512_add_ps(sum, e);
++                        }
++                        l[tt][h] += _mm512_reduce_add_ps(sum);
++                    }
++                }
++                // Values, read in the order they are stored.
++                for (int i = 0; i < len; i++) {
++                    const int64_t cell = c + i;
++                    for (int64_t kvh = 0; kvh < n_head_kv; kvh++) {
++                        const block * vb = (const block *) ((const char *) v->data + cell*v->nb[1] + kvh*v->nb[2] + s*v->nb[3]);
++                        for (int b = 0; b < NB; b++) {
++                            const __m128i * src = (const __m128i *) vb[b].q;
++                            const __m512 lo = _mm512_cvtepi32_ps(_mm512_cvtepi8_epi32(_mm_loadu_si128(src)));
++                            const __m512 hi = _mm512_cvtepi32_ps(_mm512_cvtepi8_epi32(_mm_loadu_si128(src + 1)));
++                            const float dv = h2f(vb[b].d);
++                            for (int64_t g = 0; g < G; g++) {
++                                const int64_t h = kvh*G + g;
++                                for (int tt = 0; tt < nt; tt++) {
++                                    const float wf = sc[tt][h][i];
++                                    if (wf == 0.0f) {
++                                        continue;
++                                    }
++                                    const __m512 w = _mm512_set1_ps(wf*dv);
++                                    float * p = &acc[tt][h][b*32];
++                                    _mm512_store_ps(p, _mm512_fmadd_ps(lo, w, _mm512_load_ps(p)));
++                                    _mm512_store_ps(p + 16, _mm512_fmadd_ps(hi, w, _mm512_load_ps(p + 16)));
++                                }
++                            }
++                        }
++                    }
++                }
++            }
++
++            for (int tt = 0; tt < nt; tt++) {
++                for (int64_t h = 0; h < n_head; h++) {
++                    float * o = j.out + ((s*n_batch + t0 + tt)*n_head + h)*(D + 2);
++                    std::memcpy(o, acc[tt][h], sizeof(acc[tt][h]));
++                    o[D] = m[tt][h];
++                    o[D + 1] = l[tt][h];
++                }
++            }
++        }
++    }
++    return true;
++}
++
++#else
++
++bool llama_redgiant_attn_chunk_avx512(const llama_redgiant_attn_job &) {
++    return false;
++}
++
++#endif
+diff --git a/src/llama-redgiant-attn.cpp b/src/llama-redgiant-attn.cpp
+new file mode 100644
+index 0000000..ebb2219
+--- /dev/null
++++ b/src/llama-redgiant-attn.cpp
+@@ -0,0 +1,288 @@
++#include "llama-redgiant-attn.h"
++
++#include <algorithm>
++#include <cmath>
++#include <cstdint>
++#include <cstring>
++#include <vector>
++
++#if defined(_MSC_VER)
++#include <intrin.h>
++#elif defined(__x86_64__) || defined(__i386__)
++#include <cpuid.h>
++#endif
++
++// Chunks the cache is split in: each is a stretch of cells read whole by one thread; their partial softmaxes are merged
++// by the second op. Enough to keep 12-24 threads busy with uneven cores.
++static constexpr int64_t RG_CHUNKS = 64;
++static constexpr int64_t RG_D      = 128;
++
++// The chunks used for n_kv cells: about 256 cells each, so a short conversation is not split in 64 tiny pieces that
++// each prepare the queries and clear their sums (measured: 44 against 50 t/s at 439 cells).
++static int64_t rg_chunks_used(int64_t n_kv) {
++    return std::max<int64_t>(1, std::min<int64_t>(RG_CHUNKS, n_kv/256));
++}
++
++static bool rg_has_avx512_vnni() {
++#if defined(_MSC_VER) && (defined(_M_X64) || defined(_M_IX86))
++    int r[4];
++    __cpuidex(r, 7, 0);
++    const bool f = (r[1] >> 16) & 1, bw = (r[1] >> 30) & 1, vl = (r[1] >> 31) & 1, vnni = (r[2] >> 11) & 1;
++    return f && bw && vl && vnni;
++#elif defined(__x86_64__) || defined(__i386__)
++    unsigned a, b, c, d;
++    if (!__get_cpuid_count(7, 0, &a, &b, &c, &d)) {
++        return false;
++    }
++    return ((b >> 16) & 1) && ((b >> 30) & 1) && ((b >> 31) & 1) && ((c >> 11) & 1);
++#else
++    return false;
++#endif
++}
++
++static const bool rg_fast = rg_has_avx512_vnni();
++
++static float rg_h2f(ggml_fp16_t h) {
++    return ggml_fp16_to_fp32(h);
++}
++
++struct rg_block {
++    ggml_fp16_t d;
++    int8_t      q[32];
++};
++static_assert(sizeof(rg_block) == 34, "q8_0 block");
++
++// The plain kernel: the same result, one cell at a time, for processors without AVX-512 VNNI.
++static void rg_chunk_plain(const llama_redgiant_attn_job & j) {
++    const ggml_tensor * q = j.q;
++    const ggml_tensor * k = j.k;
++    const ggml_tensor * v = j.v;
++    const ggml_tensor * mask = j.mask;
++    const int64_t n_batch = q->ne[1], n_head = q->ne[2], ne3 = q->ne[3];
++    const int64_t n_head_kv = k->ne[2], group = n_head / n_head_kv;
++    std::vector<float> qf(RG_D), acc(RG_D);
++    for (int64_t s = 0; s < ne3; s++) {
++        for (int64_t t = 0; t < n_batch; t++) {
++            for (int64_t h = 0; h < n_head; h++) {
++                const int64_t kvh = h / group;
++                const float * qp = (const float *) ((const char *) q->data + t*q->nb[1] + h*q->nb[2] + s*q->nb[3]);
++                std::fill(acc.begin(), acc.end(), 0.0f);
++                float m = -INFINITY, l = 0.0f;
++                for (int64_t c = j.c0; c < j.c1; c++) {
++                    float mv = 0.0f;
++                    if (mask) {
++                        mv = rg_h2f(*(const ggml_fp16_t *) ((const char *) mask->data + c*mask->nb[0] + t*mask->nb[1] +
++                                                            (h % mask->ne[2])*mask->nb[2] + (s % mask->ne[3])*mask->nb[3]));
++                        if (mv == -INFINITY) {
++                            continue;
++                        }
++                    }
++                    const rg_block * kb = (const rg_block *) ((const char *) k->data + c*k->nb[1] + kvh*k->nb[2] + s*k->nb[3]);
++                    float dot = 0.0f;
++                    for (int b = 0; b < RG_D/32; b++) {
++                        float sb = 0.0f;
++                        for (int i = 0; i < 32; i++) {
++                            sb += kb[b].q[i] * qp[b*32 + i];
++                        }
++                        dot += sb * rg_h2f(kb[b].d);
++                    }
++                    const float x = dot*j.scale + mv;
++                    const float nm = std::max(m, x);
++                    const float r = std::exp(m - nm), w = std::exp(x - nm);
++                    const rg_block * vb = (const rg_block *) ((const char *) v->data + c*v->nb[1] + kvh*v->nb[2] + s*v->nb[3]);
++                    for (int b = 0; b < RG_D/32; b++) {
++                        const float dv = rg_h2f(vb[b].d);
++                        for (int i = 0; i < 32; i++) {
++                            acc[b*32 + i] = acc[b*32 + i]*r + w*dv*vb[b].q[i];
++                        }
++                    }
++                    l = l*r + w;
++                    m = nm;
++                }
++                float * o = j.out + ((s*n_batch + t)*n_head + h)*(RG_D + 2);
++                std::memcpy(o, acc.data(), RG_D*sizeof(float));
++                o[RG_D] = m;
++                o[RG_D + 1] = l;
++            }
++        }
++    }
++}
++
++// First op: the partial result of every chunk. dst: [D+2, n_head, n_batch*ne3, RG_CHUNKS].
++static void rg_chunks_op(ggml_tensor * dst, int ith, int nth, void * userdata) {
++    const ggml_tensor * q = dst->src[0];
++    const ggml_tensor * k = dst->src[1];
++    const ggml_tensor * v = dst->src[2];
++    const ggml_tensor * mask = dst->src[3];
++    float scale;
++    std::memcpy(&scale, &userdata, sizeof(float));
++    const int64_t n_kv = k->ne[1], used = rg_chunks_used(n_kv);
++    for (int64_t c = ith; c < used; c += nth) {
++        llama_redgiant_attn_job job = {q, k, v, mask, scale, n_kv*c/used, n_kv*(c + 1)/used,
++                                       (float *) ((char *) dst->data + c*dst->nb[3])};
++        if (!rg_fast || !llama_redgiant_attn_chunk_avx512(job)) {
++            rg_chunk_plain(job);
++        }
++    }
++}
++
++// Second op: the chunks merged, the sink added to the sum. dst: [D, n_head, n_batch, ne3].
++static void rg_merge_op(ggml_tensor * dst, int ith, int nth, void *) {
++    const ggml_tensor * parts = dst->src[0];
++    const ggml_tensor * sinks = dst->src[1];
++    const int64_t n_head = dst->ne[1], rows = dst->ne[1]*dst->ne[2]*dst->ne[3];
++    const float * pd = (const float *) parts->data;
++    const int64_t stride = rows*(RG_D + 2);
++    const int64_t used = rg_chunks_used(parts->src[1]->ne[1]);
++    for (int64_t r = ith; r < rows; r += nth) {
++        const int64_t h = r % n_head;
++        float m = -INFINITY;
++        for (int64_t c = 0; c < used; c++) {
++            const float * p = pd + c*stride + r*(RG_D + 2);
++            if (p[RG_D + 1] > 0.0f) {
++                m = std::max(m, p[RG_D]);
++            }
++        }
++        const float sink = sinks ? ((const float *) sinks->data)[h] : -INFINITY;
++        m = std::max(m, sink);
++        float * o = (float *) dst->data + r*RG_D;
++        std::fill(o, o + RG_D, 0.0f);
++        if (m == -INFINITY) {
++            continue;
++        }
++        float l = sinks ? std::exp(sink - m) : 0.0f;
++        for (int64_t c = 0; c < used; c++) {
++            const float * p = pd + c*stride + r*(RG_D + 2);
++            if (p[RG_D + 1] <= 0.0f) {
++                continue;
++            }
++            const float w = std::exp(p[RG_D] - m);
++            l += p[RG_D + 1]*w;
++            for (int64_t d = 0; d < RG_D; d++) {
++                o[d] += p[d]*w;
++            }
++        }
++        const float inv = l > 0.0f ? 1.0f/l : 0.0f;
++        for (int64_t d = 0; d < RG_D; d++) {
++            o[d] *= inv;
++        }
++    }
++}
++
++bool llama_redgiant_attn_supported(const ggml_tensor * k, const ggml_tensor * v, float max_bias, float softcap) {
++    return k->type == GGML_TYPE_Q8_0 && v->type == GGML_TYPE_Q8_0 && k->ne[0] == RG_D && v->ne[0] == RG_D &&
++           max_bias == 0.0f && softcap == 0.0f;
++}
++
++ggml_tensor * llama_redgiant_attn_cpu(
++        ggml_context * ctx,
++        ggml_tensor * q,
++        ggml_tensor * k,
++        ggml_tensor * v,
++        ggml_tensor * mask,
++        ggml_tensor * sinks,
++        float scale) {
++    const int64_t n_batch = q->ne[1], n_head = q->ne[2], ne3 = q->ne[3];
++    void * ud = nullptr;
++    std::memcpy(&ud, &scale, sizeof(float));
++    ggml_tensor * args[4] = {q, k, v, mask};
++    ggml_tensor * parts = ggml_custom_4d(ctx, GGML_TYPE_F32, RG_D + 2, n_head, n_batch*ne3, RG_CHUNKS, args,
++                                         mask ? 4 : 3, rg_chunks_op, GGML_N_TASKS_MAX, ud);
++    ggml_tensor * margs[2] = {parts, sinks};
++    return ggml_custom_4d(ctx, GGML_TYPE_F32, RG_D, n_head, n_batch, ne3, margs, sinks ? 2 : 1, rg_merge_op,
++                          GGML_N_TASKS_MAX, nullptr);
++}
++
++// The merged result of row r (query row x head) over the chunks: sum of weighted values, max score, softmax sum.
++static void rg_merge_row(const ggml_tensor * parts, int64_t r, int64_t rows, float * acc, float & m, float & l) {
++    const float * pd = (const float *) parts->data;
++    const int64_t stride = rows*(RG_D + 2), used = rg_chunks_used(parts->src[1]->ne[1]);
++    m = -INFINITY;
++    for (int64_t c = 0; c < used; c++) {
++        const float * p = pd + c*stride + r*(RG_D + 2);
++        if (p[RG_D + 1] > 0.0f) {
++            m = std::max(m, p[RG_D]);
++        }
++    }
++    l = 0.0f;
++    std::fill(acc, acc + RG_D, 0.0f);
++    if (m == -INFINITY) {
++        return;
++    }
++    for (int64_t c = 0; c < used; c++) {
++        const float * p = pd + c*stride + r*(RG_D + 2);
++        if (p[RG_D + 1] <= 0.0f) {
++            continue;
++        }
++        const float w = std::exp(p[RG_D] - m);
++        l += p[RG_D + 1]*w;
++        for (int64_t d = 0; d < RG_D; d++) {
++            acc[d] += p[d]*w;
++        }
++    }
++}
++
++// The processor's rows of values: dst [n_head_kv*D, group*n_batch], userdata = group.
++static void rg_vrows_op(ggml_tensor * dst, int ith, int nth, void * userdata) {
++    const ggml_tensor * parts = dst->src[0];
++    const int64_t group = (int64_t) (intptr_t) userdata;
++    const int64_t n_head = parts->ne[1], n_batch = parts->ne[2], rows = n_head*n_batch, n_head_kv = n_head/group;
++    float acc[RG_D];
++    for (int64_t r = ith; r < rows; r += nth) {
++        const int64_t t = r / n_head, h = r % n_head, kvh = h / group, g = h % group;
++        float m, l;
++        rg_merge_row(parts, r, rows, acc, m, l);
++        float * o = (float *) ((char *) dst->data + (t*group + g)*dst->nb[1]) + kvh*RG_D;
++        const float inv = l > 0.0f ? 1.0f/l : 0.0f;
++        for (int64_t d = 0; d < RG_D; d++) {
++            o[d] = acc[d]*inv;
++        }
++        GGML_UNUSED(n_head_kv);
++    }
++}
++
++// The mask of the processor's rows: dst [vpad, n_batch, n_head, 1] F16, userdata = group.
++static void rg_vmask_op(ggml_tensor * dst, int ith, int nth, void * userdata) {
++    const ggml_tensor * parts = dst->src[0];
++    const int64_t group = (int64_t) (intptr_t) userdata;
++    const int64_t n_head = parts->ne[1], n_batch = parts->ne[2], rows = n_head*n_batch, vpad = dst->ne[0];
++    const ggml_fp16_t ninf = ggml_fp32_to_fp16(-INFINITY);
++    float acc[RG_D];
++    for (int64_t r = ith; r < rows; r += nth) {
++        const int64_t t = r / n_head, h = r % n_head, g = h % group;
++        float m, l;
++        rg_merge_row(parts, r, rows, acc, m, l);
++        ggml_fp16_t * o = (ggml_fp16_t *) ((char *) dst->data + t*dst->nb[1] + h*dst->nb[2]);
++        for (int64_t j = 0; j < vpad; j++) {
++            o[j] = ninf;
++        }
++        if (l > 0.0f) {
++            o[t*group + g] = ggml_fp32_to_fp16(m + std::log(l));
++        }
++    }
++}
++
++llama_redgiant_cold llama_redgiant_attn_cold(
++        ggml_context * ctx,
++        ggml_tensor * q,
++        ggml_tensor * k,
++        ggml_tensor * v,
++        ggml_tensor * mask,
++        float scale,
++        int64_t group,
++        int64_t vpad) {
++    GGML_ASSERT(q->ne[3] == 1 && "one stream (--kv-unified)");
++    const int64_t n_batch = q->ne[1], n_head = q->ne[2];
++    void * ud = nullptr;
++    std::memcpy(&ud, &scale, sizeof(float));
++    ggml_tensor * args[4] = {q, k, v, mask};
++    ggml_tensor * parts = ggml_custom_4d(ctx, GGML_TYPE_F32, RG_D + 2, n_head, n_batch, RG_CHUNKS, args,
++                                         mask ? 4 : 3, rg_chunks_op, GGML_N_TASKS_MAX, ud);
++    ggml_tensor * pa[1] = {parts};
++    void * g = (void *) (intptr_t) group;
++    llama_redgiant_cold res;
++    res.vrows = ggml_custom_4d(ctx, GGML_TYPE_F32, (n_head/group)*RG_D, group*n_batch, 1, 1, pa, 1, rg_vrows_op,
++                               GGML_N_TASKS_MAX, g);
++    res.mask = ggml_custom_4d(ctx, GGML_TYPE_F16, vpad, n_batch, n_head, 1, pa, 1, rg_vmask_op, GGML_N_TASKS_MAX, g);
++    return res;
++}
+diff --git a/src/llama-redgiant-attn.h b/src/llama-redgiant-attn.h
+new file mode 100644
+index 0000000..341b840
+--- /dev/null
++++ b/src/llama-redgiant-attn.h
+@@ -0,0 +1,59 @@
++#pragma once
++
++// RedGiant (C.4, plan_contesto.md): attention over a key/value cache kept in RAM, computed by the processor with the
++// cache read once and in the order it is stored (every kv head of a cell together), split in chunks across the threads
++// and merged exactly. Used for the full-context layers when LLAMA_KV_FULL_HOST=2, in place of ggml's CPU flash
++// attention, which reads the same cache once per query head and row by row (~8 GB/s on a Ryzen 9 9900X, 60 here).
++
++#include "ggml.h"
++
++// Same inputs and result as ggml_flash_attn_ext with sinks:
++//   q:     [D, n_batch, n_head, ne3] F32
++//   k, v:  [D, n_kv, n_head_kv, ne3] Q8_0 (D = 128)
++//   mask:  [n_kv, n_batch_pad, ne32, ne33] F16 (per head or broadcast), may be null
++//   sinks: [n_head] F32, may be null
++//   res:   [D, n_head, n_batch, ne3] F32
++ggml_tensor * llama_redgiant_attn_cpu(
++        ggml_context * ctx,
++        ggml_tensor * q,
++        ggml_tensor * k,
++        ggml_tensor * v,
++        ggml_tensor * mask,
++        ggml_tensor * sinks,
++        float scale);
++
++// The cold part for the card's attention (C.4 tappa C): the processor attends to the cells in RAM and hands its result
++// to the card as rows of its own. For query row t and head h = kvh*group + g: row t*group + g of `vrows` holds, at kv
++// head kvh, the processor's normalized result for head h; the mask gives that row, for head h only, the log of the
++// processor's softmax sum (-inf for every other head and row). Keys of zero on those rows: the score is the mask alone,
++// and the card's softmax over its cells plus these rows is the softmax over every cell.
++//   vrows: [n_head_kv*D, group*n_batch] F32
++//   mask:  [vpad, n_batch, n_head, 1] F16
++struct llama_redgiant_cold {
++    ggml_tensor * vrows;
++    ggml_tensor * mask;
++};
++llama_redgiant_cold llama_redgiant_attn_cold(
++        ggml_context * ctx,
++        ggml_tensor * q,
++        ggml_tensor * k,
++        ggml_tensor * v,
++        ggml_tensor * mask,
++        float scale,
++        int64_t group,
++        int64_t vpad);
++
++// Whether this attention can take it: Q8_0 keys and values of 128, no softcap or ALiBi.
++bool llama_redgiant_attn_supported(const ggml_tensor * k, const ggml_tensor * v, float max_bias, float softcap);
++
++// The fast kernel (llama-redgiant-attn-avx512.cpp): true when it ran (AVX-512 with VNNI on this processor).
++struct llama_redgiant_attn_job {
++    const ggml_tensor * q;
++    const ggml_tensor * k;
++    const ggml_tensor * v;
++    const ggml_tensor * mask;
++    float scale;
++    int64_t c0, c1;   // cells of this chunk
++    float * out;      // [n_tokens*ne3][n_head][D+2]: acc, m, l
++};
++bool llama_redgiant_attn_chunk_avx512(const llama_redgiant_attn_job & job);

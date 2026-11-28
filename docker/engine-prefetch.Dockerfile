@@ -34,7 +34,7 @@ RUN cmake -S . -B build -G Ninja \
     && mkdir -p /out \
     && find build -name "*.so*" -exec cp -P {} /out \; \
     && cp build/bin/llama-server /out/ \
-    && echo "${LLAMA_BUILD} + Rasgeth patches (0001 teal, 0002 moe-prefetch), CUDA ${CUDA_VERSION}, ${CUDA_ARCHS}" > /out/build.txt
+    && echo "${LLAMA_BUILD} + Rasgeth patches (0001 teal, 0002 moe-prefetch, 0003 kv-host), CUDA ${CUDA_VERSION}, ${CUDA_ARCHS}" > /out/build.txt
 
 FROM docker.io/nvidia/cuda:${CUDA_VERSION}-runtime-ubuntu${UBUNTU_VERSION}
 RUN apt-get update \
